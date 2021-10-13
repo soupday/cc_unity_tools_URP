@@ -20,6 +20,6 @@
   },
   "type": "tool",
   "dependencies": {
-    "com.unity.render-pipelines.high-definition": "10.5.0"
+    "com.unity.render-pipelines.universal": "10.5.0"
   }
 }

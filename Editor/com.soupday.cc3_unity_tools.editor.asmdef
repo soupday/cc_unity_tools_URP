@@ -19,9 +19,9 @@
     "defineConstraints": [],
     "versionDefines": [
         {
-            "name": "com.unity.render-pipelines.high-definition",
+            "name": "com.unity.render-pipelines.universal",
             "expression": "10.5.0",
-            "define": "HDRP_10_5_0_OR_NEWER"
+            "define": "URP_10_5_0_OR_NEWER"
         }
     ],
     "noEngineReferences": false
