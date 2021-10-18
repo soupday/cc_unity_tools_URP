@@ -19,9 +19,6 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
-#if HDRP_10_5_0_OR_NEWER
-using UnityEditor.Rendering.HighDefinition;
-#endif
 using UnityEngine;
 
 namespace Reallusion.Import
@@ -466,9 +463,7 @@ namespace Reallusion.Import
                 ConnectHQTearlineMaterial(obj, sourceName, sharedMat, mat, materialType, matJson);
             }
 
-#if HDRP_10_5_0_OR_NEWER
-            HDShaderUtils.ResetMaterialKeywords(mat);
-#endif
+            Pipeline.ResetMaterial(mat);
         }        
 
         private void ConnectDefaultMaterial(GameObject obj, string sourceName, Material sharedMat, Material mat,

@@ -352,6 +352,13 @@ namespace Reallusion.Import
 #endif
         }
 
+        public static void ResetMaterial(Material mat)
+        {
+#if HDRP_10_5_0_OR_NEWER
+            HDShaderUtils.ResetMaterialKeywords(mat);
+#endif
+        }
+
         public static void AddDiffusionProfilesHDRP()
         {
 #if HDRP_10_5_0_OR_NEWER
