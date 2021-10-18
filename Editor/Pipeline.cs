@@ -23,6 +23,7 @@ using UnityEngine.Diagnostics;
 using UnityEngine.Rendering;
 #if HDRP_10_5_0_OR_NEWER
 using UnityEngine.Rendering.HighDefinition;
+using UnityEditor.Rendering.HighDefinition;
 #endif
 
 namespace Reallusion.Import
