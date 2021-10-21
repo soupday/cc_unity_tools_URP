@@ -7,9 +7,6 @@
             "m_Id": "cb42572a46a74a588ef3935f3a667eb7"
         },
         {
-            "m_Id": "028c7c4762f843e5818661e89e339595"
-        },
-        {
             "m_Id": "4ef79e9b5e3e473abf150852f1ee2eaa"
         },
         {
@@ -3383,29 +3380,6 @@
 
 {
     "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.Internal.Texture2DShaderProperty",
-    "m_ObjectId": "028c7c4762f843e5818661e89e339595",
-    "m_Guid": {
-        "m_GuidSerialized": "fe28c848-a268-4f7b-88d8-5706f970fabb"
-    },
-    "m_Name": "Occlusion Map",
-    "m_DefaultReferenceName": "",
-    "m_OverrideReferenceName": "_AOMap",
-    "m_GeneratePropertyBlock": true,
-    "m_Precision": 0,
-    "overrideHLSLDeclaration": false,
-    "hlslDeclarationOverride": 0,
-    "m_Hidden": false,
-    "m_Value": {
-        "m_SerializedTexture": "{\"texture\":{\"instanceID\":0}}",
-        "m_Guid": ""
-    },
-    "m_Modifiable": true,
-    "m_DefaultType": 0
-}
-
-{
-    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.UVMaterialSlot",
     "m_ObjectId": "02e510ee2ef34b6aa52e075af163f348",
     "m_Id": 2,
@@ -4213,7 +4187,7 @@
     "m_FloatType": 1,
     "m_RangeValues": {
         "x": 0.0,
-        "y": 1.0
+        "y": 2.0
     }
 }
 
@@ -16606,7 +16580,7 @@
     "m_FloatType": 1,
     "m_RangeValues": {
         "x": 0.0,
-        "y": 1.0
+        "y": 2.0
     }
 }
 
@@ -17025,7 +16999,7 @@
     "m_FloatType": 1,
     "m_RangeValues": {
         "x": 0.0,
-        "y": 1.0
+        "y": 2.0
     }
 }
 
