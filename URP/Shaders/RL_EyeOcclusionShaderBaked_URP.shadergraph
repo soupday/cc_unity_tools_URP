@@ -1110,9 +1110,9 @@
     "m_Guid": {
         "m_GuidSerialized": "d6dda84c-9c97-44ab-a926-cc0e6a93bdde"
     },
-    "m_Name": "Base Color Map",
+    "m_Name": "Base Map",
     "m_DefaultReferenceName": "Texture2D_2ae3099df5ff47ea8af68ec7a4edbeae",
-    "m_OverrideReferenceName": "_BaseColorMap",
+    "m_OverrideReferenceName": "_BaseMap",
     "m_GeneratePropertyBlock": true,
     "m_Precision": 0,
     "overrideHLSLDeclaration": false,

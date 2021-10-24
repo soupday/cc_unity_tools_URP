@@ -52,24 +52,9 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _AddPrecomputedVelocity: 0
-    - _AlphaCutoffEnable: 0
-    - _AlphaDstBlend: 10
-    - _AlphaSrcBlend: 1
-    - _AlphaToMask: 0
-    - _AlphaToMaskInspectorValue: 0
-    - _BlendMode: 0
     - _BottomCurve: 2
     - _BottomMax: 0.3
     - _BottomMin: 0.05
-    - _CullMode: 2
-    - _CullModeForward: 2
-    - _DepthOffsetEnable: 0
-    - _DoubleSidedEnable: 0
-    - _DoubleSidedNormalMode: 2
-    - _DstBlend: 10
-    - _EnableBlendModePreserveSpecularLighting: 0
-    - _EnableFogOnTransparent: 1
     - _ExpandInner: 0.0003
     - _ExpandLower: 0
     - _ExpandOut: 0
@@ -80,22 +65,8 @@ Material:
     - _OcclusionPower: 1.5
     - _OcclusionStrength: 0.2
     - _OcclusionStrength2: 0.45
-    - _OpaqueCullMode: 2
     - _OuterMax: 0.5
     - _OuterMin: 0.2
-    - _RenderQueueType: 4
-    - _SrcBlend: 1
-    - _StencilRef: 0
-    - _StencilRefDepth: 0
-    - _StencilRefDistortionVec: 4
-    - _StencilRefGBuffer: 2
-    - _StencilRefMV: 32
-    - _StencilWriteMask: 6
-    - _StencilWriteMaskDepth: 8
-    - _StencilWriteMaskDistortionVec: 4
-    - _StencilWriteMaskGBuffer: 14
-    - _StencilWriteMaskMV: 40
-    - _SurfaceType: 1
     - _TearDuctPosition: 0.8
     - _TearDuctWidth: 0.5
     - _Top2Max: 1
@@ -103,20 +74,6 @@ Material:
     - _TopCurve: 1.287
     - _TopMax: 1
     - _TopMin: 0.1
-    - _TransparentBackfaceEnable: 0
-    - _TransparentCullMode: 2
-    - _TransparentDepthPostpassEnable: 0
-    - _TransparentDepthPrepassEnable: 0
-    - _TransparentSortPriority: -3
-    - _TransparentWritingMotionVec: 0
-    - _TransparentZWrite: 0
-    - _UseShadowThreshold: 0
-    - _ZTestDepthEqualForOpaque: 4
-    - _ZTestGBuffer: 4
-    - _ZTestTransparent: 4
-    - _ZWrite: 0
     m_Colors:
-    - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
-    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _OcclusionColor: {r: 0.32941175, g: 0.094117604, b: 0.054901943, a: 0}
   m_BuildTextureStacks: []

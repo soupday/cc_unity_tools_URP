@@ -1047,7 +1047,7 @@
         "m_Id": "09fa68c2c07c4911bd49a302d10a34bc"
     },
     "m_SurfaceType": 1,
-    "m_AlphaMode": 0,
+    "m_AlphaMode": 1,
     "m_TwoSided": false,
     "m_AlphaClip": false,
     "m_CustomEditorGUI": ""

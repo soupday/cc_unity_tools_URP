@@ -37,10 +37,6 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _FlowMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _IDMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -77,30 +73,15 @@ Material:
     - BOOLEAN_ENABLECOLOR: 0
     - _AOOccludeAll: 0
     - _AOStrength: 1
-    - _AddPrecomputedVelocity: 0
     - _AlphaClip2: 1
-    - _AlphaCutoffEnable: 1
-    - _AlphaDstBlend: 10
     - _AlphaPower: 1
     - _AlphaRemap: 0.6
-    - _AlphaSrcBlend: 1
-    - _AlphaToMask: 1
-    - _AlphaToMaskInspectorValue: 1
     - _BaseColorStrength: 1
-    - _BlendMode: 0
     - _BlendStrength: 1
-    - _CullMode: 0
-    - _CullModeForward: 2
-    - _DepthOffsetEnable: 0
     - _DepthPostpass: 0.2
     - _DepthPrepass: 0.95
     - _DiffuseStrength: 1
-    - _DoubleSidedEnable: 1
-    - _DoubleSidedNormalMode: 0
-    - _DstBlend: 10
     - _ENUMCLIPQUALITY_ON: 2
-    - _EnableBlendModePreserveSpecularLighting: 1
-    - _EnableFogOnTransparent: 1
     - _EndColorStrength: 1
     - _GlobalStrength: 1
     - _HighlightAOverlapEnd: 1
@@ -111,11 +92,6 @@ Material:
     - _HighlightBStrength: 0
     - _InvertRootMap: 0
     - _NormalStrength: 1
-    - _OpaqueCullMode: 2
-    - _ReceivesSSR: 1
-    - _ReceivesSSRTransparent: 0
-    - _RenderQueueType: 4
-    - _RequireSplitLighting: 0
     - _RimTransmissionIntensity: 0.05
     - _RootColorStrength: 1
     - _SecondarySmoothness: 0.625
@@ -127,35 +103,8 @@ Material:
     - _SmoothnessPower: 1
     - _SpecularMultiplier: 0.5
     - _SpecularShift: 0.15
-    - _SrcBlend: 1
-    - _StencilRef: 0
-    - _StencilRefDepth: 0
-    - _StencilRefDistortionVec: 4
-    - _StencilRefGBuffer: 2
-    - _StencilRefMV: 32
-    - _StencilWriteMask: 6
-    - _StencilWriteMaskDepth: 8
-    - _StencilWriteMaskDistortionVec: 4
-    - _StencilWriteMaskGBuffer: 14
-    - _StencilWriteMaskMV: 40
-    - _SupportDecals: 1
-    - _SurfaceType: 1
-    - _TransparentBackfaceEnable: 1
-    - _TransparentCullMode: 2
-    - _TransparentDepthPostpassEnable: 1
-    - _TransparentDepthPrepassEnable: 1
-    - _TransparentSortPriority: 0
-    - _TransparentWritingMotionVec: 1
-    - _TransparentZWrite: 0
-    - _UseShadowThreshold: 1
     - _VertexColorStrength: 0.5
-    - _ZTestDepthEqualForOpaque: 4
-    - _ZTestGBuffer: 3
-    - _ZTestTransparent: 4
-    - _ZWrite: 0
     m_Colors:
-    - _DoubleSidedConstants: {r: -1, g: -1, b: -1, a: 0}
-    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 0}
     - _EndColor: {r: 0.6039216, g: 0.454902, b: 0.28627446, a: 0}
     - _HighlightAColor: {r: 0.9137255, g: 0.7803922, b: 0.635294, a: 0}
