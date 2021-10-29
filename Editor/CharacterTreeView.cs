@@ -31,6 +31,7 @@ namespace Reallusion.Import
         public List<int>[] linkedIndices;
         public bool selectLinked = true;
         public IList<int> selectedIndices;
+        private bool enableMultiPassMaterials;
 
         public const int NUM_LINKED_INDICES = 7;
         public const int LINKED_INDEX_SKIN = 0;
@@ -133,6 +134,19 @@ namespace Reallusion.Import
             }
         }
 
+        public void EnableMultiPass()
+        {
+            if (Pipeline.isHDRP)
+                enableMultiPassMaterials = true;
+            else
+                enableMultiPassMaterials = false;
+        }
+
+        public void DisableMultiPass()
+        {
+            enableMultiPassMaterials = false;
+        }
+
         public void ClearSelection()
         {
             IList<int> list = new int[] { 0 };
@@ -165,13 +179,38 @@ namespace Reallusion.Import
                 selectedIndices = GetSelection();
                 if (selectedIndices.Count > 1)
                 {
-                    UnityEngine.Object[] selectedObjects = new UnityEngine.Object[selectedIndices.Count];
-                    int num = 0;
+                    List<Object> selectedObjects = new List<Object>(selectedIndices.Count);                    
                     foreach (int i in selectedIndices)
                     {
-                        selectedObjects[num++] = objList[i];
+                        if (enableMultiPassMaterials)
+                        {
+                            if (objList[i].GetType() == typeof(Material))
+                            {
+                                Material m = objList[i] as Material;
+                                if (m && m.shader.name.iEndsWith(Pipeline.SHADER_HQ_HAIR))
+                                {
+                                    if (Util.GetMultiPassMaterials(m, out Material firstPass, out Material secondPass))
+                                    {
+                                        selectedObjects.Add(firstPass);
+                                        selectedObjects.Add(secondPass);
+                                    }
+                                    else
+                                    {
+                                        selectedObjects.Add(m);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                selectedObjects.Add(objList[i]);
+                            }
+                        }
+                        else
+                        {
+                            selectedObjects.Add(objList[i]);
+                        }                        
                     }
-                    Selection.objects = selectedObjects;
+                    Selection.objects = selectedObjects.ToArray();
                 }
                 else
                 {

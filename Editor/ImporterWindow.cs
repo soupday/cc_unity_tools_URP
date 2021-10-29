@@ -103,6 +103,9 @@ namespace Reallusion.Import
                 
                 CreateTreeView(oldCharacter != contextCharacter);
 
+                if (Pipeline.isHDRP && contextCharacter.IsBuiltDualHair) characterTreeView.EnableMultiPass();
+                else characterTreeView.DisableMultiPass();
+
                 EditorPrefs.SetString("RL_Importer_Context_Path", contextCharacter.path);
             }
         }        
@@ -452,14 +455,11 @@ namespace Reallusion.Import
                 GUILayout.EndHorizontal();
             }
 
-            if (Pipeline.isURP)
-            {
-                GUILayout.BeginHorizontal();
-                GUILayout.FlexibleSpace();
-                contextCharacter.dualMaterialHair = GUILayout.Toggle(contextCharacter.dualMaterialHair, "Hair - Setup 2 Pass Material");
-                GUILayout.FlexibleSpace();
-                GUILayout.EndHorizontal();
-            }
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            contextCharacter.dualMaterialHair = GUILayout.Toggle(contextCharacter.dualMaterialHair, "Hair - Setup 2 Pass Material");
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();            
 
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
@@ -499,9 +499,10 @@ namespace Reallusion.Import
             {
                 Util.LogInfo("Doing: Connect Default Materials.");
                 GameObject prefab = ImportCharacter(contextCharacter, MaterialQuality.Default);
-                contextCharacter.logType = CharacterInfo.ProcessingType.Basic;
+                contextCharacter.logType = CharacterInfo.ProcessingType.Basic;                
                 contextCharacter.Write();
                 CreateTreeView(true);
+                characterTreeView.DisableMultiPass();
 
                 if (prefab)
                     Util.AddPreviewCharacter(contextCharacter.Fbx, prefab, Vector3.zero, true);
@@ -515,6 +516,8 @@ namespace Reallusion.Import
                 contextCharacter.logType = CharacterInfo.ProcessingType.HighQuality;
                 contextCharacter.Write();
                 CreateTreeView(true);
+                if (Pipeline.isHDRP && contextCharacter.IsBuiltDualHair) characterTreeView.EnableMultiPass();
+                else characterTreeView.DisableMultiPass();
 
                 if (prefab)
                     Util.AddPreviewCharacter(contextCharacter.Fbx, prefab, Vector3.zero, true);
