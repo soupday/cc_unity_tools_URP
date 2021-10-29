@@ -184,12 +184,7 @@ namespace Reallusion.Import
             AssetDatabase.Refresh();
 
             // create prefab
-            GameObject prefab = RL.CreatePrefabFromFbx(characterInfo, fbx);
-
-            if (characterInfo.dualMaterialHair)
-            {
-                MeshUtil.Extract2PassHairMeshes(prefab);
-            }
+            GameObject prefab = RL.CreatePrefabFromFbx(characterInfo, fbx);            
 
             Util.LogInfo("Done!");
 

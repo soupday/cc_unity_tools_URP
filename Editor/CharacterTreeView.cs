@@ -167,54 +167,60 @@ namespace Reallusion.Import
             }
         }
 
+        private bool TrySelectMultiPassMaterial(int index, List<Object> selectedObjects)
+        {
+            if (enableMultiPassMaterials)
+            {
+                if (objList[index].GetType() == typeof(Material))
+                {
+                    Material m = objList[index] as Material;
+                    if (m && m.shader.name.iEndsWith(Pipeline.SHADER_HQ_HAIR))
+                    {
+                        if (Util.GetMultiPassMaterials(m, out Material firstPass, out Material secondPass))
+                        {
+                            selectedObjects.Add(firstPass);
+                            selectedObjects.Add(secondPass);
+                            return true;
+                        }                 
+                    }
+                }                
+            }
+            return false;
+        }
+
         protected override void SelectionChanged(IList<int> selectedIds)
         {
             if (selectedIds.Count == 1)
-            {
+            {                
                 SelectLinked(selectedIds[0]);
             }
 
             if (HasSelection())
-            {
+            {                
                 selectedIndices = GetSelection();
+                List<Object> selectedObjects = new List<Object>(selectedIndices.Count);
                 if (selectedIndices.Count > 1)
-                {
-                    List<Object> selectedObjects = new List<Object>(selectedIndices.Count);                    
+                {                    
                     foreach (int i in selectedIndices)
                     {
-                        if (enableMultiPassMaterials)
-                        {
-                            if (objList[i].GetType() == typeof(Material))
-                            {
-                                Material m = objList[i] as Material;
-                                if (m && m.shader.name.iEndsWith(Pipeline.SHADER_HQ_HAIR))
-                                {
-                                    if (Util.GetMultiPassMaterials(m, out Material firstPass, out Material secondPass))
-                                    {
-                                        selectedObjects.Add(firstPass);
-                                        selectedObjects.Add(secondPass);
-                                    }
-                                    else
-                                    {
-                                        selectedObjects.Add(m);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                selectedObjects.Add(objList[i]);
-                            }
-                        }
-                        else
+                        if (!TrySelectMultiPassMaterial(i, selectedObjects))
                         {
                             selectedObjects.Add(objList[i]);
-                        }                        
+                        }
                     }
                     Selection.objects = selectedObjects.ToArray();
                 }
                 else
                 {
-                    Selection.activeObject = objList[selectedIndices[0]];
+                    int i = selectedIndices[0];
+                    if (TrySelectMultiPassMaterial(i, selectedObjects))
+                    {
+                        Selection.objects = selectedObjects.ToArray();
+                    }
+                    else
+                    {
+                        Selection.activeObject = objList[i];
+                    }
                 }
             }
         }
