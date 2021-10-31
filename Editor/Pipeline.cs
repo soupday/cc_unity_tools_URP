@@ -52,13 +52,16 @@ namespace Reallusion.Import
         public const string SHADER_HQ_EYE = "RL_EyeShaderVariants_HDRP";
         public const string SHADER_HQ_EYE_OCCLUSION = "RL_EyeOcclusionShader_HDRP";
         public const string SHADER_HQ_TEARLINE = "RL_TearlineShader_HDRP";
-        public const string SHADER_HQ_HAIR = "RL_HairShaderVariants_HDRP";
+        public const string SHADER_HQ_HAIR = "RL_HairShaderVariants_HDRP";        
         public const string SHADER_HQ_SCALPBASE = "HDRP/Lit";
         public const string SHADER_HQ_EYELASH = "HDRP/Lit";
         public const string SHADER_HQ_TEETH = "RL_TeethShader_HDRP";
         public const string SHADER_HQ_TONGUE = "RL_TongueShader_HDRP";
         public const string SHADER_HQ_ALPHACLIP = "HDRP/Lit";
         public const string SHADER_HQ_OPAQUE = "HDRP/Lit";
+        // 2 pass
+        public const string SHADER_HQ_HAIR_1ST_PASS = "RL_HairShaderVariants_1st_Pass_HDRP";
+        public const string SHADER_HQ_HAIR_2ND_PASS = "RL_HairShaderVariants_2nd_Pass_HDRP";
 
         // HQ Materials
         //
@@ -77,6 +80,9 @@ namespace Reallusion.Import
         public const string MATERIAL_HQ_OPAQUE = "RL_Template_Default_Opaque_HDRP";
         // variants
         public const string MATERIAL_HQ_CORNEA_REFRACTIVE = "RL_Template_HQ_CorneaRef_HDRP";
+        // 2 pass
+        public const string MATERIAL_HQ_HAIR_1ST_PASS = "RL_Template_HQ_Hair_1st_Pass_HDRP";
+        public const string MATERIAL_HQ_HAIR_2ND_PASS = "RL_Template_HQ_Hair_2nd_Pass_HDRP";
 
         // Default Materials
         //
@@ -117,6 +123,9 @@ namespace Reallusion.Import
         public const string MATERIAL_BAKED_EYE_CUSTOM = "RL_Template_Baked_EyeCustom_HDRP";
         public const string MATERIAL_BAKED_EYE_OCCLUSION_CUSTOM = "RL_Template_Baked_EyeOcclusionCustom_HDRP";
         public const string MATERIAL_BAKED_HAIR_CUSTOM = "RL_Template_Baked_HairCustom_HDRP";
+        // 2 pass
+        public const string MATERIAL_BAKED_HAIR_1ST_PASS = "RL_Template_Baked_Hair_1st_Pass_HDRP";
+        public const string MATERIAL_BAKED_HAIR_2ND_PASS = "RL_Template_Baked_Hair_2nd_Pass_HDRP";
         // for gamebase single material or actor core...
         public const string MATERIAL_DEFAULT_SINGLE_MATERIAL = "RL_Template_Default_SingleMaterial_HDRP";
 #elif URP_10_5_0_OR_NEWER
@@ -131,13 +140,16 @@ namespace Reallusion.Import
         public const string SHADER_HQ_EYE = "Universal Render Pipeline/Lit";
         public const string SHADER_HQ_EYE_OCCLUSION = "RL_EyeOcclusionShader_URP";
         public const string SHADER_HQ_TEARLINE = "RL_TearlineShader_URP";
-        public const string SHADER_HQ_HAIR = "RL_HairShaderVariants_URP";
+        public const string SHADER_HQ_HAIR = "RL_HairShaderVariants_URP";        
         public const string SHADER_HQ_SCALPBASE = "Universal Render Pipeline/Lit";
         public const string SHADER_HQ_EYELASH = "Universal Render Pipeline/Lit";
         public const string SHADER_HQ_TEETH = "RL_TeethShader_URP";
         public const string SHADER_HQ_TONGUE = "RL_TongueShader_URP";
         public const string SHADER_HQ_ALPHACLIP = "Universal Render Pipeline/Lit";
-        public const string SHADER_HQ_OPAQUE = "Universal Render Pipeline/Lit";
+        public const string SHADER_HQ_OPAQUE = "Universal Render Pipeline/Lit";        
+        // 2 pass
+        public const string SHADER_HQ_HAIR_1ST_PASS = "RL_HairShaderVariants_1st_Pass_URP";
+        public const string SHADER_HQ_HAIR_2ND_PASS = "RL_HairShaderVariants_2nd_Pass_URP";
 
         // HQ Materials
         //
@@ -156,6 +168,9 @@ namespace Reallusion.Import
         public const string MATERIAL_HQ_OPAQUE = "RL_Template_Default_Opaque_URP";
         // variants
         public const string MATERIAL_HQ_CORNEA_REFRACTIVE = "RL_Template_HQ_CorneaRef_URP";
+        // 2 pass
+        public const string MATERIAL_HQ_HAIR_1ST_PASS = "RL_Template_HQ_Hair_1st_Pass_URP";
+        public const string MATERIAL_HQ_HAIR_2ND_PASS = "RL_Template_HQ_Hair_2nd_Pass_URP";
 
         // Default Materials
         //
@@ -196,6 +211,9 @@ namespace Reallusion.Import
         public const string MATERIAL_BAKED_EYE_CUSTOM = "RL_Template_Default_Opaque_URP";
         public const string MATERIAL_BAKED_EYE_OCCLUSION_CUSTOM = "RL_Template_Baked_EyeOcclusionCustom_URP";
         public const string MATERIAL_BAKED_HAIR_CUSTOM = "RL_Template_Baked_HairCustom_URP";
+        // 2 pass
+        public const string MATERIAL_BAKED_HAIR_1ST_PASS = "RL_Template_Baked_Hair_1st_Pass_URP";
+        public const string MATERIAL_BAKED_HAIR_2ND_PASS = "RL_Template_Baked_Hair_2nd_Pass_URP";
         // for gamebase single material or actor core...
         public const string MATERIAL_DEFAULT_SINGLE_MATERIAL = "RL_Template_Default_SingleMaterial_URP";
 #else
@@ -210,13 +228,16 @@ namespace Reallusion.Import
         public const string SHADER_HQ_EYE = "Standard";
         public const string SHADER_HQ_EYE_OCCLUSION = "RL_EyeOcclusionShader_3D";
         public const string SHADER_HQ_TEARLINE = "RL_TearlineShader_3D";
-        public const string SHADER_HQ_HAIR = "RL_HairShaderVariants_3D";
+        public const string SHADER_HQ_HAIR = "RL_HairShaderVariants_3D";        
         public const string SHADER_HQ_SCALPBASE = "Standard";
         public const string SHADER_HQ_EYELASH = "Standard";
         public const string SHADER_HQ_TEETH = "RL_TeethShader_3D";
         public const string SHADER_HQ_TONGUE = "RL_TongueShader_3D";
         public const string SHADER_HQ_ALPHACLIP = "Standard";
         public const string SHADER_HQ_OPAQUE = "Standard";
+        // 2 pass
+        public const string SHADER_HQ_HAIR_1ST_PASS = "RL_HairShaderVariants_1st_Pass_3D";
+        public const string SHADER_HQ_HAIR_2ND_PASS = "RL_HairShaderVariants_2nd_Pass_3D";
 
         // HQ Materials
         //
@@ -235,6 +256,9 @@ namespace Reallusion.Import
         public const string MATERIAL_HQ_OPAQUE = "RL_Template_Default_Opaque_3D";
         // variants
         public const string MATERIAL_HQ_CORNEA_REFRACTIVE = "RL_Template_HQ_CorneaRef_3D";
+        // 2 pass
+        public const string MATERIAL_HQ_HAIR_1ST_PASS = "RL_Template_HQ_Hair_1st_Pass_3D";
+        public const string MATERIAL_HQ_HAIR_2ND_PASS = "RL_Template_HQ_Hair_2nd_Pass_3D";
 
         // Default Materials
         //
@@ -242,8 +266,8 @@ namespace Reallusion.Import
         public const string MATERIAL_DEFAULT_HEAD = "RL_Template_Default_Skin_3D";
         public const string MATERIAL_DEFAULT_CORNEA = "RL_Template_Default_Opaque_3D";
         public const string MATERIAL_DEFAULT_EYE = "RL_Template_Default_Opaque_3D";
-        public const string MATERIAL_DEFAULT_EYE_OCCLUSION = "RL_Template_EyeOcclusion_3D";
-        public const string MATERIAL_DEFAULT_TEARLINE = "RL_Template_Tearline_3D";
+        public const string MATERIAL_DEFAULT_EYE_OCCLUSION = "RL_Template_Default_EyeOcclusion_3D";
+        public const string MATERIAL_DEFAULT_TEARLINE = "RL_Template_Default_Tearline_3D";
         public const string MATERIAL_DEFAULT_HAIR = "RL_Template_Default_Hair_3D";
         public const string MATERIAL_DEFAULT_SCALPBASE = "RL_Template_Default_ScalpBase_3D";
         public const string MATERIAL_DEFAULT_EYELASH = "RL_Template_Default_Eyelash_3D";
@@ -275,6 +299,9 @@ namespace Reallusion.Import
         public const string MATERIAL_BAKED_EYE_CUSTOM = "RL_Template_Default_Opaque_3D";
         public const string MATERIAL_BAKED_EYE_OCCLUSION_CUSTOM = "RL_Template_Baked_EyeOcclusionCustom_3D";
         public const string MATERIAL_BAKED_HAIR_CUSTOM = "RL_Template_Baked_HairCustom_3D";
+        // 2 pass
+        public const string MATERIAL_BAKED_HAIR_1ST_PASS = "RL_Template_Baked_Hair_1st_Pass_3D";
+        public const string MATERIAL_BAKED_HAIR_2ND_PASS = "RL_Template_Baked_Hair_2nd_Pass_3D";
         // for gamebase single material or actor core...
         public const string MATERIAL_DEFAULT_SINGLE_MATERIAL = "RL_Template_Default_SingleMaterial_3D";
 #endif
@@ -373,18 +400,29 @@ namespace Reallusion.Import
 
         public static void AddDiffusionProfilesHDRP()
         {
-#if HDRP_10_5_0_OR_NEWER
+#if HDRP_10_5_0_OR_NEWER                        
+#if HDRP_12_0_0_OR_NEWER
+            RenderPipelineGlobalSettings pipelineSettings = GraphicsSettings.GetSettingsForRenderPipeline<HDRenderPipeline>();
+            if (!pipelineSettings) return;
+            string assetPath = AssetDatabase.GetAssetPath(pipelineSettings);
+#else
             HDRenderPipelineAsset pipelineAsset = GraphicsSettings.renderPipelineAsset as HDRenderPipelineAsset;
-            string assetPath = AssetDatabase.GetAssetPath(pipelineAsset);            
+            if (!pipelineAsset) return;
+            string assetPath = AssetDatabase.GetAssetPath(pipelineAsset);
+#endif
 
             SerializedObject hdrp = new SerializedObject(AssetDatabase.LoadAllAssetsAtPath(assetPath)[0]);
+            if (hdrp == null) return;
             SerializedProperty list = hdrp.FindProperty("diffusionProfileSettingsList");
-            
+            if (list == null) return;
+
             SerializedProperty item;
             int index;
 
             Object skinProfileAsset = Util.FindAsset("RL_Skin_Profile");
             Object teethProfileAsset = Util.FindAsset("RL_Teeth_Profile");
+
+            if (!skinProfileAsset || !teethProfileAsset) return;
 
             bool addSkinProfile = true;
             bool addTeethProfile = true;
@@ -496,6 +534,16 @@ namespace Reallusion.Import
             if (!template)
                 Debug.LogError("Unable to find Template Material for: " + materialType + "/" + quality);
 
+            return template;
+        }
+
+        public static Material GetCustomTemplateMaterial(string templateName, MaterialQuality quality)
+        {
+            Material template = Util.FindMaterial(templateName);
+
+            if (!template)
+                template = GetDefaultMaterial(quality);
+            
             return template;
         }
 

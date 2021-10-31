@@ -531,6 +531,23 @@ namespace Reallusion.Import
                 mat.SetColor(shaderRef, value);
         }
 
+        public static bool GetMultiPassMaterials(Material target, out Material firstPass, out Material secondPass)
+        {
+            firstPass = null;
+            secondPass = null;
+
+            string path = AssetDatabase.GetAssetPath(target);
+            string folder = Path.GetDirectoryName(path);
+            string name = Path.GetFileNameWithoutExtension(path);
+            string pass1Path = Path.Combine(folder, name + "_1st_Pass.mat");
+            string pass2Path = Path.Combine(folder, name + "_2nd_Pass.mat");
+            if (File.Exists(pass1Path)) firstPass = AssetDatabase.LoadAssetAtPath<Material>(pass1Path);
+            if (File.Exists(pass2Path)) secondPass = AssetDatabase.LoadAssetAtPath<Material>(pass2Path);
+
+            if (firstPass && secondPass) return true;
+            return false;
+        }
+
         public static void DestroyEditorChildObjects(GameObject obj)
         {
             GameObject[] children = new GameObject[obj.transform.childCount];
@@ -550,6 +567,8 @@ namespace Reallusion.Import
         {
             if (!character) return;
 
+            GameObject prefab = GetCharacterPrefab(character);
+
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;            
                         
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
@@ -559,7 +578,7 @@ namespace Reallusion.Import
             {
                 DestroyEditorChildObjects(container);
 
-                GameObject clone = PrefabUtility.InstantiatePrefab(character, container.transform) as GameObject;
+                GameObject clone = PrefabUtility.InstantiatePrefab(prefab ? prefab : character, container.transform) as GameObject;
                 if (clone)
                 {
                     Selection.activeGameObject = clone;
@@ -577,7 +596,7 @@ namespace Reallusion.Import
                 for (int i = 0; i < container.transform.childCount; i++)
                 {
                     GameObject child = container.transform.GetChild(i).gameObject;
-                    GameObject source = GetPrefabFromObject(child);
+                    GameObject source = GetSourcePrefabFromObject(child);
                     if (source == prefab)
                     {
                         Debug.Log("Keeping existing generated prefab...");
@@ -614,9 +633,21 @@ namespace Reallusion.Import
                     }
                 }                
             }
-        }                  
+        }      
+        
+        public static GameObject GetCharacterPrefab(GameObject fbx)
+        { 
+            string path = AssetDatabase.GetAssetPath(fbx);
+            if (path.iEndsWith(".prefab")) return fbx;
+            string folder = Path.GetDirectoryName(path);
+            string name = Path.GetFileNameWithoutExtension(path);
+            string prefabPath = Path.Combine(folder, Importer.PREFABS_FOLDER, name + ".prefab");
+            if (File.Exists(prefabPath))
+                return AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+            return null;
+        }        
 
-        public static GameObject GetPrefabFromObject(Object obj)
+        public static GameObject GetSourcePrefabFromObject(Object obj)
         {            
             Object source = PrefabUtility.GetCorrespondingObjectFromSource(obj);
             if (source)
@@ -641,7 +672,7 @@ namespace Reallusion.Import
 
         public static GameObject GetRootPrefabFromObject(GameObject obj)
         {            
-            GameObject prefab = GetPrefabFromObject(obj);
+            GameObject prefab = GetSourcePrefabFromObject(obj);
 
             if (prefab)
             {

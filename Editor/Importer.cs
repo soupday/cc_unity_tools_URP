@@ -165,7 +165,7 @@ namespace Reallusion.Import
             }
 
             // before we do anything else, if we are connecting default materials we need to bake a few maps first...
-            if (quality == MaterialQuality.Default)
+            if (quality == MaterialQuality.Default && Pipeline.isHDRP)
             {
                 CacheBakedMaps();
             }
@@ -188,7 +188,7 @@ namespace Reallusion.Import
 
             Util.LogInfo("Done!");
 
-            Selection.activeObject = prefab;
+            Selection.activeObject = prefab;            
 
             //System.Media.SystemSounds.Asterisk.Play();
 
@@ -622,7 +622,8 @@ namespace Reallusion.Import
                 matJson, "Custom Shader/Image/Transmission Map");
 
             ConnectTextureTo(sourceName, mat, "_MicroNormalMap", "MicroN",
-                matJson, "Custom Shader/Image/MicroNormal");
+                matJson, "Custom Shader/Image/MicroNormal", 
+                FLAG_NORMAL);
 
             ConnectTextureTo(sourceName, mat, "_MicroNormalMaskMap", "MicroNMask",
                 matJson, "Custom Shader/Image/MicroNormalMask");
@@ -743,7 +744,8 @@ namespace Reallusion.Import
                 matJson, "Textures/AO");
 
             ConnectTextureTo(sourceName, mat, "_MicroNormalMap", "MicroN",
-                matJson, "Custom Shader/Image/MicroNormal");
+                matJson, "Custom Shader/Image/MicroNormal",
+                FLAG_NORMAL);
 
             ConnectTextureTo(sourceName, mat, "_GumsMaskMap", "GumsMask",
                 matJson, "Custom Shader/Image/Gums Mask");
@@ -813,7 +815,8 @@ namespace Reallusion.Import
                 matJson, "Textures/AO");
 
             ConnectTextureTo(sourceName, mat, "_MicroNormalMap", "MicroN",
-                matJson, "Custom Shader/Image/MicroNormal");
+                matJson, "Custom Shader/Image/MicroNormal",
+                FLAG_NORMAL);
 
             ConnectTextureTo(sourceName, mat, "_GradientAOMap", "GradAO",
                 matJson, "Custom Shader/Image/Gradient AO");
