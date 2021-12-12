@@ -1,6 +1,34 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-5950502445045061723
+--- !u!114 &-6156783100726003315
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 4
+--- !u!114 &-4635880401996347712
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa486462e6be1764e89c788ba30e61f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_DiffusionProfileReferences:
+  - {fileID: 11400000, guid: 26bdddf49760c61438938733f07fa2a2, type: 2}
+  m_MaterialReferences: []
+--- !u!114 &-3842705591719574230
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,31 +48,37 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: RL_Template_HQ_Cornea_URP
-  m_Shader: {fileID: -6465566751694194690, guid: 48cccd4fafd06264c9dcce2137ba5738, type: 3}
-  m_ShaderKeywords: BOOLEAN_ISCORNEA_ON _DISABLE_SSR_TRANSPARENT _ENABLE_FOG_ON_TRANSPARENT
-    _SURFACE_TYPE_TRANSPARENT
+  m_Name: RL_Template_Baked_CorneaBasicCustom_URP
+  m_Shader: {fileID: -6465566751694194690, guid: c3096731e3b697649a6196443670bcf1, type: 3}
+  m_ShaderKeywords: _DETAIL_MULX2 _METALLICSPECGLOSSMAP _NORMALMAP _OCCLUSIONMAP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2996
+  m_CustomRenderQueue: -1
   stringTagMap:
     MotionVector: User
-    RenderType: Transparent
   disabledShaderPasses:
-  - MOTIONVECTORS
+  - TransparentDepthPrepass
   - TransparentDepthPostpass
   - TransparentBackface
   - RayTracingPrepass
-  - TransparentDepthPrepass
+  - MOTIONVECTORS
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _ColorBlendMap:
+    - _BaseMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _CorneaDiffuseMap:
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -52,19 +86,11 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _IrisNormalMap:
+    - _MetallicGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _MaskMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _ScleraDiffuseMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _ScleraNormalMap:
+    - _OcclusionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -81,37 +107,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - BOOLEAN_ISCORNEA: 1
-    - Vector1_69888c9bc43f43a898d9fdb25af77d15: 0
-    - _AOStrength: 0.2
-    - _ColorBlendStrength: 0.2
-    - _CorneaSmoothness: 0.88
-    - _DepthRadius: 0.8
-    - _IOR: 1.4
-    - _IrisBrightness: 1
+    - _BumpScale: 1
+    - _Detail_Normal_Map_Scale: 0.1
     - _IrisDepth: 0.004
-    - _IrisHue: 0.5
-    - _IrisRadius: 0.15
-    - _IrisSaturation: 1
-    - _IrisScale: 1
-    - _IrisSmoothness: 0
-    - _IsLeftEye: 0
-    - _LimbusDarkRadius: 0.1
-    - _LimbusDarkWidth: 0.025
-    - _LimbusWidth: 0.055
-    - _PupilScale: 0.8
-    - _RefractionThickness: 0.01
-    - _ScleraBrightness: 0.65
-    - _ScleraHue: 0.5
-    - _ScleraNormalStrength: 0.1
-    - _ScleraNormalTiling: 2
-    - _ScleraSaturation: 1
-    - _ScleraScale: 1
-    - _ScleraSmoothness: 0.704
-    - _ShadowHardness: 0.5
-    - _ShadowRadius: 0.275
+    - _PupilScale: 1
     m_Colors:
-    - _CornerShadowColor: {r: 1, g: 0.7333333, b: 0.6980392, a: 0}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 0}
-    - _LimbusColor: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

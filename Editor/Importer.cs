@@ -38,7 +38,6 @@ namespace Reallusion.Import
         private readonly List<string> textureFolders;
         private readonly ModelImporter importer;
         private readonly List<string> importAssets = new List<string>();
-        private MaterialQuality quality = MaterialQuality.High;
         private CharacterInfo characterInfo;
         private List<string> processedSourceMaterials;
         private Dictionary<Material, Texture2D> bakedDetailMaps;
@@ -57,6 +56,7 @@ namespace Reallusion.Import
         public const int FLAG_FOR_BAKE = 4;
         public const int FLAG_ALPHA_CLIP = 8;
         public const int FLAG_HAIR = 16;
+        public const int FLAG_ALPHA_DATA = 32;
 
         private RenderPipeline RP => Pipeline.GetRenderPipeline();
 
@@ -109,11 +109,6 @@ namespace Reallusion.Import
             processedSourceMaterials = new List<string>();
         }        
 
-        public void SetQuality(MaterialQuality qual)
-        {
-            quality = qual;
-        }
-
         public GameObject Import()
         {
             // make sure custom diffusion profiles are installed
@@ -165,7 +160,7 @@ namespace Reallusion.Import
             }
 
             // before we do anything else, if we are connecting default materials we need to bake a few maps first...
-            if (quality == MaterialQuality.Default && Pipeline.isHDRP)
+            if (characterInfo.BuildQuality == MaterialQuality.Default && Pipeline.isHDRP)
             {
                 CacheBakedMaps();
             }
@@ -186,9 +181,15 @@ namespace Reallusion.Import
             // create prefab
             GameObject prefab = RL.CreatePrefabFromFbx(characterInfo, fbx);
 
+            if (characterInfo.DualMaterialHair)
+            {
+                MeshUtil.Extract2PassHairMeshes(prefab);
+                ImporterWindow.TrySetMultiPass(true);
+            }
+
             Util.LogInfo("Done!");
 
-            Selection.activeObject = prefab;            
+            Selection.activeObject = prefab;     
 
             //System.Media.SystemSounds.Asterisk.Play();
 
@@ -260,7 +261,7 @@ namespace Reallusion.Import
         }        
 
         private MaterialType GetMaterialType(GameObject obj, Material mat, string sourceName, QuickJSON matJson)
-        {
+        {            
             if (matJson != null)
             {
                 bool hasOpacity = false;
@@ -349,7 +350,7 @@ namespace Reallusion.Import
         private Material CreateRemapMaterial(MaterialType materialType, Material sharedMaterial, string sourceName)
         {
             // get the template material.
-            Material templateMaterial = Pipeline.GetTemplateMaterial(materialType, quality, characterInfo);
+            Material templateMaterial = Pipeline.GetTemplateMaterial(materialType, characterInfo.BuildQuality, characterInfo);
 
             // get the appropriate shader to use            
             Shader shader;
@@ -442,8 +443,10 @@ namespace Reallusion.Import
                 ConnectHQTongueMaterial(obj, sourceName, sharedMat, mat, materialType, matJson);
             }
 
-            else if (shaderName.EndsWith(Pipeline.SHADER_HQ_EYE) || 
-                     shaderName.EndsWith(Pipeline.SHADER_HQ_CORNEA))
+            else if (shaderName.EndsWith(Pipeline.SHADER_HQ_EYE_REFRACTIVE) || 
+                     shaderName.EndsWith(Pipeline.SHADER_HQ_CORNEA) ||
+                     shaderName.EndsWith(Pipeline.SHADER_HQ_CORNEA_PARALLAX) ||
+                     shaderName.EndsWith(Pipeline.SHADER_HQ_CORNEA_REFRACTIVE))
             {
                 ConnectHQEyeMaterial(obj, sourceName, sharedMat, mat, materialType, matJson);
             }
@@ -672,7 +675,7 @@ namespace Reallusion.Import
                 float specular = matJson.GetFloatValue("Custom Shader/Variable/_Specular");                
                 float smoothnessMax = Util.CombineSpecularToSmoothness(specular, 1.0f);                
                 mat.SetFloat("_SmoothnessMax", smoothnessMax);                
-                mat.SetFloat("_SubsurfaceScale", matJson.GetFloatValue("Custom Shader/Variable/Unmasked Scatter Scale"));
+                mat.SetFloat("_SubsurfaceScale", matJson.GetFloatValue("Subsurface Scatter/Lerp"));
                 mat.SetFloat("_ThicknessScale", Mathf.Clamp01(matJson.GetFloatValue("Subsurface Scatter/Radius") / 5f));
                 mat.SetFloat("_MicroSmoothnessMod", -matJson.GetFloatValue("Custom Shader/Variable/Micro Roughness Scale"));
                 mat.SetFloat("_UnmaskedSmoothnessMod", -matJson.GetFloatValue("Custom Shader/Variable/Unmasked Roughness Scale"));
@@ -929,10 +932,26 @@ namespace Reallusion.Import
                 mat.SetFloat("_ShadowHardness", matJson.GetFloatValue("Custom Shader/Variable/Shadow Hardness"));
                 float specularScale = matJson.GetFloatValue("Custom Shader/Variable/Specular Scale");
                 mat.SetColor("_CornerShadowColor", matJson.GetColorValue("Custom Shader/Variable/Eye Corner Darkness Color"));
-                mat.SetFloat("_IrisDepth", 0.004f * matJson.GetFloatValue("Custom Shader/Variable/Iris Depth Scale"));
+
+                if (characterInfo.RefractiveEyes)
+                {
+                    mat.SetFloat("_IrisDepth", 0.004f * matJson.GetFloatValue("Custom Shader/Variable/Iris Depth Scale"));
+                    mat.SetFloat("_PupilScale", 1f * matJson.GetFloatValue("Custom Shader/Variable/Pupil Scale"));
+                }
+                else if (characterInfo.ParallaxEyes)
+                {
+                    float depth = Mathf.Clamp(0.25f * matJson.GetFloatValue("Custom Shader/Variable/Iris Depth Scale"), 0.1f, 1.0f);
+                    float pupilScale = Mathf.Clamp(1f / Mathf.Pow((depth * 2f + 1f), 2f), 0.1f, 2.0f);                    
+                    mat.SetFloat("_IrisDepth", depth);
+                    mat.SetFloat("_PupilScale", pupilScale);
+                }
+                else
+                {                    
+                    mat.SetFloat("_PupilScale", 1f);
+                }
+
                 mat.SetFloat("_IrisSmoothness", 0f); // 1f - matJson.GetFloatValue("Custom Shader/Variable/_Iris Roughness"));
-                mat.SetFloat("_IrisBrightness", matJson.GetFloatValue("Custom Shader/Variable/Iris Color Brightness"));
-                mat.SetFloat("_PupilScale", 0.8f * matJson.GetFloatValue("Custom Shader/Variable/Pupil Scale"));
+                mat.SetFloat("_IrisBrightness", matJson.GetFloatValue("Custom Shader/Variable/Iris Color Brightness"));                                
                 mat.SetFloat("_IOR", matJson.GetFloatValue("Custom Shader/Variable/_IoR"));
                 float irisScale = matJson.GetFloatValue("Custom Shader/Variable/Iris UV Radius") / 0.16f;
                 mat.SetFloat("_IrisScale", irisScale);
@@ -942,7 +961,8 @@ namespace Reallusion.Import
                 float limbusDarkT = Mathf.InverseLerp(0f, 10f, limbusDarkScale);
                 mat.SetFloat("_LimbusDarkRadius", Mathf.Lerp(0.145f, 0.075f, limbusDarkT));
                 //mat.SetFloat("_LimbusDarkWidth", 0.035f);
-                mat.SetFloat("_ScleraBrightness", 1f * matJson.GetFloatValue("Custom Shader/Variable/ScleraBrightness"));
+                mat.SetFloat("_ScleraBrightness", Mathf.Pow(matJson.GetFloatValue("Custom Shader/Variable/ScleraBrightness"), 0.65f));
+                mat.SetFloat("_ScleraSaturation", 0.75f);
                 mat.SetFloat("_ScleraSmoothness", 1f - matJson.GetFloatValue("Custom Shader/Variable/Sclera Roughness"));
                 mat.SetFloat("_ScleraScale", matJson.GetFloatValue("Custom Shader/Variable/Sclera UV Radius"));
                 mat.SetFloat("_ScleraNormalStrength", 1f - matJson.GetFloatValue("Custom Shader/Variable/Sclera Flatten Normal"));
@@ -1075,7 +1095,7 @@ namespace Reallusion.Import
 
                 mat.SetFloat("_OcclusionStrength", Mathf.Pow(os1, 1f / 3f));
                 mat.SetFloat("_OcclusionStrength2", Mathf.Pow(os2, 1f / 3f));
-                mat.SetFloat("_OcclusionPower", 1.75f);
+                mat.SetFloat("_OcclusionPower", 2.0f);
                 //mat.SetFloat("_OcclusionPower", 2f);
 
                 float top = matJson.GetFloatValue("Custom Shader/Variable/Shadow Top");                

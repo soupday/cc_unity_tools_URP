@@ -16,8 +16,10 @@
  * along with CC3_Unity_Tools.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+
 using UnityEngine;
 using UnityEditor;
+using System;
 using System.IO;
 using System.Collections.Generic;
 
@@ -50,9 +52,15 @@ namespace Reallusion.Import
         private Texture2D maskTex = null;
 
         private RenderPipeline RP => Pipeline.GetRenderPipeline();
-        private bool is3D => RP == RenderPipeline.Builtin;
-        private bool isURP => RP == RenderPipeline.URP;
-        private bool isHDRP => RP == RenderPipeline.HDRP;
+        private bool IS_3D => RP == RenderPipeline.Builtin;
+        private bool IS_URP => RP == RenderPipeline.URP;
+        private bool IS_HDRP => RP == RenderPipeline.HDRP;
+
+        private bool CUSTOM_SHADERS => characterInfo.BakeCustomShaders;
+        private bool BASIC_SHADERS => !characterInfo.BakeCustomShaders;        
+        private bool REFRACTIVE_EYES => characterInfo.RefractiveEyes;
+        private bool PARALLAX_EYES => characterInfo.ParallaxEyes;
+        private bool BASIC_EYES => characterInfo.BasicEyes;
 
         public ComputeBake(UnityEngine.Object character, CharacterInfo info)
         {
@@ -279,33 +287,27 @@ namespace Reallusion.Import
                         Material firstPass = null;
                         Material secondPass = null;
 
-                        switch (shaderName)
-                        {
-                            case Pipeline.SHADER_HQ_SKIN:
-                                bakedMaterial = BakeSkinMaterial(sharedMat, sourceName);
-                                break;
+                        if (shaderName == Pipeline.SHADER_HQ_SKIN)
+                            bakedMaterial = BakeSkinMaterial(sharedMat, sourceName);
 
-                            case Pipeline.SHADER_HQ_TEETH:
-                                bakedMaterial = BakeTeethMaterial(sharedMat, sourceName);
-                                break;
+                        else if (shaderName == Pipeline.SHADER_HQ_TEETH)
+                            bakedMaterial = BakeTeethMaterial(sharedMat, sourceName);
 
-                            case Pipeline.SHADER_HQ_TONGUE:
-                                bakedMaterial = BakeTongueMaterial(sharedMat, sourceName);
-                                break;
+                        else if (shaderName == Pipeline.SHADER_HQ_TONGUE)
+                            bakedMaterial = BakeTongueMaterial(sharedMat, sourceName);
 
-                            case Pipeline.SHADER_HQ_HAIR_1ST_PASS:
-                            case Pipeline.SHADER_HQ_HAIR:
-                                bakedMaterial = BakeHairMaterial(sharedMat, sourceName, out firstPass, out secondPass);
-                                break;
+                        else if (shaderName == Pipeline.SHADER_HQ_HAIR ||
+                                 shaderName == Pipeline.SHADER_HQ_HAIR_1ST_PASS)
+                            bakedMaterial = BakeHairMaterial(sharedMat, sourceName, out firstPass, out secondPass);
 
-                            case Pipeline.SHADER_HQ_CORNEA:
-                                bakedMaterial = BakeEyeMaterial(sharedMat, sourceName);
-                                break;
+                        else if (shaderName == Pipeline.SHADER_HQ_CORNEA ||
+                                 shaderName == Pipeline.SHADER_HQ_CORNEA_PARALLAX ||
+                                 shaderName == Pipeline.SHADER_HQ_CORNEA_REFRACTIVE ||
+                                 shaderName == Pipeline.SHADER_HQ_EYE_REFRACTIVE)
+                            bakedMaterial = BakeEyeMaterial(sharedMat, sourceName);                        
 
-                            case Pipeline.SHADER_HQ_EYE_OCCLUSION:
-                                bakedMaterial = BakeEyeOcclusionMaterial(sharedMat, sourceName);
-                                break;
-                        }
+                        else if (shaderName == Pipeline.SHADER_HQ_EYE_OCCLUSION)
+                            bakedMaterial = BakeEyeOcclusionMaterial(sharedMat, sourceName);                                               
 
                         if (firstPass && secondPass)
                         {
@@ -365,13 +367,13 @@ namespace Reallusion.Import
                 string lodPrefabPath = Path.Combine(prefabFolder, characterName + "_LODModels.prefab");
                 GameObject variant = PrefabUtility.SaveAsPrefabAsset(clone, lodPrefabPath);
                 GameObject.DestroyImmediate(clone);
-                GameObject bakedPrefab = RL.CreateOneLODPrefabFromModel(characterInfo, variant, characterInfo.bakeSeparatePrefab ? "_Baked" : "");
+                GameObject bakedPrefab = RL.CreateOneLODPrefabFromModel(characterInfo, variant, characterInfo.BakeSeparatePrefab ? "_Baked" : "");
                 return bakedPrefab;
             }
             else
             {
                 string prefabPath;
-                if (characterInfo.bakeSeparatePrefab)
+                if (characterInfo.BakeSeparatePrefab)
                     prefabPath = Path.Combine(prefabFolder, characterName + "_Baked.prefab");
                 else
                     prefabPath = Path.Combine(prefabFolder, characterName + ".prefab");
@@ -423,7 +425,7 @@ namespace Reallusion.Import
             }
 
             // apply the textures...
-            if (isHDRP)
+            if (IS_HDRP)
             {
                 bakedMaterial.SetTextureIf("_BaseColorMap", baseMap);
                 bakedMaterial.SetTextureIf("_MaskMap", maskMap);
@@ -431,19 +433,20 @@ namespace Reallusion.Import
                 if (normalMap) bakedMaterial.SetFloatIf("_NormalScale", normalScale);                
                 bakedMaterial.SetTextureIf("_EmissionColorMap", emissionMap);
                 bakedMaterial.SetColorIf("_EmissionColor", emissiveColor);
+                if (detailMask)
+                    bakedMaterial.SetTextureIf("_DetailMask", detailMask);
                 if (detailMap)
                 {
                     bakedMaterial.SetTextureIf("_DetailMap", detailMap);
-                    bakedMaterial.SetTextureScaleIf("_DetailMap", new Vector2(tiling, tiling));
-                    if (detailMask) // detailMask is supplied to baked cornea material in URP and BuiltIn
-                        bakedMaterial.SetTextureIf("_DetailMask", detailMask);
+                    bakedMaterial.SetTextureScaleIf("_DetailMap", new Vector2(tiling, tiling));                    
+                    bakedMaterial.SetFloatIf("_DetailNormalScale", detailScale);
                 }                
                 bakedMaterial.SetTextureIf("_SubsurfaceMaskMap", subsurfaceMap);
                 bakedMaterial.SetTextureIf("_ThicknessMap", thicknessMap);
             }
             else
             {
-                if (isURP)
+                if (IS_URP)
                     bakedMaterial.SetTextureIf("_BaseMap", baseMap);
                 else
                     bakedMaterial.SetTextureIf("_MainTex", baseMap);
@@ -545,7 +548,7 @@ namespace Reallusion.Import
             Texture2D bakedMetallicGlossMap = null;
             Texture2D bakedAOMap = null;
             Texture2D bakedNormalMap = normal;
-            Texture2D bakedDetailMap = (isHDRP ? null : microNormal);
+            Texture2D bakedDetailMap = (IS_HDRP ? null : microNormal);
             Texture2D bakedDetailMask = null;
             Texture2D bakedSubsurfaceMap = subsurface;
             Texture2D bakedThicknessMap = thickness;
@@ -561,7 +564,7 @@ namespace Reallusion.Import
                     normalBlendStrength,
                     sourceName + "_Normal");
 
-                if (isHDRP)
+                if (IS_HDRP)
                 {
                     bakedMaskMap = BakeHeadMaskMap(mask, cavityAO, RGBAMask, CFULCMask, EarNeckMask,
                         aoStrength, smoothnessMin, smoothnessMax, smoothnessPower, microNormalStrength,
@@ -591,7 +594,7 @@ namespace Reallusion.Import
             }
             else
             {
-                if (isHDRP)
+                if (IS_HDRP)
                 {
                     bakedMaskMap = BakeSkinMaskMap(mask, RGBAMask,
                         aoStrength, smoothnessMin, smoothnessMax, smoothnessPower, microNormalStrength, microSmoothnessMod,
@@ -617,7 +620,7 @@ namespace Reallusion.Import
                     sourceName + "_SSSMap");
             }
 
-            if (isHDRP)
+            if (IS_HDRP)
                 // HDRP packs the detail micro normal into the YW channels, for better precision.
                 bakedDetailMap = BakeDetailMap(microNormal,
                     sourceName + "_Detail");
@@ -676,7 +679,7 @@ namespace Reallusion.Import
             Texture2D bakedMetallicGlossMap = null;
             Texture2D bakedAOMap = null;
             Texture2D bakedNormalMap = normal;
-            Texture2D bakedDetailMap = (isHDRP ? null : microNormal);
+            Texture2D bakedDetailMap = (IS_HDRP ? null : microNormal);
             Texture2D bakedDetailMask = null;
             Texture2D bakedSubsurfaceMap = null;
             Texture2D bakedThicknessMap = null;
@@ -686,7 +689,7 @@ namespace Reallusion.Import
                 isUpperTeeth, frontAO, rearAO, gumsSaturation, gumsBrightness, teethSaturation, teethBrightness,
                 sourceName + "_BaseMap");
 
-            if (isHDRP)
+            if (IS_HDRP)
             {
                 bakedMaskMap = BakeTeethMaskMap(mask, gradientAO,
                     isUpperTeeth, aoStrength, smoothnessFront, smoothnessRear, smoothnessMax, smoothnessPower,
@@ -706,7 +709,7 @@ namespace Reallusion.Import
                     sourceName + "_Occlusion", "RLTeethAO");
             }
 
-            if (isHDRP)
+            if (IS_HDRP)
                 // HDRP packs the detail micro normal into the YW channels, for better precision.
                 bakedDetailMap = BakeDetailMap(microNormal,
                     sourceName + "_Detail");
@@ -761,7 +764,7 @@ namespace Reallusion.Import
             Texture2D bakedMetallicGlossMap = null;
             Texture2D bakedAOMap = null;
             Texture2D bakedNormalMap = normal;
-            Texture2D bakedDetailMap = (isHDRP ? null : microNormal);
+            Texture2D bakedDetailMap = (IS_HDRP ? null : microNormal);
             Texture2D bakedDetailMask = null;
             Texture2D bakedSubsurfaceMap = null;
             Texture2D bakedThicknessMap = null;
@@ -771,7 +774,7 @@ namespace Reallusion.Import
                 frontAO, rearAO, tongueSaturation, tongueBrightness,
                 sourceName + "_BaseMap");
 
-            if (isHDRP)
+            if (IS_HDRP)
             {
                 bakedMaskMap = BakeTongueMaskMap(mask, gradientAO,
                     aoStrength, smoothnessFront, smoothnessRear, smoothnessMax, smoothnessPower,
@@ -791,7 +794,7 @@ namespace Reallusion.Import
                     sourceName + "_Occlusion", "RLTongueAO");
             }
 
-            if (isHDRP)
+            if (IS_HDRP)
                 // HDRP packs the detail micro normal into the YW channels, for better precision.
                 bakedDetailMap = BakeDetailMap(microNormal,
                     sourceName + "_Detail");
@@ -820,48 +823,54 @@ namespace Reallusion.Import
             Texture2D blend = GetMaterialTexture(mat, "_ColorBlendMap");
             Texture2D mask = GetMaterialTexture(mat, "_MaskMap");
             Texture2D microNormal = GetMaterialTexture(mat, "_ScleraNormalMap", true);
-            float microNormalStrength = mat.GetFloat("_ScleraNormalStrength");
-            float microNormalTiling = mat.GetFloat("_ScleraNormalTiling");
-            float aoStrength = mat.GetFloat("_AOStrength");
-            float colorBlendStrength = mat.GetFloat("_ColorBlendStrength");
-            float scleraSmoothness = mat.GetFloat("_ScleraSmoothness");
-            float irisSmoothness = mat.GetFloat("_IrisSmoothness");
-            float corneaSmoothness = mat.GetFloat("_CorneaSmoothness");
-            float irisHue = mat.GetFloat("_IrisHue");
-            float irisSaturation = mat.GetFloat("_IrisSaturation");
-            float irisBrightness = mat.GetFloat("_IrisBrightness");
-            float scleraHue = mat.GetFloat("_ScleraHue");
-            float scleraSaturation = mat.GetFloat("_ScleraSaturation");
-            float scleraBrightness = mat.GetFloat("_ScleraBrightness");
-            float refractionThickness = mat.GetFloat("_RefractionThickness");
-            float shadowRadius = mat.GetFloat("_ShadowRadius");
-            float shadowHardness = mat.GetFloat("_ShadowHardness");
-            float irisScale = mat.GetFloat("_IrisScale");
-            float scleraScale = mat.GetFloat("_ScleraScale");
-            float limbusDarkRadius = mat.GetFloat("_LimbusDarkRadius");
-            float limbusDarkWidth = mat.GetFloat("_LimbusDarkWidth");
-            float irisRadius = mat.GetFloat("_IrisRadius");
-            float limbusWidth = mat.GetFloat("_LimbusWidth");
-            float ior = mat.GetFloat("_IOR");
-            float depthRadius = mat.GetFloat("_DepthRadius");
-            float irisDepth = mat.GetFloat("_IrisDepth");
-            float pupilScale = mat.GetFloat("_PupilScale");
-            Color cornerShadowColor = mat.GetColor("_CornerShadowColor");
-            Color limbusColor = mat.GetColor("_LimbusColor");
-            bool isCornea = mat.GetFloat("BOOLEAN_ISCORNEA") > 0f;
-            bool isLeftEye = mat.GetFloat("_IsLeftEye") > 0f;
+            float microNormalStrength = mat.GetFloatIf("_ScleraNormalStrength");
+            float microNormalTiling = mat.GetFloatIf("_ScleraNormalTiling");
+            float aoStrength = mat.GetFloatIf("_AOStrength");
+            float colorBlendStrength = mat.GetFloatIf("_ColorBlendStrength");
+            float scleraSmoothness = mat.GetFloatIf("_ScleraSmoothness");
+            float irisSmoothness = mat.GetFloatIf("_IrisSmoothness");
+            float corneaSmoothness = mat.GetFloatIf("_CorneaSmoothness");
+            float irisHue = mat.GetFloatIf("_IrisHue");
+            float irisSaturation = mat.GetFloatIf("_IrisSaturation");
+            float irisBrightness = mat.GetFloatIf("_IrisBrightness");
+            float scleraHue = mat.GetFloatIf("_ScleraHue");
+            float scleraSaturation = mat.GetFloatIf("_ScleraSaturation");
+            float scleraBrightness = mat.GetFloatIf("_ScleraBrightness");
+            float refractionThickness = mat.GetFloatIf("_RefractionThickness");
+            float shadowRadius = mat.GetFloatIf("_ShadowRadius");
+            float shadowHardness = mat.GetFloatIf("_ShadowHardness");
+            float irisScale = mat.GetFloatIf("_IrisScale");
+            float scleraScale = mat.GetFloatIf("_ScleraScale");
+            float limbusDarkRadius = mat.GetFloatIf("_LimbusDarkRadius");
+            float limbusDarkWidth = mat.GetFloatIf("_LimbusDarkWidth");
+            float irisRadius = mat.GetFloatIf("_IrisRadius");
+            float limbusWidth = mat.GetFloatIf("_LimbusWidth");
+            float ior = mat.GetFloatIf("_IOR");
+            float depthRadius = mat.GetFloatIf("_DepthRadius");
+            float parallaxRadius = mat.GetFloatIf("_ParallaxRadius");
+            float irisDepth = mat.GetFloatIf("_IrisDepth");
+            float pupilScale = mat.GetFloatIf("_PupilScale");
+            float parallaxMod = mat.GetFloatIf("_PMod");
+            float scleraSubsurfaceScale = mat.GetFloatIf("_ScleraSubsurfaceScale");
+            float irisSubsurfaceScale = mat.GetFloatIf("_IrisSubsurfaceScale");
+            float subsurfaceThickness = mat.GetFloatIf("_SubsurfaceThickness");            
+
+            Color cornerShadowColor = mat.GetColorIf("_CornerShadowColor");
+            Color limbusColor = mat.GetColorIf("_LimbusColor");
+            bool isCornea = mat.GetFloatIf("BOOLEAN_ISCORNEA") > 0f;
+            bool isLeftEye = mat.GetFloatIf("_IsLeftEye") > 0f;
             Texture2D emission = GetMaterialTexture(mat, "_EmissionMap");
-            Color emissiveColor = mat.GetColor("_EmissiveColor");
+            Color emissiveColor = mat.GetColorIf("_EmissiveColor");
 
             Texture2D bakedBaseMap = cornea;
             Texture2D bakedMaskMap = mask;
             Texture2D bakedMetallicGlossMap = null;
             Texture2D bakedAOMap = null;
             Texture2D bakedNormalMap = null;
-            Texture2D bakedDetailMap = (isHDRP ? null : microNormal);
+            Texture2D bakedDetailMap = (IS_HDRP ? null : microNormal);            
             Texture2D bakedDetailMask = null;
             Texture2D bakedSubsurfaceMap = null;
-            Texture2D bakedThicknessMap = null;
+            Texture2D bakedThicknessMap = null;            
             Texture2D emissionMap = emission;
 
             if (isCornea)
@@ -869,20 +878,22 @@ namespace Reallusion.Import
                 bakedBaseMap = BakeCorneaDiffuseMap(cornea, sclera, blend,
                     scleraScale, scleraHue, scleraSaturation, scleraBrightness,                    
                     irisScale, irisHue, irisSaturation, irisBrightness, 
-                    irisRadius, limbusWidth, limbusDarkRadius, limbusDarkWidth, limbusColor,
+                    irisRadius, limbusWidth, limbusDarkRadius, limbusDarkWidth, limbusColor, depthRadius,
                     shadowRadius, shadowHardness, cornerShadowColor,
                     colorBlendStrength,
-                    sourceName + "_BaseMap", isHDRP ? "RLCorneaDiffuse" : "RLCorneaOnlyDiffuse");
+                    sourceName + "_BaseMap", (CUSTOM_SHADERS && REFRACTIVE_EYES) ? "RLCorneaDiffuse" : "RLCorneaSingleDiffuse");
 
-                if (isHDRP)
+                if (IS_HDRP)
                 {
                     bakedMaskMap = BakeCorneaMaskMap(mask, aoStrength, corneaSmoothness,
                         scleraSmoothness, irisScale,
                         irisRadius, limbusWidth, microNormalStrength,
-                        sourceName + "_Mask", "RLCorneaMask");
+                        sourceName + "_Mask", "RLCorneaMask");                    
                 }
                 else
                 {
+                    // TODO if (REFRACTIVE_EYES || BASIC_SHADERS) for URP/3D ???
+
                     bakedMetallicGlossMap = BakeCorneaMaskMap(mask, aoStrength, corneaSmoothness,
                         scleraSmoothness, irisScale,
                         irisRadius, limbusWidth, microNormalStrength,
@@ -894,21 +905,31 @@ namespace Reallusion.Import
                         sourceName + "_Occlusion", "RLCorneaAO");                                       
                 }
 
-                if (isHDRP)
+                if (IS_HDRP && !CUSTOM_SHADERS)
                     // HDRP packs the detail micro normal into the YW channels, for better precision.
                     bakedDetailMap = BakeDetailMap(microNormal,
                         sourceName + "_Detail");
-                else
-                    // URP and Built-in uses the micro normal directly, but needs a separate detail mask.
-                    bakedDetailMask = BakeCorneaDetailMaskMap(mask,
-                        irisScale, irisRadius, limbusWidth, depthRadius, microNormalStrength,
-                        sourceName + "_DetailMask");
+                
+                if (CUSTOM_SHADERS && !REFRACTIVE_EYES)
+                // various baked mask maps for the baked shaders
+                bakedDetailMask = BakeCorneaDetailMaskMap(mask,
+                    irisScale, irisRadius, limbusWidth, depthRadius, parallaxRadius, microNormalStrength,
+                    sourceName + "_DetailMask");
 
-                // RGB textures cannot store low enough values for the refraction thickness
-                // so normalize it and use the thickness remap in the HDRP/Lit shader.
-                bakedThicknessMap = BakeCorneaThicknessMap(irisScale, limbusDarkRadius,
+                if (REFRACTIVE_EYES)
+                {
+                    // RGB textures cannot store low enough values for the refraction thickness
+                    // so normalize it and use the thickness remap in the HDRP/Lit shader.
+                    bakedThicknessMap = BakeCorneaThicknessMap(irisScale, limbusDarkRadius,
                     limbusDarkWidth, refractionThickness / 0.025f,
                     sourceName + "_Thickness");
+                }
+                else
+                {
+                    bakedSubsurfaceMap = BakeCorneaSubsurfaceMask(irisScale,
+                        scleraSubsurfaceScale, irisSubsurfaceScale, subsurfaceThickness,
+                        sourceName + "_Subsurface");
+                }
             }
             else
             {
@@ -933,19 +954,32 @@ namespace Reallusion.Import
 
             if (isCornea)
             {
-                result.SetFloat("_Ior", ior);
-                result.SetFloat("_Thickness", refractionThickness / 10f);
-                Color thicknessRemap;
-                thicknessRemap.r = 0f;
-                thicknessRemap.g = 0.025f;
-                thicknessRemap.b = 0f;
-                thicknessRemap.a = 0f;
-                result.SetColor("_ThicknessRemap", thicknessRemap);
+                result.SetFloatIf("_Ior", ior);
+                if (REFRACTIVE_EYES)
+                {
+                    result.SetFloatIf("_Thickness", refractionThickness / 10f);
+                    Color thicknessRemap;
+                    thicknessRemap.r = 0f;
+                    thicknessRemap.g = 0.025f;
+                    thicknessRemap.b = 0f;
+                    thicknessRemap.a = 0f;
+                    result.SetColorIf("_ThicknessRemap", thicknessRemap);
+                }
+                else
+                {
+                    result.SetFloatIf("_IrisDepth", irisDepth);
+                    result.SetFloatIf("_PupilScale", pupilScale);
+                    result.SetTextureIf("_ScleraNormalMap", microNormal);
+                    result.SetFloatIf("_ScleraNormalTiling", microNormalTiling);
+                    result.SetFloatIf("_ScleraNormalStrength", microNormalStrength);                    
+                    result.SetFloatIf("_Thickness", subsurfaceThickness);
+                    result.SetFloatIf("_PMod", parallaxMod);                    
+                }
             }
             else
             {
-                result.SetFloat("_IrisDepth", irisDepth);
-                result.SetFloat("_PupilScale", pupilScale);
+                result.SetFloatIf("_IrisDepth", irisDepth);
+                result.SetFloatIf("_PupilScale", pupilScale);
             }
             return result;
         }
@@ -970,11 +1004,8 @@ namespace Reallusion.Import
             float baseColorStrength = mat.GetFloat("_BaseColorStrength");
             float alphaPower = mat.GetFloat("_AlphaPower");
             float alphaRemap = mat.GetFloat("_AlphaRemap");
-            float alphaClip = 0.1f;
-            if (isHDRP || is3D)
-                alphaClip = mat.GetFloat("_AlphaClip");
-            else
-                alphaClip = mat.GetFloat("_AlphaClip2");
+            float alphaClip = mat.GetFloatIf("_AlphaClip");
+            if (IS_URP) alphaClip = mat.GetFloat("_AlphaClip2");
             float shadowClip = mat.GetFloat("_ShadowClip");
             float depthPrepass = mat.GetFloat("_DepthPrepass");
             float depthPostpass = mat.GetFloat("_DepthPostpass");
@@ -1018,7 +1049,7 @@ namespace Reallusion.Import
             Texture2D bakedMetallicGlossMap = null;
             Texture2D bakedAOMap = null;
             Texture2D bakedNormalMap = normal;
-            Texture2D emissionMap = emission;
+            Texture2D emissionMap = emission;            
 
             if (enableColor)
             {
@@ -1041,7 +1072,7 @@ namespace Reallusion.Import
                     sourceName + "_BaseMap");
             }
 
-            if (isHDRP)
+            if (IS_HDRP)
             {
                 bakedMaskMap = BakeHairMaskMap(mask, specular,
                     aoStrength, smoothnessMin, smoothnessMax, smoothnessPower,
@@ -1058,98 +1089,116 @@ namespace Reallusion.Import
                     sourceName + "_Occlusion", "RLHairAO");
             }
 
-            // TODO: if the shader is 1st pass hair, create both 1st and 2nd pass hair materials from these textures...
-            
-            Material result = CreateBakedMaterial(bakedBaseMap, bakedMaskMap, bakedMetallicGlossMap, bakedAOMap, bakedNormalMap,
-                null, null, null, null, emissionMap,
-                normalStrength, 1f, 1f, emissiveColor,
-                sourceName,
-                Pipeline.GetTemplateMaterial(MaterialType.Hair,
-                            MaterialQuality.Baked, characterInfo));
 
-            if (characterInfo.bakeCustomShaders)
+            Func<string, string, HumanBone> Bone = (humanName, boneName) => new HumanBone()
             {
-                result.SetTextureIf("_FlowMap", flow);
-                result.SetColorIf("_VertexBaseColor", vertexBaseColor);
-                result.SetFloatIf("_VertexColorStrength", vertexColorStrength);
-                result.SetColorIf("_SpecularTint", specularTint);
-                result.SetFloatIf("_AlphaClip", alphaClip);
-                result.SetFloatIf("_AlphaClip2", alphaClip);
-                result.SetFloatIf("_ShadowClip", shadowClip);
-                result.SetFloatIf("_DepthPrepass", depthPrepass); // Mathf.Lerp(depthPrepass, 1.0f, 0.5f));
-                result.SetFloatIf("_DepthPostpass", depthPostpass);
-                result.SetFloatIf("_RimTransmissionIntensity", rimTransmissionIntensity);
-                result.SetFloatIf("_SpecularMultiplier", specularMultiplier);
-                result.SetFloatIf("_SpecularShift", specularShift);
-                result.SetFloatIf("_SecondarySpecularMultiplier", secondarySpecularMultiplier);
-                result.SetFloatIf("_SecondarySpecularShift", secondarySpecularShift);
-                result.SetFloatIf("_SecondarySmoothness", secondarySmoothness);
+                humanName = humanName,
+                boneName = boneName
+            };
+            // TODO: if the shader is 1st pass hair, create both 1st and 2nd pass hair materials from these textures...            
+
+            if (CUSTOM_SHADERS)
+            {
+                Action<Material> SetCustom = (bakeMat) =>
+                {
+                    bakeMat.SetTextureIf("_FlowMap", flow);
+                    bakeMat.SetColorIf("_VertexBaseColor", vertexBaseColor);
+                    bakeMat.SetFloatIf("_VertexColorStrength", vertexColorStrength);
+                    bakeMat.SetColorIf("_SpecularTint", specularTint);
+                    bakeMat.SetFloatIf("_AlphaClip", alphaClip);
+                    bakeMat.SetFloatIf("_AlphaClip2", alphaClip);
+                    bakeMat.SetFloatIf("_ShadowClip", shadowClip);
+                    bakeMat.SetFloatIf("_DepthPrepass", depthPrepass); // Mathf.Lerp(depthPrepass, 1.0f, 0.5f));
+                    bakeMat.SetFloatIf("_DepthPostpass", depthPostpass);
+                    bakeMat.SetFloatIf("_RimTransmissionIntensity", rimTransmissionIntensity);
+                    bakeMat.SetFloatIf("_SpecularMultiplier", specularMultiplier);
+                    bakeMat.SetFloatIf("_SpecularShift", specularShift);
+                    bakeMat.SetFloatIf("_SecondarySpecularMultiplier", secondarySpecularMultiplier);
+                    bakeMat.SetFloatIf("_SecondarySpecularShift", secondarySpecularShift);
+                    bakeMat.SetFloatIf("_SecondarySmoothness", secondarySmoothness);
+                };
+
+                if (mat.shader.name.iEndsWith(Pipeline.SHADER_HQ_HAIR_1ST_PASS))
+                {
+                    firstPass = CreateBakedMaterial(bakedBaseMap, bakedMaskMap, bakedMetallicGlossMap, bakedAOMap, bakedNormalMap,
+                        null, null, null, null, emissionMap,
+                        normalStrength, 1f, 1f, emissiveColor,
+                        sourceName,
+                        Pipeline.GetCustomTemplateMaterial(Pipeline.MATERIAL_BAKED_HAIR_CUSTOM_1ST_PASS, MaterialQuality.Baked));
+
+                    secondPass = CreateBakedMaterial(bakedBaseMap, bakedMaskMap, bakedMetallicGlossMap, bakedAOMap, bakedNormalMap,
+                        null, null, null, null, emissionMap,
+                        normalStrength, 1f, 1f, emissiveColor,
+                        sourceName.Replace("_1st_Pass", "_2nd_Pass"),
+                        Pipeline.GetCustomTemplateMaterial(Pipeline.MATERIAL_BAKED_HAIR_CUSTOM_2ND_PASS, MaterialQuality.Baked));
+
+                    // multi material pass hair is custom baked shader only:
+                    SetCustom(firstPass);
+                    SetCustom(secondPass);                    
+                    return null;
+                }
+                else
+                {
+                    Material result = CreateBakedMaterial(bakedBaseMap, bakedMaskMap, bakedMetallicGlossMap, bakedAOMap, bakedNormalMap,
+                        null, null, null, null, emissionMap,
+                        normalStrength, 1f, 1f, emissiveColor,
+                        sourceName,
+                        Pipeline.GetTemplateMaterial(MaterialType.Hair,
+                                    MaterialQuality.Baked, characterInfo));
+
+                    SetCustom(result);
+                    return result;
+                }
             }
             else
             {
-                result.SetColorIf("_SpecularColor", specularTint);
-                result.SetFloatIf("_AlphaClipThreshold", alphaClip);
-                result.SetFloatIf("_AlphaThresholdShadow", shadowClip);
-                result.SetFloatIf("_AlphaClipThresholdDepthPrepass", depthPrepass); // Mathf.Lerp(depthPrepass, 1.0f, 0.5f));
-                result.SetFloatIf("_AlphaClipThresholdDepthPostpass", depthPostpass);
-                result.SetFloatIf("_TransmissionRim", rimTransmissionIntensity);
-                result.SetFloatIf("_Specular", specularMultiplier);
-                result.SetFloatIf("_SpecularShift", specularShift);
-                result.SetFloatIf("_SecondarySpecular", secondarySpecularMultiplier);
-                result.SetFloatIf("_SecondarySpecularShift", secondarySpecularShift);
-                result.SetFloatIf("_SmoothnessMin", smoothnessMin);
-                result.SetFloatIf("_SmoothnessMax", smoothnessMax);
+                Action<Material> SetBasic = (bakeMat) =>
+                {
+                    bakeMat.SetColorIf("_SpecularColor", specularTint);
+                    bakeMat.SetFloatIf("_AlphaClipThreshold", alphaClip);
+                    bakeMat.SetFloatIf("_AlphaThresholdShadow", shadowClip);
+                    bakeMat.SetFloatIf("_AlphaClipThresholdDepthPrepass", depthPrepass); // Mathf.Lerp(depthPrepass, 1.0f, 0.5f));
+                    bakeMat.SetFloatIf("_AlphaClipThresholdDepthPostpass", depthPostpass);
+                    bakeMat.SetFloatIf("_TransmissionRim", rimTransmissionIntensity);
+                    bakeMat.SetFloatIf("_Specular", specularMultiplier);
+                    bakeMat.SetFloatIf("_SpecularShift", specularShift);
+                    bakeMat.SetFloatIf("_SecondarySpecular", secondarySpecularMultiplier);
+                    bakeMat.SetFloatIf("_SecondarySpecularShift", secondarySpecularShift);
+                    bakeMat.SetFloatIf("_SmoothnessMin", smoothnessMin);
+                    bakeMat.SetFloatIf("_SmoothnessMax", smoothnessMax);
+                };
+
+                if (mat.shader.name.iEndsWith(Pipeline.SHADER_HQ_HAIR_1ST_PASS))
+                {
+                    firstPass = CreateBakedMaterial(bakedBaseMap, bakedMaskMap, bakedMetallicGlossMap, bakedAOMap, bakedNormalMap,
+                        null, null, null, null, emissionMap,
+                        normalStrength, 1f, 1f, emissiveColor,
+                        sourceName,
+                        Pipeline.GetCustomTemplateMaterial(Pipeline.MATERIAL_BAKED_HAIR_1ST_PASS, MaterialQuality.Baked));
+
+                    secondPass = CreateBakedMaterial(bakedBaseMap, bakedMaskMap, bakedMetallicGlossMap, bakedAOMap, bakedNormalMap,
+                        null, null, null, null, emissionMap,
+                        normalStrength, 1f, 1f, emissiveColor,
+                        sourceName.Replace("_1st_Pass", "_2nd_Pass"),
+                        Pipeline.GetCustomTemplateMaterial(Pipeline.MATERIAL_BAKED_HAIR_2ND_PASS, MaterialQuality.Baked));
+
+                    SetBasic(firstPass);
+                    SetBasic(secondPass);
+                    return null;
+                }
+                else
+                {
+                    Material result = CreateBakedMaterial(bakedBaseMap, bakedMaskMap, bakedMetallicGlossMap, bakedAOMap, bakedNormalMap,
+                        null, null, null, null, emissionMap,
+                        normalStrength, 1f, 1f, emissiveColor,
+                        sourceName,
+                        Pipeline.GetTemplateMaterial(MaterialType.Hair,
+                                    MaterialQuality.Baked, characterInfo));
+
+                    SetBasic(result);
+                    return result;
+                }
             }
-            
-            if (mat.shader.name.iEndsWith(Pipeline.SHADER_HQ_HAIR_1ST_PASS))
-            {
-                firstPass = CreateBakedMaterial(bakedBaseMap, bakedMaskMap, bakedMetallicGlossMap, bakedAOMap, bakedNormalMap,
-                    null, null, null, null, emissionMap,
-                    normalStrength, 1f, 1f, emissiveColor,
-                    sourceName,
-                    Pipeline.GetCustomTemplateMaterial(Pipeline.MATERIAL_BAKED_HAIR_1ST_PASS, MaterialQuality.Baked));
-
-                secondPass = CreateBakedMaterial(bakedBaseMap, bakedMaskMap, bakedMetallicGlossMap, bakedAOMap, bakedNormalMap,
-                    null, null, null, null, emissionMap,
-                    normalStrength, 1f, 1f, emissiveColor,
-                    sourceName.Replace("_1st_Pass", "_2nd_Pass"),
-                    Pipeline.GetCustomTemplateMaterial(Pipeline.MATERIAL_BAKED_HAIR_2ND_PASS, MaterialQuality.Baked));
-
-                // multi material pass hair is custom baked shader only:
-                firstPass.SetTextureIf("_FlowMap", flow);
-                firstPass.SetColorIf("_VertexBaseColor", vertexBaseColor);
-                firstPass.SetFloatIf("_VertexColorStrength", vertexColorStrength);
-                firstPass.SetColorIf("_SpecularTint", specularTint);
-                firstPass.SetFloatIf("_AlphaClip", alphaClip);
-                firstPass.SetFloatIf("_AlphaClip2", alphaClip);
-                firstPass.SetFloatIf("_ShadowClip", shadowClip);
-                firstPass.SetFloatIf("_DepthPrepass", depthPrepass); // Mathf.Lerp(depthPrepass, 1.0f, 0.5f));
-                firstPass.SetFloatIf("_DepthPostpass", depthPostpass);
-                firstPass.SetFloatIf("_RimTransmissionIntensity", rimTransmissionIntensity);
-                firstPass.SetFloatIf("_SpecularMultiplier", specularMultiplier);
-                firstPass.SetFloatIf("_SpecularShift", specularShift);
-                firstPass.SetFloatIf("_SecondarySpecularMultiplier", secondarySpecularMultiplier);
-                firstPass.SetFloatIf("_SecondarySpecularShift", secondarySpecularShift);
-                firstPass.SetFloatIf("_SecondarySmoothness", secondarySmoothness);
-
-                secondPass.SetTextureIf("_FlowMap", flow);
-                secondPass.SetColorIf("_VertexBaseColor", vertexBaseColor);
-                secondPass.SetFloatIf("_VertexColorStrength", vertexColorStrength);
-                secondPass.SetColorIf("_SpecularTint", specularTint);
-                secondPass.SetFloatIf("_AlphaClip", alphaClip);
-                secondPass.SetFloatIf("_AlphaClip2", alphaClip);
-                secondPass.SetFloatIf("_ShadowClip", shadowClip);
-                secondPass.SetFloatIf("_DepthPrepass", depthPrepass); // Mathf.Lerp(depthPrepass, 1.0f, 0.5f));
-                secondPass.SetFloatIf("_DepthPostpass", depthPostpass);
-                secondPass.SetFloatIf("_RimTransmissionIntensity", rimTransmissionIntensity);
-                secondPass.SetFloatIf("_SpecularMultiplier", specularMultiplier);
-                secondPass.SetFloatIf("_SpecularShift", specularShift);
-                secondPass.SetFloatIf("_SecondarySpecularMultiplier", secondarySpecularMultiplier);
-                secondPass.SetFloatIf("_SecondarySpecularShift", secondarySpecularShift);
-                secondPass.SetFloatIf("_SecondarySmoothness", secondarySmoothness);
-            }
-
-            return result;
         }
 
         private Material BakeEyeOcclusionMaterial(Material mat, string sourceName)
@@ -1782,13 +1831,13 @@ namespace Reallusion.Import
             float scleraScale, float scleraHue, float scleraSaturation, float scleraBrightness,
             float irisScale, float irisHue, float irisSaturation, float irisBrightness,
             float irisRadius, float limbusWidth, float limbusDarkRadius, float limbusDarkWidth, Color limbusColor, 
-            float shadowRadius, float shadowHardness,
+            float depthRadius, float shadowRadius, float shadowHardness,
             Color cornerShadowColor, float colorBlendStrength,
             string name, string kernelName = "RLCorneaDiffuse")
         {
             Vector2Int maxSize = GetMaxSize(sclera);
             ComputeBakeTexture bakeTarget =
-                new ComputeBakeTexture(maxSize, texturesFolder, name, Importer.FLAG_SRGB);
+                new ComputeBakeTexture(maxSize, texturesFolder, name, Importer.FLAG_SRGB + Importer.FLAG_ALPHA_DATA);
 
             ComputeShader bakeShader = Util.FindComputeShader(COMPUTE_SHADER);
             if (bakeShader)
@@ -1818,6 +1867,7 @@ namespace Reallusion.Import
                 bakeShader.SetFloat("colorBlendStrength", colorBlendStrength);
                 bakeShader.SetVector("limbusColor", limbusColor);
                 bakeShader.SetVector("cornerShadowColor", cornerShadowColor);
+                bakeShader.SetFloat("depthRadius", depthRadius);
                 bakeShader.Dispatch(kernel, bakeTarget.width, bakeTarget.height, 1);
                 return bakeTarget.SaveAndReimport();
             }
@@ -1892,7 +1942,7 @@ namespace Reallusion.Import
         }
 
         private Texture2D BakeCorneaDetailMaskMap(Texture2D mask,            
-            float irisScale, float irisRadius, float limbusWidth, float depthRadius, float microNormalStrength,
+            float irisScale, float irisRadius, float limbusWidth, float depthRadius, float parallaxRadius, float microNormalStrength,
             string name)
         {
             Vector2Int maxSize = GetMaxSize(mask);
@@ -1912,6 +1962,7 @@ namespace Reallusion.Import
                 bakeShader.SetFloat("irisRadius", irisRadius);
                 bakeShader.SetFloat("limbusWidth", limbusWidth);
                 bakeShader.SetFloat("depthRadius", depthRadius);
+                bakeShader.SetFloat("parallaxRadius", parallaxRadius);
                 bakeShader.Dispatch(kernel, bakeTarget.width, bakeTarget.height, 1);
                 return bakeTarget.SaveAndReimport();
             }
@@ -1976,6 +2027,33 @@ namespace Reallusion.Import
             return null;
         }
 
+        //bakedSubsurfaceMask = BakeCorneaSubsurfaceMask(irisScale,
+        //scleraSubsurfaceScale, irisSubsurfaceScale, subsurfaceThickness,
+        //                sourceName + "_Thickness");
+        private Texture2D BakeCorneaSubsurfaceMask(
+            float irisScale, float scleraSubsurfaceScale, float irisSubsurfaceScale, float thicknessScale,
+            string name)
+        {
+            Vector2Int maxSize = new Vector2Int(128, 128);
+            ComputeBakeTexture bakeTarget =
+                new ComputeBakeTexture(maxSize, texturesFolder, name);
+
+            ComputeShader bakeShader = Util.FindComputeShader(COMPUTE_SHADER);
+            if (bakeShader)
+            {
+                int kernel = bakeShader.FindKernel("RLCorneaSubsurfaceMask");
+                bakeTarget.Create(bakeShader, kernel);
+                bakeShader.SetFloat("irisScale", irisScale);
+                bakeShader.SetFloat("scleraSubsurfaceScale", scleraSubsurfaceScale);
+                bakeShader.SetFloat("irisSubsurfaceScale", irisSubsurfaceScale);
+                bakeShader.SetFloat("thicknessScale", thicknessScale);
+                bakeShader.Dispatch(kernel, bakeTarget.width, bakeTarget.height, 1);
+                return bakeTarget.SaveAndReimport();
+            }
+
+            return null;
+        }
+
         private Texture2D BakeHairDiffuseMap(Texture2D diffuse, Texture2D blend, Texture2D id, Texture2D root, Texture2D mask,
                         float diffuseStrength, float alphaPower, float alphaRemap, float aoStrength, float aoOccludeAll,
                         Color rootColor, float rootColorStrength, Color endColor, float endColorStrength, float globalStrength, 
@@ -1990,7 +2068,7 @@ namespace Reallusion.Import
             Vector2Int maxSize = GetMaxSize(diffuse, id);
             ComputeBakeTexture bakeTarget =
                 new ComputeBakeTexture(maxSize, texturesFolder, name, 
-                    Importer.FLAG_SRGB + 
+                    Importer.FLAG_SRGB + Importer.FLAG_ALPHA_DATA + 
                     (name.iContains("hair") ? Importer.FLAG_HAIR : Importer.FLAG_ALPHA_CLIP)
                 );
 
