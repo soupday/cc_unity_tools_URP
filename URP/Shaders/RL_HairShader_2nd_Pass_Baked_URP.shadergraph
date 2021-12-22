@@ -16,9 +16,6 @@
             "m_Id": "b304178995574d4b8dceaf0eade7e621"
         },
         {
-            "m_Id": "bc814cd1e05d4e94b3b180cbe5f42bfd"
-        },
-        {
             "m_Id": "a8fac80485344a489b31db2a226e0489"
         },
         {
@@ -3654,29 +3651,6 @@
     "m_CustomColors": {
         "m_SerializableColors": []
     }
-}
-
-{
-    "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.Internal.Texture2DShaderProperty",
-    "m_ObjectId": "bc814cd1e05d4e94b3b180cbe5f42bfd",
-    "m_Guid": {
-        "m_GuidSerialized": "01fa32ed-9744-41c4-a9f3-8f45ff507022"
-    },
-    "m_Name": "Flow Map",
-    "m_DefaultReferenceName": "Texture2D_bc814cd1e05d4e94b3b180cbe5f42bfd",
-    "m_OverrideReferenceName": "_FlowMap",
-    "m_GeneratePropertyBlock": false,
-    "m_Precision": 0,
-    "overrideHLSLDeclaration": false,
-    "hlslDeclarationOverride": 0,
-    "m_Hidden": false,
-    "m_Value": {
-        "m_SerializedTexture": "{\"texture\":{\"instanceID\":0}}",
-        "m_Guid": ""
-    },
-    "m_Modifiable": true,
-    "m_DefaultType": 2
 }
 
 {
