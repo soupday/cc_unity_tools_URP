@@ -109,7 +109,6 @@ Material:
     m_Floats:
     - _BumpScale: 1
     - _Detail_Normal_Map_Scale: 0.1
-    - _IrisDepth: 0.004
     - _PupilScale: 1
     m_Colors:
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 0}

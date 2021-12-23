@@ -101,9 +101,7 @@ Material:
     - _SmoothnessPower: 0.5
     - _SmoothnessRear: 0
     - _TongueBrightness: 1
-    - _TongueSSS: 1
     - _TongueSaturation: 0.95
-    - _TongueThickness: 0.75
     m_Colors:
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
