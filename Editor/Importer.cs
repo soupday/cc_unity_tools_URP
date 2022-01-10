@@ -58,6 +58,8 @@ namespace Reallusion.Import
         public const int FLAG_HAIR = 16;
         public const int FLAG_ALPHA_DATA = 32;
 
+        public static bool USE_AMPLIFY_SHADER = true;
+
         private RenderPipeline RP => Pipeline.GetRenderPipeline();
 
         public Importer(CharacterInfo info)
@@ -619,7 +621,7 @@ namespace Reallusion.Import
                 matJson, "Textures/AO");
 
             ConnectTextureTo(sourceName, mat, "_SSSMap", "SSSMap",
-                matJson, "Custom Shader/Image/SSS Map");
+                matJson, "Custom Shader/Image/SSS Map");            
 
             ConnectTextureTo(sourceName, mat, "_ThicknessMap", "TransMap",
                 matJson, "Custom Shader/Image/Transmission Map");
@@ -673,7 +675,7 @@ namespace Reallusion.Import
                 mat.SetFloat("_MicroNormalTiling", matJson.GetFloatValue("Custom Shader/Variable/MicroNormal Tiling"));
                 mat.SetFloat("_MicroNormalStrength", matJson.GetFloatValue("Custom Shader/Variable/MicroNormal Strength"));                
                 float specular = matJson.GetFloatValue("Custom Shader/Variable/_Specular");                
-                float smoothnessMax = Util.CombineSpecularToSmoothness(specular, 1.0f);                
+                float smoothnessMax = Util.CombineSpecularToSmoothness(specular, 1f);
                 mat.SetFloat("_SmoothnessMax", smoothnessMax);                
                 mat.SetFloat("_SubsurfaceScale", matJson.GetFloatValue("Subsurface Scatter/Lerp"));
                 mat.SetFloat("_ThicknessScale", Mathf.Clamp01(matJson.GetFloatValue("Subsurface Scatter/Radius") / 5f));
@@ -940,10 +942,11 @@ namespace Reallusion.Import
                 }
                 else if (characterInfo.ParallaxEyes)
                 {
-                    float depth = Mathf.Clamp(0.333f * matJson.GetFloatValue("Custom Shader/Variable/Iris Depth Scale"), 0.1f, 1.0f);
-                    float pupilScale = Mathf.Clamp(1f / Mathf.Pow((depth * 2f + 1f), 2f), 0.1f, 2.0f);                    
+                    float depth = Mathf.Clamp(0.333f * matJson.GetFloatValue("Custom Shader/Variable/Iris Depth Scale"), 0.1f, 1.0f);                    
+                    //float pupilScale = Mathf.Clamp(1f / Mathf.Pow((depth * 2f + 1f), 2f), 0.1f, 2.0f);                    
                     mat.SetFloat("_IrisDepth", depth);
-                    mat.SetFloat("_PupilScale", pupilScale);
+                    //mat.SetFloat("_PupilScale", pupilScale);
+                    mat.SetFloat("_PupilScale", 1f * matJson.GetFloatValue("Custom Shader/Variable/Pupil Scale"));
                 }
                 else
                 {                    

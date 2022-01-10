@@ -111,7 +111,7 @@ Material:
     - _Detail_Normal_Map_Scale: 0.1
     - _IOR: 1.4
     - _IrisDepth: 0.004
-    - _PMod: 5
+    - _PMod: 6.4
     - _PupilScale: 1
     m_Colors:
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 0}

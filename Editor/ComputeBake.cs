@@ -150,6 +150,7 @@ namespace Reallusion.Import
 
                 if (importer)
                 {
+                    /*
                     // TODO should the character importer set these as the defaults?
                     // Turn off texture compression and unlock max size to 4k, for the best possible quality bake:
                     if (importer.textureCompression != TextureImporterCompression.Uncompressed ||
@@ -174,8 +175,9 @@ namespace Reallusion.Import
                             }
                         }
                         else importer.textureType = TextureImporterType.Default;
-                        importer.SaveAndReimport();
+                        //importer.SaveAndReimport();
                     }
+                    */
                 }
             }
 

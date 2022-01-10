@@ -512,29 +512,35 @@ namespace Reallusion.Import
             if (quality == MaterialQuality.High) return DICT_MATERIALS_HQ;
             else if (quality == MaterialQuality.Baked) return DICT_MATERIALS_BAKED;
             return DICT_MATERIALS_DEFAULT;
-        }                
+        }
 
         public static Material GetQualityMaterial(MaterialType materialType, MaterialQuality quality, CharacterInfo info)
+        {
+            string materialName = GetQualityMaterialName(materialType, quality, info);
+            return Util.FindMaterial(materialName);
+        }
+
+        public static string GetQualityMaterialName(MaterialType materialType, MaterialQuality quality, CharacterInfo info)
         {            
             if (info.Generation == BaseGeneration.ActorCore)
-                return Util.FindMaterial(MATERIAL_DEFAULT_SINGLE_MATERIAL);
+                return MATERIAL_DEFAULT_SINGLE_MATERIAL;
 
             if (quality == MaterialQuality.High) // option overrides for high quality materials
             {
                 if (info.RefractiveEyes)
                 {
                     if (materialType == MaterialType.Cornea)
-                        return Util.FindMaterial(MATERIAL_HQ_CORNEA_REFRACTIVE);
+                        return MATERIAL_HQ_CORNEA_REFRACTIVE;
                     if (materialType == MaterialType.Eye)
-                        return Util.FindMaterial(MATERIAL_HQ_EYE_REFRACTIVE);
+                        return MATERIAL_HQ_EYE_REFRACTIVE;
                 }
 
                 if (info.ParallaxEyes)
                 {                    
                     if (materialType == MaterialType.Cornea)
-                        return Util.FindMaterial(MATERIAL_HQ_CORNEA_PARALLAX);
+                        return MATERIAL_HQ_CORNEA_PARALLAX;
                     if (materialType == MaterialType.Eye)
-                        return Util.FindMaterial(MATERIAL_HQ_EYE_PARALLAX);
+                        return MATERIAL_HQ_EYE_PARALLAX;
                 }                
             }
             else if (quality == MaterialQuality.Baked) // option overrides for baked materials
@@ -544,26 +550,26 @@ namespace Reallusion.Import
                     if (info.BuiltRefractiveEyes)
                     {
                         if (materialType == MaterialType.Cornea)
-                            return Util.FindMaterial(MATERIAL_BAKED_CORNEA_REFRACTIVE_CUSTOM);
+                            return MATERIAL_BAKED_CORNEA_REFRACTIVE_CUSTOM;
                         if (materialType == MaterialType.Eye)
-                            return Util.FindMaterial(MATERIAL_BAKED_EYE_REFRACTIVE_CUSTOM);
+                            return MATERIAL_BAKED_EYE_REFRACTIVE_CUSTOM;
                     }
                     else if (info.BuiltParallaxEyes)
                     {
                         if (materialType == MaterialType.Cornea)
-                            return Util.FindMaterial(MATERIAL_BAKED_CORNEA_PARALLAX_CUSTOM);                        
+                            return MATERIAL_BAKED_CORNEA_PARALLAX_CUSTOM;
                     }
                     else
                     {
                         if (materialType == MaterialType.Cornea)
-                            return Util.FindMaterial(MATERIAL_BAKED_CORNEA_CUSTOM);                        
+                            return MATERIAL_BAKED_CORNEA_CUSTOM;
                     }
                     
                     if (materialType == MaterialType.Hair)
-                        return Util.FindMaterial(MATERIAL_BAKED_HAIR_CUSTOM);
+                        return MATERIAL_BAKED_HAIR_CUSTOM;
                                        
                     if (materialType == MaterialType.EyeOcclusion)
-                        return Util.FindMaterial(MATERIAL_BAKED_EYE_OCCLUSION_CUSTOM);
+                        return MATERIAL_BAKED_EYE_OCCLUSION_CUSTOM;
                 }                
             }
 
@@ -573,35 +579,59 @@ namespace Reallusion.Import
             // return the material named in the dictionary...
             if (materialDictionary != null && materialDictionary.ContainsKey(materialType))
             {
-                return Util.FindMaterial(materialDictionary[materialType]);
+                return materialDictionary[materialType];
             }
 
-            return GetDefaultMaterial(quality);
+            return GetDefaultMaterialName(quality);
         }
 
         public static Material GetDefaultMaterial(MaterialQuality quality)
         {
+            return Util.FindMaterial(GetDefaultMaterialName(quality));
+        }
+
+        public static string GetDefaultMaterialName(MaterialQuality quality)
+        {
             switch (quality)
             {
-                case MaterialQuality.Baked: return Util.FindMaterial(MATERIAL_BAKED_OPAQUE);
-                case MaterialQuality.High: return Util.FindMaterial(MATERIAL_HQ_OPAQUE);
-                case MaterialQuality.Default: return Util.FindMaterial(MATERIAL_DEFAULT_OPAQUE);
+                case MaterialQuality.Baked: return MATERIAL_BAKED_OPAQUE;
+                case MaterialQuality.High: return MATERIAL_HQ_OPAQUE;
+                case MaterialQuality.Default: return MATERIAL_DEFAULT_OPAQUE;
             }
 
             return null;
         }
 
-        public static Material GetTemplateMaterial(MaterialType materialType, MaterialQuality quality, CharacterInfo info)
+        public static string GetTemplateMaterialName(MaterialType materialType, MaterialQuality quality, CharacterInfo info)
         {
-            Material template = GetQualityMaterial(materialType, quality, info);
+            string templateName = GetQualityMaterialName(materialType, quality, info);
+            
+            if (string.IsNullOrEmpty(templateName))
+                templateName = GetDefaultMaterialName(quality);
 
-            if (!template)
-                template = GetDefaultMaterial(quality);
-
-            if (!template)
+            if (string.IsNullOrEmpty(templateName))
                 Debug.LogError("Unable to find Template Material for: " + materialType + "/" + quality);
 
-            return template;
+            return templateName;
+        }
+
+        public static Material GetTemplateMaterial(MaterialType materialType, MaterialQuality quality, CharacterInfo info)
+        {
+            string templateName = GetTemplateMaterialName(materialType, quality, info);
+            
+            if (Importer.USE_AMPLIFY_SHADER)
+            {
+                Material amplifyTemplate = Util.FindMaterial(templateName + "_Amplify");
+                if (amplifyTemplate)
+                {
+                    return amplifyTemplate;
+                }
+            }
+
+            Material template = Util.FindMaterial(templateName);
+            if (template) return template;
+
+            return GetDefaultMaterial(quality);
         }
 
         public static Material GetCustomTemplateMaterial(string templateName, MaterialQuality quality)

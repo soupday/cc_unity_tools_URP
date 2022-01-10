@@ -119,7 +119,7 @@ Material:
     - _RSmoothnessMod: 0
     - _SmoothnessMax: 0.8
     - _SmoothnessMin: 0
-    - _SmoothnessPower: 1.2
+    - _SmoothnessPower: 1.25
     - _UnmaskedSmoothnessMod: 0
     - _UpperLipSmoothnessMod: 0
     m_Colors:
