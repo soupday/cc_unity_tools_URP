@@ -926,10 +926,10 @@ namespace Reallusion.Import
             if (matJson != null)
             {
                 // both the cornea and the eye materials need the same settings:
-                mat.SetFloat("_AOStrength", Mathf.Clamp01(matJson.GetFloatValue("Textures/AO/Strength") / 100f));
+                mat.SetFloat("_AOStrength", 0.5f * Mathf.Clamp01(matJson.GetFloatValue("Textures/AO/Strength") / 100f));
                 if (matJson.PathExists("Textures/Glow/Texture Path"))
                     mat.SetColor("_EmissiveColor", Color.white * (matJson.GetFloatValue("Textures/Glow/Strength") / 100f));
-                mat.SetFloat("_ColorBlendStrength", matJson.GetFloatValue("Custom Shader/Variable/BlendMap2 Strength"));
+                mat.SetFloat("_ColorBlendStrength", 0.5f * matJson.GetFloatValue("Custom Shader/Variable/BlendMap2 Strength"));
                 mat.SetFloat("_ShadowRadius", matJson.GetFloatValue("Custom Shader/Variable/Shadow Radius"));
                 mat.SetFloat("_ShadowHardness", matJson.GetFloatValue("Custom Shader/Variable/Shadow Hardness"));
                 float specularScale = matJson.GetFloatValue("Custom Shader/Variable/Specular Scale");

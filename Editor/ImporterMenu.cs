@@ -39,8 +39,18 @@ namespace Reallusion.Import
                     if (AnimPlayerIMGUI.IsPlayerShown())
                         AnimPlayerIMGUI.DestroyPlayer();
                     else
-                        AnimPlayerIMGUI.CreatePlayer(Util.FindPreviewCharacter(ImporterWindow.Current.Character.Fbx));
+                    {
+                        PreviewScene ps = PreviewScene.GetPreviewScene();
+                        if (ps.IsValid)
+                            AnimPlayerIMGUI.CreatePlayer(ps, ImporterWindow.Current.Character.Fbx, false);
+                    }
                 }
+            }
+            else
+            {
+                PreviewScene ps = PreviewScene.GetPreviewScene();
+                if (ps.IsValid)
+                    AnimPlayerIMGUI.CreatePlayer(ps, null, false);
             }
         }
 

@@ -66,7 +66,7 @@ namespace Reallusion.Import
         {
             fbx = (GameObject)character;
             fbxPath = AssetDatabase.GetAssetPath(fbx);
-            prefab = Util.GetCharacterPrefab(fbx);
+            prefab = Util.GetCharacterPrefabAsset(fbx);
             characterInfo = info;
             characterName = Path.GetFileNameWithoutExtension(fbxPath);
             fbxFolder = Path.GetDirectoryName(fbxPath);

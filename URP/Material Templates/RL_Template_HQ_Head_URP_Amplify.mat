@@ -112,9 +112,9 @@ Material:
     - _CSubsurfaceAmbient: 0.1
     - _CSubsurfaceDirect: 0.9
     - _CSubsurfaceNormalDistortion: 0.35
-    - _CSubsurfaceScattering: 2
+    - _CSubsurfaceScattering: 2.5
     - _CSubsurfaceShadow: 0.5
-    - _CSubsurfaceStrength: 1
+    - _CSubsurfaceStrength: 2.5
     - _CTransmissionShadow: 0.5
     - _CheekScatterScale: 1
     - _CheekSmoothnessMod: 0

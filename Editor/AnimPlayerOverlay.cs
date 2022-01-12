@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Reallusion.Import
 {
-    [Overlay(typeof(SceneView), "Reallusion Import Animaton Tools", "Animation Tools")]
+    [Overlay(typeof(SceneView), "Reallusion Import Tools", "Character Preview Tools")]
     public class AnimPlayerOverlay : IMGUIOverlay, ITransientOverlay
     {
         public static AnimPlayerOverlay createdOverlay { get; private set; }

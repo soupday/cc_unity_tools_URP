@@ -894,7 +894,7 @@ namespace Reallusion.Import
             GameObject sceneRoot = PrefabUtility.GetOutermostPrefabInstanceRoot(obj);
             if (!sceneRoot) sceneRoot = (GameObject)obj;
             GameObject fbxAsset = Util.GetRootPrefabFromObject(sceneRoot);
-            GameObject prefab = Util.GetCharacterPrefab(fbxAsset);
+            GameObject prefab = Util.GetCharacterPrefabAsset(fbxAsset);
             string fbxPath = AssetDatabase.GetAssetPath(fbxAsset);
             string name = Path.GetFileNameWithoutExtension(fbxPath);
             string fbxFolder = Path.GetDirectoryName(fbxPath);

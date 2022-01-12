@@ -10,37 +10,55 @@ namespace Reallusion.Import
         public static bool play;
         public static float time, prev, current = 0f;        
         public static bool foldOut = true;
+        public static bool FoldOut { get { return foldOut; } set { foldOut = value; } }        
         
-        public static void SetCharacter(GameObject characterPrefab)
+        public static void SetCharacter(PreviewScene ps, GameObject fbx, bool refresh)
         {
-            Animator anim = characterPrefab.GetComponent<Animator>();
-            AnimationClip firstClip = Util.GetFirstAnimationClipFromCharacter(characterPrefab);
-            SetPlayerTargets(anim, firstClip);
-            FacialMorphIMGUI.StartUp();
-        }
-
-        public static void SetPlayerTargets(Animator setAnimator, AnimationClip setClip)
-        {
-            if (setAnimator)
+            Debug.Log("SetCharacter");
+            if (ps.IsValid)
             {
-                animator = setAnimator;
+                GameObject scenePrefab = ps.GetPreviewCharacter();
 
-                if (setClip)
+                if (scenePrefab)
                 {
-                    if (AnimationMode.InAnimationMode())
-                        AnimationMode.StopAnimationMode();
+                    GameObject sceneFbx = Util.GetScenePrefabRoot(scenePrefab);
+                    Animator anim = scenePrefab.GetComponent<Animator>();
+                    AnimationClip firstClip = Util.GetFirstAnimationClipFromCharacter(sceneFbx);
 
-                    animationClip = setClip;
-                    time = 0f;
-                    play = false;
-
-                    if (!AnimationMode.InAnimationMode())
-                        AnimationMode.StartAnimationMode();
-
-                    SampleOnce();
+                    // if this is not representing the same character then reset the animation player
+                    if (fbx != sceneFbx) UpdatePlayerTargets(anim, firstClip, refresh);
+                    // otherwise continue with the current animation setup
+                    else UpdatePlayerTargets(anim, firstClip, refresh);
                 }
             }
         }
+
+        public static void UpdatePlayerTargets(Animator setAnimator, AnimationClip setClip, bool refresh)
+        {                        
+            if (setAnimator)
+            {
+                if (AnimationMode.InAnimationMode()) AnimationMode.StopAnimationMode();
+
+                if (animator != setAnimator)
+                {                     
+                    animator = setAnimator;                    
+                }
+
+                if (!refresh) FacialMorphIMGUI.StartUp();
+
+                if (!animationClip)
+                {
+                    animationClip = setClip;
+                    time = 0f;
+                    play = false;
+                }
+
+                if (!AnimationMode.InAnimationMode()) AnimationMode.StartAnimationMode();
+
+                if (animationClip) SampleOnce();
+                if (refresh) FacialMorphIMGUI.ApplyFace();
+            }
+        }        
 
         public static void DrawPlayer()
         {            
@@ -48,7 +66,11 @@ namespace Reallusion.Import
             EditorGUI.BeginChangeCheck();
             foldOut = EditorGUILayout.Foldout(foldOut, "Animation Playback", EditorStyles.foldout);
             if (EditorGUI.EndChangeCheck())
+            {
+                //if (foldOut && FacialMorphIMGUI.FoldOut)
+                //    FacialMorphIMGUI.FoldOut = false;
                 FacialMorphIMGUI.doOnceCatchMouse = true;
+            }
             if (foldOut)
             {
                 EditorGUI.BeginChangeCheck();
@@ -112,7 +134,7 @@ namespace Reallusion.Import
                 EditorGUI.BeginChangeCheck();
                 play = GUILayout.Toggle(play, new GUIContent(EditorGUIUtility.IconContent("Animation.Play").image, "Play (Toggle)"), EditorStyles.toolbarButton);
                 if (EditorGUI.EndChangeCheck())
-                {
+                {                    
                     FacialMorphIMGUI.ResetFace();
                 }
                 // "PauseButton"
@@ -136,6 +158,8 @@ namespace Reallusion.Import
                     FacialMorphIMGUI.ResetFace();
                 }
 
+                if (!UnityEditorInternal.InternalEditorUtility.isApplicationActive) play = false;                
+
                 GUILayout.EndHorizontal();
 
                 EditorGUI.EndDisabledGroup();
@@ -143,18 +167,18 @@ namespace Reallusion.Import
             GUILayout.EndVertical();
         }
 
-        static void SampleOnce()
+        public static void SampleOnce()
         {
             AnimationMode.BeginSampling();
             AnimationMode.SampleAnimationClip(animator.gameObject, animationClip, time);
             AnimationMode.EndSampling();
         }
 
-        public static void CreatePlayer(GameObject characterPrefab = null)
+        public static void CreatePlayer(PreviewScene ps, GameObject fbx, bool refresh)
         {
-            if (characterPrefab)
+            if (fbx && ps.IsValid)
             {
-                SetCharacter(characterPrefab);
+                SetCharacter(ps, fbx, refresh);
             }
 
 #if SCENEVIEW_OVERLAY_COMPATIBLE
@@ -168,10 +192,18 @@ namespace Reallusion.Import
 #endif
             //Common
             SceneView.RepaintAll();
+
+            EditorApplication.update += UpdateDelegate;
         }
 
         public static void DestroyPlayer()
         {
+            Debug.Log("DestroyPlayer()");
+            EditorApplication.update -= UpdateDelegate;
+
+            if (AnimationMode.InAnimationMode())
+                AnimationMode.StopAnimationMode();            
+
 #if SCENEVIEW_OVERLAY_COMPATIBLE
             //2021.2.0a17+          
             if (AnimPlayerOverlay.exists)
@@ -184,10 +216,8 @@ namespace Reallusion.Import
             AnimPlayerIMGUI.play = false;
             AnimPlayerIMGUI.time = 0f;
             AnimPlayerIMGUI.animator = null;
+            AnimPlayerIMGUI.animationClip = null;
 
-            if (AnimationMode.InAnimationMode())
-                AnimationMode.StopAnimationMode();
-            
             SceneView.RepaintAll();
         }
 
@@ -200,46 +230,49 @@ namespace Reallusion.Import
             //2020 LTS            
             return AnimPlayerWindow.isShown;
 #endif
-        }        
-    }
-}
+        }
 
-/* 
-//update codeblock to run in controlling window - for rate limited smooth updates
-void Update()
-{
-    if (time == 0f) time = EditorApplication.timeSinceStartup;
-    deltaTime = EditorApplication.timeSinceStartup - time;
-    time = EditorApplication.timeSinceStartup;
-
-    if (!EditorApplication.isPlaying && AnimationMode.InAnimationMode())
-    {               
-        if (AnimPlayerIMGUI.animationClip && AnimPlayerIMGUI.animator)
+        static double updateTime = 0f;
+        static double deltaTime = 0f;
+        static double frameTime = 1f;
+        static void UpdateDelegate()
         {
-            if (AnimPlayerIMGUI.play)
+            if (updateTime == 0f) updateTime = EditorApplication.timeSinceStartup;
+            deltaTime = EditorApplication.timeSinceStartup - updateTime;
+            updateTime = EditorApplication.timeSinceStartup;
+
+            FacialMorphIMGUI.AdjustEyes();
+
+            if (!EditorApplication.isPlaying && AnimationMode.InAnimationMode())
             {
-                double frameDuration = 1.0f / AnimPlayerIMGUI.animationClip.frameRate;
+                if (animationClip && animator)
+                {
+                    if (play)
+                    {
+                        double frameDuration = 1.0f / animationClip.frameRate;
 
-                AnimPlayerIMGUI.time += (float)deltaTime;
-                frameTime += deltaTime;
-                if (AnimPlayerIMGUI.time >= AnimPlayerIMGUI.animationClip.length)
-                    AnimPlayerIMGUI.time = 0f;
+                        time += (float)deltaTime;
+                        frameTime += deltaTime;
+                        if (time >= animationClip.length)
+                            time = 0f;
 
-                if (frameTime < frameDuration) return;
-                frameTime = 0f;
+                        if (frameTime < frameDuration) return;
+                        frameTime = 0f;
+                    }
+                    else
+                        frameTime = 1f;
+
+                    if (current != time)
+                    {
+                        AnimationMode.BeginSampling();
+                        AnimationMode.SampleAnimationClip(animator.gameObject, animationClip, time);
+                        AnimationMode.EndSampling();
+                        SceneView.RepaintAll();
+                        
+                        AnimPlayerIMGUI.current = time;
+                    }
+                }
             }
-            else 
-                frameTime = 1f;
-
-            if (AnimPlayerIMGUI.current == AnimPlayerIMGUI.time) return;
-                    
-            AnimationMode.BeginSampling();
-            AnimationMode.SampleAnimationClip(AnimPlayerIMGUI.animator.gameObject, AnimPlayerIMGUI.animationClip, AnimPlayerIMGUI.time);                    
-            AnimationMode.EndSampling();
-
-            SceneView.RepaintAll();
-            AnimPlayerIMGUI.current = AnimPlayerIMGUI.time;
         }
     }
 }
-*/
