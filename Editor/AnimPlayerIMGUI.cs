@@ -29,10 +29,7 @@ namespace Reallusion.Import
                     Animator anim = scenePrefab.GetComponent<Animator>();
                     AnimationClip firstClip = Util.GetFirstAnimationClipFromCharacter(sceneFbx);
 
-                    // if this is not representing the same character then reset the animation player
-                    if (fbx != sceneFbx) UpdatePlayerTargets(anim, firstClip);
-                    // otherwise continue with the current animation setup
-                    else UpdatePlayerTargets(anim, firstClip);
+                    UpdatePlayerTargets(anim, firstClip);
                 }
             }
         }
@@ -41,36 +38,37 @@ namespace Reallusion.Import
         {                        
             if (setAnimator)
             {
+                // stop animation mode
                 if (AnimationMode.InAnimationMode()) AnimationMode.StopAnimationMode();
 
-                if (animator != setAnimator)
-                {                     
-                    animator = setAnimator;                    
-                }
-
-                // replace animation clip if: there is no current clip.
-                //                        or: the current clip was not set manually by the user.
+                // set the animator
+                if (animator != setAnimator) animator = setAnimator;                    
+                
                 if (setClip)
                 {
+                    // replace animation clip 
+                    // if: there is no current clip.
+                    // or: the current clip was not set manually by the user.
                     if (!animationClip || !clipManuallySet)
                     {
                         animationClip = setClip;
                         time = 0f;
                         play = false;
-                        doneStartUp = false;
+                        doneInitFace = false;
                     }
-                }
-
-                if (!AnimationMode.InAnimationMode()) AnimationMode.StartAnimationMode();
+                }                 
 
                 // intitialise the face refs if needed
-                if (!doneStartUp) StartUp();
+                if (!doneInitFace) InitFace();
 
-                // then sample the animtion
+                // restart the animation mode
+                if (!AnimationMode.InAnimationMode()) AnimationMode.StartAnimationMode();
+
+                // then sample the animation
                 if (animationClip) SampleOnce();
 
-                // then apply the face
-                if (doneStartUp) ApplyFace();
+                // finally, apply the face
+                ApplyFace();
             }
         }
 
@@ -207,7 +205,7 @@ namespace Reallusion.Import
 
         public static void CreatePlayer(PreviewScene ps, GameObject fbx)
         {
-            if (fbx && ps.IsValid)
+            if (ps.IsValid)
             {
                 SetCharacter(ps, fbx);
             }
@@ -316,6 +314,8 @@ namespace Reallusion.Import
         public static bool doOnceCatchMouse = true;
         public static bool eyeChanged = false;
         public static bool doneStartUp = false;
+        public static bool doneInitFace = false;
+
 
         static float EXPRESSIVENESS = 0.25f;
         static Dictionary<string, float> EXPRESSION;
@@ -379,12 +379,19 @@ namespace Reallusion.Import
             transparent.Apply();
             transparentBoxStyle.normal.background = transparent;
 
+            InitFace();
+
+            doneStartUp = true;
+        }
+
+        public static void InitFace()
+        {
+            if (animator == null) return;
+
             EXPRESSIVENESS = 0f;
-            EXPRESSION = null;
+            EXPRESSION = null;            
 
-            if (AnimPlayerIMGUI.animator == null) return;
-
-            Object obj = AnimPlayerIMGUI.animator.gameObject;
+            Object obj = animator.gameObject;
             GameObject root = PrefabUtility.GetOutermostPrefabInstanceRoot(obj);
 
             if (root)
@@ -402,6 +409,8 @@ namespace Reallusion.Import
                     eyeRef = new Vector2(euler.z, euler.x);
                     eyeVal = new Vector2(euler.z, euler.x);
                 }
+
+                doOnceCatchMouse = true;
 
                 if (jawBone)
                 {
@@ -431,11 +440,10 @@ namespace Reallusion.Import
                             }
                         }
                     }
-                }
-                SceneView.RepaintAll();                
+                }                
             }
 
-            doneStartUp = true;
+            doneInitFace = true;
         }
 
         public static void ResetFace(bool full = false)
@@ -501,6 +509,7 @@ namespace Reallusion.Import
             doOnce = true;
             doOnceCatchMouse = true;
             doneStartUp = false;
+            doneInitFace = false;
             clipManuallySet = false;
             EXPRESSION = null;
             EXPRESSIVENESS = 0f;
@@ -508,7 +517,7 @@ namespace Reallusion.Import
 
         public static void DrawFacialMorph()
         {
-            if (doOnce)
+            if (doOnce) 
             {
                 StartUp();
                 doOnce = !doOnce;

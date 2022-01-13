@@ -32,25 +32,19 @@ namespace Reallusion.Import
         [MenuItem("CC3/Animation Player", priority = 2)]
         public static void ShowAnimationPlayer()
         {
-            if (ImporterWindow.Current)
+            if (AnimPlayerIMGUI.IsPlayerShown())
             {
-                if (ImporterWindow.Current.Character != null)
-                {
-                    if (AnimPlayerIMGUI.IsPlayerShown())
-                        AnimPlayerIMGUI.DestroyPlayer();
-                    else
-                    {
-                        PreviewScene ps = PreviewScene.GetPreviewScene();
-                        if (ps.IsValid)
-                            AnimPlayerIMGUI.CreatePlayer(ps, ImporterWindow.Current.Character.Fbx);
-                    }
-                }
+                AnimPlayerIMGUI.DestroyPlayer();
+                WindowManager.showTools = false;
             }
             else
             {
                 PreviewScene ps = PreviewScene.GetPreviewScene();
                 if (ps.IsValid)
-                    AnimPlayerIMGUI.CreatePlayer(ps, null);
+                {
+                    AnimPlayerIMGUI.CreatePlayer(ps, ImporterWindow.Current?.Character?.Fbx);
+                    WindowManager.showTools = true;
+                }
             }
         }
 

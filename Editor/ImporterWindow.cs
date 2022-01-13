@@ -36,8 +36,7 @@ namespace Reallusion.Import
         private static List<CharacterInfo> validCharacters;
         private static string backScenePath;
         private static Mode mode;
-        private static ImporterWindow currentWindow;
-        private bool showAnimPlayer = true;
+        private static ImporterWindow currentWindow;        
         public static ImporterWindow Current { get { return currentWindow; } }        
         public CharacterInfo Character { get { return contextCharacter; } }        
                         
@@ -315,10 +314,7 @@ namespace Reallusion.Import
             {
                 StoreBackScene();
                 PreviewScene.PreviewCharacter(contextCharacter.Fbx);                
-                if (showAnimPlayer)
-                {
-                    ShowAnimationPlayer();
-                }
+                if (WindowManager.showTools) ShowAnimationPlayer();
                 ResetAllSceneViewCamera();
             }
 
@@ -546,7 +542,7 @@ namespace Reallusion.Import
                     if (ps.IsValid)
                     {
                         ps.UpdatePreviewCharacter(prefabAsset);
-                        if (showAnimPlayer)
+                        if (WindowManager.showTools)
                         {
                             ShowAnimationPlayer();                            
                         }
@@ -655,7 +651,7 @@ namespace Reallusion.Import
             if (GUILayout.Button(new GUIContent(iconActionAnimPlayer, "Show animation preview player."),
                 GUILayout.Width(ACTION_BUTTON_SIZE), GUILayout.Height(ACTION_BUTTON_SIZE)))
             {
-                if (showAnimPlayer)
+                if (WindowManager.showTools)
                 {
                     /*
                     AnimationClip firstClip = Util.GetFirstAnimationClipFromCharacter(contextCharacter.Fbx);
@@ -669,13 +665,13 @@ namespace Reallusion.Import
                         HideAnimationPlayer();
                         ResetAllSceneViewCamera();
                     }*/
-                    showAnimPlayer = false;
+                    WindowManager.showTools = false;
                     HideAnimationPlayer();
                     ResetAllSceneViewCamera();
                 }
                 else
                 {
-                    showAnimPlayer = true;
+                    WindowManager.showTools = true;
                     ShowAnimationPlayer();
                     ResetAllSceneViewCamera();
                 }
@@ -806,8 +802,7 @@ namespace Reallusion.Import
 
         private void OnDestroy()
         {            
-            ClearAllData();
-            AnimPlayerIMGUI.DestroyPlayer();
+            ClearAllData();            
         }        
 
         private static void MakeStyle()
@@ -870,9 +865,9 @@ namespace Reallusion.Import
             {
                 AnimPlayerIMGUI.ResetFace();
                 AnimPlayerIMGUI.DestroyPlayer();
-            }                        
+            }
 
-            showAnimPlayer = false;
+            WindowManager.showTools = false;
         }
 
         private void ShowAnimationPlayer() 
@@ -888,9 +883,9 @@ namespace Reallusion.Import
                 else
                 {
                     AnimPlayerIMGUI.CreatePlayer(ps, contextCharacter.Fbx);
-                }                
+                }
 
-                showAnimPlayer = true;
+                WindowManager.showTools = true;
             }
         }
 
