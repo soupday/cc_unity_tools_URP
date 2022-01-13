@@ -3,7 +3,7 @@ using UnityEditor;
 
 namespace Reallusion.Import
 {
-    public class AnimPlayerWindow : Editor
+    public class AnimPlayerWindow
     {
         public static bool isShown = false;
         private static float xpadding = 6f;
@@ -18,8 +18,8 @@ namespace Reallusion.Import
         public static void OnSceneGUI(SceneView sceneView)
         {
             height = 72f;
-            if (AnimPlayerIMGUI.foldOut) height += 84f;
-            if (FacialMorphIMGUI.foldOut) height += 90f;
+            if (AnimPlayerIMGUI.animFoldOut) height += 84f;
+            if (AnimPlayerIMGUI.faceFoldOut) height += 90f;
             
             float x = sceneView.position.width - width - xpadding;
             float y = sceneView.position.height - height - ypadding;
@@ -45,8 +45,8 @@ namespace Reallusion.Import
         {
             if (isShown)
             {
-                SceneView.duringSceneGui -= AnimPlayerWindow.OnSceneGUI;               
-                FacialMorphIMGUI.CleanUp();
+                SceneView.duringSceneGui -= AnimPlayerWindow.OnSceneGUI;
+                AnimPlayerIMGUI.CleanUp();
                 
                 isShown = false;
             }
@@ -57,7 +57,7 @@ namespace Reallusion.Import
         public static void DoWindow(int id)
         {            
             AnimPlayerIMGUI.DrawPlayer();
-            FacialMorphIMGUI.DrawFacialMorph();
+            AnimPlayerIMGUI.DrawFacialMorph();
         }        
     }
 }

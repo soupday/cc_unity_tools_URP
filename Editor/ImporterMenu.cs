@@ -42,7 +42,7 @@ namespace Reallusion.Import
                     {
                         PreviewScene ps = PreviewScene.GetPreviewScene();
                         if (ps.IsValid)
-                            AnimPlayerIMGUI.CreatePlayer(ps, ImporterWindow.Current.Character.Fbx, false);
+                            AnimPlayerIMGUI.CreatePlayer(ps, ImporterWindow.Current.Character.Fbx);
                     }
                 }
             }
@@ -50,7 +50,7 @@ namespace Reallusion.Import
             {
                 PreviewScene ps = PreviewScene.GetPreviewScene();
                 if (ps.IsValid)
-                    AnimPlayerIMGUI.CreatePlayer(ps, null, false);
+                    AnimPlayerIMGUI.CreatePlayer(ps, null);
             }
         }
 
