@@ -17,7 +17,7 @@ namespace Reallusion.Import
         Transform baked;
 
 
-        public static PreviewScene PreviewCharacter(GameObject fbx)
+        public static PreviewScene OpenPreviewScene(GameObject fbx)
         {
             if (!fbx) return new PreviewScene();
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return new PreviewScene();
@@ -105,7 +105,7 @@ namespace Reallusion.Import
         public GameObject ShowPreviewCharacter(GameObject fbxAsset)
         {
             if (!fbxAsset) return null;
-            GameObject prefabAsset = Util.GetCharacterPrefabAsset(fbxAsset);
+            GameObject prefabAsset = Util.FindCharacterPrefabAsset(fbxAsset);
 
             if (character)
             {
@@ -124,31 +124,13 @@ namespace Reallusion.Import
 
         public GameObject ShowBakedCharacter(GameObject bakedAsset)
         {
-            if (!bakedAsset) return null;
-
-            GameObject existingBaked = GetBakedCharacter();
-            if (existingBaked)
-            {
-                GameObject existingBakedAsset = Util.GetSourcePrefabFromObject(existingBaked);
-
-                if (bakedAsset == existingBakedAsset)
-                {
-                    Debug.Log("Keeping existing baked prefab...");
-                    Selection.activeGameObject = existingBaked;
-                    return existingBaked;
-                }
-            }
+            if (!bakedAsset) return null;            
 
             ClearBaked();
 
             GameObject clone = PrefabUtility.InstantiatePrefab(bakedAsset, baked.transform) as GameObject;
             if (clone)
             {
-                if (existingBaked)
-                    Debug.Log("Replacing baked prefab with new generated prefab...");
-                else
-                    Debug.Log("Adding generated prefab...");
-
                 Selection.activeGameObject = clone;
                 return clone;
             }
@@ -159,20 +141,7 @@ namespace Reallusion.Import
 
         public GameObject UpdatePreviewCharacter(GameObject prefabAsset)
         {
-            if (!prefabAsset) return null;
-
-            GameObject existingPrefab = GetPreviewCharacter();
-            if (existingPrefab)
-            {
-                GameObject existingPrefabAsset = Util.GetSourcePrefabFromObject(existingPrefab);
-
-                if (prefabAsset == existingPrefabAsset)
-                {
-                    Debug.Log("Keeping existing generated prefab...");
-                    Selection.activeGameObject = existingPrefab;
-                    return existingPrefab;
-                }                
-            }
+            if (!prefabAsset) return null;            
 
             ClearCharacter();
             

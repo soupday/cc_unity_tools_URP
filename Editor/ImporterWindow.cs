@@ -56,7 +56,7 @@ namespace Reallusion.Import
         const float ICON_WIDTH = 100f;
         const float ACTION_WIDTH = ACTION_BUTTON_SIZE + 12f;
 
-        private static GUIStyle logStyle, mainStyle, buttonStyle, labelStyle, boldStyle;
+        private static GUIStyle logStyle, mainStyle, buttonStyle, labelStyle, boldStyle, iconStyle;
         private static Texture2D iconUnprocessed;
         private static Texture2D iconBasic;
         private static Texture2D iconHQ;
@@ -149,6 +149,8 @@ namespace Reallusion.Import
 
         private void InitData()
         {
+            AnimationMode.StopAnimationMode();
+
             string[] folders = new string[] { "Assets", "Packages" };
             iconUnprocessed = Util.FindTexture(folders, "RLIcon_UnprocessedChar");
             iconBasic = Util.FindTexture(folders, "RLIcon_BasicChar");
@@ -313,7 +315,9 @@ namespace Reallusion.Import
             if (previewCharacterAfterGUI)
             {
                 StoreBackScene();
-                PreviewScene.PreviewCharacter(contextCharacter.Fbx);                
+
+                PreviewScene.OpenPreviewScene(contextCharacter.Fbx);
+
                 if (WindowManager.showTools) ShowAnimationPlayer();
                 ResetAllSceneViewCamera();
             }
@@ -377,7 +381,7 @@ namespace Reallusion.Import
                     GUILayout.BeginHorizontal();                    
                     GUILayout.FlexibleSpace();
                     string name = Path.GetFileNameWithoutExtension(AssetDatabase.GUIDToAssetPath(info.guid));
-                    GUILayout.Box(name, mainStyle);
+                    GUILayout.Box(name, iconStyle, GUILayout.Width(ICON_SIZE));
                     GUILayout.FlexibleSpace();
                     GUILayout.FlexibleSpace();
                     GUILayout.EndHorizontal();
@@ -538,10 +542,8 @@ namespace Reallusion.Import
 
                 if (prefabAsset)
                 {
-                    PreviewScene ps = PreviewScene.GetPreviewScene();
-                    if (ps.IsValid)
-                    {
-                        ps.UpdatePreviewCharacter(prefabAsset);
+                    if (UpdatePreviewCharacter(prefabAsset))
+                    { 
                         if (WindowManager.showTools)
                         {
                             ShowAnimationPlayer();                            
@@ -613,10 +615,7 @@ namespace Reallusion.Import
 
                     if (bakedAsset)
                     {
-                        Vector3 position = Vector3.zero;
-                        if (contextCharacter.BakeSeparatePrefab) position = new Vector3(-0.35f, 0f, 0.35f);
-                        PreviewScene ps = PreviewScene.GetPreviewScene();
-                        if (ps.IsValid) ps.ShowBakedCharacter(bakedAsset);
+                        ShowBakedCharacter(bakedAsset);
                     }
                 }
             }
@@ -632,6 +631,7 @@ namespace Reallusion.Import
             }
             GUI.enabled = true;
             
+            /*
             GUILayout.Space(ACTION_BUTTON_SPACE);
 
             if (!contextCharacter.BuiltHQMaterials || contextCharacter.BuiltDualMaterialHair) GUI.enabled = false;
@@ -639,11 +639,15 @@ namespace Reallusion.Import
                 GUILayout.Width(ACTION_BUTTON_SIZE), GUILayout.Height(ACTION_BUTTON_SIZE)))
             {
                 contextCharacter.DualMaterialHair = true;
-                MeshUtil.Extract2PassHairMeshes(contextCharacter.Fbx);                
+                MeshUtil.Extract2PassHairMeshes(Util.FindCharacterPrefabAsset(contextCharacter.Fbx));
                 contextCharacter.Write();
+
+                ShowPreviewCharacter();
+
                 TrySetMultiPass(true);
             }
             GUI.enabled = true;
+            */
 
             GUILayout.Space(ACTION_BUTTON_SPACE * 2f + 11f);
 
@@ -812,11 +816,16 @@ namespace Reallusion.Import
             logStyle.fontStyle = FontStyle.Italic;
             logStyle.normal.textColor = Color.grey;
 
-
             mainStyle = new GUIStyle();
             mainStyle.wordWrap = false;
             mainStyle.fontStyle = FontStyle.Normal;
             mainStyle.normal.textColor = Color.white;
+
+            iconStyle = new GUIStyle();
+            iconStyle.wordWrap = false;
+            iconStyle.fontStyle = FontStyle.Normal;
+            iconStyle.normal.textColor = Color.white;
+            iconStyle.alignment = TextAnchor.MiddleCenter;
 
             boldStyle = new GUIStyle();
             boldStyle.alignment = TextAnchor.UpperLeft;
@@ -857,7 +866,60 @@ namespace Reallusion.Import
                     DragAndDrop.AcceptDrag();                    
                     break;                    
             }
-        }        
+        }      
+        
+        bool ShowPreviewCharacter()
+        {
+            GameObject fbx = contextCharacter.Fbx;
+
+            PreviewScene ps = PreviewScene.GetPreviewScene();            
+
+            if (ps.IsValid)
+            {
+                bool animationMode = AnimationMode.InAnimationMode();
+                if (animationMode) AnimationMode.StopAnimationMode();
+
+                ps.ShowPreviewCharacter(fbx);
+
+                if (animationMode) AnimationMode.StartAnimationMode();
+            }            
+
+            return ps.IsValid;
+        }
+
+        bool UpdatePreviewCharacter(GameObject prefabAsset)
+        {
+            PreviewScene ps = PreviewScene.GetPreviewScene();            
+
+            if (ps.IsValid)
+            {
+                bool animationMode = AnimationMode.InAnimationMode();
+                if (animationMode) AnimationMode.StopAnimationMode();
+
+                ps.UpdatePreviewCharacter(prefabAsset);
+
+                if (animationMode) AnimationMode.StartAnimationMode();
+            }            
+
+            return ps.IsValid;
+        }
+
+        bool ShowBakedCharacter(GameObject bakedAsset)
+        {
+            PreviewScene ps = PreviewScene.GetPreviewScene();            
+
+            if (ps.IsValid)
+            {
+                bool animationMode = AnimationMode.InAnimationMode();
+                if (animationMode) AnimationMode.StopAnimationMode();
+
+                ps.ShowBakedCharacter(bakedAsset);
+
+                if (animationMode) AnimationMode.StartAnimationMode();
+            }            
+
+            return ps.IsValid;
+        }
 
         private void HideAnimationPlayer()
         {            

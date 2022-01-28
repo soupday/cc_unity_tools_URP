@@ -613,7 +613,7 @@ namespace Reallusion.Import
                 Debug.LogError("Unable to find Template Material for: " + materialType + "/" + quality);
 
             return templateName;
-        }
+        }        
 
         public static Material GetTemplateMaterial(MaterialType materialType, MaterialQuality quality, CharacterInfo info)
         {

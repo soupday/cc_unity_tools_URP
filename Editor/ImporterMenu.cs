@@ -53,12 +53,18 @@ namespace Reallusion.Import
         {
             ImporterWindow.Init(ImporterWindow.Mode.single, Selection.activeObject);
         }
-
+         
         [MenuItem("Assets/CC3/Import Character", true)]
         public static bool ValidateInitAssetCC3ImportGUI()
         {
             if (Util.IsCC3Character(Selection.activeObject)) return true;
             return false;
-        }        
+        }
+
+        [MenuItem("CC3/Tools/Orbit Scene View", priority = 300)]
+        public static void DoOrbitSceneView()
+        {
+            WindowManager.DoSceneViewOrbit();
+        }
     }
 }

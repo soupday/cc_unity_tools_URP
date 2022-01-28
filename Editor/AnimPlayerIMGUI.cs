@@ -25,7 +25,7 @@ namespace Reallusion.Import
 
                 if (scenePrefab)
                 {
-                    GameObject sceneFbx = Util.GetScenePrefabRoot(scenePrefab);
+                    GameObject sceneFbx = Util.GetCharacterSourceFbx(scenePrefab);
                     Animator anim = scenePrefab.GetComponent<Animator>();
                     AnimationClip firstClip = Util.GetFirstAnimationClipFromCharacter(sceneFbx);
 

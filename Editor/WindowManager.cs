@@ -48,7 +48,44 @@ namespace Reallusion.Import
                 {                    
                     AnimPlayerIMGUI.DestroyPlayer();
                 }
-            }                       
+            }
+        }
+
+        public static void DoSceneViewOrbit()
+        {
+            if (!isSceneViewOrbit)
+            {
+                EditorApplication.update += SceneViewOrbitUpdate;
+                isSceneViewOrbit = true;
+            }
+            else
+            {
+                EditorApplication.update -= SceneViewOrbitUpdate;
+                isSceneViewOrbit = false;
+            }
+
+        }
+
+        private static bool isSceneViewOrbit;
+
+        static void SceneViewOrbitUpdate()
+        {
+            if (isSceneViewOrbit)
+            {
+                SceneView scene = SceneView.lastActiveSceneView;
+                Vector3 pivot = scene.pivot;
+                Vector3 pos = scene.camera.transform.position;
+                Vector3 boom = pos - pivot;
+                float fov = scene.camera.fieldOfView;
+                float dist = scene.cameraDistance;
+                float size = Mathf.Sin(Mathf.Deg2Rad * fov / 2f) * dist;
+
+                boom = Quaternion.AngleAxis(0.1f, Vector3.up) * boom;
+
+                SceneView.lastActiveSceneView.LookAtDirect(pivot, Quaternion.LookRotation(-boom, Vector3.up), size);
+                SceneView.RepaintAll();
+                Debug.Log(scene.cameraDistance);
+            }
         }
     }
 }

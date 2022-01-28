@@ -53,9 +53,9 @@ MonoBehaviour:
   components:
   - {fileID: 3746919901961398374}
   - {fileID: 9158855283308146428}
+  - {fileID: -3158640585402932458}
   - {fileID: 1042525135916258108}
   - {fileID: 2308163290144694155}
-  - {fileID: -3158640585402932458}
 --- !u!114 &1042525135916258108
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -152,12 +152,12 @@ MonoBehaviour:
     min: 0
   scatter:
     m_OverrideState: 1
-    m_Value: 0.5
+    m_Value: 0.514
     min: 0
     max: 1
   clamp:
-    m_OverrideState: 0
-    m_Value: 65472
+    m_OverrideState: 1
+    m_Value: 168.52
     min: 0
   tint:
     m_OverrideState: 0

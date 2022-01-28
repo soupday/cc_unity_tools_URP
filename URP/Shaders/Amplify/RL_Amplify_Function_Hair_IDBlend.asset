@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78b2425a2284af743826c689403a4924, type: 3}
+  m_Name: RL_Amplify_Function_Hair_IDBlend
+  m_EditorClassIdentifier: 
+  m_functionInfo: "// Made with Amplify Shader Editor\n// Available at the Unity
+    Asset Store - http://u3d.as/y3X \n/*ASEBEGIN\nVersion=18934\n1920;0;1920;1029;3094.484;1051.072;2.161062;True;False\nNode;AmplifyShaderEditor.CommentaryNode;1;-2097.836,-419.3603;Inherit;False;1688.483;874.9963;;17;24;23;6;21;20;27;22;8;18;26;25;15;14;9;5;4;16;Hair
+    Strand Highlight;1,1,1,1;0;0\nNode;AmplifyShaderEditor.LerpOp;16;-1677.437,243.8654;Inherit;False;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.SimpleMultiplyOpNode;4;-1309.547,71.6544;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.OneMinusNode;5;-1489.437,200.8655;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.SimpleMultiplyOpNode;9;-957.1537,-72.23756;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.SaturateNode;14;-784.1536,-71.23759;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.OneMinusNode;15;-1147.325,13.12244;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.LerpOp;18;-591.3534,-317.9625;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0\nNode;AmplifyShaderEditor.FunctionInput;26;-862.833,-357.6901;Inherit;False;Color;5;0;False;1;0;COLOR;1,1,1,0;False;1;COLOR;0\nNode;AmplifyShaderEditor.FunctionInput;22;-1552.826,65.74664;Inherit;False;Overlap;1;6;False;1;0;FLOAT;1;False;1;FLOAT;0\nNode;AmplifyShaderEditor.OneMinusNode;6;-1860.938,208.0655;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionInput;23;-2032.325,350.5467;Inherit;False;Invert;1;7;False;1;0;FLOAT;1;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionInput;24;-2039.916,258.0269;Inherit;False;Root
+    Map;1;1;False;1;0;FLOAT;0.5;False;1;FLOAT;0\nNode;AmplifyShaderEditor.CustomExpressionNode;8;-1577.773,-122.9644;Inherit;False;float
+    lower = smoothstep(From.x, From.y, ID)@$float upper = 1.0 - smoothstep(From.y,
+    From.z, ID)@$return Fac * lerp(lower, upper, step(From.y, ID))@;1;Create;3;True;From;FLOAT3;0,0,0;In;;Inherit;False;True;ID;FLOAT;0;In;;Inherit;False;True;Fac;FLOAT;0;In;;Inherit;False;Three
+    Point Distribution;False;False;0;;False;3;0;FLOAT3;0,0,0;False;1;FLOAT;0;False;2;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionInput;27;-1785.078,-94.98727;Inherit;False;Id
+    Map;1;2;False;1;0;FLOAT;0.5;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionInput;20;-1806.026,-187.4533;Inherit;False;Distribution;3;5;False;1;0;FLOAT3;0.1,0.2,0.3;False;1;FLOAT3;0\nNode;AmplifyShaderEditor.FunctionInput;21;-1792.026,0.5466604;Inherit;False;Strength;1;4;False;1;0;FLOAT;1;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionInput;25;-883.91,-232.2363;Inherit;False;Highlight
+    Color;5;3;False;1;0;COLOR;0.9137256,0.7803922,0.6352941,0;False;1;COLOR;0\nNode;AmplifyShaderEditor.FunctionOutput;0;-308.7878,-318.7817;Inherit;False;True;-1;Color;0;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0\nWireConnection;16;0;6;0\nWireConnection;16;1;24;0\nWireConnection;16;2;23;0\nWireConnection;4;0;22;0\nWireConnection;4;1;5;0\nWireConnection;5;0;16;0\nWireConnection;9;0;8;0\nWireConnection;9;1;15;0\nWireConnection;14;0;9;0\nWireConnection;15;0;4;0\nWireConnection;18;0;26;0\nWireConnection;18;1;25;0\nWireConnection;18;2;14;0\nWireConnection;6;0;24;0\nWireConnection;8;0;20;0\nWireConnection;8;1;27;0\nWireConnection;8;2;21;0\nWireConnection;0;0;18;0\nASEEND*/\n//CHKSM=7DA94AD1ABB6C07356AC84FB85BF53A9863D0E47"
+  m_functionName: 
+  m_description: 
+  m_additionalIncludes:
+    m_additionalIncludes: []
+    m_outsideIncludes: []
+  m_additionalPragmas:
+    m_additionalPragmas: []
+    m_outsidePragmas: []
+  m_additionalDirectives:
+    m_validData: 0
+    m_isDirty: 0
+    m_moduleName: ' Additional Directives'
+    m_independentModule: 1
+    m_customEdited: 0
+    m_additionalDirectives: []
+    m_shaderFunctionDirectives: []
+    m_nativeDirectives: []
+    m_nativeDirectivesIndex: -1
+    m_nativeDirectivesFoldout: 0
+    m_directivesSaveItems: []
+  m_nodeCategory: 3
+  m_customNodeCategory: 
+  m_previewPosition: 0
+  m_hidden: 0
+  m_url: 
