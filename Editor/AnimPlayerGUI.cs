@@ -528,7 +528,7 @@ namespace Reallusion.Import
 
             EditorGUI.BeginDisabledGroup(play);
             EditorGUI.BeginChangeCheck();
-            faceFoldOut = EditorGUILayout.Foldout(faceFoldOut, "Facial Morph", EditorStyles.foldout);
+            faceFoldOut = EditorGUILayout.Foldout(faceFoldOut, "Facial Expression", EditorStyles.foldout);
             if (EditorGUI.EndChangeCheck())
             {
                 //if (foldOut && AnimPlayerIMGUI.FoldOut)
@@ -905,32 +905,30 @@ namespace Reallusion.Import
                     if (shapeName.iEquals("Turn_Jaw") || shapeName.iEquals("A25_Jaw_Open"))
                     {
                         if (!restore)
-                        {
+                        {                            
                             jawVal = jawRef - (entry.Value * 0.15f * EXPRESSIVENESS);
                             AdjustMouth(jawVal);
                         }
                     }
-                    else
-                    {
-                        for (int i = 0; i < root.transform.childCount; i++)
-                        {
-                            GameObject child = root.transform.GetChild(i).gameObject;
-                            SkinnedMeshRenderer renderer = child.GetComponent<SkinnedMeshRenderer>();
-                            if (renderer)
-                            {
-                                Mesh mesh = renderer.sharedMesh;
-                                if (mesh.blendShapeCount > 0)
-                                {
-                                    int shapeIndexS = mesh.GetBlendShapeIndex(shapeName);
 
-                                    if (shapeIndexS >= 0)
-                                    {
-                                        renderer.SetBlendShapeWeight(shapeIndexS, entry.Value * EXPRESSIVENESS * (hasExtPlusBlendShapes ? 0.5f : 1f));
-                                    }
+                    for (int i = 0; i < root.transform.childCount; i++)
+                    {
+                        GameObject child = root.transform.GetChild(i).gameObject;
+                        SkinnedMeshRenderer renderer = child.GetComponent<SkinnedMeshRenderer>();
+                        if (renderer)
+                        {
+                            Mesh mesh = renderer.sharedMesh;
+                            if (mesh.blendShapeCount > 0)
+                            {
+                                int shapeIndexS = mesh.GetBlendShapeIndex(shapeName);
+
+                                if (shapeIndexS >= 0)
+                                {
+                                    renderer.SetBlendShapeWeight(shapeIndexS, entry.Value * EXPRESSIVENESS * (hasExtPlusBlendShapes ? 0.5f : 1f));
                                 }
                             }
                         }
-                    }
+                    }                    
                 }
             }
         }
@@ -1095,7 +1093,7 @@ namespace Reallusion.Import
             {"Mouth_Down", 0f },
             {"Mouth_Open", 0f },
 
-            {"**Turn_Jaw", 9f },
+            {"Turn_Jaw", 9f },
         };
 
         public static Dictionary<string, float> FACE_SAD = new Dictionary<string, float>
@@ -1143,7 +1141,7 @@ namespace Reallusion.Import
             {"Mouth_Down", 60f },
             {"Mouth_Open", 0f },
 
-            {"**Turn_Jaw", 9f },
+            {"Turn_Jaw", 9f },
         };
 
         public static Dictionary<string, float> FACE_ANGRY = new Dictionary<string, float>
@@ -1191,7 +1189,7 @@ namespace Reallusion.Import
             {"Mouth_Down", 0f },
             {"Mouth_Open", 0f },
 
-            {"**Turn_Jaw", 20f },
+            {"Turn_Jaw", 20f },
         };
 
         public static Dictionary<string, float> FACE_DISGUST = new Dictionary<string, float>
@@ -1239,7 +1237,7 @@ namespace Reallusion.Import
             {"Mouth_Down", 40f },
             {"Mouth_Open", 0f },
 
-            {"**Turn_Jaw", 9f },
+            {"Turn_Jaw", 9f },
         };
 
         public static Dictionary<string, float> FACE_FEAR = new Dictionary<string, float>
@@ -1287,7 +1285,7 @@ namespace Reallusion.Import
             {"Mouth_Down", 0f },
             {"Mouth_Open", 0f },
 
-            {"**Turn_Jaw", 20f },
+            {"Turn_Jaw", 20f },
         };
 
         public static Dictionary<string, float> FACE_SURPRISE = new Dictionary<string, float>
@@ -1335,7 +1333,7 @@ namespace Reallusion.Import
             {"Mouth_Down", 0f },
             {"Mouth_Open", 100f },
 
-            {"**Turn_Jaw", 20f },
+            {"Turn_Jaw", 20f },
         };
 
         public static Dictionary<string, float> FACE_NEUTRAL = new Dictionary<string, float>
@@ -1435,7 +1433,7 @@ namespace Reallusion.Import
             {"A50_Mouth_Stretch_Left", 0f },
             {"A51_Mouth_Stretch_Right", 0f },
 
-            {"**Turn_Jaw", 0f },
+            {"Turn_Jaw", 0f },
         };
 
 

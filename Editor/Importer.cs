@@ -1037,31 +1037,9 @@ namespace Reallusion.Import
                 mat.SetFloatIf("_AOOccludeAll", matJson.GetFloatValue("Custom Shader/Variable/AO Map Occlude All Lighting"));
                 mat.SetFloatIf("_BlendStrength", Mathf.Clamp01(matJson.GetFloatValue("Textures/Blend/Strength") / 100f));
                 mat.SetColorIf("_VertexBaseColor", Util.LinearTosRGB(matJson.GetColorValue("Custom Shader/Variable/VertexGrayToColor")));                
-                // set the transmission colour to 1/4 between vertex base and white.
-                // mat.SetColor("_TransmissionColor", Color.Lerp(matJson.GetColorValue("Custom Shader/Variable/VertexGrayToColor"), Color.white, 0.25f));
                 mat.SetFloatIf("_VertexColorStrength", 1f * matJson.GetFloatValue("Custom Shader/Variable/VertexColorStrength"));
                 mat.SetFloatIf("_BaseColorStrength", 1f * matJson.GetFloatValue("Custom Shader/Variable/BaseColorMapStrength"));
-                if (RP == RenderPipeline.HDRP)
-                    mat.SetFloatIf("_RimTransmissionIntensity", 0.2f * matJson.GetFloatValue("Custom Shader/Variable/Transmission Strength"));
-                else
-                    // 0.2 -> 10
-                    // 0.1 -> 5
-                    //mat.SetFloatIf("_RimTransmission", Mathf.Pow(15f * matJson.GetFloatValue("Custom Shader/Variable/Transmission Strength"), 2f));
-                    mat.SetFloatIf("_RimTransmission", 50f * matJson.GetFloatValue("Custom Shader/Variable/Transmission Strength"));
-                mat.SetFloatIf("_FlowMapFlipGreen", 1f - matJson.GetFloatValue("Custom Shader/Variable/TangentMapFlipGreen"));                
-                mat.SetFloatIf("_SpecularShiftMin", -0.35f + matJson.GetFloatValue("Custom Shader/Variable/BlackColor Reflection Offset Z"));
-                mat.SetFloatIf("_SpecularShiftMax", -0.15f + matJson.GetFloatValue("Custom Shader/Variable/WhiteColor Reflection Offset Z"));
-                float specMapStrength = matJson.GetFloatValue("Custom Shader/Variable/Hair Specular Map Strength");
                 mat.SetFloatIf("_DiffuseStrength", 1f * matJson.GetFloatValue("Custom Shader/Variable/Diffuse Strength"));
-                if (RP == RenderPipeline.HDRP)
-                    mat.SetFloatIf("_SmoothnessMax", 1f - matJson.GetFloatValue("Custom Shader/Variable/Hair Roughness Map Strength"));
-                // Unity does not have a specular-f0 channel so the specular map is being used to mask the 
-                // specular multipliers in the hair shader instead.
-                if (RP == RenderPipeline.HDRP)
-                    mat.SetFloatIf("_SpecularMultiplier", specMapStrength * matJson.GetFloatValue("Custom Shader/Variable/Specular Strength"));
-                else
-                    //mat.SetFloatIf("_SpecularMultiplier", Mathf.Pow(0.125f * specMapStrength * matJson.GetFloatValue("Custom Shader/Variable/Specular Strength"), 0.25f));
-                    mat.SetFloatIf("_SpecularMultiplier", Mathf.Pow(0.18f * specMapStrength * matJson.GetFloatValue("Custom Shader/Variable/Specular Strength"), 0.333f));
 
                 // Hair Specular Map Strength = Custom Shader/Variable/Hair Specular Map Strength
                 // == Overall specular multiplier
@@ -1076,7 +1054,41 @@ namespace Reallusion.Import
                 // Transmission Strength = Custom Shader/Variable/Transmission Strength
                 // == Rim lighting/rim translucency strength
 
-                mat.SetFloatIf("_SecondarySpecularMultiplier", specMapStrength * 0.5f * matJson.GetFloatValue("Custom Shader/Variable/Secondary Specular Strength"));
+                float specMapStrength = matJson.GetFloatValue("Custom Shader/Variable/Hair Specular Map Strength");
+                float specStrength = matJson.GetFloatValue("Custom Shader/Variable/Specular Strength");
+                float rimTransmission = matJson.GetFloatValue("Custom Shader/Variable/Transmission Strength");
+                float smoothnessStrength = 1f - matJson.GetFloatValue("Custom Shader/Variable/Hair Roughness Map Strength");
+                if (RP == RenderPipeline.HDRP)
+                {
+                    float secondarySpecStrength = matJson.GetFloatValue("Custom Shader/Variable/Secondary Specular Strength");
+                    mat.SetFloatIf("_SmoothnessMax", smoothnessStrength);
+                    mat.SetFloatIf("_SpecularMultiplier", specMapStrength * specStrength);
+                    mat.SetFloatIf("_SecondarySpecularMultiplier", 
+                        specMapStrength * secondarySpecStrength * 0.5f);
+                    mat.SetFloatIf("_RimTransmissionIntensity", 0.2f * rimTransmission);
+                }
+                else
+                {                    
+                    if (USE_AMPLIFY_SHADER)
+                    {
+                        mat.SetFloatIf("_SmoothnessMin", smoothnessStrength);                        
+                        mat.SetFloatIf("_SpecularMultiplier", 
+                            Mathf.Pow(0.18f * specMapStrength * specStrength, 0.333f));
+                        mat.SetFloatIf("_RimTransmission", 50f * rimTransmission);                        
+                    }
+                    else
+                    {                        
+                        mat.SetFloatIf("_SmoothnessMin", 0.5f * 
+                            Util.CombineSpecularToSmoothness(specMapStrength * specStrength, smoothnessStrength));
+                    }
+                }
+                mat.SetFloatIf("_FlowMapFlipGreen", 1f - 
+                    matJson.GetFloatValue("Custom Shader/Variable/TangentMapFlipGreen"));
+                mat.SetFloatIf("_SpecularShiftMin", -0.25f + 
+                    matJson.GetFloatValue("Custom Shader/Variable/BlackColor Reflection Offset Z"));
+                mat.SetFloatIf("_SpecularShiftMax", -0.25f + 
+                    matJson.GetFloatValue("Custom Shader/Variable/WhiteColor Reflection Offset Z"));
+
                 mat.SetColorIf("_RootColor", Util.LinearTosRGB(matJson.GetColorValue("Custom Shader/Variable/RootColor")));
                 mat.SetColorIf("_EndColor", Util.LinearTosRGB(matJson.GetColorValue("Custom Shader/Variable/TipColor")));
                 mat.SetFloatIf("_GlobalStrength", matJson.GetFloatValue("Custom Shader/Variable/UseRootTipColor"));

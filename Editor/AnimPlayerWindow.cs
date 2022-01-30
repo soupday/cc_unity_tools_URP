@@ -36,9 +36,7 @@ namespace Reallusion.Import
             {
                 SceneView.duringSceneGui += AnimPlayerWindow.OnSceneGUI;
                 isShown = true;
-            }
-            else            
-                Debug.Log("AnimPlayerWindow already open - no need for new delegate");
+            }            
         }
         
         public static void HidePlayer()
@@ -49,9 +47,7 @@ namespace Reallusion.Import
                 AnimPlayerGUI.CleanUp();
                 
                 isShown = false;
-            }
-            else
-                Debug.Log("AnimPlayerWindow not open - no need to remove delegate");
+            }            
         }
         
         public static void DoWindow(int id)

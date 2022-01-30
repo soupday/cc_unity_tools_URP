@@ -86,16 +86,21 @@ namespace Reallusion.Import
 
                 if (prop == "BOOLEAN_ENABLECOLOR")
                 {
+
                     bool enabled = value > 0f ? true : false;
                     if (enabled)
                     {
-                        pass1[i].EnableKeyword("BOOLEAN_ENABLECOLOR_ON");
-                        pass2[i].EnableKeyword("BOOLEAN_ENABLECOLOR_ON");
+                        if (pass1[i] && !pass1[i].IsKeywordEnabled("BOOLEAN_ENABLECOLOR_ON"))
+                            pass1[i].EnableKeyword("BOOLEAN_ENABLECOLOR_ON");
+                        if (pass2[i] && !pass2[i].IsKeywordEnabled("BOOLEAN_ENABLECOLOR_ON"))
+                            pass2[i].EnableKeyword("BOOLEAN_ENABLECOLOR_ON");
                     }
                     else
                     {
-                        pass1[i].DisableKeyword("BOOLEAN_ENABLECOLOR_ON");
-                        pass2[i].DisableKeyword("BOOLEAN_ENABLECOLOR_ON");
+                        if (pass1[i] && pass1[i].IsKeywordEnabled("BOOLEAN_ENABLECOLOR_ON"))
+                            pass1[i].DisableKeyword("BOOLEAN_ENABLECOLOR_ON");
+                        if (pass2[i] && pass2[i].IsKeywordEnabled("BOOLEAN_ENABLECOLOR_ON"))
+                            pass2[i].DisableKeyword("BOOLEAN_ENABLECOLOR_ON");
                     }
                 }
             }
