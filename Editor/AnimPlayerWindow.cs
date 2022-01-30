@@ -18,8 +18,8 @@ namespace Reallusion.Import
         public static void OnSceneGUI(SceneView sceneView)
         {
             height = 72f;
-            if (AnimPlayerIMGUI.animFoldOut) height += 84f;
-            if (AnimPlayerIMGUI.faceFoldOut) height += 90f;
+            if (AnimPlayerGUI.animFoldOut) height += 84f;
+            if (AnimPlayerGUI.faceFoldOut) height += 90f;
             
             float x = sceneView.position.width - width - xpadding;
             float y = sceneView.position.height - height - ypadding;
@@ -46,7 +46,7 @@ namespace Reallusion.Import
             if (isShown)
             {
                 SceneView.duringSceneGui -= AnimPlayerWindow.OnSceneGUI;
-                AnimPlayerIMGUI.CleanUp();
+                AnimPlayerGUI.CleanUp();
                 
                 isShown = false;
             }
@@ -56,8 +56,8 @@ namespace Reallusion.Import
         
         public static void DoWindow(int id)
         {            
-            AnimPlayerIMGUI.DrawPlayer();
-            AnimPlayerIMGUI.DrawFacialMorph();
+            AnimPlayerGUI.DrawPlayer();
+            AnimPlayerGUI.DrawFacialMorph();
         }        
     }
 }

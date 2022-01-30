@@ -86,7 +86,7 @@ Material:
     - _InvertRootMap: 0
     - _NormalStrength: 1
     - _RootColorStrength: 1
-    - _SmoothnessMax: 1
+    - _SmoothnessMax: 0.897
     - _SmoothnessMin: 0
     - _SmoothnessPower: 1
     - _VertexColorStrength: 0.5

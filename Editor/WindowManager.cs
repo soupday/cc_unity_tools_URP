@@ -28,25 +28,25 @@ namespace Reallusion.Import
                 previewScene = PreviewScene.GetPreviewScene();
             }
 
-            bool isPlayerShown = AnimPlayerIMGUI.IsPlayerShown();
+            bool isPlayerShown = AnimPlayerGUI.IsPlayerShown();
             bool validPreviewScene = previewScene.IsValid;
 
             if (validPreviewScene) 
             {                
                 if (showTools && !isPlayerShown)
                 {                    
-                    AnimPlayerIMGUI.CreatePlayer(previewScene, ImporterWindow.Current?.Character?.Fbx);
+                    AnimPlayerGUI.CreatePlayer(previewScene, ImporterWindow.Current?.Character?.Fbx);
                 }
                 else if (!showTools && isPlayerShown)
                 {                    
-                    AnimPlayerIMGUI.DestroyPlayer();
+                    AnimPlayerGUI.DestroyPlayer();
                 }
             }
             else 
             {
                 if (isPlayerShown)
                 {                    
-                    AnimPlayerIMGUI.DestroyPlayer();
+                    AnimPlayerGUI.DestroyPlayer();
                 }
             }
         }
@@ -55,8 +55,30 @@ namespace Reallusion.Import
         {
             if (!isSceneViewOrbit)
             {
+                trackTarget = null;
                 EditorApplication.update += SceneViewOrbitUpdate;
                 isSceneViewOrbit = true;
+            }
+            else
+            {
+                trackTarget = null;
+                EditorApplication.update -= SceneViewOrbitUpdate;
+                isSceneViewOrbit = false;
+            }
+
+        }
+
+        public static void DoSceneViewOrbitTracking()
+        {            
+            if (!isSceneViewOrbit)
+            {
+                trackTarget = Selection.activeTransform;
+                if (trackTarget)
+                {
+                    pivotDisplacement = SceneView.lastActiveSceneView.pivot - trackTarget.position;
+                    EditorApplication.update += SceneViewOrbitUpdate;
+                    isSceneViewOrbit = true;
+                }
             }
             else
             {
@@ -67,6 +89,8 @@ namespace Reallusion.Import
         }
 
         private static bool isSceneViewOrbit;
+        private static Vector3 pivotDisplacement;
+        private static Transform trackTarget;
 
         static void SceneViewOrbitUpdate()
         {
@@ -76,6 +100,10 @@ namespace Reallusion.Import
                 Vector3 pivot = scene.pivot;
                 Vector3 pos = scene.camera.transform.position;
                 Vector3 boom = pos - pivot;
+                if (trackTarget)
+                {
+                    pivot = trackTarget.position + pivotDisplacement;
+                }
                 float fov = scene.camera.fieldOfView;
                 float dist = scene.cameraDistance;
                 float size = Mathf.Sin(Mathf.Deg2Rad * fov / 2f) * dist;
@@ -84,7 +112,6 @@ namespace Reallusion.Import
 
                 SceneView.lastActiveSceneView.LookAtDirect(pivot, Quaternion.LookRotation(-boom, Vector3.up), size);
                 SceneView.RepaintAll();
-                Debug.Log(scene.cameraDistance);
             }
         }
     }

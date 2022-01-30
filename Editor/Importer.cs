@@ -507,8 +507,10 @@ namespace Reallusion.Import
                         matJson, "Textures/Base Color",
                         FLAG_SRGB);
 
-                ConnectTextureTo(sourceName, mat, "_MetallicGlossMap", "MetallicAlpha",
-                    matJson, "Textures/MetallicAlpha");
+                if (ConnectTextureTo(sourceName, mat, "_MetallicGlossMap", "MetallicAlpha",
+                    matJson, "Textures/MetallicAlpha"))
+                    mat.SetFloat("_Smoothness", 0.897f);                
+
 
                 ConnectTextureTo(sourceName, mat, "_OcclusionMap", "ao",
                     matJson, "Textures/AO");
@@ -544,7 +546,7 @@ namespace Reallusion.Import
                     else
                         mat.SetFloat("_BumpScale", matJson.GetFloatValue("Textures/Normal/Strength") / 100f);
                 }
-            }            
+            }
 
             // connecting default HDRP materials:
             if (RP == RenderPipeline.HDRP && !string.IsNullOrEmpty(customShader))
@@ -571,7 +573,7 @@ namespace Reallusion.Import
                     mat.SetFloat("_Thickness", 0.4f);
                     mat.SetRemapRange("_ThicknessRemap", 0.4f, 1f);
                 }
-            }
+            }            
         }
 
         // HDRP only
@@ -1058,7 +1060,8 @@ namespace Reallusion.Import
                 if (RP == RenderPipeline.HDRP)
                     mat.SetFloatIf("_SpecularMultiplier", specMapStrength * matJson.GetFloatValue("Custom Shader/Variable/Specular Strength"));
                 else
-                    mat.SetFloatIf("_SpecularMultiplier", Mathf.Pow(0.125f * specMapStrength * matJson.GetFloatValue("Custom Shader/Variable/Specular Strength"), 0.25f));
+                    //mat.SetFloatIf("_SpecularMultiplier", Mathf.Pow(0.125f * specMapStrength * matJson.GetFloatValue("Custom Shader/Variable/Specular Strength"), 0.25f));
+                    mat.SetFloatIf("_SpecularMultiplier", Mathf.Pow(0.18f * specMapStrength * matJson.GetFloatValue("Custom Shader/Variable/Specular Strength"), 0.333f));
 
                 // Hair Specular Map Strength = Custom Shader/Variable/Hair Specular Map Strength
                 // == Overall specular multiplier

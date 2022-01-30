@@ -148,9 +148,7 @@ namespace Reallusion.Import
         }
 
         private void InitData()
-        {
-            AnimationMode.StopAnimationMode();
-
+        {            
             string[] folders = new string[] { "Assets", "Packages" };
             iconUnprocessed = Util.FindTexture(folders, "RLIcon_UnprocessedChar");
             iconBasic = Util.FindTexture(folders, "RLIcon_BasicChar");
@@ -923,10 +921,10 @@ namespace Reallusion.Import
 
         private void HideAnimationPlayer()
         {            
-            if (AnimPlayerIMGUI.IsPlayerShown())
+            if (AnimPlayerGUI.IsPlayerShown())
             {
-                AnimPlayerIMGUI.ResetFace();
-                AnimPlayerIMGUI.DestroyPlayer();
+                AnimPlayerGUI.ResetFace();
+                AnimPlayerGUI.DestroyPlayer();
             }
 
             WindowManager.showTools = false;
@@ -938,13 +936,13 @@ namespace Reallusion.Import
 
             if (ps.IsValid)
             {
-                if (AnimPlayerIMGUI.IsPlayerShown())
+                if (AnimPlayerGUI.IsPlayerShown())
                 {
-                    AnimPlayerIMGUI.SetCharacter(ps, contextCharacter.Fbx);
+                    AnimPlayerGUI.SetCharacter(ps, contextCharacter.Fbx);
                 }
                 else
                 {
-                    AnimPlayerIMGUI.CreatePlayer(ps, contextCharacter.Fbx);
+                    AnimPlayerGUI.CreatePlayer(ps, contextCharacter.Fbx);
                 }
 
                 WindowManager.showTools = true;

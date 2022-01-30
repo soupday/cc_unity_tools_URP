@@ -83,7 +83,7 @@ Material:
     - _HighlightBStrength: 0
     - _InvertRootMap: 0
     - _NormalStrength: 1
-    - _RimPower: 2
+    - _RimPower: 3
     - _RimTransmission: 10
     - _RootColorStrength: 1
     - _ShadowClip: 0.5
@@ -92,7 +92,7 @@ Material:
     - _SpecularShiftMax: 0.25
     - _SpecularShiftMin: -0.25
     - _SpecularTint: 0.75
-    - _Tranlucency: 0.25
+    - _Tranlucency: 0.15
     - _VertexColorStrength: 0.5
     m_Colors:
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}

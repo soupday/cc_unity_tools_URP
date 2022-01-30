@@ -407,15 +407,15 @@ namespace Reallusion.Import
         {
             // as there is no specular mask channel, I am simulating the specular mask by clamping the smoothness
             // between 0 and a root curve function of the specular value: i.e. specularSmoothness = smoothness * pow(specular, P)
-            // this power function must range from f(0) = 0 to f(1) = 1 and achieve 0.88 maximum smoothness at 0.5 specular
+            // this power function must range from f(0) = 0 to f(1) = 1 and achieve 0.897 maximum smoothness at 0.5 specular
             // (0.5 specular being the default specular value for base max smoothness, visually detected as ~0.88 smoothness)
             // specular values from 0.5 to 1.0 will generate a max smoothness of 0.88 to 1.0.
-            // Thus: P = ln(0.88) / ln(0.5) = 0.184424571f
+            // Thus: P = ln(0.897) / ln(0.5) = 0.184424571f
             // This should approximate the specular mask for specular values > 0.2
-            const float smoothnessStdMax = 0.88f;
+            const float smoothnessStdMax = 0.897f;
             const float specularMid = 0.5f;
             float P = Mathf.Log(smoothnessStdMax) / Mathf.Log(specularMid);
-            return smoothness * Mathf.Clamp01(Mathf.Pow(specular, P));
+            return smoothness * Mathf.Clamp(Mathf.Pow(specular, P), 0f, 0.897f);
         }
 
         public static void DoTest(Object asset)

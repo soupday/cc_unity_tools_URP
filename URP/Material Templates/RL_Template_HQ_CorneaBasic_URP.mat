@@ -79,7 +79,7 @@ Material:
     - BOOLEAN_ISCORNEA: 1
     - _AOStrength: 0.2
     - _ColorBlendStrength: 0.2
-    - _CorneaSmoothness: 0.88
+    - _CorneaSmoothness: 0.897
     - _DepthRadius: 0.8
     - _IrisBrightness: 1
     - _IrisHue: 0.5
@@ -97,7 +97,7 @@ Material:
     - _ScleraNormalTiling: 2
     - _ScleraSaturation: 1
     - _ScleraScale: 1
-    - _ScleraSmoothness: 0.704
+    - _ScleraSmoothness: 0.7174
     - _ShadowHardness: 0.5
     - _ShadowRadius: 0.275
     m_Colors:

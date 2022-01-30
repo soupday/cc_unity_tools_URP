@@ -32,9 +32,9 @@ namespace Reallusion.Import
         [MenuItem("CC3/Animation Player", priority = 2)]
         public static void ShowAnimationPlayer()
         {
-            if (AnimPlayerIMGUI.IsPlayerShown())
+            if (AnimPlayerGUI.IsPlayerShown())
             {
-                AnimPlayerIMGUI.DestroyPlayer();
+                AnimPlayerGUI.DestroyPlayer();
                 WindowManager.showTools = false;
             }
             else
@@ -42,7 +42,7 @@ namespace Reallusion.Import
                 PreviewScene ps = PreviewScene.GetPreviewScene();
                 if (ps.IsValid)
                 {
-                    AnimPlayerIMGUI.CreatePlayer(ps, ImporterWindow.Current?.Character?.Fbx);
+                    AnimPlayerGUI.CreatePlayer(ps, ImporterWindow.Current?.Character?.Fbx);
                     WindowManager.showTools = true;
                 }
             }
@@ -65,6 +65,12 @@ namespace Reallusion.Import
         public static void DoOrbitSceneView()
         {
             WindowManager.DoSceneViewOrbit();
+        }
+
+        [MenuItem("CC3/Tools/Orbit Scene View (Tracking)", priority = 301)]
+        public static void DoOrbitSceneViewTracking()
+        {
+            WindowManager.DoSceneViewOrbitTracking();
         }
     }
 }
