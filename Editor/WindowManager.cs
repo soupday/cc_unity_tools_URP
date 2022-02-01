@@ -65,7 +65,16 @@ namespace Reallusion.Import
                 EditorApplication.update -= SceneViewOrbitUpdate;
                 isSceneViewOrbit = false;
             }
+        }
 
+        public static void StopSceneViewOrbit()
+        {
+            if (isSceneViewOrbit)
+            {
+                EditorApplication.update -= SceneViewOrbitUpdate;
+                trackTarget = null;
+                isSceneViewOrbit = true;
+            }
         }
 
         public static void DoSceneViewOrbitTracking()

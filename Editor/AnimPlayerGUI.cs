@@ -588,10 +588,14 @@ namespace Reallusion.Import
                 {
                     ResetFace(true);
 
+                    // double click test
                     if (resetClickTimer > 0f && (EditorApplication.timeSinceStartup - resetClickTimer < 0.5f))
+                    {
                         ResetFaceViewCamera();
+                        WindowManager.StopSceneViewOrbit();
+                    }
 
-                    resetClickTimer = EditorApplication.timeSinceStartup;
+                    resetClickTimer = EditorApplication.timeSinceStartup;                    
 
                     SceneView.RepaintAll();
                 }
