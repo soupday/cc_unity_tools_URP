@@ -680,6 +680,7 @@ namespace Reallusion.Import
             }
             GUI.enabled = true;
 
+            /* Not just yet...
             GUILayout.Space(ACTION_BUTTON_SPACE);
 
             if (contextCharacter == null) GUI.enabled = false;
@@ -689,6 +690,7 @@ namespace Reallusion.Import
                 
             }
             GUI.enabled = true;
+            */
 
             GUILayout.EndVertical();
 
