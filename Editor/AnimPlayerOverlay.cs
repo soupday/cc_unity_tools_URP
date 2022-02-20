@@ -30,7 +30,8 @@ namespace Reallusion.Import
 
         public override void OnCreated()
         {            
-            createdOverlay = this;
+            if (createdOverlay == null)
+                createdOverlay = this;
         }
 
         public override void OnGUI()

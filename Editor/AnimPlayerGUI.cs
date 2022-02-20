@@ -593,6 +593,7 @@ namespace Reallusion.Import
                     {
                         ResetFaceViewCamera();
                         WindowManager.StopSceneViewOrbit();
+                        WindowManager.StopMatchSceneCamera();
                     }
 
                     resetClickTimer = EditorApplication.timeSinceStartup;                    

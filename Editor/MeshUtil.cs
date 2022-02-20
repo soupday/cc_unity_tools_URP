@@ -30,7 +30,7 @@ namespace Reallusion.Import
         public const string PRUNED_FOLDER_NAME = "Pruned Meshes";
         public const string MESH_FOLDER_NAME = "Meshes";
 
-        [MenuItem("CC3/Tools/Reverse Triangle Order", priority = 100)]
+        [MenuItem("CC3/Mesh Tools/Reverse Triangle Order", priority = 100)]
         private static void DoReverse()
         {
             if (Selection.gameObjects.Length > 1)
@@ -40,7 +40,7 @@ namespace Reallusion.Import
                 MeshUtil.ReverseTriangleOrder(Selection.activeObject);
         }
 
-        [MenuItem("CC3/Tools/Prune Blend Shapes", priority = 101)]
+        [MenuItem("CC3/Mesh Tools/Prune Blend Shapes", priority = 101)]
         private static void DoPrune()
         {            
             if (Selection.gameObjects.Length > 1)
@@ -50,53 +50,58 @@ namespace Reallusion.Import
                 MeshUtil.PruneBlendShapes(Selection.activeObject);
         }
 
-        [MenuItem("CC3/Tools/Auto Smooth Mesh", priority = 102)]
+        [MenuItem("CC3/Mesh Tools/Auto Smooth Mesh", priority = 102)]
         private static void DoAutoSmoothMesh()
         {
+            bool showTools = WindowManager.showTools;
+            if (showTools) ImporterWindow.Current.HideAnimationPlayer();
+
             if (Selection.gameObjects.Length > 1)
                 foreach (GameObject go in Selection.gameObjects)
                     MeshUtil.AutoSmoothMesh(go);
             else
                 MeshUtil.AutoSmoothMesh(Selection.activeObject);
+
+            if (showTools) ImporterWindow.Current.ShowAnimationPlayer();
         }
 
-        [MenuItem("CC3/Tools/Open or Close Character Mouth", priority = 201)]
+        [MenuItem("CC3/Mesh Tools/Open or Close Character Mouth", priority = 201)]
         private static void DoOpenCloseMouth()
         {
             MeshUtil.CharacterOpenCloseMouth(Selection.activeObject);
         }
 
-        [MenuItem("CC3/Tools/Open or Close Character Eyes", priority = 202)]
+        [MenuItem("CC3/Mesh Tools/Open or Close Character Eyes", priority = 202)]
         private static void DoOpenCloseEyes()
         {
             MeshUtil.CharacterOpenCloseEyes(Selection.activeObject);
         }
 
-        [MenuItem("CC3/Tools/Eye/Look Left", priority = 203)]
+        [MenuItem("CC3/Mesh Tools/Eye/Look Left", priority = 203)]
         private static void DoLookLeft()
         {
             MeshUtil.CharacterEyeLook(Selection.activeObject, EyeLookDir.Left);
         }
 
-        [MenuItem("CC3/Tools/Eye/Look Right", priority = 204)]
+        [MenuItem("CC3/Mesh Tools/Eye/Look Right", priority = 204)]
         private static void DoLookRight()
         {
             MeshUtil.CharacterEyeLook(Selection.activeObject, EyeLookDir.Right);
         }
 
-        [MenuItem("CC3/Tools/Eye/Look Up", priority = 205)]
+        [MenuItem("CC3/Mesh Tools/Eye/Look Up", priority = 205)]
         private static void DoLookUp()
         {
             MeshUtil.CharacterEyeLook(Selection.activeObject, EyeLookDir.Up);
         }
 
-        [MenuItem("CC3/Tools/Eye/Look Down", priority = 206)]
+        [MenuItem("CC3/Mesh Tools/Eye/Look Down", priority = 206)]
         private static void DoLookDown()
         {
             MeshUtil.CharacterEyeLook(Selection.activeObject, EyeLookDir.Down);
         }
 
-        [MenuItem("CC3/Tools/Eye/Look Forward", priority = 207)]
+        [MenuItem("CC3/Mesh Tools/Eye/Look Forward", priority = 207)]
         private static void DoLookForward()
         {
             MeshUtil.CharacterEyeLook(Selection.activeObject, EyeLookDir.None);

@@ -67,6 +67,7 @@ namespace Reallusion.Import
         // 2 pass
         public const string SHADER_HQ_HAIR_1ST_PASS = "RL_HairShaderMultiPass_Variants_HDRP";
         public const string SHADER_HQ_HAIR_2ND_PASS = "RL_HairShaderMultiPass_Variants_HDRP";
+        public const string SHADER_HQ_HAIR_COVERAGE = "RL_HairShader_Coverage_HDRP";
 
         // HQ Materials
         //
@@ -166,6 +167,7 @@ namespace Reallusion.Import
         // 2 pass
         public const string SHADER_HQ_HAIR_1ST_PASS = "RL_HairShader_1st_Pass_Variants_URP";
         public const string SHADER_HQ_HAIR_2ND_PASS = "RL_HairShader_2nd_Pass_Variants_URP";
+        public const string SHADER_HQ_HAIR_COVERAGE = "RL_HairShader_Coverage_URP";
 
         // HQ Materials
         //
@@ -190,6 +192,7 @@ namespace Reallusion.Import
         // 2 pass
         public const string MATERIAL_HQ_HAIR_1ST_PASS = "RL_Template_HQ_Hair_1st_Pass_URP";
         public const string MATERIAL_HQ_HAIR_2ND_PASS = "RL_Template_HQ_Hair_2nd_Pass_URP";
+        public const string MATERIAL_HQ_HAIR_COVERAGE = "RL_Template_HQ_Hair_Coverage_URP";
 
         // Default Materials
         //
@@ -231,6 +234,7 @@ namespace Reallusion.Import
         public const string MATERIAL_BAKED_EYE_REFRACTIVE_CUSTOM = "RL_Template_Baked_EyeRefractiveCustom_Dummy_URP";
         public const string MATERIAL_BAKED_EYE_OCCLUSION_CUSTOM = "RL_Template_Baked_EyeOcclusionCustom_URP";
         public const string MATERIAL_BAKED_HAIR_CUSTOM = "RL_Template_Baked_HairCustom_URP";
+        public const string MATERIAL_BAKED_HAIR_COVERAGE_CUSTOM = "RL_Template_Baked_HairCoverageCustom_URP";
         // 2 pass        
         public const string MATERIAL_BAKED_HAIR_1ST_PASS = "RL_Template_Baked_Hair_1st_Pass_URP";
         public const string MATERIAL_BAKED_HAIR_2ND_PASS = "RL_Template_Baked_Hair_2nd_Pass_URP";
@@ -265,6 +269,7 @@ namespace Reallusion.Import
         // 2 pass
         public const string SHADER_HQ_HAIR_1ST_PASS = "RL_HairShader_1st_Pass_Variants_3D";
         public const string SHADER_HQ_HAIR_2ND_PASS = "RL_HairShader_2nd_Pass_Variants_3D";
+        public const string SHADER_HQ_HAIR_COVERAGE = "RL_HairShader_Coverage_3D";
 
         // HQ Materials
         //
@@ -541,7 +546,13 @@ namespace Reallusion.Import
                         return MATERIAL_HQ_CORNEA_PARALLAX;
                     if (materialType == MaterialType.Eye)
                         return MATERIAL_HQ_EYE_PARALLAX;
-                }                
+                }
+
+                if (info.CoverageHair)
+                {
+                    if (materialType == MaterialType.Hair)
+                        return MATERIAL_HQ_HAIR_COVERAGE;
+                }
             }
             else if (quality == MaterialQuality.Baked) // option overrides for baked materials
             {
@@ -566,7 +577,12 @@ namespace Reallusion.Import
                     }
                     
                     if (materialType == MaterialType.Hair)
-                        return MATERIAL_BAKED_HAIR_CUSTOM;
+                    {
+                        if (info.BuiltCoverageHair)
+                            return MATERIAL_BAKED_HAIR_COVERAGE_CUSTOM;
+                        else
+                            return MATERIAL_BAKED_HAIR_CUSTOM;
+                    }                        
                                        
                     if (materialType == MaterialType.EyeOcclusion)
                         return MATERIAL_BAKED_EYE_OCCLUSION_CUSTOM;
@@ -636,12 +652,19 @@ namespace Reallusion.Import
 
         public static Material GetCustomTemplateMaterial(string templateName, MaterialQuality quality)
         {
-            Material template = Util.FindMaterial(templateName);
+            if (Importer.USE_AMPLIFY_SHADER)
+            {
+                Material amplifyTemplate = Util.FindMaterial(templateName + "_Amplify");
+                if (amplifyTemplate)
+                {
+                    return amplifyTemplate;
+                }
+            }
 
-            if (!template)
-                template = GetDefaultMaterial(quality);
-            
-            return template;
+            Material template = Util.FindMaterial(templateName);
+            if (template) return template;
+
+            return GetDefaultMaterial(quality);
         }
 
         public static bool IsShaderFor(string shaderName, params MaterialType[] materialType)

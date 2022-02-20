@@ -84,29 +84,28 @@ Material:
     - _InvertRootMap: 0
     - _NormalStrength: 1
     - _RimPower: 2.5
-    - _RimTransmission: 10
+    - _RimTransmissionIntensity: 10
     - _RootColorStrength: 1
     - _ShadowClip: 0.5
     - _SmoothnessMax: 1
     - _SmoothnessMin: 0
     - _SmoothnessPower: 1
+    - _SpecularMix: 0.5
     - _SpecularMultiplier: 0.5
     - _SpecularPowerScale: 2
     - _SpecularShiftMax: 0.25
     - _SpecularShiftMin: -0.25
-    - _SpecularTint: 0.75
-    - _Tranlucency: 0.15
+    - _Translucency: 0.15
     - _VertexColorStrength: 0.5
     m_Colors:
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 0}
-    - _EndColor: {r: 0.6039216, g: 0.454902, b: 0.28627434, a: 0}
+    - _EndColor: {r: 0.6039216, g: 0.454902, b: 0.2862743, a: 0}
     - _HighlightAColor: {r: 0.9137255, g: 0.7803922, b: 0.635294, a: 0}
     - _HighlightADistribution: {r: 0.1, g: 0.2, b: 0.3, a: 0}
     - _HighlightBColor: {r: 1, g: 1, b: 1, a: 0}
     - _HighlightBDistribution: {r: 0.6, g: 0.7, b: 0.8, a: 0}
-    - _RootColor: {r: 0.32941163, g: 0.14117634, b: 0.050980277, a: 0}
-    - _SpecularColor: {r: 1, g: 1, b: 1, a: 0}
+    - _RootColor: {r: 0.3294116, g: 0.14117631, b: 0.050980255, a: 0}
     - _SpecularTint: {r: 1, g: 1, b: 1, a: 0}
     - _VertexBaseColor: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

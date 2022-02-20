@@ -22,6 +22,11 @@
             "name": "com.unity.render-pipelines.universal",
             "expression": "10.5.0",
             "define": "URP_10_5_0_OR_NEWER"
+        },
+        {
+            "name": "Unity",
+            "expression": "2021.2.0a17",
+            "define": "SCENEVIEW_OVERLAY_COMPATIBLE"
         }
     ],
     "noEngineReferences": false

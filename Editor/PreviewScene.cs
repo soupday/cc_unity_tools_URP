@@ -15,6 +15,7 @@ namespace Reallusion.Import
         Transform lighting;
         Transform character;
         Transform baked;
+        Transform camera;
 
 
         public static PreviewScene OpenPreviewScene(GameObject fbx)
@@ -31,6 +32,10 @@ namespace Reallusion.Import
 
             return previewScene;
         }
+        public Transform GetCamera()
+        {
+            return camera;
+        }
 
         public static PreviewScene GetPreviewScene()
         {
@@ -41,6 +46,7 @@ namespace Reallusion.Import
             ps.stage = GameObject.Find("Stage")?.transform;
             ps.lighting = GameObject.Find("Lighting")?.transform;
             ps.scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+            ps.camera = GameObject.Find("Main Camera")?.transform;
             return ps;
         }
 

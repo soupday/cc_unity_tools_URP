@@ -24,8 +24,8 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP"
 		_ShadowRadius("Shadow Radius", Range( 0 , 0.5)) = 0.275
 		_ShadowHardness("Shadow Hardness", Range( 0.01 , 0.99)) = 0.5
 		_CornerShadowColor("Corner Shadow Color", Color) = (1,0.7333333,0.6980392,0)
-		_ScleraSubsurface("Sclera Subsurface", Range( 0 , 2)) = 0.5
-		_IrisSubsurface("Iris Subsurface", Range( 0 , 2)) = 0
+		_ScleraSubsurfaceScale("Sclera Subsurface Scale", Range( 0 , 2)) = 0.5
+		_IrisSubsurfaceScale("Iris Subsurface Scale", Range( 0 , 2)) = 1
 		_SubsurfaceFalloff("Subsurface Falloff", Color) = (1,1,1,0)
 		_MaskMap("Mask Map", 2D) = "white" {}
 		_AOStrength("Ambient Occlusion Strength", Range( 0 , 1)) = 0.2
@@ -281,42 +281,42 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			half4 _SubsurfaceFalloff;
-			half4 _CornerShadowColor;
-			half4 _EmissiveColor;
-			half4 _MaskMap_ST;
-			half4 _EmissionMap_ST;
-			half4 _LimbusColor;
-			half4 _ColorBlendMap_ST;
-			half _AOStrength;
-			half _ScleraSmoothness;
-			half _CorneaSmoothness;
-			half _ScleraBrightness;
-			half _ScleraNormalStrength;
-			half _ScleraNormalTiling;
-			half _ColorBlendStrength;
-			half _LimbusWidth;
-			half _ShadowRadius;
-			half _ShadowHardness;
-			half _IrisSubsurface;
-			half _ScleraSaturation;
-			half _ScleraHue;
-			half _ScleraSubsurface;
-			half _LimbusDarkWidth;
-			half _LimbusDarkRadius;
-			half _IrisBrightness;
-			half _IrisSaturation;
-			half _ParallaxRadius;
-			half _PMod;
-			half _IOR;
-			half _IrisRadius;
-			half _DepthRadius;
-			half _PupilScale;
-			half _IrisDepth;
-			half _IrisScale;
-			half _IrisHue;
-			half _ScleraScale;
-			half _IsLeftEye;
+			float4 _SubsurfaceFalloff;
+			float4 _CornerShadowColor;
+			float4 _EmissiveColor;
+			float4 _MaskMap_ST;
+			float4 _EmissionMap_ST;
+			float4 _LimbusColor;
+			float4 _ColorBlendMap_ST;
+			float _AOStrength;
+			float _ScleraSmoothness;
+			float _CorneaSmoothness;
+			float _ScleraBrightness;
+			float _ScleraNormalStrength;
+			float _ScleraNormalTiling;
+			float _ColorBlendStrength;
+			float _LimbusWidth;
+			float _ShadowRadius;
+			float _ShadowHardness;
+			float _IrisSubsurfaceScale;
+			float _ScleraSaturation;
+			float _ScleraHue;
+			float _ScleraSubsurfaceScale;
+			float _LimbusDarkWidth;
+			float _LimbusDarkRadius;
+			float _IrisBrightness;
+			float _IrisSaturation;
+			float _ParallaxRadius;
+			float _PMod;
+			float _IOR;
+			float _IrisRadius;
+			float _DepthRadius;
+			float _PupilScale;
+			float _IrisDepth;
+			float _IrisScale;
+			float _IrisHue;
+			float _ScleraScale;
+			float _IsLeftEye;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -345,21 +345,21 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP"
 			sampler2D _MaskMap;
 
 
-			half3 HSVToRGB( half3 c )
+			float3 HSVToRGB( float3 c )
 			{
-				half4 K = half4( 1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0 );
-				half3 p = abs( frac( c.xxx + K.xyz ) * 6.0 - K.www );
+				float4 K = float4( 1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0 );
+				float3 p = abs( frac( c.xxx + K.xyz ) * 6.0 - K.www );
 				return c.z * lerp( K.xxx, saturate( p - K.xxx ), c.y );
 			}
 			
-			half3 RGBToHSV(half3 c)
+			float3 RGBToHSV(float3 c)
 			{
-				half4 K = half4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
-				half4 p = lerp( half4( c.bg, K.wz ), half4( c.gb, K.xy ), step( c.b, c.g ) );
-				half4 q = lerp( half4( p.xyw, c.r ), half4( c.r, p.yzx ), step( p.x, c.r ) );
-				half d = q.x - min( q.w, q.y );
-				half e = 1.0e-10;
-				return half3( abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
+				float4 K = float4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+				float4 p = lerp( float4( c.bg, K.wz ), float4( c.gb, K.xy ), step( c.b, c.g ) );
+				float4 q = lerp( float4( p.xyw, c.r ), float4( c.r, p.yzx ), step( p.x, c.r ) );
+				float d = q.x - min( q.w, q.y );
+				float e = 1.0e-10;
+				return float3( abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
 			}
 
 			VertexOutput VertexFunction( VertexInput v  )
@@ -559,65 +559,65 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP"
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
 				float2 uv_ColorBlendMap = IN.ase_texcoord7.xy * _ColorBlendMap_ST.xy + _ColorBlendMap_ST.zw;
-				half irisScale208 = _IrisScale;
-				half irisDepth219 = _IrisDepth;
-				half2 texCoord36 = IN.ase_texcoord7.xy * float2( 1,1 ) + float2( 0,0 );
-				half radial203 = length( ( texCoord36 - float2( 0.5,0.5 ) ) );
-				half scaledIrisRadius209 = ( _IrisRadius * _IrisScale );
-				half temp_output_1_0_g1 = ( _DepthRadius * scaledIrisRadius209 );
-				half lerpResult83 = lerp( irisScale208 , ( irisScale208 * ( ( 0.333 / ( 0.333 + irisDepth219 ) ) * _PupilScale ) ) , saturate( ( ( radial203 - temp_output_1_0_g1 ) / ( 0.0 - temp_output_1_0_g1 ) ) ));
-				half temp_output_88_0 = ( 1.0 / lerpResult83 );
-				half2 temp_cast_0 = (temp_output_88_0).xx;
-				half2 temp_cast_1 = (( ( 1.0 - temp_output_88_0 ) * 0.5 )).xx;
-				half2 texCoord93 = IN.ase_texcoord7.xy * temp_cast_0 + temp_cast_1;
-				half3x3 ase_worldToTangent = float3x3(WorldTangent,WorldBiTangent,WorldNormal);
-				half3 tanToWorld0 = float3( WorldTangent.x, WorldBiTangent.x, WorldNormal.x );
-				half3 tanToWorld1 = float3( WorldTangent.y, WorldBiTangent.y, WorldNormal.y );
-				half3 tanToWorld2 = float3( WorldTangent.z, WorldBiTangent.z, WorldNormal.z );
-				half3 ase_tanViewDir =  tanToWorld0 * WorldViewDirection.x + tanToWorld1 * WorldViewDirection.y  + tanToWorld2 * WorldViewDirection.z;
+				float irisScale208 = _IrisScale;
+				float irisDepth219 = _IrisDepth;
+				float2 texCoord36 = IN.ase_texcoord7.xy * float2( 1,1 ) + float2( 0,0 );
+				float radial203 = length( ( texCoord36 - float2( 0.5,0.5 ) ) );
+				float scaledIrisRadius209 = ( _IrisRadius * _IrisScale );
+				float temp_output_1_0_g1 = ( _DepthRadius * scaledIrisRadius209 );
+				float lerpResult83 = lerp( irisScale208 , ( irisScale208 * ( ( 0.333 / ( 0.333 + irisDepth219 ) ) * _PupilScale ) ) , saturate( ( ( radial203 - temp_output_1_0_g1 ) / ( 0.0 - temp_output_1_0_g1 ) ) ));
+				float temp_output_88_0 = ( 1.0 / lerpResult83 );
+				float2 temp_cast_0 = (temp_output_88_0).xx;
+				float2 temp_cast_1 = (( ( 1.0 - temp_output_88_0 ) * 0.5 )).xx;
+				float2 texCoord93 = IN.ase_texcoord7.xy * temp_cast_0 + temp_cast_1;
+				float3x3 ase_worldToTangent = float3x3(WorldTangent,WorldBiTangent,WorldNormal);
+				float3 tanToWorld0 = float3( WorldTangent.x, WorldBiTangent.x, WorldNormal.x );
+				float3 tanToWorld1 = float3( WorldTangent.y, WorldBiTangent.y, WorldNormal.y );
+				float3 tanToWorld2 = float3( WorldTangent.z, WorldBiTangent.z, WorldNormal.z );
+				float3 ase_tanViewDir =  tanToWorld0 * WorldViewDirection.x + tanToWorld1 * WorldViewDirection.y  + tanToWorld2 * WorldViewDirection.z;
 				ase_tanViewDir = normalize(ase_tanViewDir);
-				half3 normalizeResult117 = normalize( ( ( mul( ase_worldToTangent, WorldNormal ) * ( _IOR - 0.8 ) ) + ase_tanViewDir ) );
-				half temp_output_122_0 = ( 1.0 / ( ( _IrisDepth * _PMod ) + 0.91 ) );
-				half temp_output_152_0 = ( irisScale208 * _ParallaxRadius );
-				half saferPower157 = abs( ( ( temp_output_152_0 - radial203 ) / temp_output_152_0 ) );
-				half2 lerpResult136 = lerp( texCoord93 , (( texCoord93 - ( (normalizeResult117).xy * _IrisDepth ) )*temp_output_122_0 + ( ( 1.0 - temp_output_122_0 ) * 0.5 )) , pow( saferPower157 , 0.25 ));
-				half3 hsvTorgb174 = RGBToHSV( tex2D( _CorneaDiffuseMap, lerpResult136 ).rgb );
-				half3 hsvTorgb184 = HSVToRGB( half3(( ( ( _IrisHue * 360.0 ) - 180.0 ) + hsvTorgb174.x ),( hsvTorgb174.y * _IrisSaturation ),( hsvTorgb174.z * _IrisBrightness )) );
-				half4 blendOpSrc201 = _LimbusColor;
-				half4 blendOpDest201 = half4( hsvTorgb184 , 0.0 );
-				half temp_output_193_0 = ( _LimbusDarkRadius * irisScale208 );
-				half smoothstepResult196 = smoothstep( temp_output_193_0 , ( temp_output_193_0 + ( irisScale208 * _LimbusDarkWidth ) ) , radial203);
-				half4 lerpBlendMode201 = lerp(blendOpDest201,( blendOpSrc201 * blendOpDest201 ),smoothstepResult196);
-				half temp_output_223_0 = ( 1.0 / _ScleraScale );
-				half2 temp_cast_4 = (temp_output_223_0).xx;
-				half2 temp_cast_5 = (( ( 1.0 - temp_output_223_0 ) * 0.5 )).xx;
-				half2 texCoord228 = IN.ase_texcoord7.xy * temp_cast_4 + temp_cast_5;
-				half3 hsvTorgb231 = RGBToHSV( tex2D( _ScleraDiffuseMap, texCoord228 ).rgb );
-				half3 hsvTorgb232 = HSVToRGB( half3(( ( ( _ScleraHue * 360.0 ) - 180.0 ) + hsvTorgb231.x ),( hsvTorgb231.y * _ScleraSaturation ),( hsvTorgb231.z * _ScleraBrightness )) );
-				half4 blendOpSrc23 = _CornerShadowColor;
-				half4 blendOpDest23 = half4( hsvTorgb232 , 0.0 );
-				half temp_output_247_0 = ( _ScleraScale * _ShadowRadius );
-				half temp_output_1_0_g13 = ( ( _ShadowHardness * _ScleraScale ) * temp_output_247_0 );
-				half4 lerpBlendMode23 = lerp(blendOpDest23,( blendOpSrc23 * blendOpDest23 ),( saturate( ( ( radial203 - temp_output_1_0_g13 ) / ( temp_output_247_0 - temp_output_1_0_g13 ) ) ) * 0.6 ));
-				half smoothstepResult28 = smoothstep( ( scaledIrisRadius209 - ( irisScale208 * _LimbusWidth ) ) , scaledIrisRadius209 , radial203);
-				half irisMask213 = smoothstepResult28;
-				half4 lerpResult261 = lerp( ( saturate( lerpBlendMode201 )) , ( saturate( lerpBlendMode23 )) , irisMask213);
-				half4 blendOpSrc21 = tex2D( _ColorBlendMap, uv_ColorBlendMap );
-				half4 blendOpDest21 = lerpResult261;
-				half4 lerpBlendMode21 = lerp(blendOpDest21,( blendOpSrc21 * blendOpDest21 ),_ColorBlendStrength);
+				float3 normalizeResult117 = normalize( ( ( mul( ase_worldToTangent, WorldNormal ) * ( _IOR - 0.8 ) ) + ase_tanViewDir ) );
+				float temp_output_122_0 = ( 1.0 / ( ( _IrisDepth * _PMod ) + 0.91 ) );
+				float temp_output_152_0 = ( irisScale208 * _ParallaxRadius );
+				float saferPower157 = abs( ( ( temp_output_152_0 - radial203 ) / temp_output_152_0 ) );
+				float2 lerpResult136 = lerp( texCoord93 , (( texCoord93 - ( (normalizeResult117).xy * _IrisDepth ) )*temp_output_122_0 + ( ( 1.0 - temp_output_122_0 ) * 0.5 )) , pow( saferPower157 , 0.25 ));
+				float3 hsvTorgb174 = RGBToHSV( tex2D( _CorneaDiffuseMap, lerpResult136 ).rgb );
+				float3 hsvTorgb184 = HSVToRGB( float3(( ( _IrisHue - 0.5 ) + hsvTorgb174.x ),( hsvTorgb174.y * _IrisSaturation ),( hsvTorgb174.z * _IrisBrightness )) );
+				float4 blendOpSrc201 = _LimbusColor;
+				float4 blendOpDest201 = float4( hsvTorgb184 , 0.0 );
+				float temp_output_193_0 = ( _LimbusDarkRadius * irisScale208 );
+				float smoothstepResult196 = smoothstep( temp_output_193_0 , ( temp_output_193_0 + ( irisScale208 * _LimbusDarkWidth ) ) , radial203);
+				float4 lerpBlendMode201 = lerp(blendOpDest201,( blendOpSrc201 * blendOpDest201 ),smoothstepResult196);
+				float temp_output_223_0 = ( 1.0 / _ScleraScale );
+				float2 temp_cast_4 = (temp_output_223_0).xx;
+				float2 temp_cast_5 = (( ( 1.0 - temp_output_223_0 ) * 0.5 )).xx;
+				float2 texCoord228 = IN.ase_texcoord7.xy * temp_cast_4 + temp_cast_5;
+				float3 hsvTorgb231 = RGBToHSV( tex2D( _ScleraDiffuseMap, texCoord228 ).rgb );
+				float3 hsvTorgb232 = HSVToRGB( float3(( ( _ScleraHue - 0.5 ) + hsvTorgb231.x ),( hsvTorgb231.y * _ScleraSaturation ),( hsvTorgb231.z * _ScleraBrightness )) );
+				float4 blendOpSrc23 = _CornerShadowColor;
+				float4 blendOpDest23 = float4( hsvTorgb232 , 0.0 );
+				float temp_output_247_0 = ( _ScleraScale * _ShadowRadius );
+				float temp_output_1_0_g13 = ( ( _ShadowHardness * _ScleraScale ) * temp_output_247_0 );
+				float4 lerpBlendMode23 = lerp(blendOpDest23,( blendOpSrc23 * blendOpDest23 ),( saturate( ( ( radial203 - temp_output_1_0_g13 ) / ( temp_output_247_0 - temp_output_1_0_g13 ) ) ) * 0.6 ));
+				float smoothstepResult28 = smoothstep( ( scaledIrisRadius209 - ( irisScale208 * _LimbusWidth ) ) , scaledIrisRadius209 , radial203);
+				float irisMask213 = smoothstepResult28;
+				float4 lerpResult261 = lerp( ( saturate( lerpBlendMode201 )) , ( saturate( lerpBlendMode23 )) , irisMask213);
+				float4 blendOpSrc21 = tex2D( _ColorBlendMap, uv_ColorBlendMap );
+				float4 blendOpDest21 = lerpResult261;
+				float4 lerpBlendMode21 = lerp(blendOpDest21,( blendOpSrc21 * blendOpDest21 ),_ColorBlendStrength);
 				
-				half2 temp_cast_9 = (_ScleraNormalTiling).xx;
-				half2 texCoord294 = IN.ase_texcoord7.xy * temp_cast_9 + float2( 0,0 );
-				half3 unpack289 = UnpackNormalScale( tex2D( _ScleraNormalMap, texCoord294 ), ( _ScleraNormalStrength * irisMask213 ) );
+				float2 temp_cast_9 = (_ScleraNormalTiling).xx;
+				float2 texCoord294 = IN.ase_texcoord7.xy * temp_cast_9 + float2( 0,0 );
+				float3 unpack289 = UnpackNormalScale( tex2D( _ScleraNormalMap, texCoord294 ), ( _ScleraNormalStrength * irisMask213 ) );
 				unpack289.z = lerp( 1, unpack289.z, saturate(( _ScleraNormalStrength * irisMask213 )) );
 				
 				float2 uv_EmissionMap = IN.ase_texcoord7.xy * _EmissionMap_ST.xy + _EmissionMap_ST.zw;
 				
-				half lerpResult271 = lerp( _CorneaSmoothness , _ScleraSmoothness , irisMask213);
+				float lerpResult271 = lerp( _CorneaSmoothness , _ScleraSmoothness , irisMask213);
 				
 				float2 uv_MaskMap = IN.ase_texcoord7.xy * _MaskMap_ST.xy + _MaskMap_ST.zw;
 				
-				half lerpResult315 = lerp( _IrisSubsurface , _ScleraSubsurface , irisMask213);
+				float lerpResult315 = lerp( _IrisSubsurfaceScale , _ScleraSubsurfaceScale , irisMask213);
 				
 				float3 Albedo = ( saturate( lerpBlendMode21 )).rgb;
 				float3 Normal = unpack289;
@@ -843,42 +843,42 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			half4 _SubsurfaceFalloff;
-			half4 _CornerShadowColor;
-			half4 _EmissiveColor;
-			half4 _MaskMap_ST;
-			half4 _EmissionMap_ST;
-			half4 _LimbusColor;
-			half4 _ColorBlendMap_ST;
-			half _AOStrength;
-			half _ScleraSmoothness;
-			half _CorneaSmoothness;
-			half _ScleraBrightness;
-			half _ScleraNormalStrength;
-			half _ScleraNormalTiling;
-			half _ColorBlendStrength;
-			half _LimbusWidth;
-			half _ShadowRadius;
-			half _ShadowHardness;
-			half _IrisSubsurface;
-			half _ScleraSaturation;
-			half _ScleraHue;
-			half _ScleraSubsurface;
-			half _LimbusDarkWidth;
-			half _LimbusDarkRadius;
-			half _IrisBrightness;
-			half _IrisSaturation;
-			half _ParallaxRadius;
-			half _PMod;
-			half _IOR;
-			half _IrisRadius;
-			half _DepthRadius;
-			half _PupilScale;
-			half _IrisDepth;
-			half _IrisScale;
-			half _IrisHue;
-			half _ScleraScale;
-			half _IsLeftEye;
+			float4 _SubsurfaceFalloff;
+			float4 _CornerShadowColor;
+			float4 _EmissiveColor;
+			float4 _MaskMap_ST;
+			float4 _EmissionMap_ST;
+			float4 _LimbusColor;
+			float4 _ColorBlendMap_ST;
+			float _AOStrength;
+			float _ScleraSmoothness;
+			float _CorneaSmoothness;
+			float _ScleraBrightness;
+			float _ScleraNormalStrength;
+			float _ScleraNormalTiling;
+			float _ColorBlendStrength;
+			float _LimbusWidth;
+			float _ShadowRadius;
+			float _ShadowHardness;
+			float _IrisSubsurfaceScale;
+			float _ScleraSaturation;
+			float _ScleraHue;
+			float _ScleraSubsurfaceScale;
+			float _LimbusDarkWidth;
+			float _LimbusDarkRadius;
+			float _IrisBrightness;
+			float _IrisSaturation;
+			float _ParallaxRadius;
+			float _PMod;
+			float _IOR;
+			float _IrisRadius;
+			float _DepthRadius;
+			float _PupilScale;
+			float _IrisDepth;
+			float _IrisScale;
+			float _IrisHue;
+			float _ScleraScale;
+			float _IsLeftEye;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -1160,42 +1160,42 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			half4 _SubsurfaceFalloff;
-			half4 _CornerShadowColor;
-			half4 _EmissiveColor;
-			half4 _MaskMap_ST;
-			half4 _EmissionMap_ST;
-			half4 _LimbusColor;
-			half4 _ColorBlendMap_ST;
-			half _AOStrength;
-			half _ScleraSmoothness;
-			half _CorneaSmoothness;
-			half _ScleraBrightness;
-			half _ScleraNormalStrength;
-			half _ScleraNormalTiling;
-			half _ColorBlendStrength;
-			half _LimbusWidth;
-			half _ShadowRadius;
-			half _ShadowHardness;
-			half _IrisSubsurface;
-			half _ScleraSaturation;
-			half _ScleraHue;
-			half _ScleraSubsurface;
-			half _LimbusDarkWidth;
-			half _LimbusDarkRadius;
-			half _IrisBrightness;
-			half _IrisSaturation;
-			half _ParallaxRadius;
-			half _PMod;
-			half _IOR;
-			half _IrisRadius;
-			half _DepthRadius;
-			half _PupilScale;
-			half _IrisDepth;
-			half _IrisScale;
-			half _IrisHue;
-			half _ScleraScale;
-			half _IsLeftEye;
+			float4 _SubsurfaceFalloff;
+			float4 _CornerShadowColor;
+			float4 _EmissiveColor;
+			float4 _MaskMap_ST;
+			float4 _EmissionMap_ST;
+			float4 _LimbusColor;
+			float4 _ColorBlendMap_ST;
+			float _AOStrength;
+			float _ScleraSmoothness;
+			float _CorneaSmoothness;
+			float _ScleraBrightness;
+			float _ScleraNormalStrength;
+			float _ScleraNormalTiling;
+			float _ColorBlendStrength;
+			float _LimbusWidth;
+			float _ShadowRadius;
+			float _ShadowHardness;
+			float _IrisSubsurfaceScale;
+			float _ScleraSaturation;
+			float _ScleraHue;
+			float _ScleraSubsurfaceScale;
+			float _LimbusDarkWidth;
+			float _LimbusDarkRadius;
+			float _IrisBrightness;
+			float _IrisSaturation;
+			float _ParallaxRadius;
+			float _PMod;
+			float _IOR;
+			float _IrisRadius;
+			float _DepthRadius;
+			float _PupilScale;
+			float _IrisDepth;
+			float _IrisScale;
+			float _IrisHue;
+			float _ScleraScale;
+			float _IsLeftEye;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -1432,7 +1432,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP"
 				float4 texcoord1 : TEXCOORD1;
 				float4 texcoord2 : TEXCOORD2;
 				float4 ase_texcoord : TEXCOORD0;
-				half4 ase_tangent : TANGENT;
+				float4 ase_tangent : TANGENT;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -1454,42 +1454,42 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			half4 _SubsurfaceFalloff;
-			half4 _CornerShadowColor;
-			half4 _EmissiveColor;
-			half4 _MaskMap_ST;
-			half4 _EmissionMap_ST;
-			half4 _LimbusColor;
-			half4 _ColorBlendMap_ST;
-			half _AOStrength;
-			half _ScleraSmoothness;
-			half _CorneaSmoothness;
-			half _ScleraBrightness;
-			half _ScleraNormalStrength;
-			half _ScleraNormalTiling;
-			half _ColorBlendStrength;
-			half _LimbusWidth;
-			half _ShadowRadius;
-			half _ShadowHardness;
-			half _IrisSubsurface;
-			half _ScleraSaturation;
-			half _ScleraHue;
-			half _ScleraSubsurface;
-			half _LimbusDarkWidth;
-			half _LimbusDarkRadius;
-			half _IrisBrightness;
-			half _IrisSaturation;
-			half _ParallaxRadius;
-			half _PMod;
-			half _IOR;
-			half _IrisRadius;
-			half _DepthRadius;
-			half _PupilScale;
-			half _IrisDepth;
-			half _IrisScale;
-			half _IrisHue;
-			half _ScleraScale;
-			half _IsLeftEye;
+			float4 _SubsurfaceFalloff;
+			float4 _CornerShadowColor;
+			float4 _EmissiveColor;
+			float4 _MaskMap_ST;
+			float4 _EmissionMap_ST;
+			float4 _LimbusColor;
+			float4 _ColorBlendMap_ST;
+			float _AOStrength;
+			float _ScleraSmoothness;
+			float _CorneaSmoothness;
+			float _ScleraBrightness;
+			float _ScleraNormalStrength;
+			float _ScleraNormalTiling;
+			float _ColorBlendStrength;
+			float _LimbusWidth;
+			float _ShadowRadius;
+			float _ShadowHardness;
+			float _IrisSubsurfaceScale;
+			float _ScleraSaturation;
+			float _ScleraHue;
+			float _ScleraSubsurfaceScale;
+			float _LimbusDarkWidth;
+			float _LimbusDarkRadius;
+			float _IrisBrightness;
+			float _IrisSaturation;
+			float _ParallaxRadius;
+			float _PMod;
+			float _IOR;
+			float _IrisRadius;
+			float _DepthRadius;
+			float _PupilScale;
+			float _IrisDepth;
+			float _IrisScale;
+			float _IrisHue;
+			float _ScleraScale;
+			float _IsLeftEye;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -1516,21 +1516,21 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP"
 			sampler2D _EmissionMap;
 
 
-			half3 HSVToRGB( half3 c )
+			float3 HSVToRGB( float3 c )
 			{
-				half4 K = half4( 1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0 );
-				half3 p = abs( frac( c.xxx + K.xyz ) * 6.0 - K.www );
+				float4 K = float4( 1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0 );
+				float3 p = abs( frac( c.xxx + K.xyz ) * 6.0 - K.www );
 				return c.z * lerp( K.xxx, saturate( p - K.xxx ), c.y );
 			}
 			
-			half3 RGBToHSV(half3 c)
+			float3 RGBToHSV(float3 c)
 			{
-				half4 K = half4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
-				half4 p = lerp( half4( c.bg, K.wz ), half4( c.gb, K.xy ), step( c.b, c.g ) );
-				half4 q = lerp( half4( p.xyw, c.r ), half4( c.r, p.yzx ), step( p.x, c.r ) );
-				half d = q.x - min( q.w, q.y );
-				half e = 1.0e-10;
-				return half3( abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
+				float4 K = float4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+				float4 p = lerp( float4( c.bg, K.wz ), float4( c.gb, K.xy ), step( c.b, c.g ) );
+				float4 q = lerp( float4( p.xyw, c.r ), float4( c.r, p.yzx ), step( p.x, c.r ) );
+				float d = q.x - min( q.w, q.y );
+				float e = 1.0e-10;
+				return float3( abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
 			}
 
 			VertexOutput VertexFunction( VertexInput v  )
@@ -1540,11 +1540,11 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
-				half3 ase_worldTangent = TransformObjectToWorldDir(v.ase_tangent.xyz);
+				float3 ase_worldTangent = TransformObjectToWorldDir(v.ase_tangent.xyz);
 				o.ase_texcoord3.xyz = ase_worldTangent;
-				half3 ase_worldNormal = TransformObjectToWorldNormal(v.ase_normal);
+				float3 ase_worldNormal = TransformObjectToWorldNormal(v.ase_normal);
 				o.ase_texcoord4.xyz = ase_worldNormal;
-				half ase_vertexTangentSign = v.ase_tangent.w * unity_WorldTransformParams.w;
+				float ase_vertexTangentSign = v.ase_tangent.w * unity_WorldTransformParams.w;
 				float3 ase_worldBitangent = cross( ase_worldNormal, ase_worldTangent ) * ase_vertexTangentSign;
 				o.ase_texcoord5.xyz = ase_worldBitangent;
 				
@@ -1593,7 +1593,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP"
 				float4 texcoord1 : TEXCOORD1;
 				float4 texcoord2 : TEXCOORD2;
 				float4 ase_texcoord : TEXCOORD0;
-				half4 ase_tangent : TANGENT;
+				float4 ase_tangent : TANGENT;
 
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -1693,57 +1693,57 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP"
 				#endif
 
 				float2 uv_ColorBlendMap = IN.ase_texcoord2.xy * _ColorBlendMap_ST.xy + _ColorBlendMap_ST.zw;
-				half irisScale208 = _IrisScale;
-				half irisDepth219 = _IrisDepth;
-				half2 texCoord36 = IN.ase_texcoord2.xy * float2( 1,1 ) + float2( 0,0 );
-				half radial203 = length( ( texCoord36 - float2( 0.5,0.5 ) ) );
-				half scaledIrisRadius209 = ( _IrisRadius * _IrisScale );
-				half temp_output_1_0_g1 = ( _DepthRadius * scaledIrisRadius209 );
-				half lerpResult83 = lerp( irisScale208 , ( irisScale208 * ( ( 0.333 / ( 0.333 + irisDepth219 ) ) * _PupilScale ) ) , saturate( ( ( radial203 - temp_output_1_0_g1 ) / ( 0.0 - temp_output_1_0_g1 ) ) ));
-				half temp_output_88_0 = ( 1.0 / lerpResult83 );
-				half2 temp_cast_0 = (temp_output_88_0).xx;
-				half2 temp_cast_1 = (( ( 1.0 - temp_output_88_0 ) * 0.5 )).xx;
-				half2 texCoord93 = IN.ase_texcoord2.xy * temp_cast_0 + temp_cast_1;
-				half3 ase_worldTangent = IN.ase_texcoord3.xyz;
-				half3 ase_worldNormal = IN.ase_texcoord4.xyz;
+				float irisScale208 = _IrisScale;
+				float irisDepth219 = _IrisDepth;
+				float2 texCoord36 = IN.ase_texcoord2.xy * float2( 1,1 ) + float2( 0,0 );
+				float radial203 = length( ( texCoord36 - float2( 0.5,0.5 ) ) );
+				float scaledIrisRadius209 = ( _IrisRadius * _IrisScale );
+				float temp_output_1_0_g1 = ( _DepthRadius * scaledIrisRadius209 );
+				float lerpResult83 = lerp( irisScale208 , ( irisScale208 * ( ( 0.333 / ( 0.333 + irisDepth219 ) ) * _PupilScale ) ) , saturate( ( ( radial203 - temp_output_1_0_g1 ) / ( 0.0 - temp_output_1_0_g1 ) ) ));
+				float temp_output_88_0 = ( 1.0 / lerpResult83 );
+				float2 temp_cast_0 = (temp_output_88_0).xx;
+				float2 temp_cast_1 = (( ( 1.0 - temp_output_88_0 ) * 0.5 )).xx;
+				float2 texCoord93 = IN.ase_texcoord2.xy * temp_cast_0 + temp_cast_1;
+				float3 ase_worldTangent = IN.ase_texcoord3.xyz;
+				float3 ase_worldNormal = IN.ase_texcoord4.xyz;
 				float3 ase_worldBitangent = IN.ase_texcoord5.xyz;
-				half3x3 ase_worldToTangent = float3x3(ase_worldTangent,ase_worldBitangent,ase_worldNormal);
-				half3 tanToWorld0 = float3( ase_worldTangent.x, ase_worldBitangent.x, ase_worldNormal.x );
-				half3 tanToWorld1 = float3( ase_worldTangent.y, ase_worldBitangent.y, ase_worldNormal.y );
-				half3 tanToWorld2 = float3( ase_worldTangent.z, ase_worldBitangent.z, ase_worldNormal.z );
+				float3x3 ase_worldToTangent = float3x3(ase_worldTangent,ase_worldBitangent,ase_worldNormal);
+				float3 tanToWorld0 = float3( ase_worldTangent.x, ase_worldBitangent.x, ase_worldNormal.x );
+				float3 tanToWorld1 = float3( ase_worldTangent.y, ase_worldBitangent.y, ase_worldNormal.y );
+				float3 tanToWorld2 = float3( ase_worldTangent.z, ase_worldBitangent.z, ase_worldNormal.z );
 				float3 ase_worldViewDir = ( _WorldSpaceCameraPos.xyz - WorldPosition );
 				ase_worldViewDir = normalize(ase_worldViewDir);
-				half3 ase_tanViewDir =  tanToWorld0 * ase_worldViewDir.x + tanToWorld1 * ase_worldViewDir.y  + tanToWorld2 * ase_worldViewDir.z;
+				float3 ase_tanViewDir =  tanToWorld0 * ase_worldViewDir.x + tanToWorld1 * ase_worldViewDir.y  + tanToWorld2 * ase_worldViewDir.z;
 				ase_tanViewDir = normalize(ase_tanViewDir);
-				half3 normalizeResult117 = normalize( ( ( mul( ase_worldToTangent, ase_worldNormal ) * ( _IOR - 0.8 ) ) + ase_tanViewDir ) );
-				half temp_output_122_0 = ( 1.0 / ( ( _IrisDepth * _PMod ) + 0.91 ) );
-				half temp_output_152_0 = ( irisScale208 * _ParallaxRadius );
-				half saferPower157 = abs( ( ( temp_output_152_0 - radial203 ) / temp_output_152_0 ) );
-				half2 lerpResult136 = lerp( texCoord93 , (( texCoord93 - ( (normalizeResult117).xy * _IrisDepth ) )*temp_output_122_0 + ( ( 1.0 - temp_output_122_0 ) * 0.5 )) , pow( saferPower157 , 0.25 ));
-				half3 hsvTorgb174 = RGBToHSV( tex2D( _CorneaDiffuseMap, lerpResult136 ).rgb );
-				half3 hsvTorgb184 = HSVToRGB( half3(( ( ( _IrisHue * 360.0 ) - 180.0 ) + hsvTorgb174.x ),( hsvTorgb174.y * _IrisSaturation ),( hsvTorgb174.z * _IrisBrightness )) );
-				half4 blendOpSrc201 = _LimbusColor;
-				half4 blendOpDest201 = half4( hsvTorgb184 , 0.0 );
-				half temp_output_193_0 = ( _LimbusDarkRadius * irisScale208 );
-				half smoothstepResult196 = smoothstep( temp_output_193_0 , ( temp_output_193_0 + ( irisScale208 * _LimbusDarkWidth ) ) , radial203);
-				half4 lerpBlendMode201 = lerp(blendOpDest201,( blendOpSrc201 * blendOpDest201 ),smoothstepResult196);
-				half temp_output_223_0 = ( 1.0 / _ScleraScale );
-				half2 temp_cast_4 = (temp_output_223_0).xx;
-				half2 temp_cast_5 = (( ( 1.0 - temp_output_223_0 ) * 0.5 )).xx;
-				half2 texCoord228 = IN.ase_texcoord2.xy * temp_cast_4 + temp_cast_5;
-				half3 hsvTorgb231 = RGBToHSV( tex2D( _ScleraDiffuseMap, texCoord228 ).rgb );
-				half3 hsvTorgb232 = HSVToRGB( half3(( ( ( _ScleraHue * 360.0 ) - 180.0 ) + hsvTorgb231.x ),( hsvTorgb231.y * _ScleraSaturation ),( hsvTorgb231.z * _ScleraBrightness )) );
-				half4 blendOpSrc23 = _CornerShadowColor;
-				half4 blendOpDest23 = half4( hsvTorgb232 , 0.0 );
-				half temp_output_247_0 = ( _ScleraScale * _ShadowRadius );
-				half temp_output_1_0_g13 = ( ( _ShadowHardness * _ScleraScale ) * temp_output_247_0 );
-				half4 lerpBlendMode23 = lerp(blendOpDest23,( blendOpSrc23 * blendOpDest23 ),( saturate( ( ( radial203 - temp_output_1_0_g13 ) / ( temp_output_247_0 - temp_output_1_0_g13 ) ) ) * 0.6 ));
-				half smoothstepResult28 = smoothstep( ( scaledIrisRadius209 - ( irisScale208 * _LimbusWidth ) ) , scaledIrisRadius209 , radial203);
-				half irisMask213 = smoothstepResult28;
-				half4 lerpResult261 = lerp( ( saturate( lerpBlendMode201 )) , ( saturate( lerpBlendMode23 )) , irisMask213);
-				half4 blendOpSrc21 = tex2D( _ColorBlendMap, uv_ColorBlendMap );
-				half4 blendOpDest21 = lerpResult261;
-				half4 lerpBlendMode21 = lerp(blendOpDest21,( blendOpSrc21 * blendOpDest21 ),_ColorBlendStrength);
+				float3 normalizeResult117 = normalize( ( ( mul( ase_worldToTangent, ase_worldNormal ) * ( _IOR - 0.8 ) ) + ase_tanViewDir ) );
+				float temp_output_122_0 = ( 1.0 / ( ( _IrisDepth * _PMod ) + 0.91 ) );
+				float temp_output_152_0 = ( irisScale208 * _ParallaxRadius );
+				float saferPower157 = abs( ( ( temp_output_152_0 - radial203 ) / temp_output_152_0 ) );
+				float2 lerpResult136 = lerp( texCoord93 , (( texCoord93 - ( (normalizeResult117).xy * _IrisDepth ) )*temp_output_122_0 + ( ( 1.0 - temp_output_122_0 ) * 0.5 )) , pow( saferPower157 , 0.25 ));
+				float3 hsvTorgb174 = RGBToHSV( tex2D( _CorneaDiffuseMap, lerpResult136 ).rgb );
+				float3 hsvTorgb184 = HSVToRGB( float3(( ( _IrisHue - 0.5 ) + hsvTorgb174.x ),( hsvTorgb174.y * _IrisSaturation ),( hsvTorgb174.z * _IrisBrightness )) );
+				float4 blendOpSrc201 = _LimbusColor;
+				float4 blendOpDest201 = float4( hsvTorgb184 , 0.0 );
+				float temp_output_193_0 = ( _LimbusDarkRadius * irisScale208 );
+				float smoothstepResult196 = smoothstep( temp_output_193_0 , ( temp_output_193_0 + ( irisScale208 * _LimbusDarkWidth ) ) , radial203);
+				float4 lerpBlendMode201 = lerp(blendOpDest201,( blendOpSrc201 * blendOpDest201 ),smoothstepResult196);
+				float temp_output_223_0 = ( 1.0 / _ScleraScale );
+				float2 temp_cast_4 = (temp_output_223_0).xx;
+				float2 temp_cast_5 = (( ( 1.0 - temp_output_223_0 ) * 0.5 )).xx;
+				float2 texCoord228 = IN.ase_texcoord2.xy * temp_cast_4 + temp_cast_5;
+				float3 hsvTorgb231 = RGBToHSV( tex2D( _ScleraDiffuseMap, texCoord228 ).rgb );
+				float3 hsvTorgb232 = HSVToRGB( float3(( ( _ScleraHue - 0.5 ) + hsvTorgb231.x ),( hsvTorgb231.y * _ScleraSaturation ),( hsvTorgb231.z * _ScleraBrightness )) );
+				float4 blendOpSrc23 = _CornerShadowColor;
+				float4 blendOpDest23 = float4( hsvTorgb232 , 0.0 );
+				float temp_output_247_0 = ( _ScleraScale * _ShadowRadius );
+				float temp_output_1_0_g13 = ( ( _ShadowHardness * _ScleraScale ) * temp_output_247_0 );
+				float4 lerpBlendMode23 = lerp(blendOpDest23,( blendOpSrc23 * blendOpDest23 ),( saturate( ( ( radial203 - temp_output_1_0_g13 ) / ( temp_output_247_0 - temp_output_1_0_g13 ) ) ) * 0.6 ));
+				float smoothstepResult28 = smoothstep( ( scaledIrisRadius209 - ( irisScale208 * _LimbusWidth ) ) , scaledIrisRadius209 , radial203);
+				float irisMask213 = smoothstepResult28;
+				float4 lerpResult261 = lerp( ( saturate( lerpBlendMode201 )) , ( saturate( lerpBlendMode23 )) , irisMask213);
+				float4 blendOpSrc21 = tex2D( _ColorBlendMap, uv_ColorBlendMap );
+				float4 blendOpDest21 = lerpResult261;
+				float4 lerpBlendMode21 = lerp(blendOpDest21,( blendOpSrc21 * blendOpDest21 ),_ColorBlendStrength);
 				
 				float2 uv_EmissionMap = IN.ase_texcoord2.xy * _EmissionMap_ST.xy + _EmissionMap_ST.zw;
 				
@@ -1815,7 +1815,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP"
 				float4 vertex : POSITION;
 				float3 ase_normal : NORMAL;
 				float4 ase_texcoord : TEXCOORD0;
-				half4 ase_tangent : TANGENT;
+				float4 ase_tangent : TANGENT;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -1837,42 +1837,42 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			half4 _SubsurfaceFalloff;
-			half4 _CornerShadowColor;
-			half4 _EmissiveColor;
-			half4 _MaskMap_ST;
-			half4 _EmissionMap_ST;
-			half4 _LimbusColor;
-			half4 _ColorBlendMap_ST;
-			half _AOStrength;
-			half _ScleraSmoothness;
-			half _CorneaSmoothness;
-			half _ScleraBrightness;
-			half _ScleraNormalStrength;
-			half _ScleraNormalTiling;
-			half _ColorBlendStrength;
-			half _LimbusWidth;
-			half _ShadowRadius;
-			half _ShadowHardness;
-			half _IrisSubsurface;
-			half _ScleraSaturation;
-			half _ScleraHue;
-			half _ScleraSubsurface;
-			half _LimbusDarkWidth;
-			half _LimbusDarkRadius;
-			half _IrisBrightness;
-			half _IrisSaturation;
-			half _ParallaxRadius;
-			half _PMod;
-			half _IOR;
-			half _IrisRadius;
-			half _DepthRadius;
-			half _PupilScale;
-			half _IrisDepth;
-			half _IrisScale;
-			half _IrisHue;
-			half _ScleraScale;
-			half _IsLeftEye;
+			float4 _SubsurfaceFalloff;
+			float4 _CornerShadowColor;
+			float4 _EmissiveColor;
+			float4 _MaskMap_ST;
+			float4 _EmissionMap_ST;
+			float4 _LimbusColor;
+			float4 _ColorBlendMap_ST;
+			float _AOStrength;
+			float _ScleraSmoothness;
+			float _CorneaSmoothness;
+			float _ScleraBrightness;
+			float _ScleraNormalStrength;
+			float _ScleraNormalTiling;
+			float _ColorBlendStrength;
+			float _LimbusWidth;
+			float _ShadowRadius;
+			float _ShadowHardness;
+			float _IrisSubsurfaceScale;
+			float _ScleraSaturation;
+			float _ScleraHue;
+			float _ScleraSubsurfaceScale;
+			float _LimbusDarkWidth;
+			float _LimbusDarkRadius;
+			float _IrisBrightness;
+			float _IrisSaturation;
+			float _ParallaxRadius;
+			float _PMod;
+			float _IOR;
+			float _IrisRadius;
+			float _DepthRadius;
+			float _PupilScale;
+			float _IrisDepth;
+			float _IrisScale;
+			float _IrisHue;
+			float _ScleraScale;
+			float _IsLeftEye;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -1898,21 +1898,21 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP"
 			sampler2D _ScleraDiffuseMap;
 
 
-			half3 HSVToRGB( half3 c )
+			float3 HSVToRGB( float3 c )
 			{
-				half4 K = half4( 1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0 );
-				half3 p = abs( frac( c.xxx + K.xyz ) * 6.0 - K.www );
+				float4 K = float4( 1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0 );
+				float3 p = abs( frac( c.xxx + K.xyz ) * 6.0 - K.www );
 				return c.z * lerp( K.xxx, saturate( p - K.xxx ), c.y );
 			}
 			
-			half3 RGBToHSV(half3 c)
+			float3 RGBToHSV(float3 c)
 			{
-				half4 K = half4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
-				half4 p = lerp( half4( c.bg, K.wz ), half4( c.gb, K.xy ), step( c.b, c.g ) );
-				half4 q = lerp( half4( p.xyw, c.r ), half4( c.r, p.yzx ), step( p.x, c.r ) );
-				half d = q.x - min( q.w, q.y );
-				half e = 1.0e-10;
-				return half3( abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
+				float4 K = float4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+				float4 p = lerp( float4( c.bg, K.wz ), float4( c.gb, K.xy ), step( c.b, c.g ) );
+				float4 q = lerp( float4( p.xyw, c.r ), float4( c.r, p.yzx ), step( p.x, c.r ) );
+				float d = q.x - min( q.w, q.y );
+				float e = 1.0e-10;
+				return float3( abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
 			}
 
 			VertexOutput VertexFunction( VertexInput v  )
@@ -1922,11 +1922,11 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP"
 				UNITY_TRANSFER_INSTANCE_ID( v, o );
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO( o );
 
-				half3 ase_worldTangent = TransformObjectToWorldDir(v.ase_tangent.xyz);
+				float3 ase_worldTangent = TransformObjectToWorldDir(v.ase_tangent.xyz);
 				o.ase_texcoord3.xyz = ase_worldTangent;
-				half3 ase_worldNormal = TransformObjectToWorldNormal(v.ase_normal);
+				float3 ase_worldNormal = TransformObjectToWorldNormal(v.ase_normal);
 				o.ase_texcoord4.xyz = ase_worldNormal;
-				half ase_vertexTangentSign = v.ase_tangent.w * unity_WorldTransformParams.w;
+				float ase_vertexTangentSign = v.ase_tangent.w * unity_WorldTransformParams.w;
 				float3 ase_worldBitangent = cross( ase_worldNormal, ase_worldTangent ) * ase_vertexTangentSign;
 				o.ase_texcoord5.xyz = ase_worldBitangent;
 				
@@ -1976,7 +1976,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP"
 				float4 vertex : INTERNALTESSPOS;
 				float3 ase_normal : NORMAL;
 				float4 ase_texcoord : TEXCOORD0;
-				half4 ase_tangent : TANGENT;
+				float4 ase_tangent : TANGENT;
 
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -2072,57 +2072,57 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP"
 				#endif
 
 				float2 uv_ColorBlendMap = IN.ase_texcoord2.xy * _ColorBlendMap_ST.xy + _ColorBlendMap_ST.zw;
-				half irisScale208 = _IrisScale;
-				half irisDepth219 = _IrisDepth;
-				half2 texCoord36 = IN.ase_texcoord2.xy * float2( 1,1 ) + float2( 0,0 );
-				half radial203 = length( ( texCoord36 - float2( 0.5,0.5 ) ) );
-				half scaledIrisRadius209 = ( _IrisRadius * _IrisScale );
-				half temp_output_1_0_g1 = ( _DepthRadius * scaledIrisRadius209 );
-				half lerpResult83 = lerp( irisScale208 , ( irisScale208 * ( ( 0.333 / ( 0.333 + irisDepth219 ) ) * _PupilScale ) ) , saturate( ( ( radial203 - temp_output_1_0_g1 ) / ( 0.0 - temp_output_1_0_g1 ) ) ));
-				half temp_output_88_0 = ( 1.0 / lerpResult83 );
-				half2 temp_cast_0 = (temp_output_88_0).xx;
-				half2 temp_cast_1 = (( ( 1.0 - temp_output_88_0 ) * 0.5 )).xx;
-				half2 texCoord93 = IN.ase_texcoord2.xy * temp_cast_0 + temp_cast_1;
-				half3 ase_worldTangent = IN.ase_texcoord3.xyz;
-				half3 ase_worldNormal = IN.ase_texcoord4.xyz;
+				float irisScale208 = _IrisScale;
+				float irisDepth219 = _IrisDepth;
+				float2 texCoord36 = IN.ase_texcoord2.xy * float2( 1,1 ) + float2( 0,0 );
+				float radial203 = length( ( texCoord36 - float2( 0.5,0.5 ) ) );
+				float scaledIrisRadius209 = ( _IrisRadius * _IrisScale );
+				float temp_output_1_0_g1 = ( _DepthRadius * scaledIrisRadius209 );
+				float lerpResult83 = lerp( irisScale208 , ( irisScale208 * ( ( 0.333 / ( 0.333 + irisDepth219 ) ) * _PupilScale ) ) , saturate( ( ( radial203 - temp_output_1_0_g1 ) / ( 0.0 - temp_output_1_0_g1 ) ) ));
+				float temp_output_88_0 = ( 1.0 / lerpResult83 );
+				float2 temp_cast_0 = (temp_output_88_0).xx;
+				float2 temp_cast_1 = (( ( 1.0 - temp_output_88_0 ) * 0.5 )).xx;
+				float2 texCoord93 = IN.ase_texcoord2.xy * temp_cast_0 + temp_cast_1;
+				float3 ase_worldTangent = IN.ase_texcoord3.xyz;
+				float3 ase_worldNormal = IN.ase_texcoord4.xyz;
 				float3 ase_worldBitangent = IN.ase_texcoord5.xyz;
-				half3x3 ase_worldToTangent = float3x3(ase_worldTangent,ase_worldBitangent,ase_worldNormal);
-				half3 tanToWorld0 = float3( ase_worldTangent.x, ase_worldBitangent.x, ase_worldNormal.x );
-				half3 tanToWorld1 = float3( ase_worldTangent.y, ase_worldBitangent.y, ase_worldNormal.y );
-				half3 tanToWorld2 = float3( ase_worldTangent.z, ase_worldBitangent.z, ase_worldNormal.z );
+				float3x3 ase_worldToTangent = float3x3(ase_worldTangent,ase_worldBitangent,ase_worldNormal);
+				float3 tanToWorld0 = float3( ase_worldTangent.x, ase_worldBitangent.x, ase_worldNormal.x );
+				float3 tanToWorld1 = float3( ase_worldTangent.y, ase_worldBitangent.y, ase_worldNormal.y );
+				float3 tanToWorld2 = float3( ase_worldTangent.z, ase_worldBitangent.z, ase_worldNormal.z );
 				float3 ase_worldViewDir = ( _WorldSpaceCameraPos.xyz - WorldPosition );
 				ase_worldViewDir = normalize(ase_worldViewDir);
-				half3 ase_tanViewDir =  tanToWorld0 * ase_worldViewDir.x + tanToWorld1 * ase_worldViewDir.y  + tanToWorld2 * ase_worldViewDir.z;
+				float3 ase_tanViewDir =  tanToWorld0 * ase_worldViewDir.x + tanToWorld1 * ase_worldViewDir.y  + tanToWorld2 * ase_worldViewDir.z;
 				ase_tanViewDir = normalize(ase_tanViewDir);
-				half3 normalizeResult117 = normalize( ( ( mul( ase_worldToTangent, ase_worldNormal ) * ( _IOR - 0.8 ) ) + ase_tanViewDir ) );
-				half temp_output_122_0 = ( 1.0 / ( ( _IrisDepth * _PMod ) + 0.91 ) );
-				half temp_output_152_0 = ( irisScale208 * _ParallaxRadius );
-				half saferPower157 = abs( ( ( temp_output_152_0 - radial203 ) / temp_output_152_0 ) );
-				half2 lerpResult136 = lerp( texCoord93 , (( texCoord93 - ( (normalizeResult117).xy * _IrisDepth ) )*temp_output_122_0 + ( ( 1.0 - temp_output_122_0 ) * 0.5 )) , pow( saferPower157 , 0.25 ));
-				half3 hsvTorgb174 = RGBToHSV( tex2D( _CorneaDiffuseMap, lerpResult136 ).rgb );
-				half3 hsvTorgb184 = HSVToRGB( half3(( ( ( _IrisHue * 360.0 ) - 180.0 ) + hsvTorgb174.x ),( hsvTorgb174.y * _IrisSaturation ),( hsvTorgb174.z * _IrisBrightness )) );
-				half4 blendOpSrc201 = _LimbusColor;
-				half4 blendOpDest201 = half4( hsvTorgb184 , 0.0 );
-				half temp_output_193_0 = ( _LimbusDarkRadius * irisScale208 );
-				half smoothstepResult196 = smoothstep( temp_output_193_0 , ( temp_output_193_0 + ( irisScale208 * _LimbusDarkWidth ) ) , radial203);
-				half4 lerpBlendMode201 = lerp(blendOpDest201,( blendOpSrc201 * blendOpDest201 ),smoothstepResult196);
-				half temp_output_223_0 = ( 1.0 / _ScleraScale );
-				half2 temp_cast_4 = (temp_output_223_0).xx;
-				half2 temp_cast_5 = (( ( 1.0 - temp_output_223_0 ) * 0.5 )).xx;
-				half2 texCoord228 = IN.ase_texcoord2.xy * temp_cast_4 + temp_cast_5;
-				half3 hsvTorgb231 = RGBToHSV( tex2D( _ScleraDiffuseMap, texCoord228 ).rgb );
-				half3 hsvTorgb232 = HSVToRGB( half3(( ( ( _ScleraHue * 360.0 ) - 180.0 ) + hsvTorgb231.x ),( hsvTorgb231.y * _ScleraSaturation ),( hsvTorgb231.z * _ScleraBrightness )) );
-				half4 blendOpSrc23 = _CornerShadowColor;
-				half4 blendOpDest23 = half4( hsvTorgb232 , 0.0 );
-				half temp_output_247_0 = ( _ScleraScale * _ShadowRadius );
-				half temp_output_1_0_g13 = ( ( _ShadowHardness * _ScleraScale ) * temp_output_247_0 );
-				half4 lerpBlendMode23 = lerp(blendOpDest23,( blendOpSrc23 * blendOpDest23 ),( saturate( ( ( radial203 - temp_output_1_0_g13 ) / ( temp_output_247_0 - temp_output_1_0_g13 ) ) ) * 0.6 ));
-				half smoothstepResult28 = smoothstep( ( scaledIrisRadius209 - ( irisScale208 * _LimbusWidth ) ) , scaledIrisRadius209 , radial203);
-				half irisMask213 = smoothstepResult28;
-				half4 lerpResult261 = lerp( ( saturate( lerpBlendMode201 )) , ( saturate( lerpBlendMode23 )) , irisMask213);
-				half4 blendOpSrc21 = tex2D( _ColorBlendMap, uv_ColorBlendMap );
-				half4 blendOpDest21 = lerpResult261;
-				half4 lerpBlendMode21 = lerp(blendOpDest21,( blendOpSrc21 * blendOpDest21 ),_ColorBlendStrength);
+				float3 normalizeResult117 = normalize( ( ( mul( ase_worldToTangent, ase_worldNormal ) * ( _IOR - 0.8 ) ) + ase_tanViewDir ) );
+				float temp_output_122_0 = ( 1.0 / ( ( _IrisDepth * _PMod ) + 0.91 ) );
+				float temp_output_152_0 = ( irisScale208 * _ParallaxRadius );
+				float saferPower157 = abs( ( ( temp_output_152_0 - radial203 ) / temp_output_152_0 ) );
+				float2 lerpResult136 = lerp( texCoord93 , (( texCoord93 - ( (normalizeResult117).xy * _IrisDepth ) )*temp_output_122_0 + ( ( 1.0 - temp_output_122_0 ) * 0.5 )) , pow( saferPower157 , 0.25 ));
+				float3 hsvTorgb174 = RGBToHSV( tex2D( _CorneaDiffuseMap, lerpResult136 ).rgb );
+				float3 hsvTorgb184 = HSVToRGB( float3(( ( _IrisHue - 0.5 ) + hsvTorgb174.x ),( hsvTorgb174.y * _IrisSaturation ),( hsvTorgb174.z * _IrisBrightness )) );
+				float4 blendOpSrc201 = _LimbusColor;
+				float4 blendOpDest201 = float4( hsvTorgb184 , 0.0 );
+				float temp_output_193_0 = ( _LimbusDarkRadius * irisScale208 );
+				float smoothstepResult196 = smoothstep( temp_output_193_0 , ( temp_output_193_0 + ( irisScale208 * _LimbusDarkWidth ) ) , radial203);
+				float4 lerpBlendMode201 = lerp(blendOpDest201,( blendOpSrc201 * blendOpDest201 ),smoothstepResult196);
+				float temp_output_223_0 = ( 1.0 / _ScleraScale );
+				float2 temp_cast_4 = (temp_output_223_0).xx;
+				float2 temp_cast_5 = (( ( 1.0 - temp_output_223_0 ) * 0.5 )).xx;
+				float2 texCoord228 = IN.ase_texcoord2.xy * temp_cast_4 + temp_cast_5;
+				float3 hsvTorgb231 = RGBToHSV( tex2D( _ScleraDiffuseMap, texCoord228 ).rgb );
+				float3 hsvTorgb232 = HSVToRGB( float3(( ( _ScleraHue - 0.5 ) + hsvTorgb231.x ),( hsvTorgb231.y * _ScleraSaturation ),( hsvTorgb231.z * _ScleraBrightness )) );
+				float4 blendOpSrc23 = _CornerShadowColor;
+				float4 blendOpDest23 = float4( hsvTorgb232 , 0.0 );
+				float temp_output_247_0 = ( _ScleraScale * _ShadowRadius );
+				float temp_output_1_0_g13 = ( ( _ShadowHardness * _ScleraScale ) * temp_output_247_0 );
+				float4 lerpBlendMode23 = lerp(blendOpDest23,( blendOpSrc23 * blendOpDest23 ),( saturate( ( ( radial203 - temp_output_1_0_g13 ) / ( temp_output_247_0 - temp_output_1_0_g13 ) ) ) * 0.6 ));
+				float smoothstepResult28 = smoothstep( ( scaledIrisRadius209 - ( irisScale208 * _LimbusWidth ) ) , scaledIrisRadius209 , radial203);
+				float irisMask213 = smoothstepResult28;
+				float4 lerpResult261 = lerp( ( saturate( lerpBlendMode201 )) , ( saturate( lerpBlendMode23 )) , irisMask213);
+				float4 blendOpSrc21 = tex2D( _ColorBlendMap, uv_ColorBlendMap );
+				float4 blendOpDest21 = lerpResult261;
+				float4 lerpBlendMode21 = lerp(blendOpDest21,( blendOpSrc21 * blendOpDest21 ),_ColorBlendStrength);
 				
 				
 				float3 Albedo = ( saturate( lerpBlendMode21 )).rgb;
@@ -2202,42 +2202,42 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			half4 _SubsurfaceFalloff;
-			half4 _CornerShadowColor;
-			half4 _EmissiveColor;
-			half4 _MaskMap_ST;
-			half4 _EmissionMap_ST;
-			half4 _LimbusColor;
-			half4 _ColorBlendMap_ST;
-			half _AOStrength;
-			half _ScleraSmoothness;
-			half _CorneaSmoothness;
-			half _ScleraBrightness;
-			half _ScleraNormalStrength;
-			half _ScleraNormalTiling;
-			half _ColorBlendStrength;
-			half _LimbusWidth;
-			half _ShadowRadius;
-			half _ShadowHardness;
-			half _IrisSubsurface;
-			half _ScleraSaturation;
-			half _ScleraHue;
-			half _ScleraSubsurface;
-			half _LimbusDarkWidth;
-			half _LimbusDarkRadius;
-			half _IrisBrightness;
-			half _IrisSaturation;
-			half _ParallaxRadius;
-			half _PMod;
-			half _IOR;
-			half _IrisRadius;
-			half _DepthRadius;
-			half _PupilScale;
-			half _IrisDepth;
-			half _IrisScale;
-			half _IrisHue;
-			half _ScleraScale;
-			half _IsLeftEye;
+			float4 _SubsurfaceFalloff;
+			float4 _CornerShadowColor;
+			float4 _EmissiveColor;
+			float4 _MaskMap_ST;
+			float4 _EmissionMap_ST;
+			float4 _LimbusColor;
+			float4 _ColorBlendMap_ST;
+			float _AOStrength;
+			float _ScleraSmoothness;
+			float _CorneaSmoothness;
+			float _ScleraBrightness;
+			float _ScleraNormalStrength;
+			float _ScleraNormalTiling;
+			float _ColorBlendStrength;
+			float _LimbusWidth;
+			float _ShadowRadius;
+			float _ShadowHardness;
+			float _IrisSubsurfaceScale;
+			float _ScleraSaturation;
+			float _ScleraHue;
+			float _ScleraSubsurfaceScale;
+			float _LimbusDarkWidth;
+			float _LimbusDarkRadius;
+			float _IrisBrightness;
+			float _IrisSaturation;
+			float _ParallaxRadius;
+			float _PMod;
+			float _IOR;
+			float _IrisRadius;
+			float _DepthRadius;
+			float _PupilScale;
+			float _IrisDepth;
+			float _IrisScale;
+			float _IrisHue;
+			float _ScleraScale;
+			float _IsLeftEye;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -2528,42 +2528,42 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			half4 _SubsurfaceFalloff;
-			half4 _CornerShadowColor;
-			half4 _EmissiveColor;
-			half4 _MaskMap_ST;
-			half4 _EmissionMap_ST;
-			half4 _LimbusColor;
-			half4 _ColorBlendMap_ST;
-			half _AOStrength;
-			half _ScleraSmoothness;
-			half _CorneaSmoothness;
-			half _ScleraBrightness;
-			half _ScleraNormalStrength;
-			half _ScleraNormalTiling;
-			half _ColorBlendStrength;
-			half _LimbusWidth;
-			half _ShadowRadius;
-			half _ShadowHardness;
-			half _IrisSubsurface;
-			half _ScleraSaturation;
-			half _ScleraHue;
-			half _ScleraSubsurface;
-			half _LimbusDarkWidth;
-			half _LimbusDarkRadius;
-			half _IrisBrightness;
-			half _IrisSaturation;
-			half _ParallaxRadius;
-			half _PMod;
-			half _IOR;
-			half _IrisRadius;
-			half _DepthRadius;
-			half _PupilScale;
-			half _IrisDepth;
-			half _IrisScale;
-			half _IrisHue;
-			half _ScleraScale;
-			half _IsLeftEye;
+			float4 _SubsurfaceFalloff;
+			float4 _CornerShadowColor;
+			float4 _EmissiveColor;
+			float4 _MaskMap_ST;
+			float4 _EmissionMap_ST;
+			float4 _LimbusColor;
+			float4 _ColorBlendMap_ST;
+			float _AOStrength;
+			float _ScleraSmoothness;
+			float _CorneaSmoothness;
+			float _ScleraBrightness;
+			float _ScleraNormalStrength;
+			float _ScleraNormalTiling;
+			float _ColorBlendStrength;
+			float _LimbusWidth;
+			float _ShadowRadius;
+			float _ShadowHardness;
+			float _IrisSubsurfaceScale;
+			float _ScleraSaturation;
+			float _ScleraHue;
+			float _ScleraSubsurfaceScale;
+			float _LimbusDarkWidth;
+			float _LimbusDarkRadius;
+			float _IrisBrightness;
+			float _IrisSaturation;
+			float _ParallaxRadius;
+			float _PMod;
+			float _IOR;
+			float _IrisRadius;
+			float _DepthRadius;
+			float _PupilScale;
+			float _IrisDepth;
+			float _IrisScale;
+			float _IrisHue;
+			float _ScleraScale;
+			float _IsLeftEye;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -2592,21 +2592,21 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP"
 			sampler2D _MaskMap;
 
 
-			half3 HSVToRGB( half3 c )
+			float3 HSVToRGB( float3 c )
 			{
-				half4 K = half4( 1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0 );
-				half3 p = abs( frac( c.xxx + K.xyz ) * 6.0 - K.www );
+				float4 K = float4( 1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0 );
+				float3 p = abs( frac( c.xxx + K.xyz ) * 6.0 - K.www );
 				return c.z * lerp( K.xxx, saturate( p - K.xxx ), c.y );
 			}
 			
-			half3 RGBToHSV(half3 c)
+			float3 RGBToHSV(float3 c)
 			{
-				half4 K = half4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
-				half4 p = lerp( half4( c.bg, K.wz ), half4( c.gb, K.xy ), step( c.b, c.g ) );
-				half4 q = lerp( half4( p.xyw, c.r ), half4( c.r, p.yzx ), step( p.x, c.r ) );
-				half d = q.x - min( q.w, q.y );
-				half e = 1.0e-10;
-				return half3( abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
+				float4 K = float4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+				float4 p = lerp( float4( c.bg, K.wz ), float4( c.gb, K.xy ), step( c.b, c.g ) );
+				float4 q = lerp( float4( p.xyw, c.r ), float4( c.r, p.yzx ), step( p.x, c.r ) );
+				float d = q.x - min( q.w, q.y );
+				float e = 1.0e-10;
+				return float3( abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
 			}
 
 			VertexOutput VertexFunction( VertexInput v  )
@@ -2805,65 +2805,65 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP"
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
 				float2 uv_ColorBlendMap = IN.ase_texcoord7.xy * _ColorBlendMap_ST.xy + _ColorBlendMap_ST.zw;
-				half irisScale208 = _IrisScale;
-				half irisDepth219 = _IrisDepth;
-				half2 texCoord36 = IN.ase_texcoord7.xy * float2( 1,1 ) + float2( 0,0 );
-				half radial203 = length( ( texCoord36 - float2( 0.5,0.5 ) ) );
-				half scaledIrisRadius209 = ( _IrisRadius * _IrisScale );
-				half temp_output_1_0_g1 = ( _DepthRadius * scaledIrisRadius209 );
-				half lerpResult83 = lerp( irisScale208 , ( irisScale208 * ( ( 0.333 / ( 0.333 + irisDepth219 ) ) * _PupilScale ) ) , saturate( ( ( radial203 - temp_output_1_0_g1 ) / ( 0.0 - temp_output_1_0_g1 ) ) ));
-				half temp_output_88_0 = ( 1.0 / lerpResult83 );
-				half2 temp_cast_0 = (temp_output_88_0).xx;
-				half2 temp_cast_1 = (( ( 1.0 - temp_output_88_0 ) * 0.5 )).xx;
-				half2 texCoord93 = IN.ase_texcoord7.xy * temp_cast_0 + temp_cast_1;
-				half3x3 ase_worldToTangent = float3x3(WorldTangent,WorldBiTangent,WorldNormal);
-				half3 tanToWorld0 = float3( WorldTangent.x, WorldBiTangent.x, WorldNormal.x );
-				half3 tanToWorld1 = float3( WorldTangent.y, WorldBiTangent.y, WorldNormal.y );
-				half3 tanToWorld2 = float3( WorldTangent.z, WorldBiTangent.z, WorldNormal.z );
-				half3 ase_tanViewDir =  tanToWorld0 * WorldViewDirection.x + tanToWorld1 * WorldViewDirection.y  + tanToWorld2 * WorldViewDirection.z;
+				float irisScale208 = _IrisScale;
+				float irisDepth219 = _IrisDepth;
+				float2 texCoord36 = IN.ase_texcoord7.xy * float2( 1,1 ) + float2( 0,0 );
+				float radial203 = length( ( texCoord36 - float2( 0.5,0.5 ) ) );
+				float scaledIrisRadius209 = ( _IrisRadius * _IrisScale );
+				float temp_output_1_0_g1 = ( _DepthRadius * scaledIrisRadius209 );
+				float lerpResult83 = lerp( irisScale208 , ( irisScale208 * ( ( 0.333 / ( 0.333 + irisDepth219 ) ) * _PupilScale ) ) , saturate( ( ( radial203 - temp_output_1_0_g1 ) / ( 0.0 - temp_output_1_0_g1 ) ) ));
+				float temp_output_88_0 = ( 1.0 / lerpResult83 );
+				float2 temp_cast_0 = (temp_output_88_0).xx;
+				float2 temp_cast_1 = (( ( 1.0 - temp_output_88_0 ) * 0.5 )).xx;
+				float2 texCoord93 = IN.ase_texcoord7.xy * temp_cast_0 + temp_cast_1;
+				float3x3 ase_worldToTangent = float3x3(WorldTangent,WorldBiTangent,WorldNormal);
+				float3 tanToWorld0 = float3( WorldTangent.x, WorldBiTangent.x, WorldNormal.x );
+				float3 tanToWorld1 = float3( WorldTangent.y, WorldBiTangent.y, WorldNormal.y );
+				float3 tanToWorld2 = float3( WorldTangent.z, WorldBiTangent.z, WorldNormal.z );
+				float3 ase_tanViewDir =  tanToWorld0 * WorldViewDirection.x + tanToWorld1 * WorldViewDirection.y  + tanToWorld2 * WorldViewDirection.z;
 				ase_tanViewDir = normalize(ase_tanViewDir);
-				half3 normalizeResult117 = normalize( ( ( mul( ase_worldToTangent, WorldNormal ) * ( _IOR - 0.8 ) ) + ase_tanViewDir ) );
-				half temp_output_122_0 = ( 1.0 / ( ( _IrisDepth * _PMod ) + 0.91 ) );
-				half temp_output_152_0 = ( irisScale208 * _ParallaxRadius );
-				half saferPower157 = abs( ( ( temp_output_152_0 - radial203 ) / temp_output_152_0 ) );
-				half2 lerpResult136 = lerp( texCoord93 , (( texCoord93 - ( (normalizeResult117).xy * _IrisDepth ) )*temp_output_122_0 + ( ( 1.0 - temp_output_122_0 ) * 0.5 )) , pow( saferPower157 , 0.25 ));
-				half3 hsvTorgb174 = RGBToHSV( tex2D( _CorneaDiffuseMap, lerpResult136 ).rgb );
-				half3 hsvTorgb184 = HSVToRGB( half3(( ( ( _IrisHue * 360.0 ) - 180.0 ) + hsvTorgb174.x ),( hsvTorgb174.y * _IrisSaturation ),( hsvTorgb174.z * _IrisBrightness )) );
-				half4 blendOpSrc201 = _LimbusColor;
-				half4 blendOpDest201 = half4( hsvTorgb184 , 0.0 );
-				half temp_output_193_0 = ( _LimbusDarkRadius * irisScale208 );
-				half smoothstepResult196 = smoothstep( temp_output_193_0 , ( temp_output_193_0 + ( irisScale208 * _LimbusDarkWidth ) ) , radial203);
-				half4 lerpBlendMode201 = lerp(blendOpDest201,( blendOpSrc201 * blendOpDest201 ),smoothstepResult196);
-				half temp_output_223_0 = ( 1.0 / _ScleraScale );
-				half2 temp_cast_4 = (temp_output_223_0).xx;
-				half2 temp_cast_5 = (( ( 1.0 - temp_output_223_0 ) * 0.5 )).xx;
-				half2 texCoord228 = IN.ase_texcoord7.xy * temp_cast_4 + temp_cast_5;
-				half3 hsvTorgb231 = RGBToHSV( tex2D( _ScleraDiffuseMap, texCoord228 ).rgb );
-				half3 hsvTorgb232 = HSVToRGB( half3(( ( ( _ScleraHue * 360.0 ) - 180.0 ) + hsvTorgb231.x ),( hsvTorgb231.y * _ScleraSaturation ),( hsvTorgb231.z * _ScleraBrightness )) );
-				half4 blendOpSrc23 = _CornerShadowColor;
-				half4 blendOpDest23 = half4( hsvTorgb232 , 0.0 );
-				half temp_output_247_0 = ( _ScleraScale * _ShadowRadius );
-				half temp_output_1_0_g13 = ( ( _ShadowHardness * _ScleraScale ) * temp_output_247_0 );
-				half4 lerpBlendMode23 = lerp(blendOpDest23,( blendOpSrc23 * blendOpDest23 ),( saturate( ( ( radial203 - temp_output_1_0_g13 ) / ( temp_output_247_0 - temp_output_1_0_g13 ) ) ) * 0.6 ));
-				half smoothstepResult28 = smoothstep( ( scaledIrisRadius209 - ( irisScale208 * _LimbusWidth ) ) , scaledIrisRadius209 , radial203);
-				half irisMask213 = smoothstepResult28;
-				half4 lerpResult261 = lerp( ( saturate( lerpBlendMode201 )) , ( saturate( lerpBlendMode23 )) , irisMask213);
-				half4 blendOpSrc21 = tex2D( _ColorBlendMap, uv_ColorBlendMap );
-				half4 blendOpDest21 = lerpResult261;
-				half4 lerpBlendMode21 = lerp(blendOpDest21,( blendOpSrc21 * blendOpDest21 ),_ColorBlendStrength);
+				float3 normalizeResult117 = normalize( ( ( mul( ase_worldToTangent, WorldNormal ) * ( _IOR - 0.8 ) ) + ase_tanViewDir ) );
+				float temp_output_122_0 = ( 1.0 / ( ( _IrisDepth * _PMod ) + 0.91 ) );
+				float temp_output_152_0 = ( irisScale208 * _ParallaxRadius );
+				float saferPower157 = abs( ( ( temp_output_152_0 - radial203 ) / temp_output_152_0 ) );
+				float2 lerpResult136 = lerp( texCoord93 , (( texCoord93 - ( (normalizeResult117).xy * _IrisDepth ) )*temp_output_122_0 + ( ( 1.0 - temp_output_122_0 ) * 0.5 )) , pow( saferPower157 , 0.25 ));
+				float3 hsvTorgb174 = RGBToHSV( tex2D( _CorneaDiffuseMap, lerpResult136 ).rgb );
+				float3 hsvTorgb184 = HSVToRGB( float3(( ( _IrisHue - 0.5 ) + hsvTorgb174.x ),( hsvTorgb174.y * _IrisSaturation ),( hsvTorgb174.z * _IrisBrightness )) );
+				float4 blendOpSrc201 = _LimbusColor;
+				float4 blendOpDest201 = float4( hsvTorgb184 , 0.0 );
+				float temp_output_193_0 = ( _LimbusDarkRadius * irisScale208 );
+				float smoothstepResult196 = smoothstep( temp_output_193_0 , ( temp_output_193_0 + ( irisScale208 * _LimbusDarkWidth ) ) , radial203);
+				float4 lerpBlendMode201 = lerp(blendOpDest201,( blendOpSrc201 * blendOpDest201 ),smoothstepResult196);
+				float temp_output_223_0 = ( 1.0 / _ScleraScale );
+				float2 temp_cast_4 = (temp_output_223_0).xx;
+				float2 temp_cast_5 = (( ( 1.0 - temp_output_223_0 ) * 0.5 )).xx;
+				float2 texCoord228 = IN.ase_texcoord7.xy * temp_cast_4 + temp_cast_5;
+				float3 hsvTorgb231 = RGBToHSV( tex2D( _ScleraDiffuseMap, texCoord228 ).rgb );
+				float3 hsvTorgb232 = HSVToRGB( float3(( ( _ScleraHue - 0.5 ) + hsvTorgb231.x ),( hsvTorgb231.y * _ScleraSaturation ),( hsvTorgb231.z * _ScleraBrightness )) );
+				float4 blendOpSrc23 = _CornerShadowColor;
+				float4 blendOpDest23 = float4( hsvTorgb232 , 0.0 );
+				float temp_output_247_0 = ( _ScleraScale * _ShadowRadius );
+				float temp_output_1_0_g13 = ( ( _ShadowHardness * _ScleraScale ) * temp_output_247_0 );
+				float4 lerpBlendMode23 = lerp(blendOpDest23,( blendOpSrc23 * blendOpDest23 ),( saturate( ( ( radial203 - temp_output_1_0_g13 ) / ( temp_output_247_0 - temp_output_1_0_g13 ) ) ) * 0.6 ));
+				float smoothstepResult28 = smoothstep( ( scaledIrisRadius209 - ( irisScale208 * _LimbusWidth ) ) , scaledIrisRadius209 , radial203);
+				float irisMask213 = smoothstepResult28;
+				float4 lerpResult261 = lerp( ( saturate( lerpBlendMode201 )) , ( saturate( lerpBlendMode23 )) , irisMask213);
+				float4 blendOpSrc21 = tex2D( _ColorBlendMap, uv_ColorBlendMap );
+				float4 blendOpDest21 = lerpResult261;
+				float4 lerpBlendMode21 = lerp(blendOpDest21,( blendOpSrc21 * blendOpDest21 ),_ColorBlendStrength);
 				
-				half2 temp_cast_9 = (_ScleraNormalTiling).xx;
-				half2 texCoord294 = IN.ase_texcoord7.xy * temp_cast_9 + float2( 0,0 );
-				half3 unpack289 = UnpackNormalScale( tex2D( _ScleraNormalMap, texCoord294 ), ( _ScleraNormalStrength * irisMask213 ) );
+				float2 temp_cast_9 = (_ScleraNormalTiling).xx;
+				float2 texCoord294 = IN.ase_texcoord7.xy * temp_cast_9 + float2( 0,0 );
+				float3 unpack289 = UnpackNormalScale( tex2D( _ScleraNormalMap, texCoord294 ), ( _ScleraNormalStrength * irisMask213 ) );
 				unpack289.z = lerp( 1, unpack289.z, saturate(( _ScleraNormalStrength * irisMask213 )) );
 				
 				float2 uv_EmissionMap = IN.ase_texcoord7.xy * _EmissionMap_ST.xy + _EmissionMap_ST.zw;
 				
-				half lerpResult271 = lerp( _CorneaSmoothness , _ScleraSmoothness , irisMask213);
+				float lerpResult271 = lerp( _CorneaSmoothness , _ScleraSmoothness , irisMask213);
 				
 				float2 uv_MaskMap = IN.ase_texcoord7.xy * _MaskMap_ST.xy + _MaskMap_ST.zw;
 				
-				half lerpResult315 = lerp( _IrisSubsurface , _ScleraSubsurface , irisMask213);
+				float lerpResult315 = lerp( _IrisSubsurfaceScale , _ScleraSubsurfaceScale , irisMask213);
 				
 				float3 Albedo = ( saturate( lerpBlendMode21 )).rgb;
 				float3 Normal = unpack289;
@@ -3026,8 +3026,8 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP"
 	
 }
 /*ASEBEGIN
-Version=18934
-7;13;1666;986;2928.507;1106.453;3.168242;True;False
+Version=18935
+1921;1;1920;1029;186.266;-639.317;1;True;False
 Node;AmplifyShaderEditor.CommentaryNode;204;-6596.911,-3587.629;Inherit;False;1134.455;323.4619;Comment;5;37;36;40;38;203;Radial Gradient;1,0,0.9132481,1;0;0
 Node;AmplifyShaderEditor.CommentaryNode;59;-6599.231,-2888.385;Inherit;False;755.1367;301.8584;;5;27;26;25;208;209;Scaled Iris Radius;1,0,0.8158517,1;0;0
 Node;AmplifyShaderEditor.TextureCoordinatesNode;36;-6546.911,-3537.629;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
@@ -3036,10 +3036,10 @@ Node;AmplifyShaderEditor.RangedFloatNode;26;-6549.231,-2838.385;Inherit;False;Pr
 Node;AmplifyShaderEditor.RangedFloatNode;72;-6116.004,121.286;Inherit;False;Property;_IrisDepth;Iris Depth;33;0;Create;True;0;0;0;False;0;False;0.3;0.2997;0.1;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleSubtractOpNode;37;-6286.913,-3448.629;Inherit;False;2;0;FLOAT2;0,0;False;1;FLOAT2;0.5,0.5;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.RangedFloatNode;25;-6548.356,-2702.526;Inherit;False;Property;_IrisScale;Iris Scale;6;0;Create;True;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;27;-6212.122,-2796.185;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.LengthOpNode;38;-6118.912,-3521.629;Inherit;False;1;0;FLOAT2;0,0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;219;-5764.856,244.6688;Inherit;False;irisDepth;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.CommentaryNode;168;-7097.884,-1391.027;Inherit;False;2236.97;563.6326;;13;83;82;89;93;88;91;73;71;74;69;70;218;220;Pupil Scaling;1,0.9427493,0,1;0;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;27;-6212.122,-2796.185;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.LengthOpNode;38;-6118.912,-3521.629;Inherit;False;1;0;FLOAT2;0,0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;209;-6048.701,-2802.239;Inherit;False;scaledIrisRadius;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RelayNode;40;-5952.937,-3518.167;Inherit;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;69;-7045.296,-1194.541;Inherit;False;Constant;_DepthCorrection;Depth Correction;7;0;Create;True;0;0;0;False;0;False;0.333;0;0.3;0.4;0;1;FLOAT;0
@@ -3059,175 +3059,173 @@ Node;AmplifyShaderEditor.SimpleMultiplyOpNode;74;-6333.296,-1113.541;Inherit;Fal
 Node;AmplifyShaderEditor.FunctionNode;47;-6926.164,-405.7781;Inherit;False;Inverse Lerp;-1;;1;09cbe79402f023141a4dc1fddd4c9511;0;3;1;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;82;-6091.217,-1135.869;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SaturateNode;48;-6720.438,-406.1374;Inherit;True;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.LerpOp;83;-5831.006,-1156.134;Inherit;False;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.WorldNormalVector;106;-6123.872,-346.0336;Inherit;False;False;1;0;FLOAT3;0,0,1;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
 Node;AmplifyShaderEditor.WorldToTangentMatrix;109;-6131.872,-443.0333;Inherit;False;0;1;FLOAT3x3;0
 Node;AmplifyShaderEditor.RangedFloatNode;112;-6203.872,-120.0343;Inherit;False;Property;_IOR;IOR;34;0;Create;True;0;0;0;False;0;False;1.4;1.4;1;2;0;1;FLOAT;0
-Node;AmplifyShaderEditor.WorldNormalVector;106;-6123.872,-346.0336;Inherit;False;False;1;0;FLOAT3;0,0,1;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
-Node;AmplifyShaderEditor.LerpOp;83;-5831.006,-1156.134;Inherit;False;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleSubtractOpNode;113;-5878.872,-203.0339;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0.8;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleDivideOpNode;88;-5617.896,-1237.898;Inherit;False;2;0;FLOAT;1;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;110;-5888.872,-410.0334;Inherit;False;2;2;0;FLOAT3x3;0,0,0,1,1,1,1,0,1;False;1;FLOAT3;0,0,0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.CommentaryNode;160;-5909.006,856.857;Inherit;False;1194.943;369.2668;;7;152;151;155;154;157;207;215;Parallax Height Mask;0,1,0.9901032,1;0;0
 Node;AmplifyShaderEditor.ViewDirInputsCoordNode;116;-5884.988,-52.86908;Inherit;False;Tangent;False;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;114;-5686.872,-306.0336;Inherit;False;2;2;0;FLOAT3;0,0,0;False;1;FLOAT;0;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.OneMinusNode;89;-5438.554,-1119.105;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.CommentaryNode;160;-5909.006,856.857;Inherit;False;1194.943;369.2668;;7;152;151;155;154;157;207;215;Parallax Height Mask;0,1,0.9901032,1;0;0
 Node;AmplifyShaderEditor.RangedFloatNode;131;-5696.866,341.2151;Inherit;False;Property;_PMod;Parrallax Mod;35;0;Create;False;0;0;0;False;0;False;6.4;6.4;0;10;0;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;130;-5343.229,214.3489;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;132;-5693.569,431.6167;Inherit;False;Constant;_ParallaxBase;Parallax Base;11;0;Create;True;0;0;0;False;0;False;0.91;0;0;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.GetLocalVarNode;215;-5811.718,936.4778;Inherit;False;208;irisScale;1;0;OBJECT;;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;151;-5866.006,1044.189;Inherit;False;Property;_ParallaxRadius;Parallax Radius;36;0;Create;True;0;0;0;False;0;False;0.1175;0.1175;0;0.16;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;91;-5240.831,-1050.036;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0.5;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleAddOpNode;115;-5520.731,-197.0258;Inherit;False;2;2;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.GetLocalVarNode;215;-5811.718,936.4778;Inherit;False;208;irisScale;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;132;-5693.569,431.6167;Inherit;False;Constant;_ParallaxBase;Parallax Base;11;0;Create;True;0;0;0;False;0;False;0.91;0;0;2;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;151;-5866.006,1044.189;Inherit;False;Property;_ParallaxRadius;Parallax Radius;36;0;Create;True;0;0;0;False;0;False;0.1175;0.1175;0;0.16;0;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;130;-5343.229,214.3489;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.TextureCoordinatesNode;93;-5099.142,-1256.788;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SimpleAddOpNode;121;-5136.273,314.6995;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.CommentaryNode;241;-4892.149,-2323.169;Inherit;False;2538.815;665.9999;Comment;17;228;223;226;224;222;229;230;231;234;235;236;237;238;232;233;239;240;Sclera Base Color;0,1,0.1720126,1;0;0
+Node;AmplifyShaderEditor.CommentaryNode;241;-4892.149,-2323.169;Inherit;False;2538.815;665.9999;Comment;16;228;223;226;224;222;229;230;231;235;236;237;238;232;233;239;240;Sclera Base Color;0,1,0.1720126,1;0;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;152;-5538.07,987.3333;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;207;-5574.071,1125.396;Inherit;False;203;radial;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.NormalizeNode;117;-5368.597,-234.1364;Inherit;False;False;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.RangedFloatNode;222;-4842.149,-1967.676;Inherit;False;Property;_ScleraScale;Sclera Scale;1;0;Create;True;0;0;0;False;0;False;1;0.93;0.25;2;0;1;FLOAT;0
 Node;AmplifyShaderEditor.WireNode;304;-4669.953,-857.2544;Inherit;False;1;0;FLOAT2;0,0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.SimpleDivideOpNode;122;-4955.855,294.6348;Inherit;False;2;0;FLOAT;1;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.ComponentMaskNode;144;-5200.039,-153.7305;Inherit;False;True;True;False;True;1;0;FLOAT3;0,0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.SimpleSubtractOpNode;155;-5357.333,1078.568;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleDivideOpNode;122;-4955.855,294.6348;Inherit;False;2;0;FLOAT;1;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;222;-4842.149,-1967.676;Inherit;False;Property;_ScleraScale;Sclera Scale;1;0;Create;True;0;0;0;False;0;False;1;0.93;0.25;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.ComponentMaskNode;144;-5200.039,-153.7305;Inherit;False;True;True;False;True;1;0;FLOAT3;0,0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.CommentaryNode;259;-4192.131,-1473.21;Inherit;False;1402.463;452.699;;11;248;249;243;242;247;246;252;254;253;256;318;Corner Shadow  Mask;0,1,0.9703217,1;0;0
 Node;AmplifyShaderEditor.WireNode;306;-4888.594,-353.7926;Inherit;False;1;0;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.SimpleDivideOpNode;154;-5165.42,970.9197;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.OneMinusNode;123;-4758.28,377.501;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleDivideOpNode;223;-4467.333,-2013.766;Inherit;False;2;0;FLOAT;1;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;119;-4962.215,112.5333;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT;0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;124;-4579.706,459.6981;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0.5;False;1;FLOAT;0
-Node;AmplifyShaderEditor.OneMinusNode;224;-4290.334,-1920.766;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleSubtractOpNode;120;-4730.475,15.26049;Inherit;False;2;0;FLOAT2;0,0;False;1;FLOAT2;0,0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.WireNode;248;-4140.653,-1350.334;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.PowerNode;157;-4974.065,972.1238;Inherit;True;True;2;0;FLOAT;0;False;1;FLOAT;0.25;False;1;FLOAT;0
 Node;AmplifyShaderEditor.WireNode;249;-4142.133,-1326.678;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.PowerNode;157;-4974.065,972.1238;Inherit;True;True;2;0;FLOAT;0;False;1;FLOAT;0.25;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;242;-4069.911,-1423.21;Inherit;False;Property;_ShadowHardness;Shadow Hardness;16;0;Create;True;0;0;0;False;0;False;0.5;0.75;0.01;0.99;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;243;-4067.687,-1193.44;Inherit;False;Property;_ShadowRadius;Shadow Radius;15;0;Create;True;0;0;0;False;0;False;0.275;0.25;0;0.5;0;1;FLOAT;0
-Node;AmplifyShaderEditor.WireNode;305;-4401.626,-1084.778;Inherit;False;1;0;FLOAT2;0,0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.ScaleAndOffsetNode;133;-4454.939,218.0967;Inherit;False;3;0;FLOAT2;0,0;False;1;FLOAT;1;False;2;FLOAT;0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.CommentaryNode;185;-3954.399,-531.082;Inherit;False;1620.96;666;Comment;13;182;181;178;183;179;175;177;176;174;172;184;136;171;Iris Base Color;0,1,0.1510973,1;0;0
-Node;AmplifyShaderEditor.CommentaryNode;200;-3804.905,331.6779;Inherit;False;1196.184;459.7933;Comment;8;186;195;194;193;187;196;206;216;Limbus Mask;0,1,0.9804161,1;0;0
-Node;AmplifyShaderEditor.WireNode;268;-4167.973,723.1008;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.WireNode;248;-4140.653,-1350.334;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.OneMinusNode;224;-4290.334,-1920.766;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;124;-4579.706,459.6981;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0.5;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleSubtractOpNode;120;-4730.475,15.26049;Inherit;False;2;0;FLOAT2;0,0;False;1;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;247;-3716.595,-1276.673;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;246;-3715.117,-1383.124;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.WireNode;268;-4167.973,723.1008;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;226;-4103.334,-1850.766;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0.5;False;1;FLOAT;0
-Node;AmplifyShaderEditor.LerpOp;136;-3904.399,-105.0121;Inherit;False;3;0;FLOAT2;0,0;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.RangedFloatNode;175;-3444.438,-481.0821;Inherit;False;Property;_IrisHue;Iris Hue;7;0;Create;True;0;0;0;False;0;False;0.5;0.5;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;186;-3754.905,459.1052;Inherit;False;Property;_LimbusDarkRadius;Limbus Dark Radius;12;0;Create;True;0;0;0;False;0;False;0.1;0.0995;0.01;0.2;0;1;FLOAT;0
-Node;AmplifyShaderEditor.TexturePropertyNode;230;-3932.333,-2256.764;Inherit;True;Property;_ScleraDiffuseMap;Sclera Diffuse Map;0;0;Create;True;0;0;0;False;0;False;None;ffd6d60d341410d4680abda483e7f221;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;252;-3520.672,-1342.511;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.CommentaryNode;214;-6621.079,-2266.734;Inherit;False;1274.695;425.925;Comment;8;28;34;35;29;211;210;212;213;Iris Mask;1,0,0.909091,1;0;0
-Node;AmplifyShaderEditor.TexturePropertyNode;171;-3810.195,-384.4613;Inherit;True;Property;_CorneaDiffuseMap;Cornea Diffuse Map;5;0;Create;True;0;0;0;False;0;False;None;6a8ee2421380d9e489f0ef19b19a261f;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
-Node;AmplifyShaderEditor.TextureCoordinatesNode;228;-3921.333,-2038.765;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.GetLocalVarNode;216;-3656.726,565.6792;Inherit;False;208;irisScale;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;187;-3753.622,675.4706;Inherit;False;Property;_LimbusDarkWidth;Limbus Dark Width;13;0;Create;True;0;0;0;False;0;False;0.025;0.025;0.01;0.1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;233;-3474.919,-2273.169;Inherit;False;Property;_ScleraHue;Sclera Hue;2;0;Create;True;0;0;0;False;0;False;0.5;0.5;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;246;-3715.117,-1383.124;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.WireNode;305;-4401.626,-1084.778;Inherit;False;1;0;FLOAT2;0,0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.CommentaryNode;200;-3804.905,331.6779;Inherit;False;1196.184;459.7933;Comment;8;186;195;194;193;187;196;206;216;Limbus Mask;0,1,0.9804161,1;0;0
+Node;AmplifyShaderEditor.CommentaryNode;185;-3954.399,-531.082;Inherit;False;1620.96;666;Comment;12;182;181;178;183;179;175;177;174;172;184;136;171;Iris Base Color;0,1,0.1510973,1;0;0
+Node;AmplifyShaderEditor.ScaleAndOffsetNode;133;-4454.939,218.0967;Inherit;False;3;0;FLOAT2;0,0;False;1;FLOAT;1;False;2;FLOAT;0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.GetLocalVarNode;254;-3601.672,-1136.511;Inherit;False;203;radial;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;194;-3292.721,639.8973;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SamplerNode;229;-3605.333,-2126.765;Inherit;True;Property;_TextureSample2;Texture Sample 2;20;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;193;-3294.721,498.8979;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;176;-3126.438,-468.0821;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;360;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SamplerNode;172;-3494.168,-275.1914;Inherit;True;Property;_TextureSample1;Texture Sample 1;13;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;234;-3156.918,-2260.169;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;360;False;1;FLOAT;0
+Node;AmplifyShaderEditor.GetLocalVarNode;216;-3656.726,565.6792;Inherit;False;208;irisScale;1;0;OBJECT;;False;1;FLOAT;0
+Node;AmplifyShaderEditor.TexturePropertyNode;171;-3810.195,-384.4613;Inherit;True;Property;_CorneaDiffuseMap;Cornea Diffuse Map;5;0;Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.TextureCoordinatesNode;228;-3921.333,-2038.765;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.RangedFloatNode;187;-3753.622,675.4706;Inherit;False;Property;_LimbusDarkWidth;Limbus Dark Width;13;0;Create;True;0;0;0;False;0;False;0.025;0.025;0.01;0.1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.TexturePropertyNode;230;-3932.333,-2256.764;Inherit;True;Property;_ScleraDiffuseMap;Sclera Diffuse Map;0;0;Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.RangedFloatNode;186;-3754.905,459.1052;Inherit;False;Property;_LimbusDarkRadius;Limbus Dark Radius;12;0;Create;True;0;0;0;False;0;False;0.1;0.0995;0.01;0.2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.CommentaryNode;214;-6621.079,-2266.734;Inherit;False;1274.695;425.925;Comment;8;28;34;35;29;211;210;212;213;Iris Mask;1,0,0.909091,1;0;0
+Node;AmplifyShaderEditor.LerpOp;136;-3904.399,-105.0121;Inherit;False;3;0;FLOAT2;0,0;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;252;-3520.672,-1342.511;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;29;-6571.078,-1956.81;Inherit;False;Property;_LimbusWidth;Limbus Width;11;0;Create;True;0;0;0;False;0;False;0.055;0.045;0.01;0.1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;211;-6505.249,-2082.404;Inherit;False;208;irisScale;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.FunctionNode;253;-3360.672,-1299.511;Inherit;False;Inverse Lerp;-1;;13;09cbe79402f023141a4dc1fddd4c9511;0;3;1;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleSubtractOpNode;235;-2989.919,-2224.169;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;180;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;233;-3336.919,-2254.169;Inherit;False;Property;_ScleraHue;Sclera Hue;2;0;Create;True;0;0;0;False;0;False;0.5;0.5;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.SamplerNode;172;-3494.168,-275.1914;Inherit;True;Property;_TextureSample1;Texture Sample 1;13;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;194;-3292.721,639.8973;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;175;-3444.438,-481.0821;Inherit;False;Property;_IrisHue;Iris Hue;7;0;Create;True;0;0;0;False;0;False;0.5;0.5;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.SamplerNode;229;-3605.333,-2126.765;Inherit;True;Property;_TextureSample2;Texture Sample 2;20;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;193;-3294.721,498.8979;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleSubtractOpNode;235;-2989.919,-2224.169;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0.5;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SaturateNode;318;-3144.17,-1317.416;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;239;-3246.919,-1863.171;Inherit;False;Property;_ScleraSaturation;Sclera Saturation;3;0;Create;True;0;0;0;False;0;False;1;0.75;0;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.GetLocalVarNode;206;-3301.531,395.153;Inherit;False;203;radial;1;0;OBJECT;;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RGBToHSVNode;174;-3067.235,-230.4604;Inherit;False;1;0;FLOAT3;0,0,0;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
+Node;AmplifyShaderEditor.SimpleSubtractOpNode;177;-3025.438,-434.0821;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0.5;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RGBToHSVNode;231;-3197.332,-2062.765;Inherit;False;1;0;FLOAT3;0,0,0;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
 Node;AmplifyShaderEditor.GetLocalVarNode;210;-6538.344,-2165.394;Inherit;False;209;scaledIrisRadius;1;0;OBJECT;;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;240;-3245.919,-1773.171;Inherit;False;Property;_ScleraBrightness;Sclera Brightness;4;0;Create;True;0;0;0;False;0;False;1;0.8294492;0;2;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;34;-6280.078,-2020.81;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleAddOpNode;195;-3075.721,564.8978;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;179;-3216.438,-71.08213;Inherit;False;Property;_IrisSaturation;Iris Saturation;8;0;Create;True;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;183;-3215.438,18.91784;Inherit;False;Property;_IrisBrightness;Iris Brightness;9;0;Create;True;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RGBToHSVNode;231;-3197.332,-2062.765;Inherit;False;1;0;FLOAT3;0,0,0;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
-Node;AmplifyShaderEditor.RangedFloatNode;240;-3245.919,-1773.171;Inherit;False;Property;_ScleraBrightness;Sclera Brightness;4;0;Create;True;0;0;0;False;0;False;1;0.8294492;0;2;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RGBToHSVNode;174;-3067.235,-230.4604;Inherit;False;1;0;FLOAT3;0,0,0;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
-Node;AmplifyShaderEditor.SimpleSubtractOpNode;177;-2959.438,-432.0821;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;180;False;1;FLOAT;0
-Node;AmplifyShaderEditor.GetLocalVarNode;206;-3301.531,395.153;Inherit;False;203;radial;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;239;-3246.919,-1863.171;Inherit;False;Property;_ScleraSaturation;Sclera Saturation;3;0;Create;True;0;0;0;False;0;False;1;0.75;0;2;0;1;FLOAT;0
-Node;AmplifyShaderEditor.SaturateNode;318;-3144.17,-1317.416;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleAddOpNode;195;-3075.721,564.8978;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleSubtractOpNode;35;-6116.076,-2097.81;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.CommentaryNode;283;-1737.899,2004.369;Inherit;False;1221.501;386.8221;Comment;6;277;279;278;280;281;276;Ambient Occlusion;0,0.9905019,1,1;0;0
 Node;AmplifyShaderEditor.SimpleAddOpNode;236;-2796.92,-2078.17;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;182;-2771.438,-62.08215;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;237;-2800.92,-1967.171;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleSubtractOpNode;35;-6116.076,-2097.81;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;238;-2801.92,-1854.171;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.GetLocalVarNode;212;-6230.766,-2216.734;Inherit;False;203;radial;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SmoothstepOpNode;196;-2862.721,447.898;Inherit;True;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;1;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;256;-2951.672,-1230.511;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0.6;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;181;-2770.438,-175.0821;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;182;-2771.438,-62.08215;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SmoothstepOpNode;196;-2862.721,447.898;Inherit;True;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;1;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleAddOpNode;178;-2766.438,-286.0821;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.GetLocalVarNode;212;-6230.766,-2216.734;Inherit;False;203;radial;1;0;OBJECT;;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;256;-2951.672,-1230.511;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0.6;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;238;-2801.92,-1854.171;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.ColorNode;49;-2555.033,-1620.931;Inherit;False;Property;_CornerShadowColor;Corner Shadow Color;17;0;Create;True;0;0;0;False;0;False;1,0.7333333,0.6980392,0;1,0.7372,0.70196,1;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.SmoothstepOpNode;28;-5858.131,-2190.278;Inherit;True;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;1;False;1;FLOAT;0
+Node;AmplifyShaderEditor.WireNode;267;-2357.866,-1290.602;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.HSVToRGBNode;232;-2591.333,-2002.766;Inherit;False;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
-Node;AmplifyShaderEditor.TexturePropertyNode;276;-1687.899,2084.608;Inherit;True;Property;_MaskMap;Mask Map;21;0;Create;True;0;0;0;False;0;False;None;e00b1b303ac816349b11c41845e1f80e;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
 Node;AmplifyShaderEditor.HSVToRGBNode;184;-2571.438,-198.3651;Inherit;False;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
 Node;AmplifyShaderEditor.ColorNode;221;-2518.918,169.4791;Inherit;False;Property;_LimbusColor;Limbus Color;14;0;Create;True;0;0;0;False;0;False;0,0,0,0;0,0,0,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.WireNode;267;-2357.866,-1290.602;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.TexturePropertyNode;276;-1687.899,2084.608;Inherit;True;Property;_MaskMap;Mask Map;21;0;Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
 Node;AmplifyShaderEditor.WireNode;266;-2348.194,385.2512;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SmoothstepOpNode;28;-5858.131,-2190.278;Inherit;True;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;1;False;1;FLOAT;0
-Node;AmplifyShaderEditor.ColorNode;49;-2555.033,-1620.931;Inherit;False;Property;_CornerShadowColor;Corner Shadow Color;17;0;Create;True;0;0;0;False;0;False;1,0.7333333,0.6980392,0;1,0.7372,0.70196,1;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.CommentaryNode;324;-1334.31,745.6045;Inherit;False;800.9006;462.2003;;4;319;321;320;322;Emission;0,1,0.1282372,1;0;0
-Node;AmplifyShaderEditor.CommentaryNode;337;-1317.389,2530.509;Inherit;False;812.2482;633.946;;7;338;339;315;314;316;302;342;Subsurface;1,0,0,1;0;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode;213;-5570.38,-2193.003;Inherit;False;irisMask;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.CommentaryNode;295;-1525.056,-4.54176;Inherit;False;989.1453;594.651;Comment;7;289;292;284;293;294;291;290;Normals;0,0.06795359,1,1;0;0
-Node;AmplifyShaderEditor.CommentaryNode;265;-1656.663,-997.2845;Inherit;False;1124.059;806.899;;8;299;298;21;261;20;17;262;19;Final Color Blend;0,1,0.1510973,1;0;0
 Node;AmplifyShaderEditor.SamplerNode;277;-1401.591,2161.191;Inherit;True;Property;_TextureSample3;Texture Sample 3;28;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.BlendOpsNode;23;-2211.956,-1618.656;Inherit;True;Multiply;True;3;0;COLOR;0,0,0,0;False;1;FLOAT3;0,0,0;False;2;FLOAT;1;False;1;COLOR;0
 Node;AmplifyShaderEditor.BlendOpsNode;201;-2165.983,169.1272;Inherit;False;Multiply;True;3;0;COLOR;0,0,0,0;False;1;FLOAT3;0,0,0;False;2;FLOAT;1;False;1;COLOR;0
+Node;AmplifyShaderEditor.CommentaryNode;265;-1656.663,-997.2845;Inherit;False;1124.059;806.899;;8;299;298;21;261;20;17;262;19;Final Color Blend;0,1,0.1510973,1;0;0
+Node;AmplifyShaderEditor.CommentaryNode;337;-1317.389,2530.509;Inherit;False;812.2482;633.946;;7;338;339;315;314;316;302;342;Subsurface;1,0,0,1;0;0
+Node;AmplifyShaderEditor.CommentaryNode;324;-1334.31,745.6045;Inherit;False;800.9006;462.2003;;4;319;321;320;322;Emission;0,1,0.1282372,1;0;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode;213;-5570.38,-2193.003;Inherit;False;irisMask;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.WireNode;299;-1631.821,-876.0963;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.CommentaryNode;273;-1240.785,1391.808;Inherit;False;683.4199;377.4617;;4;269;270;272;271;Smoothness;0,0.9901032,1,1;0;0
-Node;AmplifyShaderEditor.OneMinusNode;278;-1073.011,2215.228;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;302;-1257.718,2701.489;Inherit;False;Property;_ScleraSubsurface;Sclera Subsurface;18;0;Create;True;0;0;0;False;0;False;0.5;0.5;0;2;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;314;-1258.675,2615.98;Inherit;False;Property;_IrisSubsurface;Iris Subsurface;19;0;Create;True;0;0;0;False;0;False;0;1;0;2;0;1;FLOAT;0
-Node;AmplifyShaderEditor.TexturePropertyNode;19;-1481.16,-481.0281;Inherit;True;Property;_ColorBlendMap;Color Blend Map;25;0;Create;True;0;0;0;False;0;False;None;1d7d424fda3960448a766f3376e2a887;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
-Node;AmplifyShaderEditor.TexturePropertyNode;319;-1284.31,795.6045;Inherit;True;Property;_EmissionMap;Emission Map;30;0;Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
-Node;AmplifyShaderEditor.RangedFloatNode;293;-1475.056,278.1091;Inherit;False;Property;_ScleraNormalTiling;Sclera Normal Tiling;29;0;Create;True;0;0;0;False;0;False;2;2;1;10;0;1;FLOAT;0
-Node;AmplifyShaderEditor.GetLocalVarNode;262;-1355.289,-660.3757;Inherit;False;213;irisMask;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.WireNode;298;-1629.234,-704.7217;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.RangedFloatNode;279;-1387.606,2054.369;Inherit;False;Property;_AOStrength;Ambient Occlusion Strength;22;0;Create;False;0;0;0;False;0;False;0.2;0.25;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;290;-1474.911,375.0162;Inherit;False;Property;_ScleraNormalStrength;Sclera Normal Strength;28;0;Create;True;0;0;0;False;0;False;0.1;0.1;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.GetLocalVarNode;316;-1205.675,2797.797;Inherit;False;213;irisMask;1;0;OBJECT;;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;314;-1258.675,2615.98;Inherit;False;Property;_IrisSubsurfaceScale;Iris Subsurface Scale;19;0;Create;True;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.WireNode;298;-1629.234,-704.7217;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.RangedFloatNode;302;-1257.718,2701.489;Inherit;False;Property;_ScleraSubsurfaceScale;Sclera Subsurface Scale;18;0;Create;True;0;0;0;False;0;False;0.5;0.5;0;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.CommentaryNode;273;-1240.785,1391.808;Inherit;False;683.4199;377.4617;;4;269;270;272;271;Smoothness;0,0.9901032,1,1;0;0
+Node;AmplifyShaderEditor.GetLocalVarNode;262;-1355.289,-660.3757;Inherit;False;213;irisMask;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;292;-1345.056,474.1088;Inherit;False;213;irisMask;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.GetLocalVarNode;272;-1134.691,1642.508;Inherit;False;213;irisMask;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.TexturePropertyNode;284;-1227.431,45.45831;Inherit;True;Property;_ScleraNormalMap;Sclera Normal Map;27;0;Create;True;0;0;0;False;0;False;None;bd88252ae167c0b44b3fb65415281f62;True;bump;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
-Node;AmplifyShaderEditor.ColorNode;321;-1281.712,995.8048;Inherit;False;Property;_EmissiveColor;Emissive Color;31;0;Create;True;0;0;0;False;0;False;0,0,0,0;0,0,0,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;291;-1093.911,410.0161;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;269;-1190.785,1441.808;Inherit;False;Property;_CorneaSmoothness;Cornea Smoothness;24;0;Create;True;0;0;0;False;0;False;1;0.88;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;290;-1474.911,375.0162;Inherit;False;Property;_ScleraNormalStrength;Sclera Normal Strength;28;0;Create;True;0;0;0;False;0;False;0.1;0.1;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.TexturePropertyNode;319;-1284.31,795.6045;Inherit;True;Property;_EmissionMap;Emission Map;30;0;Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.GetLocalVarNode;316;-1205.675,2797.797;Inherit;False;213;irisMask;1;0;OBJECT;;False;1;FLOAT;0
+Node;AmplifyShaderEditor.TexturePropertyNode;19;-1481.16,-481.0281;Inherit;True;Property;_ColorBlendMap;Color Blend Map;25;0;Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.RangedFloatNode;293;-1475.056,278.1091;Inherit;False;Property;_ScleraNormalTiling;Sclera Normal Tiling;29;0;Create;True;0;0;0;False;0;False;2;2;1;10;0;1;FLOAT;0
+Node;AmplifyShaderEditor.OneMinusNode;278;-1073.011,2215.228;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;20;-1185.414,-308.748;Inherit;False;Property;_ColorBlendStrength;Color Blend Strength;26;0;Create;True;0;0;0;False;0;False;0.2;0;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;270;-1187.958,1532.285;Inherit;False;Property;_ScleraSmoothness;Sclera Smoothness;23;0;Create;True;0;0;0;False;0;False;0.8;0.8;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.TextureCoordinatesNode;294;-1160.056,275.1091;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.SamplerNode;17;-1162.524,-533.1462;Inherit;True;Property;_TextureSample0;Texture Sample 0;0;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;280;-883.1517,2126.562;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;342;-1250.315,2891.409;Inherit;False;Constant;_SubsurfaceWrapMax;Subsurface Wrap Max;40;0;Create;True;0;0;0;False;0;False;0.5;0;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.LerpOp;261;-1107.176,-824.1899;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
-Node;AmplifyShaderEditor.LerpOp;315;-894.6747,2660.797;Inherit;False;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;342;-1250.315,2891.409;Inherit;False;Constant;_SubsurfaceWrapMax;Subsurface Wrap Max;40;0;Create;True;0;0;0;False;0;False;0.5;0;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;280;-883.1517,2126.562;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.GetLocalVarNode;272;-1134.691,1642.508;Inherit;False;213;irisMask;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.ColorNode;338;-936.4135,2958.79;Inherit;False;Property;_SubsurfaceFalloff;Subsurface Falloff;20;0;Create;True;0;0;0;False;0;False;1,1,1,0;1,1,1,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SamplerNode;320;-1017.811,802.1045;Inherit;True;Property;_TextureSample5;Texture Sample 5;38;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.RangedFloatNode;269;-1190.785,1441.808;Inherit;False;Property;_CorneaSmoothness;Cornea Smoothness;24;0;Create;True;0;0;0;False;0;False;1;0.88;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.ColorNode;321;-1281.712,995.8048;Inherit;False;Property;_EmissiveColor;Emissive Color;31;0;Create;True;0;0;0;False;0;False;0,0,0,0;0,0,0,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.TexturePropertyNode;284;-1227.431,45.45831;Inherit;True;Property;_ScleraNormalMap;Sclera Normal Map;27;0;Create;True;0;0;0;False;0;False;None;None;True;bump;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.SamplerNode;17;-1162.524,-533.1462;Inherit;True;Property;_TextureSample0;Texture Sample 0;0;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.RangedFloatNode;270;-1187.958,1532.285;Inherit;False;Property;_ScleraSmoothness;Sclera Smoothness;23;0;Create;True;0;0;0;False;0;False;0.8;0.8;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.LerpOp;315;-894.6747,2660.797;Inherit;False;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;291;-1093.911,410.0161;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.BlendOpsNode;21;-794.7435,-531.2834;Inherit;True;Multiply;True;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;1;False;1;COLOR;0
-Node;AmplifyShaderEditor.OneMinusNode;281;-695.3975,2126.842;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;339;-669.9481,2712.249;Inherit;False;3;3;0;FLOAT;0;False;1;FLOAT;0;False;2;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.CommentaryNode;341;-2776.429,1793.617;Inherit;False;350;286.2859;Not currently used, but could be in future;2;313;325;;1,1,1,1;0;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;339;-669.9481,2712.249;Inherit;False;3;3;0;FLOAT;0;False;1;FLOAT;0;False;2;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.OneMinusNode;281;-695.3975,2126.842;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SamplerNode;289;-861.8445,195.7588;Inherit;True;Property;_TextureSample4;Texture Sample 4;30;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;True;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;322;-695.4097,939.9047;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.LerpOp;271;-822.3649,1515.271;Inherit;True;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.WireNode;308;-14.00905,830.7692;Inherit;False;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.StaticSwitch;313;-2718.15,1843.617;Inherit;False;Property;BOOLEAN_ISCORNEA;IsCornea;39;0;Create;False;0;0;0;True;0;False;0;1;1;True;BOOLEAN_ISCORNEA_ON;Toggle;2;Key0;Key1;Create;True;False;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.WireNode;310;-14.00925,1303.124;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.WireNode;368;-15.99003,684.776;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.WireNode;340;-10.55567,1475.38;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.WireNode;323;-14.02431,988.3633;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.WireNode;307;-13.56087,1183.685;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;325;-2726.429,1963.902;Inherit;False;Property;_IsLeftEye;Is Left Eye;38;1;[Toggle];Create;True;0;0;0;True;0;False;0;1;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.WireNode;323;-14.02431,988.3633;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;9;-57.16376,-137.1929;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;1;False;-1;0;False;-1;0;1;False;-1;0;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;True;True;True;True;0;False;-1;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;0;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.WireNode;340;-10.55567,1475.38;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.WireNode;308;-14.00905,830.7692;Inherit;False;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.WireNode;310;-14.00925,1303.124;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.WireNode;368;-15.99003,684.776;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.StaticSwitch;313;-2718.15,1843.617;Inherit;False;Property;BOOLEAN_ISCORNEA;IsCornea;39;0;Create;False;0;0;0;True;0;False;0;1;1;True;BOOLEAN_ISCORNEA_ON;Toggle;2;Key0;Key1;Create;True;False;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;13;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Meta;0;4;Meta;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Meta;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;15;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthNormals;0;6;DepthNormals;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;1;False;-1;0;False;-1;0;1;False;-1;0;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;False;-1;True;3;False;-1;False;True;1;LightMode=DepthNormals;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;11;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;False;False;True;False;False;False;False;0;False;-1;False;False;False;False;False;False;False;False;False;True;1;False;-1;True;3;False;-1;False;True;1;LightMode=ShadowCaster;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;16;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;GBuffer;0;7;GBuffer;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;1;False;-1;0;False;-1;1;1;False;-1;0;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;-1;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;1;LightMode=UniversalGBuffer;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;12;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;False;False;True;False;False;False;False;0;False;-1;False;False;False;False;False;False;False;False;False;True;1;False;-1;False;False;True;1;LightMode=DepthOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;10;509.1178,952.8544;Half;False;True;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;2;Reallusion/Amplify/RL_CorneaShaderParallax_URP;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;18;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;1;False;-1;0;False;-1;1;1;False;-1;0;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;-1;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;1;LightMode=UniversalForward;False;False;0;Hidden/InternalErrorShader;0;0;Standard;38;Workflow;1;637781667002105518;Surface;0;637781667019125558;  Refraction Model;0;0;  Blend;0;0;Two Sided;1;0;Fragment Normal Space,InvertActionOnDeselection;0;0;Transmission;0;637781667128395846;  Transmission Shadow;0.5,False,102;0;Translucency;1;637781762524256068;  Translucency Strength;1,False,103;637782805023987511;  Normal Distortion;0.5,False,104;637782805027308440;  Scattering;2,False,108;637782805030872054;  Direct;0.9,False,105;637782805034534697;  Ambient;0.1,False,106;637782805037984542;  Shadow;0.5,False,107;637782805041162307;Cast Shadows;1;637781667262285565;  Use Shadow Threshold;0;0;Receive Shadows;1;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;1;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;DOTS Instancing;0;0;Tessellation;0;0;  Phong;0;0;  Strength;0,False,-1;0;  Type;0;0;  Tess;1,False,-1;0;  Min;10,False,-1;0;  Max;25,False,-1;0;  Edge Length;16,False,-1;0;  Max Displacement;25,False,-1;0;Write Depth;0;0;  Early Z;0;0;Vertex Position,InvertActionOnDeselection;1;0;0;8;False;True;True;True;True;True;True;True;False;;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;14;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Universal2D;0;5;Universal2D;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;1;False;-1;0;False;-1;1;1;False;-1;0;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;1;LightMode=Universal2D;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;10;509.1178,952.8544;Half;False;True;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;2;Reallusion/Amplify/RL_CorneaShaderParallax_URP;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;18;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;1;False;-1;0;False;-1;1;1;False;-1;0;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;-1;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;1;LightMode=UniversalForward;False;False;0;Hidden/InternalErrorShader;0;0;Standard;38;Workflow;1;637781667002105518;Surface;0;637781667019125558;  Refraction Model;0;0;  Blend;0;0;Two Sided;1;0;Fragment Normal Space,InvertActionOnDeselection;0;0;Transmission;0;637781667128395846;  Transmission Shadow;0.5,True,102;0;Translucency;1;637781762524256068;  Translucency Strength;1,False,103;637782805023987511;  Normal Distortion;0.5,False,104;637782805027308440;  Scattering;2,False,108;637782805030872054;  Direct;0.9,False,105;637782805034534697;  Ambient;0.1,False,106;637782805037984542;  Shadow;0.5,False,107;637782805041162307;Cast Shadows;1;637781667262285565;  Use Shadow Threshold;0;0;Receive Shadows;1;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;1;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;DOTS Instancing;0;0;Tessellation;0;0;  Phong;0;0;  Strength;0,False,-1;0;  Type;0;0;  Tess;1,False,-1;0;  Min;10,False,-1;0;  Max;25,False,-1;0;  Edge Length;16,False,-1;0;  Max Displacement;25,False,-1;0;Write Depth;0;0;  Early Z;0;0;Vertex Position,InvertActionOnDeselection;1;0;0;8;False;True;True;True;True;True;True;True;False;;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;12;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;False;False;True;False;False;False;False;0;False;-1;False;False;False;False;False;False;False;False;False;True;1;False;-1;False;False;True;1;LightMode=DepthOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;15;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthNormals;0;6;DepthNormals;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;1;False;-1;0;False;-1;0;1;False;-1;0;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;False;-1;True;3;False;-1;False;True;1;LightMode=DepthNormals;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;9;-57.16376,-137.1929;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;1;False;-1;0;False;-1;0;1;False;-1;0;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;True;True;True;True;0;False;-1;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;0;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;16;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;GBuffer;0;7;GBuffer;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;1;False;-1;0;False;-1;1;1;False;-1;0;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;-1;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;1;LightMode=UniversalGBuffer;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;11;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;False;False;True;False;False;False;False;0;False;-1;False;False;False;False;False;False;False;False;False;True;1;False;-1;True;3;False;-1;False;True;1;LightMode=ShadowCaster;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 WireConnection;37;0;36;0
+WireConnection;219;0;72;0
 WireConnection;27;0;26;0
 WireConnection;27;1;25;0
 WireConnection;38;0;37;0
-WireConnection;219;0;72;0
 WireConnection;209;0;27;0
 WireConnection;40;0;38;0
 WireConnection;203;0;40;0
@@ -3255,11 +3253,11 @@ WireConnection;110;1;106;0
 WireConnection;114;0;110;0
 WireConnection;114;1;113;0
 WireConnection;89;0;88;0
-WireConnection;130;0;72;0
-WireConnection;130;1;131;0
 WireConnection;91;0;89;0
 WireConnection;115;0;114;0
 WireConnection;115;1;116;0
+WireConnection;130;0;72;0
+WireConnection;130;1;131;0
 WireConnection;93;0;88;0
 WireConnection;93;1;91;0
 WireConnection;121;0;130;0
@@ -3268,10 +3266,10 @@ WireConnection;152;0;215;0
 WireConnection;152;1;151;0
 WireConnection;117;0;115;0
 WireConnection;304;0;93;0
-WireConnection;122;1;121;0
-WireConnection;144;0;117;0
 WireConnection;155;0;152;0
 WireConnection;155;1;207;0
+WireConnection;122;1;121;0
+WireConnection;144;0;117;0
 WireConnection;306;0;304;0
 WireConnection;154;0;155;0
 WireConnection;154;1;152;0
@@ -3279,82 +3277,79 @@ WireConnection;123;0;122;0
 WireConnection;223;1;222;0
 WireConnection;119;0;144;0
 WireConnection;119;1;72;0
-WireConnection;124;0;123;0
+WireConnection;249;0;222;0
+WireConnection;157;0;154;0
+WireConnection;248;0;222;0
 WireConnection;224;0;223;0
+WireConnection;124;0;123;0
 WireConnection;120;0;306;0
 WireConnection;120;1;119;0
-WireConnection;248;0;222;0
-WireConnection;157;0;154;0
-WireConnection;249;0;222;0
+WireConnection;247;0;249;0
+WireConnection;247;1;243;0
+WireConnection;268;0;157;0
+WireConnection;226;0;224;0
+WireConnection;246;0;242;0
+WireConnection;246;1;248;0
 WireConnection;305;0;93;0
 WireConnection;133;0;120;0
 WireConnection;133;1;122;0
 WireConnection;133;2;124;0
-WireConnection;268;0;157;0
-WireConnection;247;0;249;0
-WireConnection;247;1;243;0
-WireConnection;246;0;242;0
-WireConnection;246;1;248;0
-WireConnection;226;0;224;0
+WireConnection;228;0;223;0
+WireConnection;228;1;226;0
 WireConnection;136;0;305;0
 WireConnection;136;1;133;0
 WireConnection;136;2;268;0
 WireConnection;252;0;246;0
 WireConnection;252;1;247;0
-WireConnection;228;0;223;0
-WireConnection;228;1;226;0
+WireConnection;253;1;252;0
+WireConnection;253;2;247;0
+WireConnection;253;3;254;0
+WireConnection;172;0;171;0
+WireConnection;172;1;136;0
 WireConnection;194;0;216;0
 WireConnection;194;1;187;0
 WireConnection;229;0;230;0
 WireConnection;229;1;228;0
 WireConnection;193;0;186;0
 WireConnection;193;1;216;0
-WireConnection;176;0;175;0
-WireConnection;172;0;171;0
-WireConnection;172;1;136;0
-WireConnection;234;0;233;0
-WireConnection;253;1;252;0
-WireConnection;253;2;247;0
-WireConnection;253;3;254;0
-WireConnection;235;0;234;0
+WireConnection;235;0;233;0
+WireConnection;318;0;253;0
+WireConnection;174;0;172;0
+WireConnection;177;0;175;0
+WireConnection;231;0;229;0
 WireConnection;34;0;211;0
 WireConnection;34;1;29;0
 WireConnection;195;0;193;0
 WireConnection;195;1;194;0
-WireConnection;231;0;229;0
-WireConnection;174;0;172;0
-WireConnection;177;0;176;0
-WireConnection;318;0;253;0
-WireConnection;236;0;235;0
-WireConnection;236;1;231;1
-WireConnection;182;0;174;3
-WireConnection;182;1;183;0
-WireConnection;237;0;231;2
-WireConnection;237;1;239;0
 WireConnection;35;0;210;0
 WireConnection;35;1;34;0
-WireConnection;238;0;231;3
-WireConnection;238;1;240;0
+WireConnection;236;0;235;0
+WireConnection;236;1;231;1
+WireConnection;237;0;231;2
+WireConnection;237;1;239;0
+WireConnection;181;0;174;2
+WireConnection;181;1;179;0
+WireConnection;182;0;174;3
+WireConnection;182;1;183;0
 WireConnection;196;0;206;0
 WireConnection;196;1;193;0
 WireConnection;196;2;195;0
-WireConnection;256;0;318;0
-WireConnection;181;0;174;2
-WireConnection;181;1;179;0
 WireConnection;178;0;177;0
 WireConnection;178;1;174;1
+WireConnection;256;0;318;0
+WireConnection;238;0;231;3
+WireConnection;238;1;240;0
+WireConnection;28;0;212;0
+WireConnection;28;1;35;0
+WireConnection;28;2;210;0
+WireConnection;267;0;256;0
 WireConnection;232;0;236;0
 WireConnection;232;1;237;0
 WireConnection;232;2;238;0
 WireConnection;184;0;178;0
 WireConnection;184;1;181;0
 WireConnection;184;2;182;0
-WireConnection;267;0;256;0
 WireConnection;266;0;196;0
-WireConnection;28;0;212;0
-WireConnection;28;1;35;0
-WireConnection;28;2;210;0
-WireConnection;213;0;28;0
 WireConnection;277;0;276;0
 WireConnection;23;0;49;0
 WireConnection;23;1;232;0
@@ -3362,29 +3357,30 @@ WireConnection;23;2;267;0
 WireConnection;201;0;221;0
 WireConnection;201;1;184;0
 WireConnection;201;2;266;0
+WireConnection;213;0;28;0
 WireConnection;299;0;23;0
-WireConnection;278;0;277;2
 WireConnection;298;0;201;0
-WireConnection;291;0;290;0
-WireConnection;291;1;292;0
+WireConnection;278;0;277;2
 WireConnection;294;0;293;0
-WireConnection;17;0;19;0
-WireConnection;280;0;279;0
-WireConnection;280;1;278;0
 WireConnection;261;0;298;0
 WireConnection;261;1;299;0
 WireConnection;261;2;262;0
+WireConnection;280;0;279;0
+WireConnection;280;1;278;0
+WireConnection;320;0;319;0
+WireConnection;17;0;19;0
 WireConnection;315;0;314;0
 WireConnection;315;1;302;0
 WireConnection;315;2;316;0
-WireConnection;320;0;319;0
+WireConnection;291;0;290;0
+WireConnection;291;1;292;0
 WireConnection;21;0;17;0
 WireConnection;21;1;261;0
 WireConnection;21;2;20;0
-WireConnection;281;0;280;0
 WireConnection;339;0;315;0
 WireConnection;339;1;342;0
 WireConnection;339;2;338;0
+WireConnection;281;0;280;0
 WireConnection;289;0;284;0
 WireConnection;289;1;294;0
 WireConnection;289;5;291;0
@@ -3393,12 +3389,12 @@ WireConnection;322;1;321;0
 WireConnection;271;0;269;0
 WireConnection;271;1;270;0
 WireConnection;271;2;272;0
+WireConnection;323;0;322;0
+WireConnection;307;0;271;0
+WireConnection;340;0;339;0
 WireConnection;308;0;289;0
 WireConnection;310;0;281;0
 WireConnection;368;0;21;0
-WireConnection;340;0;339;0
-WireConnection;307;0;271;0
-WireConnection;323;0;322;0
 WireConnection;10;0;368;0
 WireConnection;10;1;308;0
 WireConnection;10;2;323;0
@@ -3406,4 +3402,4 @@ WireConnection;10;4;307;0
 WireConnection;10;5;310;0
 WireConnection;10;15;340;0
 ASEEND*/
-//CHKSM=2CBE92D181B04D7787A1910A616EA6FF19E4CB6C
+//CHKSM=B1B7E154FB28803E07DD95AED6536DA9AB42C890

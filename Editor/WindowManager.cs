@@ -123,5 +123,49 @@ namespace Reallusion.Import
                 SceneView.RepaintAll();
             }
         }
+
+        public static void DoMatchSceneCamera()
+        {
+            if (!isMatchSceneViewCamera)
+            {
+                EditorApplication.update += MatchSceneCameraUpdate;
+                isMatchSceneViewCamera = true;
+            }
+            else
+            {
+                EditorApplication.update -= MatchSceneCameraUpdate;
+                isMatchSceneViewCamera = false;
+            }
+        }
+
+        public static void StopMatchSceneCamera()
+        {
+            if (isSceneViewOrbit)
+            {
+                EditorApplication.update -= MatchSceneCameraUpdate;
+                isMatchSceneViewCamera = true;
+            }
+        }        
+
+        private static bool isMatchSceneViewCamera;
+        
+        static void MatchSceneCameraUpdate()
+        {
+            if (isMatchSceneViewCamera)
+            {
+                Transform cam = previewScene.GetCamera();
+                SceneView scene = SceneView.lastActiveSceneView;                
+                Vector3 pos = scene.camera.transform.position;
+                Quaternion rot = scene.camera.transform.rotation;
+                float fov = scene.camera.fieldOfView;                
+                cam.position = pos;
+                cam.rotation = rot;
+                Camera camera = cam.GetComponent<Camera>();
+                if (camera)
+                {
+                    camera.fieldOfView = fov;
+                }
+            }
+        }
     }
 }

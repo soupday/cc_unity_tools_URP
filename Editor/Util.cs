@@ -470,7 +470,8 @@ namespace Reallusion.Import
             if (shaderName.iContains(Pipeline.SHADER_HQ_EYE_OCCLUSION)) return CharacterTreeView.LINKED_INDEX_EYE_OCCLUSION;
             if (shaderName.iContains(Pipeline.SHADER_HQ_TEARLINE)) return CharacterTreeView.LINKED_INDEX_TEARLINE;
             if (shaderName.iContains(Pipeline.SHADER_HQ_TEETH)) return CharacterTreeView.LINKED_INDEX_TEETH;
-            if (shaderName.iContains(Pipeline.SHADER_HQ_HAIR)) return CharacterTreeView.LINKED_INDEX_HAIR;
+            if (shaderName.iContains(Pipeline.SHADER_HQ_HAIR) ||
+                shaderName.iContains(Pipeline.SHADER_HQ_HAIR_COVERAGE)) return CharacterTreeView.LINKED_INDEX_HAIR;
 
             // then try by source material name:
             if (sourceName.iContains("Std_Skin_Head") || sourceName.iContains("Std_Skin_Body") ||

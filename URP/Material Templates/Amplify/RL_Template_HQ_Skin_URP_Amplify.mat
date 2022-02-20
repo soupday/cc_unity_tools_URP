@@ -129,15 +129,16 @@ Material:
     - _RSmoothnessMod: 0
     - _SmoothnessMax: 0.897
     - _SmoothnessMin: 0
-    - _SmoothnessPower: 1.25
+    - _SmoothnessPower: 1.5
+    - _SubsurfaceNormalSoften: 0.65
     - _SubsurfaceScale: 1
     - _ThicknessScale: 0.4
     - _TransAmbient: 0.1
     - _TransDirect: 0.9
-    - _TransNormal: 0.5
+    - _TransNormal: 0.95
     - _TransScattering: 2
     - _TransShadow: 0.5
-    - _TransStrength: 1
+    - _TransStrength: 2
     - _TransmissionShadow: 0.5
     - _UnmaskedScatterScale: 1
     - _UnmaskedSmoothnessMod: 0
@@ -146,7 +147,7 @@ Material:
     m_Colors:
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 0}
-    - _SubsurfaceFalloff: {r: 1, g: 0.36862743, b: 0.29803914, a: 0}
+    - _SubsurfaceFalloff: {r: 1, g: 0.36862746, b: 0.29803923, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &168235113489978298
 MonoBehaviour:

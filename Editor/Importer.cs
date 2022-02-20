@@ -454,7 +454,8 @@ namespace Reallusion.Import
                 ConnectHQEyeMaterial(obj, sourceName, sharedMat, mat, materialType, matJson);
             }
 
-            else if (shaderName.EndsWith(Pipeline.SHADER_HQ_HAIR))
+            else if (shaderName.EndsWith(Pipeline.SHADER_HQ_HAIR) ||
+                     shaderName.EndsWith(Pipeline.SHADER_HQ_HAIR_COVERAGE))
             {
                 ConnectHQHairMaterial(obj, sourceName, sharedMat, mat, materialType, matJson);
             }
@@ -1017,15 +1018,10 @@ namespace Reallusion.Import
             ConnectTextureTo(sourceName, mat, "_EmissionMap", "Glow",
                 matJson, "Textures/Glow");
 
-            if (RP == RenderPipeline.HDRP && isHair)
-            {
-                mat.SetFloatIf("_AlphaPower", 1.5f);
-                mat.SetFloatIf("_AlphaRemap", 0.5f);
-            }
-            else if (RP == RenderPipeline.URP && isHair)
-            {                
-                mat.SetFloatIf("_AlphaRemap", 0.5f);
-            }
+            //if (RP == RenderPipeline.URP && !isHair)
+            //{                
+            //    mat.SetFloatIf("_AlphaRemap", 0.5f);
+            //}
 
             if (matJson != null)
             {
@@ -1060,11 +1056,12 @@ namespace Reallusion.Import
                 float smoothnessStrength = 1f - matJson.GetFloatValue("Custom Shader/Variable/Hair Roughness Map Strength");
                 if (RP == RenderPipeline.HDRP)
                 {
-                    float secondarySpecStrength = matJson.GetFloatValue("Custom Shader/Variable/Secondary Specular Strength");
-                    mat.SetFloatIf("_SmoothnessMax", smoothnessStrength);
+                    float secondarySpecStrength = matJson.GetFloatValue("Custom Shader/Variable/Secondary Specular Strength");                    
+                    mat.SetFloatIf("_SmoothnessMin", smoothnessStrength);
+                    mat.SetFloatIf("_SecondarySmoothness", Mathf.Pow(smoothnessStrength, 0.5f));
                     mat.SetFloatIf("_SpecularMultiplier", specMapStrength * specStrength);
                     mat.SetFloatIf("_SecondarySpecularMultiplier", 
-                        specMapStrength * secondarySpecStrength * 0.5f);
+                        specMapStrength * specStrength * 0.1f);
                     mat.SetFloatIf("_RimTransmissionIntensity", 0.2f * rimTransmission);
                 }
                 else
@@ -1072,9 +1069,12 @@ namespace Reallusion.Import
                     if (USE_AMPLIFY_SHADER)
                     {
                         mat.SetFloatIf("_SmoothnessMin", smoothnessStrength);                        
-                        mat.SetFloatIf("_SpecularMultiplier", 
-                            Mathf.Pow(0.18f * specMapStrength * specStrength, 0.333f));
-                        mat.SetFloatIf("_RimTransmission", 50f * rimTransmission);                        
+                        if (RP == RenderPipeline.URP)
+                            mat.SetFloatIf("_SpecularMultiplier", Mathf.Pow(0.18f * specMapStrength * specStrength, 0.333f));
+                        else
+                            // specular reflections in Built-in are a bit dulled...
+                            mat.SetFloatIf("_SpecularMultiplier", 1.5f * Mathf.Pow(0.18f * specMapStrength * specStrength, 0.333f));
+                        mat.SetFloatIf("_RimTransmissionIntensity", 50f * rimTransmission);                        
                     }
                     else
                     {                        
@@ -1095,6 +1095,7 @@ namespace Reallusion.Import
                 mat.SetFloatIf("_RootColorStrength", matJson.GetFloatValue("Custom Shader/Variable/RootColorStrength"));
                 mat.SetFloatIf("_EndColorStrength", matJson.GetFloatValue("Custom Shader/Variable/TipColorStrength"));
                 mat.SetFloatIf("_InvertRootMap", matJson.GetFloatValue("Custom Shader/Variable/InvertRootTip"));
+                
                 if (matJson.GetFloatValue("Custom Shader/Variable/ActiveChangeHairColor") > 0f)
                 {
                     mat.EnableKeyword("BOOLEAN_ENABLECOLOR_ON");

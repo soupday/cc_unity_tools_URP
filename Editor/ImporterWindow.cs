@@ -476,14 +476,23 @@ namespace Reallusion.Import
             }
 
             GUILayout.Space(1f);
-
+            string hairType;
+            switch(contextCharacter.QualHair)
+            {
+                case CharacterInfo.HairQuality.TwoPass: hairType = "Two Pass Hair"; break;
+                case CharacterInfo.HairQuality.Coverage: hairType = "MSAA Coverage Hair"; break;
+                default:
+                case CharacterInfo.HairQuality.Default: hairType = "Single Pass Hair"; break;
+            }
             if (EditorGUILayout.DropdownButton(
-                content: new GUIContent(contextCharacter.DualMaterialHair ? "Two Pass Hair": "Single Pass Hair"),
+                content: new GUIContent(hairType),
                 focusType: FocusType.Passive))
             {
                 GenericMenu menu = new GenericMenu();
-                menu.AddItem(new GUIContent("Single Pass Hair"), !contextCharacter.DualMaterialHair, HairOptionSelected, false);
-                menu.AddItem(new GUIContent("Two Pass Hair"), contextCharacter.DualMaterialHair, HairOptionSelected, true);
+                menu.AddItem(new GUIContent("Single Pass Hair"), contextCharacter.DefaultHair, HairOptionSelected, CharacterInfo.HairQuality.Default);
+                menu.AddItem(new GUIContent("Two Pass Hair"), contextCharacter.DualMaterialHair, HairOptionSelected, CharacterInfo.HairQuality.TwoPass);
+                if (Importer.USE_AMPLIFY_SHADER && !Pipeline.isHDRP)
+                    menu.AddItem(new GUIContent("MSAA Coverage Hair"), contextCharacter.CoverageHair, HairOptionSelected, CharacterInfo.HairQuality.Coverage);
                 menu.ShowAsContext();
             }
             GUI.enabled = true;
@@ -728,14 +737,13 @@ namespace Reallusion.Import
         }        
 
         private void EyeOptionSelected(object sel)
-        {
-            CharacterInfo.EyeQuality opt = (CharacterInfo.EyeQuality)sel;
-            contextCharacter.QualEyes = opt;            
+        {            
+            contextCharacter.QualEyes = (CharacterInfo.EyeQuality)sel;
         }
 
         private void HairOptionSelected(object sel)
         {
-            contextCharacter.DualMaterialHair = (bool)sel;
+            contextCharacter.QualHair = (CharacterInfo.HairQuality)sel;
         }
 
         private void MaterialOptionSelected(object sel)
@@ -921,7 +929,7 @@ namespace Reallusion.Import
             return ps.IsValid;
         }
 
-        private void HideAnimationPlayer()
+        public void HideAnimationPlayer()
         {            
             if (AnimPlayerGUI.IsPlayerShown())
             {
@@ -932,7 +940,7 @@ namespace Reallusion.Import
             WindowManager.showTools = false;
         }
 
-        private void ShowAnimationPlayer() 
+        public void ShowAnimationPlayer() 
         {            
             PreviewScene ps = PreviewScene.GetPreviewScene();
 

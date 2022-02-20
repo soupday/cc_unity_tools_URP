@@ -81,7 +81,7 @@ Material:
     - _IrisRadius: 0.15
     - _IrisSaturation: 1
     - _IrisScale: 1
-    - _IrisSubsurface: 1
+    - _IrisSubsurfaceScale: 1
     - _IsLeftEye: 0
     - _LimbusDarkRadius: 0.1
     - _LimbusDarkWidth: 0.025
@@ -93,18 +93,18 @@ Material:
     - _ScleraHue: 0.5
     - _ScleraNormalStrength: 0.1
     - _ScleraNormalTiling: 2
-    - _ScleraSaturation: 1
+    - _ScleraSaturation: 0.76
     - _ScleraScale: 1
     - _ScleraSmoothness: 0.7176
-    - _ScleraSubsurface: 0.5
+    - _ScleraSubsurfaceScale: 0.5
     - _ShadowHardness: 0.5
     - _ShadowRadius: 0.275
     - _TransAmbient: 0.1
     - _TransDirect: 0.9
-    - _TransNormal: 0.5
+    - _TransNormal: 0.95
     - _TransScattering: 2
     - _TransShadow: 0.5
-    - _TransStrength: 1
+    - _TransStrength: 2
     m_Colors:
     - _CornerShadowColor: {r: 1, g: 0.7333333, b: 0.6980392, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}

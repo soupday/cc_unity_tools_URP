@@ -80,10 +80,10 @@ Material:
     - _TeethThickness: 0.75
     - _TransAmbient: 0.1
     - _TransDirect: 0.9
-    - _TransNormal: 0.5
+    - _TransNormal: 0.95
     - _TransScattering: 2
     - _TransShadow: 0.5
-    - _TransStrength: 1
+    - _TransStrength: 2
     - _TransmissionShadow: 0.5
     m_Colors:
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
