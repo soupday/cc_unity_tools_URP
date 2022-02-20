@@ -1206,9 +1206,11 @@ void RLCorneaSubsurfaceMask(uint3 id : SV_DispatchThreadID)
     float2 uv = GetUV(id.xy);
 
     float radial = RADIAL(uv);
+    float4 baseMap = SAMPLE(BaseMap, uv);
     float irisMask = saturate(1.0 - EyeIrisMask(radial));
     float sssMask = lerp(scleraSubsurfaceScale, irisSubsurfaceScale, irisMask);
-    float4 sss = float4(sssMask, sssMask, sssMask, thicknessScale);
+    float4 sss = float4(sssMask, sssMask, sssMask, 1.0) * (subsurfaceFalloff * baseMap);    
+    sss.a = thicknessScale;
     
     Result[id.xy] = sss;
 }

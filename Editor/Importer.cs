@@ -510,7 +510,12 @@ namespace Reallusion.Import
 
                 if (ConnectTextureTo(sourceName, mat, "_MetallicGlossMap", "MetallicAlpha",
                     matJson, "Textures/MetallicAlpha"))
-                    mat.SetFloat("_Smoothness", 0.897f);                
+                {
+                    if (customShader == "RLHead" || customShader == "RLSkin")
+                        mat.SetFloat("_Smoothness", 0.7f);
+                    else
+                        mat.SetFloat("_Smoothness", 0.897f);
+                }
 
 
                 ConnectTextureTo(sourceName, mat, "_OcclusionMap", "ao",
@@ -559,8 +564,8 @@ namespace Reallusion.Import
                         matJson, "Custom Shader/Image/SSS Map");
 
                     // use the baked thickness and details maps...
-                    mat.SetTexture("_ThicknessMap", GetCachedBakedMap(sharedMat, "_ThicknessMap"));
-                    mat.SetTexture("_DetailMap", GetCachedBakedMap(sharedMat, "_DetailMap"));
+                    mat.SetTextureIf("_ThicknessMap", GetCachedBakedMap(sharedMat, "_ThicknessMap"));
+                    mat.SetTextureIf("_DetailMap", GetCachedBakedMap(sharedMat, "_DetailMap"));
 
                     float microNormalTiling = 20f;
                     float microNormalStrength = 0.5f;
@@ -569,9 +574,9 @@ namespace Reallusion.Import
                         microNormalTiling = matJson.GetFloatValue("Custom Shader/Variable/MicroNormal Tiling");
                         microNormalStrength = matJson.GetFloatValue("Custom Shader/Variable/MicroNormal Strength");
                     }
-                    mat.SetTextureScale("_DetailMap", new Vector2(microNormalTiling, microNormalTiling));
-                    mat.SetFloat("_DetailNormalScale", microNormalStrength);
-                    mat.SetFloat("_Thickness", 0.4f);
+                    mat.SetTextureScaleIf("_DetailMap", new Vector2(microNormalTiling, microNormalTiling));
+                    mat.SetFloatIf("_DetailNormalScale", microNormalStrength);
+                    mat.SetFloatIf("_Thickness", 0.4f);
                     mat.SetRemapRange("_ThicknessRemap", 0.4f, 1f);
                 }
             }            

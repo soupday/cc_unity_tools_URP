@@ -559,8 +559,8 @@ namespace Reallusion.Import
             Texture2D emission = GetMaterialTexture(mat, "_EmissionMap");
             Color emissiveColor = mat.GetColorIf("_EmissiveColor");
             Color subsurfaceFalloff = mat.GetColorIf("_SubsurfaceFalloff");
-            if (RP == RenderPipeline.HDRP) subsurfaceFalloff = Color.white;
-            if (RP != RenderPipeline.HDRP && !Importer.USE_AMPLIFY_SHADER)
+            if (IS_HDRP) subsurfaceFalloff = Color.white;
+            if (!IS_HDRP && !Importer.USE_AMPLIFY_SHADER)
                 sssNormalSoften = 0f;
 
             bool isHead = mat.GetFloatIf("BOOLEAN_IS_HEAD") > 0f;
@@ -621,7 +621,7 @@ namespace Reallusion.Import
                     subsurfaceScale,
                     rSS, gSS, bSS, aSS, earSS, neckSS, cheekSS, foreheadSS, upperLipSS, chinSS, unmaskedSS,                    
                     subsurfaceFalloff, 
-                    RP == RenderPipeline.HDRP ? Texture2D.whiteTexture : bakedBaseMap,
+                    IS_HDRP ? Texture2D.whiteTexture : bakedBaseMap,
                     sourceName + "_SSSMap");
             }
             else
@@ -662,7 +662,7 @@ namespace Reallusion.Import
                     subsurfaceScale,
                     rSS, gSS, bSS, aSS, unmaskedSS,
                     subsurfaceFalloff, 
-                    RP == RenderPipeline.HDRP ? Texture2D.whiteTexture : bakedBaseMap,
+                    IS_HDRP ? Texture2D.whiteTexture : bakedBaseMap,
                     sourceName + "_SSSMap");
             }
 
@@ -678,8 +678,8 @@ namespace Reallusion.Import
 
             bakedThicknessMap = BakeThicknessMap(thickness,
                 1.0f, subsurfaceFalloff, 
-                RP == RenderPipeline.HDRP ? Texture2D.whiteTexture : bakedBaseMap, 
-                RP == RenderPipeline.HDRP ? true : false,
+                IS_HDRP ? Texture2D.whiteTexture : bakedBaseMap, 
+                IS_HDRP ? true : false,
                 sourceName + "_Thickness");
 
             Material result = CreateBakedMaterial(bakedBaseMap, bakedMaskMap, bakedMetallicGlossMap, bakedAOMap, bakedNormalMap,
@@ -727,7 +727,7 @@ namespace Reallusion.Import
             Texture2D emission = GetMaterialTexture(mat, "_EmissionMap");
             Color emissiveColor = mat.GetColorIf("_EmissiveColor");
             Color subsurfaceFalloff = mat.GetColorIf("_SubsurfaceFalloff");
-            if (RP == RenderPipeline.HDRP) subsurfaceFalloff = Color.white;
+            if (IS_HDRP) subsurfaceFalloff = Color.white;
 
             Texture2D bakedBaseMap = diffuse;
             Texture2D bakedMaskMap = mask;
@@ -776,12 +776,12 @@ namespace Reallusion.Import
 
             bakedSubsurfaceMap = BakeTeethSubsurfaceMap(gumsMask,
                 gumsSSS, teethSSS, subsurfaceFalloff, 
-                RP == RenderPipeline.HDRP ? Texture2D.whiteTexture : bakedBaseMap,
+                IS_HDRP ? Texture2D.whiteTexture : bakedBaseMap,
                 sourceName + "_SSSMap");
 
             bakedThicknessMap = BakeTeethThicknessMap(gumsMask,
                 gumsThickness, teethThickness, subsurfaceFalloff,
-                RP == RenderPipeline.HDRP ? Texture2D.whiteTexture : bakedBaseMap,
+                IS_HDRP ? Texture2D.whiteTexture : bakedBaseMap,
                 sourceName + "_Thickness");
 
             Material result = CreateBakedMaterial(bakedBaseMap, bakedMaskMap, bakedMetallicGlossMap, bakedAOMap, bakedNormalMap,
@@ -820,7 +820,7 @@ namespace Reallusion.Import
             Texture2D emission = GetMaterialTexture(mat, "_EmissionMap");
             Color emissiveColor = mat.GetColorIf("_EmissiveColor");
             Color subsurfaceFalloff = mat.GetColorIf("_SubsurfaceFalloff");
-            if (RP == RenderPipeline.HDRP) subsurfaceFalloff = Color.white;
+            if (IS_HDRP) subsurfaceFalloff = Color.white;
 
             Texture2D bakedBaseMap = diffuse;
             Texture2D bakedMaskMap = mask;
@@ -871,11 +871,11 @@ namespace Reallusion.Import
                     sourceName + "_DetailMask");
                 
                 bakedSubsurfaceMap = BakeSubsurfaceMap(Texture2D.whiteTexture, 1.0f, subsurfaceFalloff,
-                    RP == RenderPipeline.HDRP ? Texture2D.whiteTexture : bakedBaseMap,
+                    IS_HDRP ? Texture2D.whiteTexture : bakedBaseMap,
                     sourceName + "_SSSMap");
 
                 bakedThicknessMap = BakeThicknessMap(Texture2D.whiteTexture, 1.0f, subsurfaceFalloff,
-                    RP == RenderPipeline.HDRP ? Texture2D.whiteTexture : bakedBaseMap, false, 
+                    IS_HDRP ? Texture2D.whiteTexture : bakedBaseMap, false, 
                     sourceName + "_Thickness");
             }
 
@@ -938,6 +938,7 @@ namespace Reallusion.Import
             bool isLeftEye = mat.GetFloatIf("_IsLeftEye") > 0f;
             Texture2D emission = GetMaterialTexture(mat, "_EmissionMap");
             Color emissiveColor = mat.GetColorIf("_EmissiveColor");
+            Color subsurfaceFalloff = mat.GetColorIf("_SubsurfaceFalloff");            
 
             Texture2D bakedBaseMap = cornea;
             Texture2D bakedMaskMap = mask;
@@ -1003,8 +1004,9 @@ namespace Reallusion.Import
                 }
                 else
                 {
-                    bakedSubsurfaceMap = BakeCorneaSubsurfaceMask(irisScale,
-                        scleraSubsurfaceScale, irisSubsurfaceScale, subsurfaceThickness,
+                    bakedSubsurfaceMap = BakeCorneaSubsurfaceMask(IS_HDRP ? Texture2D.whiteTexture : bakedBaseMap, 
+                        irisScale, scleraSubsurfaceScale, irisSubsurfaceScale, subsurfaceThickness,
+                        IS_HDRP ? Color.white : subsurfaceFalloff,
                         sourceName + "_Subsurface");
                 }
             }
@@ -2306,8 +2308,9 @@ namespace Reallusion.Import
         //bakedSubsurfaceMask = BakeCorneaSubsurfaceMask(irisScale,
         //scleraSubsurfaceScale, irisSubsurfaceScale, subsurfaceThickness,
         //                sourceName + "_Thickness");
-        private Texture2D BakeCorneaSubsurfaceMask(
+        private Texture2D BakeCorneaSubsurfaceMask(Texture2D baseMap, 
             float irisScale, float scleraSubsurfaceScale, float irisSubsurfaceScale, float thicknessScale,
+            Color subsurfaceFalloff,
             string name)
         {
             Vector2Int maxSize = new Vector2Int(128, 128);
@@ -2317,12 +2320,16 @@ namespace Reallusion.Import
             ComputeShader bakeShader = Util.FindComputeShader(COMPUTE_SHADER);
             if (bakeShader)
             {
+                CheckDiffuse(baseMap);
+
                 int kernel = bakeShader.FindKernel("RLCorneaSubsurfaceMask");
                 bakeTarget.Create(bakeShader, kernel);
+                bakeShader.SetTexture(kernel, "BaseMap", baseMap);
                 bakeShader.SetFloat("irisScale", irisScale);
                 bakeShader.SetFloat("scleraSubsurfaceScale", scleraSubsurfaceScale);
                 bakeShader.SetFloat("irisSubsurfaceScale", irisSubsurfaceScale);
                 bakeShader.SetFloat("thicknessScale", thicknessScale);
+                bakeShader.SetVector("subsurfaceFalloff", subsurfaceFalloff);
                 bakeShader.Dispatch(kernel, bakeTarget.width, bakeTarget.height, 1);
                 return bakeTarget.SaveAndReimport();
             }
