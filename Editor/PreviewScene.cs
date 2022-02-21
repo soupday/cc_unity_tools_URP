@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
+#if UNITY_POST_PROCESSING_3_1_1
+using UnityEngine.Rendering.PostProcessing;
+#endif
 
 namespace Reallusion.Import
 {
@@ -28,7 +31,9 @@ namespace Reallusion.Import
 
             PreviewScene previewScene = GetPreviewScene();
 
-            previewScene.ShowPreviewCharacter(fbx);
+            previewScene.PostProcessingAndLighting();
+
+            previewScene.ShowPreviewCharacter(fbx);            
 
             return previewScene;
         }
@@ -160,6 +165,31 @@ namespace Reallusion.Import
             }
 
             return null;
+        }
+
+        public void PostProcessingAndLighting()
+        {
+            if (Pipeline.is3D || Pipeline.isURP)
+            {
+                Material skybox = (Material)Util.FindAsset("RL Preview Gradient Skybox");
+                if (skybox)
+                {
+                    RenderSettings.skybox = skybox;
+                    if (Pipeline.is3D) RenderSettings.ambientIntensity = 1.25f;
+                }
+            }
+
+#if UNITY_POST_PROCESSING_3_1_1
+            PostProcessLayer ppl = camera.gameObject.AddComponent<PostProcessLayer>();
+            PostProcessVolume ppv = camera.gameObject.AddComponent<PostProcessVolume>();
+            PostProcessProfile volume = (PostProcessProfile)Util.FindAsset("RL Preview Scene Post Processing Volume Profile 3.1.1");
+            ppl.volumeTrigger = camera.transform;
+            LayerMask everything = ~0;
+            ppl.volumeLayer = everything;
+            ppl.antialiasingMode = PostProcessLayer.Antialiasing.SubpixelMorphologicalAntialiasing;
+            ppv.isGlobal = true;
+            ppv.profile = volume;
+#endif
         }
     }
 }

@@ -1074,11 +1074,7 @@ namespace Reallusion.Import
                     if (USE_AMPLIFY_SHADER)
                     {
                         mat.SetFloatIf("_SmoothnessMin", smoothnessStrength);                        
-                        if (RP == RenderPipeline.URP)
-                            mat.SetFloatIf("_SpecularMultiplier", Mathf.Pow(0.18f * specMapStrength * specStrength, 0.333f));
-                        else
-                            // specular reflections in Built-in are a bit dulled...
-                            mat.SetFloatIf("_SpecularMultiplier", 1.5f * Mathf.Pow(0.18f * specMapStrength * specStrength, 0.333f));
+                        mat.SetFloatIf("_SpecularMultiplier", Mathf.Pow(0.18f * specMapStrength * specStrength, 0.333f));
                         mat.SetFloatIf("_RimTransmissionIntensity", 50f * rimTransmission);                        
                     }
                     else
