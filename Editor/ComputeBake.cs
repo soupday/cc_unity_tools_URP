@@ -693,6 +693,7 @@ namespace Reallusion.Import
 
             result.SetFloatIf("_SubsurfaceMask", 1.0f);
             result.SetFloatIf("_Thickness", thicknessScale);
+            result.SetRemapRange("_ThicknessRemap", 0f, thicknessScale);
 
             return result;
         }
@@ -1078,7 +1079,7 @@ namespace Reallusion.Import
             Texture2D root = GetMaterialTexture(mat, "_RootMap");
             Texture2D specular = GetMaterialTexture(mat, "_SpecularMap");            
             float flowMapFlipGreen = mat.GetFloatIf("_FlowMapFlipGreen");
-            float translucency = mat.GetFloatIf("_Tranlucency");
+            float translucency = mat.GetFloatIf("_Translucency");
             float aoStrength = mat.GetFloatIf("_AOStrength");
             float aoOccludeAll = mat.GetFloatIf("_AOOccludeAll");
             float diffuseStrength = mat.GetFloatIf("_DiffuseStrength");
@@ -1115,7 +1116,7 @@ namespace Reallusion.Import
             float secondarySpecularMultiplier = mat.GetFloatIf("_SecondarySpecularMultiplier");
             float secondarySpecularShift = mat.GetFloatIf("_SecondarySpecularShift");
             float secondarySmoothness = mat.GetFloatIf("_SecondarySmoothness");
-            float normalStrength = mat.GetFloatIf("_NormalStrength");
+            float normalStrength = mat.GetFloatIf("_NormalStrength");            
             Vector4 highlightADistribution = mat.GetVectorIf("_HighlightADistribution");
             Vector4 highlightBDistribution = mat.GetVectorIf("_HighlightBDistribution");
             Color vertexBaseColor = mat.GetColorIf("_VertexBaseColor");

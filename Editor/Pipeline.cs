@@ -67,7 +67,7 @@ namespace Reallusion.Import
         // 2 pass
         public const string SHADER_HQ_HAIR_1ST_PASS = "RL_HairShaderMultiPass_Variants_HDRP";
         public const string SHADER_HQ_HAIR_2ND_PASS = "RL_HairShaderMultiPass_Variants_HDRP";
-        public const string SHADER_HQ_HAIR_COVERAGE = "RL_HairShader_Coverage_HDRP";
+        public const string SHADER_HQ_HAIR_COVERAGE = "RL_HairShader_Variants_HDRP";
 
         // HQ Materials
         //
@@ -92,6 +92,7 @@ namespace Reallusion.Import
         // 2 pass
         public const string MATERIAL_HQ_HAIR_1ST_PASS = "RL_Template_HQ_Hair_1st_Pass_HDRP";
         public const string MATERIAL_HQ_HAIR_2ND_PASS = "RL_Template_HQ_Hair_2nd_Pass_HDRP";
+        public const string MATERIAL_HQ_HAIR_COVERAGE = "RL_Template_HQ_Hair_HDRP";
 
         // Default Materials
         //
@@ -133,6 +134,7 @@ namespace Reallusion.Import
         public const string MATERIAL_BAKED_EYE_REFRACTIVE_CUSTOM = "RL_Template_Baked_EyeRefractiveCustom_HDRP";
         public const string MATERIAL_BAKED_EYE_OCCLUSION_CUSTOM = "RL_Template_Baked_EyeOcclusionCustom_HDRP";
         public const string MATERIAL_BAKED_HAIR_CUSTOM = "RL_Template_Baked_HairCustom_HDRP";
+        public const string MATERIAL_BAKED_HAIR_COVERAGE_CUSTOM = "RL_Template_Baked_HairCustom_HDRP";
         // 2 pass        
         public const string MATERIAL_BAKED_HAIR_1ST_PASS = "RL_Template_Baked_Hair_1st_Pass_HDRP";
         public const string MATERIAL_BAKED_HAIR_2ND_PASS = "RL_Template_Baked_Hair_2nd_Pass_HDRP";

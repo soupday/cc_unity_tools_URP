@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: RL_Template_Baked_HairCoverageCustom_URP
+  m_Name: RL_Template_Baked_HairCoverageCustom_URP_Amplify
   m_Shader: {fileID: 4800000, guid: dd9bc3ea77e4e1d4daf1a5593e65e2ee, type: 3}
   m_ShaderKeywords: _ALPHATEST_ON _ALPHATOMASK_ON _CLIPQUALITY_STANDARD _DISABLE_SSR_TRANSPARENT
     _DOUBLESIDED_ON _ENABLE_FOG_ON_TRANSPARENT _ENUMCLIPQUALITY_ON_DITHER _SURFACE_TYPE_TRANSPARENT

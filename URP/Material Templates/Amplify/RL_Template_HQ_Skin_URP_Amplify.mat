@@ -138,7 +138,7 @@ Material:
     - _TransNormal: 0.95
     - _TransScattering: 2
     - _TransShadow: 0.5
-    - _TransStrength: 2
+    - _TransStrength: 1.5
     - _TransmissionShadow: 0.5
     - _UnmaskedScatterScale: 1
     - _UnmaskedSmoothnessMod: 0
