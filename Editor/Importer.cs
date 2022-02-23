@@ -353,7 +353,7 @@ namespace Reallusion.Import
         private Material CreateRemapMaterial(MaterialType materialType, Material sharedMaterial, string sourceName)
         {
             // get the template material.
-            Material templateMaterial = Pipeline.GetTemplateMaterial(materialType, characterInfo.BuildQuality, characterInfo);
+            Material templateMaterial = Pipeline.GetTemplateMaterial(materialType, characterInfo.BuildQuality, characterInfo, USE_AMPLIFY_SHADER);
 
             // get the appropriate shader to use            
             Shader shader;
@@ -1079,8 +1079,7 @@ namespace Reallusion.Import
                     }
                     else
                     {                        
-                        mat.SetFloatIf("_SmoothnessMin", 0.5f * 
-                            Util.CombineSpecularToSmoothness(specMapStrength * specStrength, smoothnessStrength));
+                        mat.SetFloatIf("_SmoothnessMin", Util.CombineSpecularToSmoothness(specMapStrength * specStrength, smoothnessStrength));
                     }
                 }
                 mat.SetFloatIf("_FlowMapFlipGreen", 1f - 
@@ -1119,6 +1118,11 @@ namespace Reallusion.Import
                 mat.SetVectorIf("_HighlightBDistribution", (1f / 255f) * matJson.GetVector3Value("Custom Shader/Variable/_2nd Dye Distribution from Grayscale"));
                 mat.SetFloatIf("_HighlightBOverlapEnd", matJson.GetFloatValue("Custom Shader/Variable/Mask 2nd Dye by RootMap"));
                 mat.SetFloatIf("_HighlightBOverlapInvert", matJson.GetFloatValue("Custom Shader/Variable/Invert 2nd Dye RootMap Mask"));                
+            }
+
+            if (mat.GetTexture("_NormalMap") == null)
+            {
+                BakeHairFlowToNormalMap(mat, sourceName, matJson);
             }
         }
 
@@ -1276,6 +1280,32 @@ namespace Reallusion.Import
                         bakedDetailMaps.Add(sharedMat, bakedTex);
                         break;
                 }
+            }
+        }
+
+        private void BakeHairFlowToNormalMap(Material mat, string sourceName, QuickJSON matJson)
+        {
+            ComputeBake baker = new ComputeBake(fbx, characterInfo);
+            
+            Vector3 tangentVector = new Vector3(1, 0, 0);
+            bool flipY = false;
+
+            string jsonFlowTexturePath = null;
+            string jsonNormalTexturePath = null;
+            if (matJson != null)
+            {
+                jsonFlowTexturePath = matJson.GetStringValue("Custom Shader/Image/Hair Flow Map/Texture Path");
+                jsonNormalTexturePath = matJson.GetStringValue("Textures/Normal/Texture Path");
+                tangentVector = (1f / 255f) * matJson.GetVector3Value("Custom Shader/Variable/TangentVectorColor");
+                flipY = matJson.GetFloatValue("Custom Shader/Variable/TangentMapFlipGreen") > 0f ? true : false;
+            }
+            Texture2D flowMap = GetTextureFrom(jsonFlowTexturePath, sourceName, "Hair Flow Map", out string name);
+            Texture2D normalMap = GetTextureFrom(jsonNormalTexturePath, sourceName, "Normal", out name);
+
+            if (flowMap && !normalMap)
+            {
+                normalMap = baker.BakeFlowMapToNormalMap(flowMap, tangentVector, flipY, sourceName + "_Normal");                
+                mat.SetTextureIf("_NormalMap", normalMap);
             }
         }
 

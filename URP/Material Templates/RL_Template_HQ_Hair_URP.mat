@@ -15,7 +15,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 1
-  m_CustomRenderQueue: 3000
+  m_CustomRenderQueue: -1
   stringTagMap:
     MotionVector: User
     RenderType: Transparent
@@ -87,7 +87,7 @@ Material:
     - _InvertRootMap: 0
     - _NormalStrength: 1
     - _RootColorStrength: 1
-    - _SmoothnessMax: 0.897
+    - _SmoothnessMax: 0.75
     - _SmoothnessMin: 0
     - _SmoothnessPower: 1
     - _VertexColorStrength: 0.5
