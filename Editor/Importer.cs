@@ -1055,18 +1055,19 @@ namespace Reallusion.Import
                 // Transmission Strength = Custom Shader/Variable/Transmission Strength
                 // == Rim lighting/rim translucency strength
 
-                float specMapStrength = matJson.GetFloatValue("Custom Shader/Variable/Hair Specular Map Strength");
+                float specMapStrength = matJson.GetFloatValue("Custom Shader/Variable/Hair Specular Map Strength");                
                 float specStrength = matJson.GetFloatValue("Custom Shader/Variable/Specular Strength");
+                float specStrength2 = matJson.GetFloatValue("Custom Shader/Variable/Secondary Specular Strength");
                 float rimTransmission = matJson.GetFloatValue("Custom Shader/Variable/Transmission Strength");
                 float smoothnessStrength = 1f - matJson.GetFloatValue("Custom Shader/Variable/Hair Roughness Map Strength");
                 if (RP == RenderPipeline.HDRP)
                 {
                     float secondarySpecStrength = matJson.GetFloatValue("Custom Shader/Variable/Secondary Specular Strength");                    
                     mat.SetFloatIf("_SmoothnessMin", smoothnessStrength);
-                    mat.SetFloatIf("_SecondarySmoothness", Mathf.Pow(smoothnessStrength, 0.5f));
+                    // set by template
+                    //mat.SetFloatIf("_SecondarySmoothness", 0.5f);
                     mat.SetFloatIf("_SpecularMultiplier", specMapStrength * specStrength);
-                    mat.SetFloatIf("_SecondarySpecularMultiplier", 
-                        specMapStrength * specStrength * 0.1f);
+                    mat.SetFloatIf("_SecondarySpecularMultiplier", 0.65f * specMapStrength * specStrength2);
                     mat.SetFloatIf("_RimTransmissionIntensity", 0.2f * rimTransmission);
                 }
                 else
