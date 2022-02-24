@@ -79,14 +79,14 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _TopCurve: 1
-    - _TopRange: 0.5
+    - _TopRange: 0.506
     - _UVSec: 0
     - _ZWrite: 1
     - __dirty: 0
     m_Colors:
-    - _BottomColor: {r: 0.5, g: 0.5, b: 0.5, a: 0}
+    - _BottomColor: {r: 0.6759078, g: 0.73281056, b: 0.7830189, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _MidColor: {r: 0.34999993, g: 0.34999993, b: 0.34999993, a: 0}
-    - _TopColor: {r: 0.75, g: 0.75, b: 0.75, a: 0}
+    - _MidColor: {r: 0.3018868, g: 0.3018868, b: 0.3018868, a: 0}
+    - _TopColor: {r: 0.73268956, g: 0.7877763, b: 0.8396226, a: 0}
   m_BuildTextureStacks: []
