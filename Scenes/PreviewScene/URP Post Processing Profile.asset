@@ -54,7 +54,7 @@ MonoBehaviour:
   m_AdvancedMode: 0
   temperature:
     m_OverrideState: 1
-    m_Value: -7
+    m_Value: -5
     min: -100
     max: 100
   tint:
@@ -173,7 +173,7 @@ MonoBehaviour:
     m_Value: {x: 1, y: 1, z: 1, w: 0}
   gamma:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 1, z: 1, w: -0.13847226}
+    m_Value: {x: 1, y: 1, z: 1, w: -0.10259782}
   gain:
     m_OverrideState: 0
     m_Value: {x: 1, y: 1, z: 1, w: 0}

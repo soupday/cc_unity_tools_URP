@@ -129,7 +129,7 @@ Material:
     - _RSmoothnessMod: 0
     - _SmoothnessMax: 0.897
     - _SmoothnessMin: 0
-    - _SmoothnessPower: 1.5
+    - _SmoothnessPower: 1.35
     - _SubsurfaceNormalSoften: 0.65
     - _SubsurfaceScale: 1
     - _ThicknessScale: 0.4
