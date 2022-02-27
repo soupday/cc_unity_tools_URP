@@ -98,7 +98,7 @@ MonoBehaviour:
   m_AdvancedMode: 0
   intensity:
     m_OverrideState: 1
-    m_Value: 0.15
+    m_Value: 0.25
     min: 0
     max: 1
 --- !u!114 &2308163290144694155
