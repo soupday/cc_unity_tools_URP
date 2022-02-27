@@ -7,25 +7,13 @@
             "m_Id": "cb42572a46a74a588ef3935f3a667eb7"
         },
         {
+            "m_Id": "66cc0b010f5647d5bf80ded4825cab7c"
+        },
+        {
+            "m_Id": "769181578f94433984a73faf6e153757"
+        },
+        {
             "m_Id": "3345a7b9279a48b7ba4602df55d812ac"
-        },
-        {
-            "m_Id": "8a49d2f872e946d4a29e2030ee291584"
-        },
-        {
-            "m_Id": "6d2408803a794f2e9368d5529b79a574"
-        },
-        {
-            "m_Id": "2adde9b6c89f49aa838e8cfc38e04353"
-        },
-        {
-            "m_Id": "b6b8e6115b8e4da2814c109def81f544"
-        },
-        {
-            "m_Id": "c70d342b1a0b4d6bbf1ff3c98fd338ea"
-        },
-        {
-            "m_Id": "c4024195aefa495695710ffb5997a875"
         },
         {
             "m_Id": "daa99c4f268449b8a4e69fdaeafcfe49"
@@ -34,31 +22,37 @@
             "m_Id": "a1eb91167291491694bf1bdf8d2f3e16"
         },
         {
-            "m_Id": "94ca5b7030dd47cf8a414dd9fee0ecde"
+            "m_Id": "229e12ce054c4003affcf25346b88151"
         },
         {
-            "m_Id": "229e12ce054c4003affcf25346b88151"
+            "m_Id": "94ca5b7030dd47cf8a414dd9fee0ecde"
         },
         {
             "m_Id": "e971c94b58c140859c5fca2ee518edf2"
         },
         {
-            "m_Id": "66cc0b010f5647d5bf80ded4825cab7c"
+            "m_Id": "8a49d2f872e946d4a29e2030ee291584"
         },
         {
-            "m_Id": "769181578f94433984a73faf6e153757"
+            "m_Id": "b6b8e6115b8e4da2814c109def81f544"
+        },
+        {
+            "m_Id": "6d2408803a794f2e9368d5529b79a574"
+        },
+        {
+            "m_Id": "c70d342b1a0b4d6bbf1ff3c98fd338ea"
+        },
+        {
+            "m_Id": "c4024195aefa495695710ffb5997a875"
+        },
+        {
+            "m_Id": "2adde9b6c89f49aa838e8cfc38e04353"
         },
         {
             "m_Id": "ddd87d19404f41b8bbbd24232f4338ac"
         },
         {
             "m_Id": "fd115c5a3bec4b6eabfabdb2fdf437e6"
-        },
-        {
-            "m_Id": "e25a1c81f1374f178c8f27b6264a5f1b"
-        },
-        {
-            "m_Id": "0132cd9db49941618ed4bec849f97956"
         },
         {
             "m_Id": "f2b01f7d31244bfb85b8e2dbef37c961"
@@ -134,12 +128,6 @@
         },
         {
             "m_Id": "04e6d8d885c84b27b65b379ce432f20d"
-        },
-        {
-            "m_Id": "252fe33b41ea44cc8726e40323b8fcdd"
-        },
-        {
-            "m_Id": "095b3273b8844071b47eee774677bf1d"
         },
         {
             "m_Id": "e28e83ed9ea04d5d9fea68c35524c5c0"
@@ -289,9 +277,6 @@
         },
         {
             "m_Id": "14f73925468d4b32abbfcec322cde1f5"
-        },
-        {
-            "m_Id": "d0c032e765f84de2a58499338156c1e5"
         }
     ],
     "m_StickyNoteDatas": [
@@ -1193,29 +1178,6 @@
 }
 
 {
-    "m_SGVersion": 1,
-    "m_Type": "UnityEditor.ShaderGraph.Internal.Vector1ShaderProperty",
-    "m_ObjectId": "0132cd9db49941618ed4bec849f97956",
-    "m_Guid": {
-        "m_GuidSerialized": "7e7ba2c7-42da-4e3d-8475-98e98400f0ed"
-    },
-    "m_Name": "Tongue Thickness",
-    "m_DefaultReferenceName": "Vector1_0132cd9db49941618ed4bec849f97956",
-    "m_OverrideReferenceName": "_TongueThickness",
-    "m_GeneratePropertyBlock": true,
-    "m_Precision": 0,
-    "overrideHLSLDeclaration": false,
-    "hlslDeclarationOverride": 0,
-    "m_Hidden": false,
-    "m_Value": 0.75,
-    "m_FloatType": 1,
-    "m_RangeValues": {
-        "x": 0.0,
-        "y": 1.0
-    }
-}
-
-{
     "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.LerpNode",
     "m_ObjectId": "01647058483f4cb99ee926a596e1c15f",
@@ -1557,41 +1519,6 @@
         "y": 0.0,
         "z": 0.0,
         "w": 0.0
-    }
-}
-
-{
-    "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.PropertyNode",
-    "m_ObjectId": "095b3273b8844071b47eee774677bf1d",
-    "m_Group": {
-        "m_Id": "d0c032e765f84de2a58499338156c1e5"
-    },
-    "m_Name": "Property",
-    "m_DrawState": {
-        "m_Expanded": true,
-        "m_Position": {
-            "serializedVersion": "2",
-            "x": 216.99993896484376,
-            "y": -145.99998474121095,
-            "width": 170.99998474121095,
-            "height": 34.0
-        }
-    },
-    "m_Slots": [
-        {
-            "m_Id": "3de68672d00143c09300da7a5df0f89f"
-        }
-    ],
-    "synonyms": [],
-    "m_Precision": 0,
-    "m_PreviewExpanded": true,
-    "m_PreviewMode": 0,
-    "m_CustomColors": {
-        "m_SerializableColors": []
-    },
-    "m_Property": {
-        "m_Id": "0132cd9db49941618ed4bec849f97956"
     }
 }
 
@@ -2415,41 +2342,6 @@
 
 {
     "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.PropertyNode",
-    "m_ObjectId": "252fe33b41ea44cc8726e40323b8fcdd",
-    "m_Group": {
-        "m_Id": "d0c032e765f84de2a58499338156c1e5"
-    },
-    "m_Name": "Property",
-    "m_DrawState": {
-        "m_Expanded": true,
-        "m_Position": {
-            "serializedVersion": "2",
-            "x": 171.9997100830078,
-            "y": -195.0000762939453,
-            "width": 215.99998474121095,
-            "height": 34.0
-        }
-    },
-    "m_Slots": [
-        {
-            "m_Id": "d729776e47ca458d9f698b924845442d"
-        }
-    ],
-    "synonyms": [],
-    "m_Precision": 0,
-    "m_PreviewExpanded": true,
-    "m_PreviewMode": 0,
-    "m_CustomColors": {
-        "m_SerializableColors": []
-    },
-    "m_Property": {
-        "m_Id": "e25a1c81f1374f178c8f27b6264a5f1b"
-    }
-}
-
-{
-    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.Vector3MaterialSlot",
     "m_ObjectId": "25d3c8e1fdbb4c4fbfd4868867b08f5a",
     "m_Id": 0,
@@ -2995,21 +2887,6 @@
         "x": -253.00042724609376,
         "y": 377.00030517578127
     }
-}
-
-{
-    "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
-    "m_ObjectId": "3de68672d00143c09300da7a5df0f89f",
-    "m_Id": 0,
-    "m_DisplayName": "Tongue Thickness",
-    "m_SlotType": 1,
-    "m_Hidden": false,
-    "m_ShaderOutputName": "Out",
-    "m_StageCapability": 3,
-    "m_Value": 0.0,
-    "m_DefaultValue": 0.0,
-    "m_Labels": []
 }
 
 {
@@ -6754,17 +6631,6 @@
 
 {
     "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.GroupData",
-    "m_ObjectId": "d0c032e765f84de2a58499338156c1e5",
-    "m_Title": "Subsurface",
-    "m_Position": {
-        "x": 146.99961853027345,
-        "y": -254.00003051757813
-    }
-}
-
-{
-    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.DynamicVectorMaterialSlot",
     "m_ObjectId": "d110a63a69c94c9dabcdfb3a227212be",
     "m_Id": 0,
@@ -6892,21 +6758,6 @@
         "e32": 0.0,
         "e33": 1.0
     }
-}
-
-{
-    "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
-    "m_ObjectId": "d729776e47ca458d9f698b924845442d",
-    "m_Id": 0,
-    "m_DisplayName": "Tongue Subsurface Scatter",
-    "m_SlotType": 1,
-    "m_Hidden": false,
-    "m_ShaderOutputName": "Out",
-    "m_StageCapability": 3,
-    "m_Value": 0.0,
-    "m_DefaultValue": 0.0,
-    "m_Labels": []
 }
 
 {
@@ -7112,29 +6963,6 @@
         "m_SerializableColors": []
     },
     "m_SerializedDescriptor": "SurfaceDescription.Alpha"
-}
-
-{
-    "m_SGVersion": 1,
-    "m_Type": "UnityEditor.ShaderGraph.Internal.Vector1ShaderProperty",
-    "m_ObjectId": "e25a1c81f1374f178c8f27b6264a5f1b",
-    "m_Guid": {
-        "m_GuidSerialized": "1936e4b8-ae9b-4eb2-8ca8-295956f61a96"
-    },
-    "m_Name": "Tongue Subsurface Scatter",
-    "m_DefaultReferenceName": "Vector1_e25a1c81f1374f178c8f27b6264a5f1b",
-    "m_OverrideReferenceName": "_TongueSSS",
-    "m_GeneratePropertyBlock": true,
-    "m_Precision": 0,
-    "overrideHLSLDeclaration": false,
-    "hlslDeclarationOverride": 0,
-    "m_Hidden": false,
-    "m_Value": 1.0,
-    "m_FloatType": 1,
-    "m_RangeValues": {
-        "x": 0.0,
-        "y": 1.0
-    }
 }
 
 {

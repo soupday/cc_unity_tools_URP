@@ -13,7 +13,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2225
+  m_CustomRenderQueue: -1
   stringTagMap:
     MotionVector: User
   disabledShaderPasses:
@@ -69,9 +69,7 @@ Material:
     - _AOStrength: 1
     - _FrontAO: 1
     - _GumsBrightness: 0.9
-    - _GumsSSS: 1
     - _GumsSaturation: 1
-    - _GumsThickness: 0.85
     - _IsUpperTeeth: 0
     - _MicroNormalStrength: 0.3
     - _MicroNormalTiling: 10
@@ -82,9 +80,7 @@ Material:
     - _SmoothnessPower: 0.5
     - _SmoothnessRear: 0
     - _TeethBrightness: 0.7
-    - _TeethSSS: 0.5
     - _TeethSaturation: 0.9
-    - _TeethThickness: 0.7
     m_Colors:
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

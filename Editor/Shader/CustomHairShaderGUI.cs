@@ -14,19 +14,19 @@ namespace Reallusion.Import
         private Material[] sources = null;
 
         private void CheckMaterials(Object[] targets)
-        {
+        {            
             bool rebuild = false;
 
-            if (pass1 == null || pass1.Length != targets.Length)
-            {
-                pass1 = new Material[targets.Length];
-                rebuild = true;
+            if (pass1 == null || pass1.Length != targets.Length) 
+            { 
+                pass1 = new Material[targets.Length]; 
+                rebuild = true; 
             }
 
             if (pass2 == null || pass2.Length != targets.Length)
-            {
-                pass2 = new Material[targets.Length];
-                rebuild = true;
+            { 
+                pass2 = new Material[targets.Length]; 
+                rebuild = true; 
             }
 
             if (sources == null || sources.Length != targets.Length)
@@ -37,12 +37,10 @@ namespace Reallusion.Import
 
             if (rebuild)
             {
-                Debug.Log("REBUILD");
-
                 for (int i = 0; i < targets.Length; i++)
                 {
                     Material target = targets[i] as Material;
-
+                    
                     string path = AssetDatabase.GetAssetPath(target);
                     string folder = Path.GetDirectoryName(path);
                     string name = Path.GetFileNameWithoutExtension(path);
@@ -67,14 +65,14 @@ namespace Reallusion.Import
             CheckMaterials(materialEditor.targets);
 
             if (EditorGUI.EndChangeCheck())
-            {
+            {                
                 CopyMaterialProps(targetMat);
             }
         }
 
         private bool SetFloatIfSourcesAgree(Material from, string prop)
         {
-            float value = from.GetFloat(prop);
+            float value = from.GetFloat(prop);            
 
             for (int i = 0; i < sources.Length; i++)
             {
@@ -84,7 +82,24 @@ namespace Reallusion.Import
             for (int i = 0; i < sources.Length; i++)
             {
                 if (pass1[i]) pass1[i].SetFloatIf(prop, value);
-                if (pass2[i]) pass2[i].SetFloatIf(prop, value);
+                if (pass2[i]) pass2[i].SetFloatIf(prop, value);                    
+            }
+
+            if (prop == "BOOLEAN_ENABLECOLOR")
+            {                
+                for (int i = 0; i < sources.Length; i++)
+                {
+                    if (value == 1f)
+                    {
+                        if (pass1[i]) pass1[i].EnableKeyword("BOOLEAN_ENABLECOLOR_ON");
+                        if (pass2[i]) pass2[i].EnableKeyword("BOOLEAN_ENABLECOLOR_ON");                        
+                    }
+                    else
+                    {
+                        if (pass1[i]) pass1[i].DisableKeyword("BOOLEAN_ENABLECOLOR_ON");
+                        if (pass2[i]) pass2[i].DisableKeyword("BOOLEAN_ENABLECOLOR_ON");
+                    }
+                }
             }
 
             return true;
@@ -158,7 +173,7 @@ namespace Reallusion.Import
                 ShaderPropertyType type = from.shader.GetPropertyType(i);
 
                 if ((flagValue & checkBit) == 0)
-                {
+                {                    
                     switch (type)
                     {
                         case ShaderPropertyType.Texture:
@@ -177,7 +192,7 @@ namespace Reallusion.Import
                         case ShaderPropertyType.Vector:
                             SetVectorIfSourcesAgree(from, prop);
                             break;
-                    }
+                    }        
                 }
             }
         }
