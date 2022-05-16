@@ -107,5 +107,7 @@ Material:
     m_Colors:
     - _CornerShadowColor: {r: 1, g: 0.7333333, b: 0.6980392, a: 0}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 0}
+    - _IrisCloudyColor: {r: 0, g: 0, b: 0, a: 0}
+    - _IrisColor: {r: 1, g: 1, b: 1, a: 0}
     - _LimbusColor: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
