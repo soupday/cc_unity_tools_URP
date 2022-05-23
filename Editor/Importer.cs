@@ -298,11 +298,32 @@ namespace Reallusion.Import
                         // fetch the json parent for this material.
                         // the json data for the material contains custom shader names, parameters and texture paths.
                         QuickJSON matJson = null;
-                        string jsonPath = obj.name + "/Materials/" + sourceName;
-                        if (jsonMeshData != null && jsonMeshData.PathExists(jsonPath))
-                            matJson = jsonMeshData.GetObjectAtPath(jsonPath);
-                        else
-                            Debug.LogError("Unable to find json material data: " + jsonPath);
+                        string objName = obj.name;
+                        string jsonPath = "";
+                        if (jsonMeshData != null)
+                        {
+                            jsonPath = objName + "/Materials/" + sourceName;
+                            if (jsonMeshData.PathExists(jsonPath))
+                            {
+                                matJson = jsonMeshData.GetObjectAtPath(jsonPath);
+                            }
+                            else
+                            {
+                                // there is a bug where a space in name causes the name to be truncated on export from CC3/4
+                                if (objName.Contains(" ")) 
+                                {
+                                    Debug.LogWarning("Object name " + objName + " contains a space, this can cause the materials to setup incorrectly.");
+                                    string[] split = objName.Split(' ');
+                                    objName = split[0];
+                                    jsonPath = objName + "/Materials/" + sourceName;
+                                    if (jsonMeshData.PathExists(jsonPath))
+                                    {                                        
+                                        matJson = jsonMeshData.GetObjectAtPath(jsonPath);
+                                    }                                    
+                                }                                
+                            }
+                        }    
+                        if (matJson == null) Debug.LogError("Unable to find json material data: " + jsonPath);
 
                         // determine the material type, this dictates the shader and template material.
                         MaterialType materialType = GetMaterialType(obj, sharedMat, sourceName, matJson);
@@ -1005,7 +1026,7 @@ namespace Reallusion.Import
                 mat.SetFloatIf("_MicroSmoothnessMod", -matJson.GetFloatValue("Custom Shader/Variable/Micro Roughness Scale"));
                 mat.SetFloatIf("_UnmaskedSmoothnessMod", -matJson.GetFloatValue("Custom Shader/Variable/Unmasked Roughness Scale"));
                 mat.SetFloatIf("_UnmaskedScatterScale", matJson.GetFloatValue("Custom Shader/Variable/Unmasked Scatter Scale"));
-                mat.SetColorIf("_DiffuseColor", Util.LinearTosRGB(matJson.GetColorValue("Diffuse Color")));
+                mat.SetColorIf("_DiffuseColor", Util.LinearTosRGB(matJson.GetColorValue("Diffuse Color")));                
 
                 if (materialType == MaterialType.Head)
                 {
