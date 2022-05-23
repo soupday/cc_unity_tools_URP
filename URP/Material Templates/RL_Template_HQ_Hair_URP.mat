@@ -92,6 +92,7 @@ Material:
     - _SmoothnessPower: 1
     - _VertexColorStrength: 0.5
     m_Colors:
+    - _DiffuseColor: {r: 1, g: 1, b: 1, a: 0}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 0}
     - _EndColor: {r: 0.6039216, g: 0.454902, b: 0.28627446, a: 0}
     - _HighlightAColor: {r: 0.9137255, g: 0.7803922, b: 0.635294, a: 0}

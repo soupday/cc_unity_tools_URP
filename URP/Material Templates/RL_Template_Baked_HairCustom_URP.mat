@@ -76,6 +76,7 @@ Material:
     - _ENUMCLIPQUALITY_ON: 2
     - _VertexColorStrength: 0.5
     m_Colors:
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 0}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 0}
     - _VertexBaseColor: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
