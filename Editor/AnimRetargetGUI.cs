@@ -343,8 +343,7 @@ namespace Reallusion.Import
             GUILayout.EndHorizontal();
             if (EditorGUI.EndChangeCheck())
             {
-                OffsetHeight();
-                //ApplyOffset();
+                OffsetHeight();                
                 animator.gameObject.transform.position = animatorPosition;
                 animator.gameObject.transform.rotation = animatorRotation;
                 AnimPlayerGUI.SampleOnce();
@@ -362,12 +361,12 @@ namespace Reallusion.Import
             GUILayout.FlexibleSpace();
             GUILayout.BeginVertical("box");  // reset button
             if (GUILayout.Button(new GUIContent(resetImage, "Reset all slider settings and applied modifications."), GUILayout.Width(smallIconDim), GUILayout.Height(smallIconDim)))
-            {                
-                Reselect();
-                // Not works
+            {
+                AnimPlayerGUI.RefreshPlayerClip();
+                Reselect();                
                 animator.gameObject.transform.position = animatorPosition;
                 animator.gameObject.transform.rotation = animatorRotation;
-                AnimPlayerGUI.SampleOnce();
+                
             }
             GUILayout.EndVertical();
             GUILayout.BeginVertical("box"); // save button

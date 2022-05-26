@@ -10,8 +10,6 @@ namespace Reallusion.Import
         #region AnimPlayer  
 
         public static AnimationClip selectedClip;
-
-
         public static AnimationClip animationClip;
         public static Animator animator;
         public static bool play = false;
@@ -100,6 +98,20 @@ namespace Reallusion.Import
                 animationClip = setClip;
                 time = 0f;
                 play = false;
+
+                if (!AnimationMode.InAnimationMode()) AnimationMode.StartAnimationMode();
+
+                SampleOnce();
+            }
+        }
+
+        public static void RefreshPlayerClip()
+        {
+            if (animator && selectedClip)
+            {
+                if (AnimationMode.InAnimationMode()) AnimationMode.StopAnimationMode();
+
+                animationClip = CloneClip(selectedClip);                
 
                 if (!AnimationMode.InAnimationMode()) AnimationMode.StartAnimationMode();
 
@@ -1796,11 +1808,6 @@ namespace Reallusion.Import
             {"A51_Mouth_Stretch_Right", 0f },
         };
 
-
-
-        #endregion FaceMorph
-
-        #region AnimRetargeter
-        #endregion
+        #endregion FaceMorph        
     }
 }

@@ -254,8 +254,7 @@ namespace Reallusion.Import
 
         public static void SetSelectedAnimation(AnimationClip clip)
         {
-            selectedAnimation = clip;
-            Debug.Log("SETTING: selectedAnimation: " + clip.name);
+            selectedAnimation = clip;           
         }
 
         public static AnimationClip GetSelectedAnimation()
@@ -268,8 +267,7 @@ namespace Reallusion.Import
 
         public static void SetWorkingAnimation(AnimationClip clip)
         {
-            workingAnimation = clip;
-            Debug.Log("SETTING: workingAnimation: " + clip.name);
+            workingAnimation = clip;            
             if (AnimRetargetGUI.IsPlayerShown())
             {
                 AnimRetargetGUI.Reselect();
@@ -286,8 +284,7 @@ namespace Reallusion.Import
 
         public static void SetSceneAnimator(Animator anim)
         {
-            sceneAnimator = anim;
-            Debug.Log("SETTING: sceneAnimator: " + anim.name);
+            sceneAnimator = anim;            
         }
 
         public static Animator GetSceneAnimator()

@@ -9,7 +9,7 @@ namespace Reallusion.Import
         
         public static void OnSceneGUI(SceneView sceneView)
         {
-            float ypadding = 30f;
+            float ypadding = 1f;
             float width = 320f;
             float height = 253f;
 
