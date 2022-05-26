@@ -35,7 +35,7 @@ namespace Reallusion.Import
             if (AnimPlayerGUI.IsPlayerShown())
             {
                 AnimPlayerGUI.DestroyPlayer();
-                WindowManager.showTools = false;
+                WindowManager.showPlayer = false;
             }
             else
             {
@@ -43,7 +43,26 @@ namespace Reallusion.Import
                 if (ps.IsValid)
                 {
                     AnimPlayerGUI.CreatePlayer(ps, ImporterWindow.Current?.Character?.Fbx);
-                    WindowManager.showTools = true;
+                    WindowManager.showPlayer = true;
+                }
+            }
+        }
+
+        [MenuItem("Reallusion/Animation Retargeter", priority = 3)]
+        public static void ShowAnimationRetargeter()
+        {
+            if (AnimRetargetGUI.IsPlayerShown())
+            {
+                AnimRetargetGUI.DestroyRetargeter();
+                WindowManager.showRetarget = false;
+            }
+            else
+            {
+                PreviewScene ps = PreviewScene.GetPreviewScene();
+                if (ps.IsValid)
+                {
+                    AnimPlayerGUI.CreatePlayer(ps, ImporterWindow.Current?.Character?.Fbx);
+                    WindowManager.showPlayer = true;
                 }
             }
         }

@@ -52,9 +52,9 @@ namespace Reallusion.Import
 
         [MenuItem("Reallusion/Mesh Tools/Auto Smooth Mesh", priority = 102)]
         private static void DoAutoSmoothMesh()
-        {
-            bool showTools = WindowManager.showTools;
-            if (showTools && ImporterWindow.Current) ImporterWindow.Current.HideAnimationPlayer();
+        {            
+            if (WindowManager.showPlayer && ImporterWindow.Current) 
+                WindowManager.HideAnimationPlayer(false);
 
             if (Selection.gameObjects.Length > 1)
                 foreach (GameObject go in Selection.gameObjects)
@@ -62,7 +62,8 @@ namespace Reallusion.Import
             else
                 MeshUtil.AutoSmoothMesh(Selection.activeObject);
 
-            if (showTools && ImporterWindow.Current) ImporterWindow.Current.ShowAnimationPlayer();
+            if (WindowManager.showPlayer && ImporterWindow.Current) 
+                WindowManager.ShowAnimationPlayer();
         }
 
         [MenuItem("Reallusion/Mesh Tools/Open or Close Character Mouth", priority = 201)]
