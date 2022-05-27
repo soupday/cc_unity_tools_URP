@@ -16,6 +16,7 @@ namespace Reallusion.Import
         public static bool clipManuallySet = false;
         public static float time, prev, current = 0f;
         public static bool animFoldOut = true;
+        public static string sourceFbxPath;
         public static bool AnimFoldOut { get { return animFoldOut; } set { animFoldOut = value; } }
 
         public static void SetCharacter(PreviewScene ps, GameObject fbx)
@@ -27,6 +28,7 @@ namespace Reallusion.Import
                 if (scenePrefab)
                 {
                     GameObject sceneFbx = Util.GetCharacterSourceFbx(scenePrefab);
+                    sourceFbxPath = AssetDatabase.GetAssetPath(sceneFbx);
                     Animator anim = scenePrefab.GetComponent<Animator>();
                     AnimationClip firstClip = Util.GetFirstAnimationClipFromCharacter(sceneFbx);
 

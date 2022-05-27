@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using System.IO;
 
 namespace Reallusion.Import
 {
@@ -52,7 +53,9 @@ namespace Reallusion.Import
 
 
         // Function variables
-        static string emptyGuid = "00000000000000000000000000000000";
+        const string emptyGuid = "00000000000000000000000000000000";
+        public const string ANIM_FOLDER_NAME = "Animations";
+        public const string RETARGET_FOLDER_NAME = "Retargeted";
 
         static Dictionary<string, EditorCurveBinding> shoulderBindings;
         static Dictionary<string, EditorCurveBinding> armBindings;
@@ -937,45 +940,34 @@ namespace Reallusion.Import
 
         static void WriteAnimationToAssetDatabase()
         {
-            string animationOutputBase = "Assets";
-            string animationOutputBaseFolder = "Animations"; // Assets/Animations/ will be replaced by the characters 'Home' directory 
-            string basePath = animationOutputBase + "/" + animationOutputBaseFolder;
-            string animationExtractFolder = "Retargeted Animations";
-            string extractBasePath = basePath + "/" + animationExtractFolder;
+            string fbxPath = AnimPlayerGUI.sourceFbxPath;
+            string characterName = Path.GetFileNameWithoutExtension(fbxPath);
+            string fbxFolder = Path.GetDirectoryName(fbxPath);
+            string animFolder = Path.Combine(fbxFolder, ANIM_FOLDER_NAME, characterName, RETARGET_FOLDER_NAME);
+            Util.EnsureAssetsFolderExists(animFolder);
 
-            if (!AssetDatabase.IsValidFolder(basePath))
-                AssetDatabase.CreateFolder(animationOutputBase, animationOutputBaseFolder);
+            string animName = NameAnimation(characterName);
+            string assetPath = Path.Combine(animFolder, animName + ".anim");
 
-            if (!AssetDatabase.IsValidFolder(extractBasePath))
-                AssetDatabase.CreateFolder(basePath, animationExtractFolder);
-
-
-            string animName = NameAnimation();
-            string fullOutputPath = extractBasePath + "/" + animName + ".anim";
-
-            if (!AssetDatabase.GUIDFromAssetPath(fullOutputPath).ToString().Equals(emptyGuid))
+            if (!AssetDatabase.GUIDFromAssetPath(assetPath).ToString().Equals(emptyGuid))
             {
                 for (int i = 0; i < 999; i++)
                 {
                     string extension = string.Format("{0:000}", i);
-                    fullOutputPath = extractBasePath + "/" + animName + "." + extension + ".anim";
-                    if (AssetDatabase.GUIDFromAssetPath(fullOutputPath).ToString().Equals(emptyGuid))
-                    {
-                        break;
-                    }
+                    assetPath = Path.Combine(animFolder, animName + "_" + extension + ".anim");
+                    if (AssetDatabase.GUIDFromAssetPath(assetPath).ToString().Equals(emptyGuid)) break;                    
                 }
             }
-            Debug.Log("Writing Asset: " + fullOutputPath);
+            Debug.Log("Writing Asset: " + assetPath);
 
             var output = Object.Instantiate(workingClip);  // clone so that workingClip isn't locked to an on-disk asset
             AnimationClip outputClip = output as AnimationClip;
-            AssetDatabase.CreateAsset(outputClip, fullOutputPath);
+            AssetDatabase.CreateAsset(outputClip, assetPath);
         }
 
-        static string NameAnimation()
+        static string NameAnimation(string characterName)
         {
-            string name = animator.gameObject.name + "_" + originalClip.name;
-            return name;
+            return characterName + "_" + originalClip.name;
         }
 
         // Curve Master Data

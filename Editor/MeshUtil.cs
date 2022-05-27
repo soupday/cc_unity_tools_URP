@@ -40,6 +40,12 @@ namespace Reallusion.Import
                 MeshUtil.ReverseTriangleOrder(Selection.activeObject);
         }
 
+        [MenuItem("Reallusion/Mesh Tools/Reverse Triangle Order", true)]
+        private static bool ValudidateDoReverse()
+        {
+            return Selection.gameObjects.Length > 0;
+        }
+
         [MenuItem("Reallusion/Mesh Tools/Prune Blend Shapes", priority = 101)]
         private static void DoPrune()
         {            
@@ -48,6 +54,12 @@ namespace Reallusion.Import
                     MeshUtil.PruneBlendShapes(go);
             else
                 MeshUtil.PruneBlendShapes(Selection.activeObject);
+        }
+
+        [MenuItem("Reallusion/Mesh Tools/Prune Blend Shapes", true)]
+        private static bool ValudidateDoPrune()
+        {
+            return Selection.gameObjects.Length > 0;
         }
 
         [MenuItem("Reallusion/Mesh Tools/Auto Smooth Mesh", priority = 102)]
@@ -66,10 +78,23 @@ namespace Reallusion.Import
                 WindowManager.ShowAnimationPlayer();
         }
 
+        [MenuItem("Reallusion/Mesh Tools/Auto Smooth Mesh", true)]
+        private static bool ValudidateDoAutoSmoothMesh()
+        {
+            return Selection.gameObjects.Length > 0;
+        }
+
         [MenuItem("Reallusion/Mesh Tools/Open or Close Character Mouth", priority = 201)]
         private static void DoOpenCloseMouth()
         {
             MeshUtil.CharacterOpenCloseMouth(Selection.activeObject);
+        }
+
+        [MenuItem("Reallusion/Mesh Tools/Open or Close Character Mouth", true)]
+        private static bool ValudidateDoOpenCloseMouth()
+        {
+            PreviewScene ps = PreviewScene.GetPreviewScene();
+            return ps.IsValid && ps.GetPreviewCharacter() != null;
         }
 
         [MenuItem("Reallusion/Mesh Tools/Open or Close Character Eyes", priority = 202)]
@@ -78,10 +103,24 @@ namespace Reallusion.Import
             MeshUtil.CharacterOpenCloseEyes(Selection.activeObject);
         }
 
+        [MenuItem("Reallusion/Mesh Tools/Open or Close Character Eyes", true)]
+        private static bool ValudidateDoOpenCloseEyes()
+        {
+            PreviewScene ps = PreviewScene.GetPreviewScene();
+            return ps.IsValid && ps.GetPreviewCharacter() != null;
+        }
+
         [MenuItem("Reallusion/Mesh Tools/Eye/Look Left", priority = 203)]
         private static void DoLookLeft()
         {
             MeshUtil.CharacterEyeLook(Selection.activeObject, EyeLookDir.Left);
+        }
+
+        [MenuItem("Reallusion/Mesh Tools/Eye/Look Left", true)]
+        private static bool ValudidateDoLookLeft()
+        {
+            PreviewScene ps = PreviewScene.GetPreviewScene();
+            return ps.IsValid && ps.GetPreviewCharacter() != null;
         }
 
         [MenuItem("Reallusion/Mesh Tools/Eye/Look Right", priority = 204)]
@@ -90,10 +129,24 @@ namespace Reallusion.Import
             MeshUtil.CharacterEyeLook(Selection.activeObject, EyeLookDir.Right);
         }
 
+        [MenuItem("Reallusion/Mesh Tools/Eye/Look Right", true)]
+        private static bool ValudidateDoLookRight()
+        {
+            PreviewScene ps = PreviewScene.GetPreviewScene();
+            return ps.IsValid && ps.GetPreviewCharacter() != null;
+        }
+
         [MenuItem("Reallusion/Mesh Tools/Eye/Look Up", priority = 205)]
         private static void DoLookUp()
         {
             MeshUtil.CharacterEyeLook(Selection.activeObject, EyeLookDir.Up);
+        }
+
+        [MenuItem("Reallusion/Mesh Tools/Eye/Look Up", true)]
+        private static bool ValudidateDoLookUp()
+        {
+            PreviewScene ps = PreviewScene.GetPreviewScene();
+            return ps.IsValid && ps.GetPreviewCharacter() != null;
         }
 
         [MenuItem("Reallusion/Mesh Tools/Eye/Look Down", priority = 206)]
@@ -102,10 +155,24 @@ namespace Reallusion.Import
             MeshUtil.CharacterEyeLook(Selection.activeObject, EyeLookDir.Down);
         }
 
+        [MenuItem("Reallusion/Mesh Tools/Eye/Look Down", true)]
+        private static bool ValudidateDoLookDown()
+        {
+            PreviewScene ps = PreviewScene.GetPreviewScene();
+            return ps.IsValid && ps.GetPreviewCharacter() != null;
+        }
+
         [MenuItem("Reallusion/Mesh Tools/Eye/Look Forward", priority = 207)]
         private static void DoLookForward()
         {
             MeshUtil.CharacterEyeLook(Selection.activeObject, EyeLookDir.None);
+        }
+
+        [MenuItem("Reallusion/Mesh Tools/Eye/Look Forward", true)]
+        private static bool ValudidateDoLookForward()
+        {
+            PreviewScene ps = PreviewScene.GetPreviewScene();
+            return ps.IsValid && ps.GetPreviewCharacter() != null;
         }
 
 #if HDRP_10_5_0_OR_NEWER
