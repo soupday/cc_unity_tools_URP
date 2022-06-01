@@ -59,68 +59,162 @@ namespace Reallusion.Import
             return alembicGuids;
         }
 
-        public static void ProcessAlembics(GameObject sourcePrefab, string characterName, string characterFolder)
+        public static void ProcessAlembics(GameObject sourceFbx, string characterName, string characterFolder)
         {
-            List<string> guids = FindAlembics(characterName, characterFolder);
+            List<string> guids = FindAlembics(characterName, characterFolder);                        
 
-            Debug.Log(guids.Count);
-
-            foreach (string guid in guids)
+            if (Util.FindCharacterPrefabs(sourceFbx, out GameObject mainPrefab, out GameObject bakedPrefab))
             {
-                string path = AssetDatabase.GUIDToAssetPath(guid);
-                string folder = Path.GetDirectoryName(path);
-                string fileName = Path.GetFileNameWithoutExtension(path);
-                string extention = Path.GetExtension(path);
-                string prefabPath = Path.Combine(folder, fileName + ".prefab");
-                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                List<GameObject> sourcePrefabs = new List<GameObject>();
+                List<GameObject> outputPrefabs = new List<GameObject>();
+                if (mainPrefab) sourcePrefabs.Add(mainPrefab);
+                if (bakedPrefab) sourcePrefabs.Add(bakedPrefab);                
 
-                Dictionary<string, Material> sourceMaterials = GetSourceMaterials(sourcePrefab);
-
-                GameObject scenePrefab = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
-                if (scenePrefab)
+                foreach (GameObject sourcePrefab in sourcePrefabs)
                 {
-                    MeshRenderer[] renderers = scenePrefab.GetComponentsInChildren<MeshRenderer>();
-                    foreach (MeshRenderer renderer in renderers)
+                    string suffix = (sourcePrefab.name.Contains("_Baked")) ? "_Baked_Alembic" : "_Alembic";
+                    List<MaterialMeshPair> materialMeshes;
+                    Dictionary<string, Material> sourceMaterials = GetSourceMaterials(sourcePrefab, out materialMeshes);
+
+                    foreach (string guid in guids)
                     {
-                        string key = renderer.gameObject.name;
-                        if (sourceMaterials.TryGetValue(key, out Material mat))
+                        string path = AssetDatabase.GUIDToAssetPath(guid);
+                        string folder = Path.GetDirectoryName(path);
+                        string fileName = Path.GetFileNameWithoutExtension(path);
+                        string extention = Path.GetExtension(path);
+                        string prefabSaveFolder = Path.Combine(folder, Importer.PREFABS_FOLDER, characterName + "_Alembic");
+                        string prefabSavePath = Path.Combine(prefabSaveFolder, fileName + suffix + ".prefab");
+                        Util.EnsureAssetsFolderExists(prefabSaveFolder);
+                        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+
+                        GameObject scenePrefab = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
+                        if (scenePrefab)
                         {
-                            renderer.sharedMaterial = mat;
-                        }
-                        else
-                        {
-                            Debug.Log("Could not find material: " + key);
-                        }
+                            MeshRenderer[] renderers = scenePrefab.GetComponentsInChildren<MeshRenderer>();                            
+
+                            foreach (MeshRenderer renderer in renderers)
+                            {
+                                bool found = false;
+                                Material mat = null;
+
+                                string key = renderer.gameObject.name;
+                                if (sourceMaterials.TryGetValue(key, out mat))
+                                {
+                                    renderer.sharedMaterial = mat;
+                                    found = true;                                    
+                                }
+                                else
+                                {
+                                    MeshFilter mf = renderer.gameObject.GetComponent<MeshFilter>();
+                                    Mesh m = mf.sharedMesh;
+                                    int triangles = m.triangles.Length / 3;                                    
+
+                                    foreach (MaterialMeshPair mmp in materialMeshes)
+                                    {
+                                        if (mmp.triangleCount == triangles)
+                                        {
+                                            mat = mmp.mat;
+                                            renderer.sharedMaterial = mat;
+                                            found = true;                                            
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                if (found && mat)
+                                {
+                                    if (mat.name.Contains("_1st_Pass"))
+                                    {
+                                        string key2 = mat.name.Replace("_1st_Pass", "_2nd_Pass");
+                                        if (sourceMaterials.TryGetValue(key2, out Material mat2))
+                                        {
+                                            Material[] mats = new Material[] { mat, mat2 };
+                                            renderer.sharedMaterials = mats;
+                                        }
+                                        else
+                                        {
+                                            foreach (MaterialMeshPair mmp2 in materialMeshes)
+                                            {
+                                                if (mmp2.mat.name.Equals(key2))
+                                                {
+                                                    Material[] mats = new Material[] { mat, mmp2.mat };
+                                                    renderer.sharedMaterials = mats;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    Debug.Log("Could not find material: " + key);
+                                }
+                            }
+                        }                        
+
+                        GameObject newPrefab = PrefabUtility.SaveAsPrefabAsset(scenePrefab, prefabSavePath);
+                        outputPrefabs.Add(newPrefab);
+                        UnityEngine.Object.DestroyImmediate(scenePrefab);
                     }
                 }
 
-                Debug.Log(prefabPath);
-
-                //GameObject newPrefab = PrefabUtility.SaveAsPrefabAsset(scenePrefab, prefabPath);
-                //UnityEngine.Object.DestroyImmediate(scenePrefab);
+                Selection.objects = outputPrefabs.ToArray();
             }
-        }       
+        }   
+
+        public static void Fix(MeshRenderer renderer, Material mat)
+        {
+            
+        }
         
-        public static Dictionary<string, Material> GetSourceMaterials(GameObject sourcePrefab)
+        public struct MaterialMeshPair 
+        { 
+            public Material mat; 
+            public int triangleCount;           
+        }
+        
+        public static Dictionary<string, Material> GetSourceMaterials(GameObject sourcePrefab, out List<MaterialMeshPair> materialMeshes)
         {
             Dictionary<string, Material> materials = new Dictionary<string, Material>();
+            materialMeshes = new List<MaterialMeshPair>();
 
             SkinnedMeshRenderer[] renderers = sourcePrefab.GetComponentsInChildren<SkinnedMeshRenderer>();
             foreach (SkinnedMeshRenderer renderer in renderers)
             {
+                int index = 0;
                 foreach (Material mat in renderer.sharedMaterials)
                 {
                     string key;
                     string matName = mat.name;
+                    string objName = renderer.gameObject.name;
+
+                    Mesh mesh = renderer.sharedMesh;
+                    int triangles = mesh.triangles.Length / 3;
+                    if (mesh.subMeshCount > 1)
+                        triangles = mesh.GetSubMesh(index).indexCount / 3;                    
+                    materialMeshes.Add(new MaterialMeshPair() { mat = mat, triangleCount = triangles });
+
                     if (matName.Contains("_Transparency")) matName = matName.Replace("_Transparency", "");
                     if (matName.Contains("_Pbr")) matName = matName.Replace("_Pbr", "");
 
+                    if (objName.Contains("_Extracted"))
+                    {
+                        int i = objName.IndexOf("_Extracted");
+                        objName = objName.Substring(0, i);
+                    }
+                    
                     if (renderer.sharedMaterials.Length == 1)
-                        key = renderer.gameObject.name + "Shape";
+                    {
+                        // single material key
+                        key = objName + "Shape";
+                        if (!materials.ContainsKey(key)) materials.Add(key, mat);
+                    }
                     else
-                        key = renderer.gameObject.name + "-" + matName + "Shape";
-
-                    if (!materials.ContainsKey(key)) materials.Add(key, mat);
+                    {
+                        // multi-material key
+                        key = objName + "-" + matName + "Shape";
+                        if (!materials.ContainsKey(key)) materials.Add(key, mat);
+                    }
 
                     // try some variations to catch the combined body meshes:
                     if (renderer.sharedMaterials.Length > 1)
@@ -151,7 +245,21 @@ namespace Reallusion.Import
                             key = "CC_Game_Tongue" + "-" + matName + "Shape";
                             if (!materials.ContainsKey(key)) materials.Add(key, mat);
                         }
+
+                        // catch multi-pass materials
+                        if (matName.iContains("_1st_pass"))
+                        {
+                            matName = matName.Replace("_1st_Pass", "");
+
+                            key = objName + "Shape";
+                            if (!materials.ContainsKey(key)) materials.Add(key, mat);
+
+                            key = objName + "-" + matName + "Shape";
+                            if (!materials.ContainsKey(key)) materials.Add(key, mat);
+                        }
                     }
+
+                    index++;
                 }
             }
 
