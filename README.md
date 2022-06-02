@@ -44,3 +44,13 @@ Unity's internal package manager allows the simple and safe removal of the tool.
 
 Simply remove the existing tool as above and install the latest version.
 
+
+References
+==========
+[Icons 8](https://icons8.com)
+
+[Icon](https://icons8.com/icons/set/theatre-mask)
+
+[Icon](https://icons8.com/icons/set/comedy)
+
+[Icon](https://icons8.com/icons/set/drama)
