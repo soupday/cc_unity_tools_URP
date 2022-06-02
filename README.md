@@ -47,4 +47,4 @@ Simply remove the existing tool as above and install the latest version.
 
 References
 ==========
-[Icons 8](https://icons8.com) ([Icon](https://icons8.com/icons/set/theatre-mask), [Icon](https://icons8.com/icons/set/comedy), [Icon](https://icons8.com/icons/set/drama))
+[Icons 8](https://icons8.com) ([Theatre Masks](https://icons8.com/icons/set/theatre-mask), [Comedy](https://icons8.com/icons/set/comedy), [Drama](https://icons8.com/icons/set/drama))
