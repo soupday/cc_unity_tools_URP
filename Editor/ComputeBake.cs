@@ -549,6 +549,7 @@ namespace Reallusion.Import
             float smoothnessPower = mat.GetFloatIf("_SmoothnessPower");
             float subsurfaceScale = mat.GetFloatIf("_SubsurfaceScale");
             float thicknessScale = mat.GetFloatIf("_ThicknessScale");
+            float thicknessScaleMin = mat.GetFloatIf("_ThicknessScaleMin", 0f);
             float colorBlendStrength = mat.GetFloatIf("_ColorBlendStrength");
             float normalBlendStrength = mat.GetFloatIf("_NormalBlendStrength");
             float mouthAOPower = mat.GetFloatIf("_MouthCavityAO");
@@ -577,17 +578,17 @@ namespace Reallusion.Import
             float upperLipSS = mat.GetFloatIf("_UpperLipScatterScale");
             float chinSS = mat.GetFloatIf("_ChinScatterScale");
             float unmaskedSS = mat.GetFloatIf("_UnmaskedScatterScale");
-            float sssNormalSoften = mat.GetFloatIf("_SubsurfaceNormalSoften");
+            float sssNormalSoften = mat.GetFloatIf("_SubsurfaceNormalSoften", 0f);
             Texture2D emission = GetMaterialTexture(mat, "_EmissionMap");
-            Color diffuseColor = mat.GetColorIf("_DiffuseColor");
-            Color emissiveColor = mat.GetColorIf("_EmissiveColor");
-            Color subsurfaceFalloff = mat.GetColorIf("_SubsurfaceFalloff");
-            if (IS_HDRP) subsurfaceFalloff = Color.white;
-            if (!IS_HDRP && !Importer.USE_AMPLIFY_SHADER)
-                sssNormalSoften = 0f;
+            Color diffuseColor = mat.GetColorIf("_DiffuseColor", Color.white);
+            Color emissiveColor = mat.GetColorIf("_EmissiveColor", Color.black);
+            Color subsurfaceFalloff = mat.GetColorIf("_SubsurfaceFalloff", Color.white);
+            if (IS_HDRP) subsurfaceFalloff = Color.white;            
 
             bool isHead = mat.GetFloatIf("BOOLEAN_IS_HEAD") > 0f;
             bool useAmplify = characterInfo.BakeCustomShaders && mat.shader.name.iContains("/Amplify/");
+            bool useTessellation = Importer.USE_TESSELLATION_SHADER;
+            if (!IS_HDRP && !useAmplify) sssNormalSoften = 0f;
 
             Texture2D bakedBaseMap = diffuse;
             Texture2D bakedMaskMap = mask;
@@ -701,7 +702,7 @@ namespace Reallusion.Import
                     sourceName + "_DetailMask");
 
             bakedThicknessMap = BakeThicknessMap(thickness,
-                1.0f, subsurfaceFalloff, 
+                0f, 1.0f, subsurfaceFalloff, 
                 IS_HDRP ? Texture2D.whiteTexture : bakedBaseMap, 
                 IS_HDRP ? true : false,
                 sourceName + "_Thickness");
@@ -711,7 +712,7 @@ namespace Reallusion.Import
                 1.0f, microNormalTiling, microNormalStrength, emissiveColor,
                 sourceName,
                 Pipeline.GetTemplateMaterial(MaterialType.Skin,
-                            MaterialQuality.Baked, characterInfo, useAmplify));
+                            MaterialQuality.Baked, characterInfo, useAmplify, useTessellation));
 
             CopyAMPSubsurface(mat, result);
 
@@ -719,7 +720,7 @@ namespace Reallusion.Import
             result.SetColorIf("_Color", diffuseColor);
             result.SetFloatIf("_SubsurfaceMask", 1.0f);
             result.SetFloatIf("_Thickness", thicknessScale);
-            result.SetRemapRange("_ThicknessRemap", 0f, thicknessScale);
+            result.SetRemapRange("_ThicknessRemap", thicknessScaleMin, thicknessScale);
 
             return result;
         }
@@ -752,11 +753,12 @@ namespace Reallusion.Import
             float gumsThickness = mat.GetFloatIf("_GumsThickness");
             float isUpperTeeth = mat.GetFloatIf("_IsUpperTeeth");
             Texture2D emission = GetMaterialTexture(mat, "_EmissionMap");
-            Color emissiveColor = mat.GetColorIf("_EmissiveColor");
-            Color subsurfaceFalloff = mat.GetColorIf("_SubsurfaceFalloff");
+            Color emissiveColor = mat.GetColorIf("_EmissiveColor", Color.black);
+            Color subsurfaceFalloff = mat.GetColorIf("_SubsurfaceFalloff", Color.white);
             if (IS_HDRP) subsurfaceFalloff = Color.white;
 
             bool useAmplify = characterInfo.BakeCustomShaders && mat.shader.name.iContains("/Amplify/");
+            bool useTessellation = Importer.USE_TESSELLATION_SHADER;
 
             Texture2D bakedBaseMap = diffuse;
             Texture2D bakedMaskMap = mask;
@@ -818,7 +820,7 @@ namespace Reallusion.Import
                 normalStrength, microNormalTiling, microNormalStrength, emissiveColor,
                 sourceName,
                 Pipeline.GetTemplateMaterial(MaterialType.Teeth,
-                            MaterialQuality.Baked, characterInfo, useAmplify));
+                            MaterialQuality.Baked, characterInfo, useAmplify, useTessellation));
 
             CopyAMPSubsurface(mat, result);
 
@@ -847,11 +849,12 @@ namespace Reallusion.Import
             float tongueSSS = mat.GetFloatIf("_TongueSSS");
             float tongueThickness = mat.GetFloatIf("_TongueThickness");
             Texture2D emission = GetMaterialTexture(mat, "_EmissionMap");
-            Color emissiveColor = mat.GetColorIf("_EmissiveColor");
-            Color subsurfaceFalloff = mat.GetColorIf("_SubsurfaceFalloff");            
+            Color emissiveColor = mat.GetColorIf("_EmissiveColor", Color.black);
+            Color subsurfaceFalloff = mat.GetColorIf("_SubsurfaceFalloff", Color.white);
             if (IS_HDRP) subsurfaceFalloff = Color.white;
 
             bool useAmplify = characterInfo.BakeCustomShaders && mat.shader.name.iContains("/Amplify/");
+            bool useTessellation = Importer.USE_TESSELLATION_SHADER;
 
             Texture2D bakedBaseMap = diffuse;
             Texture2D bakedMaskMap = mask;
@@ -905,7 +908,7 @@ namespace Reallusion.Import
                     IS_HDRP ? Texture2D.whiteTexture : bakedBaseMap,
                     sourceName + "_SSSMap");
 
-                bakedThicknessMap = BakeThicknessMap(Texture2D.whiteTexture, 1.0f, subsurfaceFalloff,
+                bakedThicknessMap = BakeThicknessMap(Texture2D.whiteTexture, 0f, 1.0f, subsurfaceFalloff,
                     IS_HDRP ? Texture2D.whiteTexture : bakedBaseMap, false, 
                     sourceName + "_Thickness");
             }
@@ -915,7 +918,7 @@ namespace Reallusion.Import
                 normalStrength, microNormalTiling, microNormalStrength, emissiveColor,
                 sourceName, 
                 Pipeline.GetTemplateMaterial(MaterialType.Tongue, 
-                            MaterialQuality.Baked, characterInfo, useAmplify));
+                            MaterialQuality.Baked, characterInfo, useAmplify, useTessellation));
 
             CopyAMPSubsurface(mat, result);
 
@@ -963,17 +966,18 @@ namespace Reallusion.Import
             float irisSubsurfaceScale = mat.GetFloatIf("_IrisSubsurfaceScale");
             float subsurfaceThickness = mat.GetFloatIf("_SubsurfaceThickness");            
 
-            Color cornerShadowColor = mat.GetColorIf("_CornerShadowColor");
-            Color irisColor = mat.GetColorIf("_IrisColor");
-            Color irisCloudyColor = mat.GetColorIf("_IrisCloudyColor");
-            Color limbusColor = mat.GetColorIf("_LimbusColor");
+            Color cornerShadowColor = mat.GetColorIf("_CornerShadowColor", Color.red);
+            Color irisColor = mat.GetColorIf("_IrisColor", Color.white);
+            Color irisCloudyColor = mat.GetColorIf("_IrisCloudyColor", Color.black);
+            Color limbusColor = mat.GetColorIf("_LimbusColor", Color.black);
             bool isCornea = mat.GetFloatIf("BOOLEAN_ISCORNEA") > 0f;
             bool isLeftEye = mat.GetFloatIf("_IsLeftEye") > 0f;
             Texture2D emission = GetMaterialTexture(mat, "_EmissionMap");
-            Color emissiveColor = mat.GetColorIf("_EmissiveColor");
-            Color subsurfaceFalloff = mat.GetColorIf("_SubsurfaceFalloff");
+            Color emissiveColor = mat.GetColorIf("_EmissiveColor", Color.black);
+            Color subsurfaceFalloff = mat.GetColorIf("_SubsurfaceFalloff", Color.white);
 
             bool useAmplify = characterInfo.BakeCustomShaders && mat.shader.name.iContains("/Amplify/");
+            bool useTessellation = Importer.USE_TESSELLATION_SHADER;
 
             Texture2D bakedBaseMap = cornea;
             Texture2D bakedMaskMap = mask;
@@ -1063,7 +1067,7 @@ namespace Reallusion.Import
                 bakedDetailMask, bakedDetailMap, bakedSubsurfaceMap, bakedThicknessMap, emissionMap,
                 1f, microNormalTiling, microNormalStrength, emissiveColor,
                 sourceName, isCornea ? Pipeline.GetTemplateMaterial(MaterialType.Cornea, 
-                                            MaterialQuality.Baked, characterInfo, useAmplify) 
+                                            MaterialQuality.Baked, characterInfo, useAmplify, useTessellation) 
                                      : Pipeline.GetTemplateMaterial(MaterialType.Eye, 
                                             MaterialQuality.Baked, characterInfo));
 
@@ -1154,13 +1158,13 @@ namespace Reallusion.Import
             float normalStrength = mat.GetFloatIf("_NormalStrength");            
             Vector4 highlightADistribution = mat.GetVectorIf("_HighlightADistribution");
             Vector4 highlightBDistribution = mat.GetVectorIf("_HighlightBDistribution");
-            Color vertexBaseColor = mat.GetColorIf("_VertexBaseColor");
-            Color rootColor = mat.GetColorIf("_RootColor");
-            Color endColor = mat.GetColorIf("_EndColor");
-            Color highlightAColor = mat.GetColorIf("_HighlightAColor");
-            Color highlightBColor = mat.GetColorIf("_HighlightBColor");
-            Color specularTint = mat.GetColorIf("_SpecularTint");
-            Color diffuseColor = mat.GetColorIf("_DiffuseColor");
+            Color vertexBaseColor = mat.GetColorIf("_VertexBaseColor", Color.black);
+            Color rootColor = mat.GetColorIf("_RootColor", Color.black);
+            Color endColor = mat.GetColorIf("_EndColor", Color.white);
+            Color highlightAColor = mat.GetColorIf("_HighlightAColor", Color.white);
+            Color highlightBColor = mat.GetColorIf("_HighlightBColor", Color.white);
+            Color specularTint = mat.GetColorIf("_SpecularTint", Color.white);
+            Color diffuseColor = mat.GetColorIf("_DiffuseColor", Color.white);
             bool enableColor = mat.GetFloatIf("BOOLEAN_ENABLECOLOR") > 0f;
             float clipQuality = 0f;
             if (mat.HasProperty("_ENUMCLIPQUALITY_ON"))
@@ -1168,12 +1172,13 @@ namespace Reallusion.Import
             else if (mat.HasProperty("_ClipQuality"))
                 clipQuality = mat.GetFloat("_ClipQuality");
             Texture2D emission = GetMaterialTexture(mat, "_EmissionMap");
-            Color emissiveColor = mat.GetColorIf("_EmissiveColor");
+            Color emissiveColor = mat.GetColorIf("_EmissiveColor", Color.black);
 
             firstPass = null;
             secondPass = null;
 
-            bool useAmplify = characterInfo.BakeCustomShaders && mat.shader.name.iContains("/Amplify/");            
+            bool useAmplify = characterInfo.BakeCustomShaders && mat.shader.name.iContains("/Amplify/");
+            bool useTessellation = Importer.USE_TESSELLATION_SHADER;
 
             Texture2D bakedBaseMap = diffuse;
             Texture2D bakedMaskMap = mask;
@@ -1304,14 +1309,14 @@ namespace Reallusion.Import
                         normalStrength, 1f, 1f, emissiveColor,
                         sourceName,
                         Pipeline.GetCustomTemplateMaterial(Pipeline.MATERIAL_BAKED_HAIR_CUSTOM_1ST_PASS, 
-                            MaterialQuality.Baked, useAmplify));
+                            MaterialQuality.Baked, useAmplify, useTessellation));
 
                     secondPass = CreateBakedMaterial(bakedBaseMap, bakedMaskMap, bakedMetallicGlossMap, bakedAOMap, bakedNormalMap,
                         null, null, null, null, emissionMap,
                         normalStrength, 1f, 1f, emissiveColor,
                         sourceName.Replace("_1st_Pass", "_2nd_Pass"),
                         Pipeline.GetCustomTemplateMaterial(Pipeline.MATERIAL_BAKED_HAIR_CUSTOM_2ND_PASS, 
-                            MaterialQuality.Baked, useAmplify));
+                            MaterialQuality.Baked, useAmplify, useTessellation));
 
                     // multi material pass hair is custom baked shader only:
                     SetCustom(firstPass);
@@ -1325,7 +1330,7 @@ namespace Reallusion.Import
                         normalStrength, 1f, 1f, emissiveColor,
                         sourceName,
                         Pipeline.GetTemplateMaterial(MaterialType.Hair,
-                                    MaterialQuality.Baked, characterInfo, useAmplify));
+                                    MaterialQuality.Baked, characterInfo, useAmplify, useTessellation));
 
                     SetCustom(result);
                     return result;
@@ -1357,13 +1362,13 @@ namespace Reallusion.Import
                         null, null, null, null, emissionMap,
                         normalStrength, 1f, 1f, emissiveColor,
                         sourceName,
-                        Pipeline.GetCustomTemplateMaterial(Pipeline.MATERIAL_BAKED_HAIR_1ST_PASS, MaterialQuality.Baked, useAmplify));
+                        Pipeline.GetCustomTemplateMaterial(Pipeline.MATERIAL_BAKED_HAIR_1ST_PASS, MaterialQuality.Baked, useAmplify, useTessellation));
 
                     secondPass = CreateBakedMaterial(bakedBaseMap, bakedMaskMap, bakedMetallicGlossMap, bakedAOMap, bakedNormalMap,
                         null, null, null, null, emissionMap,
                         normalStrength, 1f, 1f, emissiveColor,
                         sourceName.Replace("_1st_Pass", "_2nd_Pass"),
-                        Pipeline.GetCustomTemplateMaterial(Pipeline.MATERIAL_BAKED_HAIR_2ND_PASS, MaterialQuality.Baked, useAmplify));
+                        Pipeline.GetCustomTemplateMaterial(Pipeline.MATERIAL_BAKED_HAIR_2ND_PASS, MaterialQuality.Baked, useAmplify, useTessellation));
 
                     SetBasic(firstPass);
                     SetBasic(secondPass);
@@ -1403,7 +1408,7 @@ namespace Reallusion.Import
             float top2Max = mat.GetFloatIf("_Top2Max");
             float tearDuctPosition = mat.GetFloatIf("_TearDuctPosition");
             float tearDuctWidth = mat.GetFloatIf("_TearDuctWidth");
-            Color occlusionColor = mat.GetColorIf("_OcclusionColor");
+            Color occlusionColor = mat.GetColorIf("_OcclusionColor", Color.black);
 
             float expandOut = mat.GetFloatIf("_ExpandOut");
             float expandUpper = mat.GetFloatIf("_ExpandUpper");
@@ -1411,6 +1416,8 @@ namespace Reallusion.Import
             float expandInner = mat.GetFloatIf("_ExpandInner");
             float expandOuter = mat.GetFloatIf("_ExpandOuter");
             float expandScale = mat.GetFloatIf("_ExpandScale");
+
+            bool useTessellation = Importer.USE_TESSELLATION_SHADER;
 
             Texture2D bakedBaseMap = null;
             Texture2D bakedMaskMap = null;
@@ -1433,7 +1440,7 @@ namespace Reallusion.Import
                 bakedDetailMask, bakedDetailMap, bakedSubsurfaceMap, bakedThicknessMap, emissionMap, 
                 1f, 1f, 1f, Color.black,
                 sourceName, Pipeline.GetTemplateMaterial(MaterialType.EyeOcclusion,
-                                            MaterialQuality.Baked, characterInfo));
+                                            MaterialQuality.Baked, characterInfo, false, useTessellation));
 
             result.SetFloatIf("_ExpandOut", expandOut);
             result.SetFloatIf("_ExpandUpper", expandUpper);
@@ -2039,7 +2046,7 @@ namespace Reallusion.Import
         }
 
         private Texture2D BakeThicknessMap(Texture2D thickness,
-            float thicknessScale, Color subsurfaceFalloff, Texture2D baseMap, bool invertMap,
+            float thicknessScaleMin, float thicknessScale, Color subsurfaceFalloff, Texture2D baseMap, bool invertMap,
             string name, string kernelName = "RLThickness")
         {
             Vector2Int maxSize = GetMaxSize(thickness);
@@ -2061,6 +2068,7 @@ namespace Reallusion.Import
                 bakeShader.SetTexture(kernel, "Thickness", thickness);
                 bakeShader.SetTexture(kernel, "BaseMap", baseMap);
                 bakeShader.SetFloat("thicknessScale", thicknessScale);
+                bakeShader.SetFloat("thicknessScaleMin", thicknessScaleMin);
                 bakeShader.SetFloat("invertMap", invertMap ? 1.0f : 0.0f);
                 bakeShader.SetVector("subsurfaceFalloff", subsurfaceFalloff);
                 bakeShader.Dispatch(kernel, bakeTarget.width, bakeTarget.height, 1);
@@ -2667,7 +2675,7 @@ namespace Reallusion.Import
 
         public Texture2D BakeDefaultSkinThicknessMap(Texture2D thickness, string name)
         {
-            Texture2D bakedThickness = BakeThicknessMap(thickness, 1.0f, Color.white, Texture2D.whiteTexture, true, name);
+            Texture2D bakedThickness = BakeThicknessMap(thickness, 0f, 1.0f, Color.white, Texture2D.whiteTexture, true, name);
             return bakedThickness;
         }
 

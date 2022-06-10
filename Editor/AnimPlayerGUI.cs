@@ -20,23 +20,21 @@ namespace Reallusion.Import
         public static string sourceFbxPath;
         public static bool AnimFoldOut { get { return animFoldOut; } set { animFoldOut = value; } }
 
-        public static void SetCharacter(PreviewScene ps, GameObject fbx)
-        {            
-            if (ps.IsValid)
-            {
-                GameObject scenePrefab = ps.GetPreviewCharacter();
+        public static void SetCharacter(GameObject scenePrefab)
+        {
+            if (WindowManager.IsPreviewScene)
+                scenePrefab = WindowManager.GetPreviewScene().GetPreviewCharacter();        
 
-                if (scenePrefab)
-                {
-                    GameObject sceneFbx = Util.GetCharacterSourceFbx(scenePrefab);
-                    sourceFbxPath = AssetDatabase.GetAssetPath(sceneFbx);
-                    Animator anim = scenePrefab.GetComponent<Animator>();
-                    AnimationClip firstClip = Util.GetFirstAnimationClipFromCharacter(sceneFbx);
-                    facialProfile = FacialProfileMapper.GetFacialProfile(scenePrefab);
+            if (scenePrefab)
+            {                
+                GameObject sceneFbx = Util.GetCharacterSourceFbx(scenePrefab);
+                sourceFbxPath = AssetDatabase.GetAssetPath(sceneFbx);
+                Animator anim = scenePrefab.GetComponent<Animator>();
+                AnimationClip firstClip = Util.GetFirstAnimationClipFromCharacter(sceneFbx);
+                facialProfile = FacialProfileMapper.GetMeshFacialProfile(scenePrefab);
 
-                    UpdatePlayerTargets(anim, firstClip);
-                }
-            }
+                UpdatePlayerTargets(anim, firstClip);
+            }            
         }
 
         public static void UpdatePlayerTargets(Animator setAnimator, AnimationClip setClip)
@@ -118,20 +116,6 @@ namespace Reallusion.Import
             }
         }
 
-        public static void RefreshPlayerClip()
-        {            
-            if (animator && selectedClip)
-            {
-                if (AnimationMode.InAnimationMode()) AnimationMode.StopAnimationMode();
-
-                animationClip = CloneClip(selectedClip);                
-
-                if (!AnimationMode.InAnimationMode()) AnimationMode.StartAnimationMode();
-
-                SampleOnce();
-            }
-        }
-
         public static void DrawPlayer()
         {            
             GUILayout.BeginVertical();
@@ -149,10 +133,10 @@ namespace Reallusion.Import
                 animator = (Animator)EditorGUILayout.ObjectField(new GUIContent("Scene Model", "Animated model in scene"), animator, typeof(Animator), true);
                 selectedClip = (AnimationClip)EditorGUILayout.ObjectField(new GUIContent("Animation", "Animation to play and manipulate"), selectedClip, typeof(AnimationClip), false);
                 if (EditorGUI.EndChangeCheck())
-                {
-                    animationClip = CloneClip(selectedClip);                    
-
+                {                    
+                    // set animator first
                     WindowManager.SetSceneAnimator(animator);
+                    animationClip = CloneClip(selectedClip);
 
                     if (animationClip && animator)
                     {
@@ -252,45 +236,45 @@ namespace Reallusion.Import
         {
             if (animator && animationClip)
             {
+                if (!AnimationMode.InAnimationMode()) AnimationMode.StartAnimationMode();
                 AnimationMode.BeginSampling();
                 AnimationMode.SampleAnimationClip(animator.gameObject, animationClip, time);
                 AnimationMode.EndSampling();
             }
         }
 
-        public static void CreatePlayer(PreviewScene ps, GameObject fbx)
-        {            
-            if (ps.IsValid)
+        public static void CreatePlayer(GameObject fbx)
+        {
+            if (fbx)
             {
-                SetCharacter(ps, fbx);
+                SetCharacter(fbx);
             }
 
 #if SCENEVIEW_OVERLAY_COMPATIBLE
             //2021.2.0a17+  When GUI.Window is called from a static SceneView delegate, it is broken in 2021.2.0f1 - 2021.2.1f1
             //so we switch to overlays starting from an earlier version
-            if (AnimPlayerOverlay.exists)
-                AnimPlayerOverlay.createdOverlay.Show();
+            AnimPlayerOverlay.ShowAll();
 #else 
             //2020 LTS            
             AnimPlayerWindow.ShowPlayer();
 #endif
-            //Common
+            //Common            
             SceneView.RepaintAll();
 
             EditorApplication.update += UpdateDelegate;
+            System.Delegate[] list = EditorApplication.update.GetInvocationList();
         }
 
         public static void DestroyPlayer()
-        {            
+        {
             EditorApplication.update -= UpdateDelegate;
 
             if (AnimationMode.InAnimationMode())
-                AnimationMode.StopAnimationMode();            
+                AnimationMode.StopAnimationMode();
 
 #if SCENEVIEW_OVERLAY_COMPATIBLE
             //2021.2.0a17+          
-            if (AnimPlayerOverlay.exists)
-                AnimPlayerOverlay.createdOverlay.Hide();
+            AnimPlayerOverlay.HideAll();
 #else
             //2020 LTS            
             AnimPlayerWindow.HidePlayer();
@@ -308,7 +292,7 @@ namespace Reallusion.Import
         {
 #if SCENEVIEW_OVERLAY_COMPATIBLE
             //2021.2.0a17+
-            return AnimPlayerOverlay.createdOverlay.visible;
+            return AnimPlayerOverlay.Visibility;
 #else
             //2020 LTS            
             return AnimPlayerWindow.isShown;
@@ -472,9 +456,9 @@ namespace Reallusion.Import
                     jawVal = jawRef;
                 }
 
-                if (!FacialProfileMapper.GetCharacterBlendShapeWeight(root, "Eye_Blink", facialProfile, out blinkRef))
+                if (!FacialProfileMapper.GetCharacterBlendShapeWeight(root, "Eye_Blink", FacialProfile.CC3, facialProfile, out blinkRef))
                 {
-                    FacialProfileMapper.GetCharacterBlendShapeWeight(root, "Eye_Blink_L", facialProfile, out blinkRef);
+                    FacialProfileMapper.GetCharacterBlendShapeWeight(root, "Eye_Blink_L", FacialProfile.CC3, facialProfile, out blinkRef);
                 }
                 blinkVal = blinkRef;                            
             }
@@ -610,7 +594,7 @@ namespace Reallusion.Import
 
                 GUI.DrawTexture(rightSecRowIcon, blinkIconImage);
                 EditorGUI.BeginChangeCheck();
-                blinkVal = GUI.HorizontalSlider(rightSecRowSlider, blinkVal, -30f, 120f);
+                blinkVal = GUI.HorizontalSlider(rightSecRowSlider, blinkVal, -30f, 100f);
                 if (EditorGUI.EndChangeCheck())
                 {
                     AdjustBlink(blinkVal);
@@ -760,9 +744,8 @@ namespace Reallusion.Import
 
                     case EventType.MouseUp:
                         {
-                            outlineColor = mouseOverColor;
-                            if (GUIUtility.hotControl == buttonId)
-                                GUIUtility.hotControl = 0;
+                            outlineColor = mouseOverColor;                            
+                            GUIUtility.hotControl = 0;
                         }
                         break;
 
@@ -862,16 +845,13 @@ namespace Reallusion.Import
 
             GameObject root = PrefabUtility.GetOutermostPrefabInstanceRoot(obj);            
 
-            if (!SetCharacterBlendShape(root, "Eye_Blink", input))
-            {
-                SetCharacterBlendShape(root, "Eye_Blink_L", input);
-                SetCharacterBlendShape(root, "Eye_Blink_R", input);
-            }
+            SetCharacterBlendShape(root, "A14_Eye_Blink_Left", input);
+            SetCharacterBlendShape(root, "A15_Eye_Blink_Right", input);            
         }
 
         private static bool SetCharacterBlendShape(GameObject characterRoot, string blendShapeName, float weight)
         {
-            return FacialProfileMapper.SetCharacterBlendShape(characterRoot, blendShapeName, facialProfile, weight);
+            return FacialProfileMapper.SetCharacterBlendShape(characterRoot, blendShapeName, FacialProfile.CC3Ex, facialProfile, weight);
         }        
 
         static void SetFacialExpression(Dictionary<string, float> dict, bool restore = false)

@@ -336,10 +336,10 @@ namespace Reallusion.Import
             {
                 StoreBackScene();
 
-                PreviewScene.OpenPreviewScene(contextCharacter.Fbx);
+                WindowManager.OpenPreviewScene(contextCharacter.Fbx);
 
                 if (WindowManager.showPlayer) WindowManager.ShowAnimationPlayer();
-                ResetAllSceneViewCamera();
+                ResetAllSceneViewCamera();                
             }
             else if (refreshAfterGUI)
             {
@@ -672,7 +672,7 @@ namespace Reallusion.Import
             if (GUILayout.Button(new GUIContent(iconActionAnimPlayer, "Show animation preview player."),
                 GUILayout.Width(ACTION_BUTTON_SIZE), GUILayout.Height(ACTION_BUTTON_SIZE)))
             {
-                if (WindowManager.showPlayer)
+                if (WindowManager.showPlayer && AnimPlayerGUI.IsPlayerShown())
                 {
                     WindowManager.HideAnimationPlayer(true);                                        
                     ResetAllSceneViewCamera();
@@ -691,7 +691,7 @@ namespace Reallusion.Import
             if (GUILayout.Button(new GUIContent(iconActionAvatarAlign, "Animation Adjustment & Retargeting."),
                 GUILayout.Width(ACTION_BUTTON_SIZE), GUILayout.Height(ACTION_BUTTON_SIZE)))
             {
-                if (WindowManager.showRetarget)
+                if (WindowManager.showRetarget && AnimRetargetGUI.IsPlayerShown())
                 {
                     WindowManager.HideAnimationRetargeter(true);                    
                 }
@@ -791,6 +791,14 @@ namespace Reallusion.Import
                 "Otherwise subsequent material rebuilds will try to re-use existing bakes. Only needed if the source textures are changed."));
             GUILayout.Space(ROW_SPACE);
 
+            if (Pipeline.isHDRP)
+            {
+                Importer.USE_TESSELLATION_SHADER = GUILayout.Toggle(Importer.USE_TESSELLATION_SHADER,
+                new GUIContent("Use Tessellation in Shaders", "Use tessellation enabled shaders where possible. " +
+                "For HDRP 10 & 11 this means default shaders only (HDRP/LitTessellation). For HDRP 12 (Unity 2021.2+) all shader graph shaders can have tessellation enabled."));
+                GUILayout.Space(ROW_SPACE);
+            }
+
             GUILayout.EndVertical();
 
             GUILayout.FlexibleSpace();
@@ -798,9 +806,6 @@ namespace Reallusion.Import
 
             GUILayout.EndArea();
         }
-
-
-
 
         private void EyeOptionSelected(object sel)
         {            
@@ -940,42 +945,21 @@ namespace Reallusion.Import
                     DragAndDrop.AcceptDrag();                    
                     break;                    
             }
-        }      
-        
-        bool ShowPreviewCharacter()
-        {
-            GameObject fbx = contextCharacter.Fbx;
-
-            PreviewScene ps = PreviewScene.GetPreviewScene();            
-
-            if (ps.IsValid)
-            {
-                bool animationMode = AnimationMode.InAnimationMode();
-                if (animationMode) AnimationMode.StopAnimationMode();
-
-                ps.ShowPreviewCharacter(fbx);
-
-                if (animationMode) AnimationMode.StartAnimationMode();
-            }            
-
-            return ps.IsValid;
-        }
+        }        
 
         bool UpdatePreviewCharacter(GameObject prefabAsset)
         {
-            PreviewScene ps = PreviewScene.GetPreviewScene();            
-
-            if (ps.IsValid)
+            if (WindowManager.IsPreviewScene)
             {
                 bool animationMode = AnimationMode.InAnimationMode();
                 if (animationMode) AnimationMode.StopAnimationMode();
 
-                ps.UpdatePreviewCharacter(prefabAsset);
+                WindowManager.GetPreviewScene().UpdatePreviewCharacter(prefabAsset);
 
                 if (animationMode) AnimationMode.StartAnimationMode();
             }            
 
-            return ps.IsValid;
+            return WindowManager.IsPreviewScene;
         }
 
         private void BuildCharacter()
@@ -1034,28 +1018,24 @@ namespace Reallusion.Import
 
         bool ShowBakedCharacter(GameObject bakedAsset)
         {
-            PreviewScene ps = PreviewScene.GetPreviewScene();            
-
-            if (ps.IsValid)
+            if (WindowManager.IsPreviewScene)
             {
                 bool animationMode = AnimationMode.InAnimationMode();
                 if (animationMode) AnimationMode.StopAnimationMode();
 
-                ps.ShowBakedCharacter(bakedAsset);
+                WindowManager.GetPreviewScene().ShowBakedCharacter(bakedAsset);
 
                 if (animationMode) AnimationMode.StartAnimationMode();
             }            
 
-            return ps.IsValid;
+            return WindowManager.IsPreviewScene;
         }                
 
         public static void ResetAllSceneViewCamera()
         {
-            PreviewScene ps = PreviewScene.GetPreviewScene();
-
-            if (ps.IsValid)
+            if (WindowManager.IsPreviewScene) 
             {
-                GameObject obj = ps.GetPreviewCharacter();
+                GameObject obj = WindowManager.GetPreviewScene().GetPreviewCharacter();
                 if (obj)
                 {
                     GameObject root = PrefabUtility.GetOutermostPrefabInstanceRoot(obj);

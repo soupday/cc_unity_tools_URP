@@ -19,6 +19,8 @@ namespace Reallusion.Import
         static Texture2D blendshapeImage;
         static Texture2D saveImage;
         static Texture2D resetImage;
+        static Texture2D unlockedImage;
+        static Texture2D lockedImage;
 
         static float baseControlWidth = 173f;
         static float sliderWidth = 303f;
@@ -35,7 +37,9 @@ namespace Reallusion.Import
         static float yRange = 0.2f; //Raw y input range
 
         // GUI Control variables (Reset to this state)
-        
+
+        static bool holdValues = false;
+
         static int handPose = 0;
         static bool closeMouth = false;
         static float shoulderOffset = 0f;
@@ -72,13 +76,12 @@ namespace Reallusion.Import
             if (model)
                 animator = model.GetComponent<Animator>();
             else
-                animator = null;            
+                animator = null;
 
 #if SCENEVIEW_OVERLAY_COMPATIBLE
             //2021.2.0a17+  When GUI.Window is called from a static SceneView delegate, it is broken in 2021.2.0f1 - 2021.2.1f1
             //so we switch to overlays starting from an earlier version
-            if (AnimRetargetOverlay.exists)
-                AnimRetargetOverlay.createdOverlay.Show();
+            AnimRetargetOverlay.ShowAll();
 #else
             //2020 LTS            
             AnimRetargetWindow.ShowPlayer();
@@ -99,8 +102,7 @@ namespace Reallusion.Import
 
 #if SCENEVIEW_OVERLAY_COMPATIBLE
             //2021.2.0a17+          
-            if (AnimRetargetOverlay.exists)
-                AnimRetargetOverlay.createdOverlay.Hide();
+            AnimRetargetOverlay.HideAll();
 #else
             //2020 LTS            
             AnimRetargetWindow.HidePlayer();            
@@ -116,7 +118,7 @@ namespace Reallusion.Import
         {
 #if SCENEVIEW_OVERLAY_COMPATIBLE
             //2021.2.0a17+
-            return AnimRetargetOverlay.createdOverlay.visible;
+            return AnimRetargetOverlay.Visibility;
 #else
             //2020 LTS            
             return AnimRetargetWindow.isShown;
@@ -132,9 +134,10 @@ namespace Reallusion.Import
             blendshapeImage = Reallusion.Import.Util.FindTexture(folders, "RLIcon_Masks");
             saveImage = Reallusion.Import.Util.FindTexture(folders, "RLIcon_Save");
             resetImage = Reallusion.Import.Util.FindTexture(folders, "RLIcon_Refresh");
+            lockedImage = Reallusion.Import.Util.FindTexture(folders, "RLIcon_Locked");
+            unlockedImage = Reallusion.Import.Util.FindTexture(folders, "RLIcon_Unlocked");
 
-            Reselect();
-            Reset();
+            Reselect();            
         }
 
         public static void Reselect()
@@ -153,19 +156,6 @@ namespace Reallusion.Import
         // Return all values to start - re-create working clip - rebuild all bindings dicts
         static void Reset()
         { 
-            handPose = 0;
-            closeMouth = false;
-            shoulderOffset = 0f;
-            armOffset = 0f;
-            armFBOffset = 0f;
-            backgroundArmOffset = 0f;
-            legOffset = 0f;
-            heelOffset = 0f;
-            heightOffset = 0f;
-
-            //var clone = Object.Instantiate(originalClip);            
-            //workingClip = clone as AnimationClip;
-
             if (workingClip && CanClipLoop(workingClip))
             {
                 AnimationClipSettings clipSettings = AnimationUtility.GetAnimationClipSettings(workingClip);
@@ -240,6 +230,21 @@ namespace Reallusion.Import
                     }
                 }
             }
+
+            if (!holdValues)
+            {
+                handPose = 0;
+                closeMouth = false;
+                shoulderOffset = 0f;
+                armOffset = 0f;
+                armFBOffset = 0f;
+                backgroundArmOffset = 0f;
+                legOffset = 0f;
+                heelOffset = 0f;
+                heightOffset = 0f;
+            }
+                      
+            OffsetALL();
         }
 
         public static void DrawRetargeter()
@@ -393,14 +398,20 @@ namespace Reallusion.Import
             }
             GUILayout.EndVertical();
             GUILayout.FlexibleSpace();
+            GUILayout.BeginVertical("box");  // hold button
+            if (GUILayout.Button(new GUIContent(holdValues ? lockedImage : unlockedImage, string.Format("STATUS: " + (holdValues ? "LOCKED VALUES : slider settings are retained when animation is changed." : "UNLOCKED VALUES : slider settings are reset when animation is changed."))), GUILayout.Width(smallIconDim), GUILayout.Height(smallIconDim)))
+            {
+                holdValues = !holdValues;
+            }
+            GUILayout.EndVertical();
             GUILayout.BeginVertical("box");  // reset button
             if (GUILayout.Button(new GUIContent(resetImage, "Reset all slider settings and applied modifications."), GUILayout.Width(smallIconDim), GUILayout.Height(smallIconDim)))
             {
-                AnimPlayerGUI.RefreshPlayerClip();
+                holdValues = false;  // reselect will perform a reset - we must force it to reset the values if they are held
                 Reselect();                
                 animator.gameObject.transform.position = animatorPosition;
                 animator.gameObject.transform.rotation = animatorRotation;
-                
+                AnimPlayerGUI.SampleOnce();
             }
             GUILayout.EndVertical();
             GUILayout.BeginVertical("box"); // save button
@@ -544,7 +555,17 @@ namespace Reallusion.Import
             }
         }
 
-
+        static void OffsetALL()
+        {
+            OffsetShoulders();
+            OffsetArms();
+            OffsetArmsFB();
+            OffsetLegs();
+            OffsetHeel();
+            OffsetHeight();
+            CloseMouthToggle(closeMouth);
+            ApplyPose(handPose);            
+        }
         static void OffsetShoulders()
         {
             if (!(originalClip && workingClip)) return;
@@ -967,11 +988,18 @@ namespace Reallusion.Import
         {
             if (!(originalClip && workingClip)) return;
 
-            string blendShape = "blendShape.";
+            const string blendShapePrefix = "blendShape."; 
 
             GameObject targetGameObject = animator.gameObject;
             Transform[] targetAssetData = targetGameObject.GetComponentsInChildren<Transform>();
-            FacialProfile facialProfile = FacialProfileMapper.GetFacialProfile(targetGameObject);
+            FacialProfile meshProfile = FacialProfileMapper.GetMeshFacialProfile(targetGameObject);
+            FacialProfile animProfile = FacialProfileMapper.GetAnimationClipFacialProfile(workingClip);
+            Debug.Log("Retargeting to Facial Profile: " + meshProfile + ", From: " + animProfile);
+            if (meshProfile != animProfile)
+            {
+                Debug.LogWarning("Warning: Character mesh facial profile does not match the animation facial profile.\n" +
+                                 "Facial expression retargeting may not have the expected or desired results.");
+            }
 
             EditorCurveBinding[] sourceCurveBindings = AnimationUtility.GetCurveBindings(workingClip);
 
@@ -979,7 +1007,7 @@ namespace Reallusion.Import
             List<string> uniqueSourcePaths = new List<string>();
             foreach (EditorCurveBinding binding in sourceCurveBindings)
             {
-                if (binding.propertyName.StartsWith(blendShape))
+                if (binding.propertyName.StartsWith(blendShapePrefix))
                 {
                     if (!uniqueSourcePaths.Contains(binding.path))
                         uniqueSourcePaths.Add(binding.path);
@@ -1014,22 +1042,28 @@ namespace Reallusion.Import
             Dictionary<string, EditorCurveBinding> cache = new Dictionary<string, EditorCurveBinding>();            
             for (int i = 0; i < sourceCurveBindings.Length; i++)
             {
-                if (sourceCurveBindings[i].propertyName.StartsWith(blendShape))
+                if (sourceCurveBindings[i].propertyName.StartsWith(blendShapePrefix))
                 {
-                    string blendShapeName = sourceCurveBindings[i].propertyName.Substring(blendShape.Length);
-                    string profileBlendShapeName = FacialProfileMapper.GetFacialProfileMapping(blendShapeName, facialProfile);
+                    string blendShapeName = sourceCurveBindings[i].propertyName.Substring(blendShapePrefix.Length);
+                    string profileBlendShapeName = FacialProfileMapper.GetFacialProfileMapping(blendShapeName, animProfile, meshProfile);
                     List<string> multiProfileName = FacialProfileMapper.GetMultiShapeNames(profileBlendShapeName);
                     if (multiProfileName.Count == 1)
                     {
                         if (!cache.ContainsKey(profileBlendShapeName))
+                        {
                             cache.Add(profileBlendShapeName, sourceCurveBindings[i]);
+                            //Debug.Log("Mapping: " + profileBlendShapeName + " to " + blendShapeName);
+                        }
                     }
                     else
                     {
                         foreach (string multiShapeName in multiProfileName)
                         {
                             if (!cache.ContainsKey(multiShapeName))
+                            {
                                 cache.Add(multiShapeName, sourceCurveBindings[i]);
+                                //Debug.Log("Mapping (multi): " + multiShapeName + " to " + blendShapeName);
+                            }
                         }
                     }                    
                 }
@@ -1045,7 +1079,7 @@ namespace Reallusion.Import
                     for (int j = 0; j < smr.sharedMesh.blendShapeCount; j++)
                     {
                         string blendShapeName = smr.sharedMesh.GetBlendShapeName(j);
-                        string targetPropertyName = blendShape + blendShapeName;                        
+                        string targetPropertyName = blendShapePrefix + blendShapeName;                        
 
                         if (cache.TryGetValue(blendShapeName, out EditorCurveBinding sourceCurveBinding))
                         {
@@ -1058,9 +1092,7 @@ namespace Reallusion.Import
                         }
                     }
                 }
-            }
-
-            Debug.Log(logtime);
+            }            
         
             bool PURGE = true;
             // Purge all curves from the animation that dont have a valid path in the target object                    
@@ -1076,9 +1108,9 @@ namespace Reallusion.Import
                     else
                     {
                         // purge all extra blend shape animations
-                        if (targetCurveBindings[k].propertyName.StartsWith(blendShape))
+                        if (targetCurveBindings[k].propertyName.StartsWith(blendShapePrefix))
                         {
-                            string blendShapeName = targetCurveBindings[k].propertyName.Substring(blendShape.Length);
+                            string blendShapeName = targetCurveBindings[k].propertyName.Substring(blendShapePrefix.Length);
                             if (!cache.ContainsKey(blendShapeName))
                             {
                                 AnimationUtility.SetEditorCurve(workingClip, targetCurveBindings[k], null);
