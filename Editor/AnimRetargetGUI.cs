@@ -137,7 +137,7 @@ namespace Reallusion.Import
             lockedImage = Reallusion.Import.Util.FindTexture(folders, "RLIcon_Locked");
             unlockedImage = Reallusion.Import.Util.FindTexture(folders, "RLIcon_Unlocked");
 
-            Reset();
+            RebuildClip();
         }        
 
         static void CleanUp()
@@ -145,9 +145,16 @@ namespace Reallusion.Import
 
         }
 
-        // Return all values to start - re-create working clip - rebuild all bindings dicts
-        public static void Reset()
-        { 
+        public static void ResetClip()
+        {
+            AnimPlayerGUI.ReCloneClip();
+            holdValues = false;
+            RebuildClip();
+        }
+
+        // Return all values to start - rebuild all bindings dicts
+        public static void RebuildClip()
+        {
             if (WorkingClip && CanClipLoop(WorkingClip))
             {
                 AnimationClipSettings clipSettings = AnimationUtility.GetAnimationClipSettings(WorkingClip);
@@ -292,28 +299,40 @@ namespace Reallusion.Import
             
             GUILayout.BeginVertical("box"); // Blendshapes control box
             Color backgroundColor = GUI.backgroundColor;
-            Color tint = backgroundColor;
-            if (AnimPlayerGUI.MeshFacialProfile == FacialProfile.None || AnimPlayerGUI.ClipFacialProfile == FacialProfile.None)
-                GUI.enabled = false;
-            if (AnimPlayerGUI.MeshFacialProfile != AnimPlayerGUI.ClipFacialProfile)
+            Color tint = Color.green;
+            FacialProfile mfp = AnimPlayerGUI.MeshFacialProfile;
+            FacialProfile cfp = AnimPlayerGUI.ClipFacialProfile;
+            if (!mfp.HasFacialShapes || !cfp.HasFacialShapes)
             {
-                if (AnimPlayerGUI.MeshFacialProfile != FacialProfile.None && AnimPlayerGUI.ClipFacialProfile != FacialProfile.None)
+                GUI.enabled = false;
+                tint = backgroundColor;
+            }
+            if (!mfp.IsSameProfile(cfp))
+            {
+                if (mfp.expressionProfile != ExpressionProfile.None && 
+                    cfp.expressionProfile != ExpressionProfile.None)
                 {
-                    // CC3Ex or CC4 to CC3 standard will not retarget well, show a red warning color
-                    if (AnimPlayerGUI.MeshFacialProfile == FacialProfile.CC3)
+                    // ExpPlus or Extended to Standard will not retarget well, show a red warning color
+                    if (mfp.expressionProfile == ExpressionProfile.Std)
                         tint = Color.red;
                     // retargeting from CC3 standard should work with everything
-                    else if (AnimPlayerGUI.ClipFacialProfile == FacialProfile.CC3)
+                    else if (cfp.expressionProfile == ExpressionProfile.Std)
                         tint = Color.green;
                     // otherwise show a yellow warning color
                     else
                         tint = Color.yellow;
                 }
+
+                if (mfp.visemeProfile != cfp.visemeProfile)
+                {
+                    if (mfp.visemeProfile == VisemeProfile.Direct || cfp.visemeProfile == VisemeProfile.Direct)
+                    {
+                        // Direct to Paired visemes won't work.
+                        tint = Color.red;
+                    }
+                }
             }
-            else
-            {
-                tint = Color.green;
-            }
+            
             GUI.backgroundColor = Color.Lerp(backgroundColor, tint, 0.25f);
             if (GUILayout.Button(new GUIContent(blendshapeImage, "Copy all BlendShape animations from the selected animation clip to all of the relevant objects (e.g. facial hair) in the selected Scene Model."), GUILayout.Width(largeIconDim), GUILayout.Height(largeIconDim)))
             {
@@ -424,9 +443,8 @@ namespace Reallusion.Import
             GUILayout.EndVertical();
             GUILayout.BeginVertical("box");  // reset button
             if (GUILayout.Button(new GUIContent(resetImage, "Reset all slider settings and applied modifications."), GUILayout.Width(smallIconDim), GUILayout.Height(smallIconDim)))
-            {
-                holdValues = false;  // reselect will perform a reset - we must force it to reset the values if they are held
-                Reset();
+            {                
+                ResetClip();
                 Animator.gameObject.transform.position = animatorPosition;
                 Animator.gameObject.transform.rotation = animatorRotation;
                 AnimPlayerGUI.SampleOnce();
@@ -993,13 +1011,30 @@ namespace Reallusion.Import
                 propertyName = targetPropertyName
             };
 
-            if (AnimationUtility.GetEditorCurve(WorkingClip, workingBinding) == null)
+            if (AnimationUtility.GetEditorCurve(WorkingClip, workingBinding) == null || 
+                targetPropertyName != sourceCurveBinding.propertyName)
             {
                 AnimationCurve workingCurve = AnimationUtility.GetEditorCurve(OriginalClip, sourceCurveBinding);
                 AnimationUtility.SetEditorCurve(WorkingClip, workingBinding, workingCurve);
             }
 
             logtime += Time.realtimeSinceStartup - time;
+        }
+
+        public static bool CurveHasData(EditorCurveBinding binding, AnimationClip clip)
+        {
+            AnimationCurve curve = AnimationUtility.GetEditorCurve(clip, binding);
+
+            if (curve != null)
+            {
+                if (curve.length > 2) return true;
+                for (int i = 0; i < curve.length; i++)
+                {
+                    if (Mathf.Abs(curve.keys[i].value) > 0.001f) return true;
+                }
+            }
+
+            return false;
         }
 
         static void RetargetBlendShapes()
@@ -1011,22 +1046,27 @@ namespace Reallusion.Import
             GameObject targetGameObject = Animator.gameObject;
             Transform[] targetAssetData = targetGameObject.GetComponentsInChildren<Transform>();
             FacialProfile meshProfile = FacialProfileMapper.GetMeshFacialProfile(targetGameObject);
-            if (meshProfile == FacialProfile.None)
+            if (!meshProfile.HasFacialShapes)
             {
                 Debug.LogWarning("Character has no facial blend shapes!");
                 return;
-            } 
+            }
             FacialProfile animProfile = FacialProfileMapper.GetAnimationClipFacialProfile(WorkingClip);
-            if (animProfile == FacialProfile.None)
+            if (!animProfile.HasFacialShapes)
             {
                 Debug.LogWarning("Animation has no facial blend shapes!");
                 return;
-            }
-            Debug.Log("Retargeting to Facial Profile: " + meshProfile + ", From: " + animProfile);
-            if (meshProfile != animProfile && animProfile != FacialProfile.CC3)
+            }            
+            
+            if (!meshProfile.IsSameProfile(animProfile))
             {
-                Debug.LogWarning("Warning: Character mesh facial profile does not match the animation facial profile.\n" +
-                                 "Facial expression retargeting may not have the expected or desired results.");
+                Debug.LogWarning("Retargeting to Facial Profile: " + meshProfile + ", From: " + animProfile + "\n" + 
+                                 "Warning: Character mesh facial profile does not match the animation facial profile.\n" +
+                                 "Facial expression retargeting may not have the expected or desired results.\n");
+            }
+            else
+            {
+                Debug.Log("Retargeting to Facial Profile: " + meshProfile + ", From: " + animProfile + "\n");
             }
 
             EditorCurveBinding[] sourceCurveBindings = AnimationUtility.GetCurveBindings(WorkingClip);
@@ -1065,15 +1105,17 @@ namespace Reallusion.Import
             }
 
             logtime = 0f;
+            string report = "";
 
             // build a cache of the blend shape names and their curve bindings:
             Dictionary<string, EditorCurveBinding> cache = new Dictionary<string, EditorCurveBinding>();            
             for (int i = 0; i < sourceCurveBindings.Length; i++)
             {
-                if (sourceCurveBindings[i].propertyName.StartsWith(blendShapePrefix))
+                if (CurveHasData(sourceCurveBindings[i], WorkingClip) && 
+                    sourceCurveBindings[i].propertyName.StartsWith(blendShapePrefix))
                 {
                     string blendShapeName = sourceCurveBindings[i].propertyName.Substring(blendShapePrefix.Length);
-                    string profileBlendShapeName = FacialProfileMapper.GetFacialProfileMapping(blendShapeName, animProfile, meshProfile);
+                    string profileBlendShapeName = meshProfile.GetMappingFrom(blendShapeName, animProfile);                    
                     if (!string.IsNullOrEmpty(profileBlendShapeName))
                     {
                         List<string> multiProfileName = FacialProfileMapper.GetMultiShapeNames(profileBlendShapeName);
@@ -1082,7 +1124,7 @@ namespace Reallusion.Import
                             if (!cache.ContainsKey(profileBlendShapeName))
                             {
                                 cache.Add(profileBlendShapeName, sourceCurveBindings[i]);
-                                //Debug.Log("Mapping: " + profileBlendShapeName + " to " + blendShapeName);
+                                report += "Mapping: " + profileBlendShapeName + " from " + blendShapeName + "\n";
                             }
                         }
                         else
@@ -1092,13 +1134,15 @@ namespace Reallusion.Import
                                 if (!cache.ContainsKey(multiShapeName))
                                 {
                                     cache.Add(multiShapeName, sourceCurveBindings[i]);
-                                    //Debug.Log("Mapping (multi): " + multiShapeName + " to " + blendShapeName);
+                                    report += "Mapping (multi): " + multiShapeName + " from " + blendShapeName + "\n";
                                 }
                             }
                         }
                     }
                 }
             }
+
+            List<string> mappedBlendShapes = new List<string>();
 
             // apply the curves to the target animation
             foreach (Transform t in targetAssetData)
@@ -1113,19 +1157,38 @@ namespace Reallusion.Import
                         string targetPropertyName = blendShapePrefix + blendShapeName;                        
 
                         if (cache.TryGetValue(blendShapeName, out EditorCurveBinding sourceCurveBinding))
-                        {
-                            CopyCurve(go.name, targetPropertyName, sourceCurveBinding);                            
+                        {                            
+                            CopyCurve(go.name, targetPropertyName, sourceCurveBinding);
+
+                            if (!mappedBlendShapes.Contains(blendShapeName))
+                                mappedBlendShapes.Add(blendShapeName);
                         }
                         else
                         {
-                            //    Debug.LogWarning("Could not map blendshape: " + blendShapeName + 
-                            //                     " in object: " + go.name);    
+                            //report += "Could not map blendshape: " + blendShapeName + " in object: " + go.name + "\n";
                         }
                     }
                 }
-            }            
-        
-            bool PURGE = true;
+            }
+
+            report += "\n";
+            int curvesFailedToMap = 0;
+            foreach (string shape in cache.Keys)
+            {                
+                if (!mappedBlendShapes.Contains(shape))
+                {
+                    curvesFailedToMap++;
+                    report += "Could not find BlendShape: " + shape + " in target character.\n";
+                }                
+            }
+
+            string reportHeader = "Blendshape Mapping report:\n";
+            if (curvesFailedToMap == 0) reportHeader += "All " + cache.Count + " BlendShape curves retargeted!\n\n";
+            else reportHeader += curvesFailedToMap + " out of " + cache.Count + " BlendShape curves could not be retargeted!\n\n";
+
+            Debug.Log(reportHeader + report);
+
+            bool PURGE = true; 
             // Purge all curves from the animation that dont have a valid path in the target object                    
             if (PURGE)
             {
