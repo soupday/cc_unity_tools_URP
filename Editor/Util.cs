@@ -336,7 +336,7 @@ namespace Reallusion.Import
             return null;
         }
 
-        public static Material FindCustomMaterial(string name, string[] folders = null)
+        public static Material FindCustomMaterial(string name, bool useTessellation, string[] folders = null)
         {
             Material template = null;
             Material foundTemplate = null;
@@ -365,7 +365,7 @@ namespace Reallusion.Import
                 }
             }
 
-            if (Importer.USE_TESSELLATION_SHADER)
+            if (useTessellation)
             {
                 foundTemplate = null;
 
@@ -688,7 +688,28 @@ namespace Reallusion.Import
             }
 
             return found;
-        }        
+        }
+
+        public static AnimationClip[] GetAllAnimationClipsFromCharacter(GameObject sourceFbx)
+        {
+            List<AnimationClip> clips = new List<AnimationClip>();
+
+            if (sourceFbx)
+            {
+                Object[] data = AssetDatabase.LoadAllAssetRepresentationsAtPath(AssetDatabase.GetAssetPath(sourceFbx));
+                foreach (Object subObject in data)
+                {
+                    if (subObject.GetType().Equals(typeof(AnimationClip)))
+                    {
+                        AnimationClip found = (AnimationClip)subObject;
+                        if (found.name.iContains("T-Pose")) continue;
+                        clips.Add(found);
+                    }
+                }
+            }
+
+            return clips.ToArray();
+        }
         
         public static GameObject FindCharacterPrefabAsset(GameObject fbxAsset)
         { 
@@ -775,6 +796,16 @@ namespace Reallusion.Import
             }
         }
 
+        public static void FindSceneObjects(Transform root, string search, List<GameObject> found)
+        {
+            if (root.name.iStartsWith(search)) found.Add(root.gameObject);
+
+            for (int i = 0; i < root.childCount; i++)
+            {
+                FindSceneObjects(root.GetChild(i), search, found);
+            }
+        }
+
         public static void LogInfo(string message)
         {
             if (LOG_LEVEL >= 2)
@@ -798,6 +829,14 @@ namespace Reallusion.Import
                 Debug.LogError(message);
             }
         }
-               
+
+        
+
+
+
+
+
+
+
     }    
 }
