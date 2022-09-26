@@ -61,7 +61,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _AlphaCutoff: 0.5
-    - _BottomCurve: 1.5
+    - _BottomCurve: 1
     - _BottomRange: 0.25
     - _BumpScale: 1
     - _Cutoff: 0.5
@@ -84,9 +84,9 @@ Material:
     - _ZWrite: 1
     - __dirty: 0
     m_Colors:
-    - _BottomColor: {r: 0.6156863, g: 0.68235296, b: 0.7411765, a: 0}
+    - _BottomColor: {r: 0.43529415, g: 0.40784317, b: 0.38431376, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _MidColor: {r: 0.3018868, g: 0.3018868, b: 0.3018868, a: 0}
-    - _TopColor: {r: 0.615771, g: 0.6805446, b: 0.741, a: 0}
+    - _MidColor: {r: 0.37254903, g: 0.42352945, b: 0.41960788, a: 0}
+    - _TopColor: {r: 0.90196085, g: 0.909804, b: 1, a: 0}
   m_BuildTextureStacks: []

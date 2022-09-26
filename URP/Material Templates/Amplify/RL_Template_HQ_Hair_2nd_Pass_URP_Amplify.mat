@@ -83,10 +83,11 @@ Material:
     - _HighlightBOverlapEnd: 1
     - _HighlightBOverlapInvert: 1
     - _HighlightBStrength: 0
+    - _HighlightBlend: 1
     - _InvertRootMap: 0
     - _NormalStrength: 1
     - _RimPower: 2
-    - _RimTransmissionIntensity: 10
+    - _RimTransmissionIntensity: 15
     - _RootColorStrength: 1
     - _SmoothnessMax: 1
     - _SmoothnessMin: 0
@@ -96,7 +97,7 @@ Material:
     - _SpecularPower: 2
     - _SpecularShiftMax: 0.25
     - _SpecularShiftMin: -0.25
-    - _Translucency: 0.15
+    - _Translucency: 0.25
     - _VertexColorStrength: 0.5
     m_Colors:
     - _DiffuseColor: {r: 1, g: 1, b: 1, a: 0}
