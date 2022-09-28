@@ -730,6 +730,11 @@ namespace Reallusion.Import
                 ConnectHQTearlineMaterial(obj, sourceName, sharedMat, mat, materialType, matJson);
             }            
 
+            else
+            {
+                ConnectDefaultMaterial(obj, sourceName, sharedMat, mat, materialType, matJson);
+            }
+
             Pipeline.ResetMaterial(mat);
         }
 
