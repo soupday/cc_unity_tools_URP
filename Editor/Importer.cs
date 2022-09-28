@@ -917,7 +917,7 @@ namespace Reallusion.Import
                 ConnectBlenderTextures(sourceName, mat, matJson, "_MainTex", "", "_MetallicGlossMap");            
 
             // override smoothness for basic material skin
-            if (RP != RenderPipeline.HDRP && mat.GetTexture("_MetallicGlossMap"))
+            if (RP != RenderPipeline.HDRP && mat.GetTextureIf("_MetallicGlossMap"))
             {
                 if (customShader == "RLHead" || customShader == "RLSkin")
                 {
@@ -949,24 +949,24 @@ namespace Reallusion.Import
                 }
 
                 if (RP != RenderPipeline.Builtin)
-                    mat.SetColor("_BaseColor", Util.LinearTosRGB(matJson.GetColorValue("Diffuse Color")));
+                    mat.SetColorIf("_BaseColor", Util.LinearTosRGB(matJson.GetColorValue("Diffuse Color")));
                 else
-                    mat.SetColor("_Color", Util.LinearTosRGB(matJson.GetColorValue("Diffuse Color")));
+                    mat.SetColorIf("_Color", Util.LinearTosRGB(matJson.GetColorValue("Diffuse Color")));
 
                 if (matJson.PathExists("Textures/Glow/Texture Path"))
                 {
                     if (RP == RenderPipeline.HDRP)
-                        mat.SetColor("_EmissiveColor", Color.white * (matJson.GetFloatValue("Textures/Glow/Strength") / 100f));
+                        mat.SetColorIf("_EmissiveColor", Color.white * (matJson.GetFloatValue("Textures/Glow/Strength") / 100f));
                     else
-                        mat.SetColor("_EmissionColor", Color.white * (matJson.GetFloatValue("Textures/Glow/Strength") / 100f));
+                        mat.SetColorIf("_EmissionColor", Color.white * (matJson.GetFloatValue("Textures/Glow/Strength") / 100f));
                 }
 
                 if (matJson.PathExists("Textures/Normal/Strength"))
                 {
                     if (RP == RenderPipeline.HDRP)
-                        mat.SetFloat("_NormalScale", matJson.GetFloatValue("Textures/Normal/Strength") / 100f);
+                        mat.SetFloatIf("_NormalScale", matJson.GetFloatValue("Textures/Normal/Strength") / 100f);
                     else
-                        mat.SetFloat("_BumpScale", matJson.GetFloatValue("Textures/Normal/Strength") / 100f);
+                        mat.SetFloatIf("_BumpScale", matJson.GetFloatValue("Textures/Normal/Strength") / 100f);
                 }
             }
 
