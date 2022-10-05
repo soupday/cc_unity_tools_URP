@@ -1,6 +1,9 @@
 Changelog
 =========
 
+### v 1.3.8b
+- Fixed depth normal pass in Amplify Skin shaders, causing SSAO depth + normal errors.
+
 ### v 1.3.8
 - Added tessellation shaders and templates to 3D and URP pipelines.
 - Upgraded to Amplify 1.9 shaders in 3D and URP pipelines.
