@@ -67,10 +67,8 @@ Material:
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _SubsurfaceMask: 1
-    - _TessMax: 25
-    - _TessMin: 10
+    - _TessEdgeLength: 16
     - _TessPhongStrength: 0.5
-    - _TessValue: 16
     - _Thickness: 1
     - _TransAmbient: 0.1
     - _TransDirect: 0.9
