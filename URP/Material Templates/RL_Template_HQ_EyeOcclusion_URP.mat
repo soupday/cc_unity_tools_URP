@@ -46,7 +46,6 @@ Material:
   m_CustomRenderQueue: 3003
   stringTagMap:
     MotionVector: User
-    RenderType: Transparent
   disabledShaderPasses:
   - TransparentDepthPrepass
   - TransparentDepthPostpass
@@ -86,6 +85,8 @@ Material:
     - _OcclusionStrength2: 0.45
     - _OuterMax: 0.5
     - _OuterMin: 0.2
+    - _QueueControl: 1
+    - _QueueOffset: 0
     - _TearDuctPosition: 0.8
     - _TearDuctWidth: 0.5
     - _Top2Max: 1
