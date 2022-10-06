@@ -114,10 +114,8 @@ Material:
     - _PMod: 6.4
     - _PupilScale: 1
     - _SubsurfaceMask: 1
-    - _TessMax: 25
-    - _TessMin: 10
+    - _TessEdgeLength: 16
     - _TessPhongStrength: 0.5
-    - _TessValue: 16
     - _TransAmbient: 0.1
     - _TransDirect: 0.9
     - _TransNormal: 0.5

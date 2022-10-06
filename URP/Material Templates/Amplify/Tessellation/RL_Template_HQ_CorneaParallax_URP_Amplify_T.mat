@@ -99,10 +99,8 @@ Material:
     - _ScleraSubsurfaceScale: 0.5
     - _ShadowHardness: 0.5
     - _ShadowRadius: 0.275
-    - _TessMax: 25
-    - _TessMin: 10
+    - _TessEdgeLength: 16
     - _TessPhongStrength: 0.5
-    - _TessValue: 16
     - _TransAmbient: 0.1
     - _TransDirect: 0.9
     - _TransNormal: 0.95

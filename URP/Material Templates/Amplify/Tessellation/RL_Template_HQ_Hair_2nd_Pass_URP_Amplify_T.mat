@@ -97,10 +97,8 @@ Material:
     - _SpecularPower: 2
     - _SpecularShiftMax: 0.25
     - _SpecularShiftMin: -0.25
-    - _TessMax: 25
-    - _TessMin: 10
+    - _TessEdgeLength: 16
     - _TessPhongStrength: 0.5
-    - _TessValue: 16
     - _Translucency: 0.25
     - _VertexColorStrength: 0.5
     m_Colors:
