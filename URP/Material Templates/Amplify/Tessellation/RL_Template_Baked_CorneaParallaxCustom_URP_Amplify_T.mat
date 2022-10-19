@@ -108,7 +108,7 @@ Material:
     - _DetailNormalMapScale: 1
     - _GlossMapScale: 1
     - _IOR: 1.4
-    - _IrisDepth: 0.004
+    - _IrisDepth: 0.2
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _PMod: 6.4

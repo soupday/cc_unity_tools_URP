@@ -83,7 +83,7 @@ Material:
     - _DepthRadius: 0.8
     - _IOR: 1.4
     - _IrisBrightness: 1
-    - _IrisDepth: 0.1
+    - _IrisDepth: 0.2
     - _IrisHue: 0.5
     - _IrisRadius: 0.15
     - _IrisSaturation: 1
