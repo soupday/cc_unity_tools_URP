@@ -1,4 +1,4 @@
-// Made with Amplify Shader Editor v1.9.0.1
+// Made with Amplify Shader Editor v1.9.1
 // Available at the Unity Asset Store - http://u3d.as/y3X 
 Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 {
@@ -92,7 +92,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 		#pragma target 3.0
 
 		#pragma prefer_hlslcc gles
-		#pragma exclude_renderers d3d11_9x 
+		
 
 		#ifndef ASE_TESS_FUNCS
 		#define ASE_TESS_FUNCS
@@ -223,7 +223,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			#define _TRANSMISSION_ASE 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 100900
+			#define ASE_SRP_VERSION 101001
 			#define ASE_USING_SAMPLING_MACROS 1
 
 			
@@ -294,59 +294,59 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _DiffuseColor;
-			float4 _ThicknessMap_ST;
-			float4 _EmissionMap_ST;
-			float4 _EmissiveColor;
-			float4 _MaskMap_ST;
-			float4 _NormalBlendMap_ST;
-			float4 _EarNeckMask_ST;
-			float4 _CFULCMask_ST;
-			float4 _RGBAMask_ST;
-			float4 _SSSMap_ST;
-			float4 _SubsurfaceFalloff;
-			float4 _MNAOMap_ST;
-			float4 _NormalMap_ST;
-			float4 _DiffuseMap_ST;
-			float4 _ColorBlendMap_ST;
-			float _ChinScatterScale;
-			float _NeckScatterScale;
-			float _EarScatterScale;
-			float _SubsurfaceNormalSoften;
-			float _MouthCavityAO;
-			float _NormalBlendStrength;
-			float _MicroNormalTiling;
-			float _SubsurfaceScale;
-			float _UpperLipScatterScale;
-			float _ColorBlendStrength;
-			float _SmoothnessMin;
-			float _SmoothnessMax;
-			float _SmoothnessPower;
-			float _MicroSmoothnessMod;
-			float _AOStrength;
-			float _MicroNormalStrength;
-			float _ForeheadScatterScale;
-			float _CheekScatterScale;
-			float _EarSmoothnessMod;
-			float _RSmoothnessMod;
-			float _GSmoothnessMod;
-			float _BSmoothnessMod;
-			float _ASmoothnessMod;
-			float _RScatterScale;
-			float _GScatterScale;
-			float _BScatterScale;
-			float _AScatterScale;
-			float _UnmaskedSmoothnessMod;
-			float _UnmaskedScatterScale;
-			float _LipsCavityAO;
-			float _NostrilCavityAO;
-			float _CheekSmoothnessMod;
-			float _ThicknessScale;
-			float _UpperLipSmoothnessMod;
-			float _ChinSmoothnessMod;
-			float _NeckSmoothnessMod;
-			float _NormalStrength;
-			float _ForeheadSmoothnessMod;
+			half4 _DiffuseColor;
+			half4 _ThicknessMap_ST;
+			half4 _EmissionMap_ST;
+			half4 _EmissiveColor;
+			half4 _MaskMap_ST;
+			half4 _NormalBlendMap_ST;
+			half4 _EarNeckMask_ST;
+			half4 _CFULCMask_ST;
+			half4 _RGBAMask_ST;
+			half4 _SSSMap_ST;
+			half4 _SubsurfaceFalloff;
+			half4 _MNAOMap_ST;
+			half4 _NormalMap_ST;
+			half4 _DiffuseMap_ST;
+			half4 _ColorBlendMap_ST;
+			half _ChinScatterScale;
+			half _NeckScatterScale;
+			half _EarScatterScale;
+			half _SubsurfaceNormalSoften;
+			half _MouthCavityAO;
+			half _NormalBlendStrength;
+			half _MicroNormalTiling;
+			half _SubsurfaceScale;
+			half _UpperLipScatterScale;
+			half _ColorBlendStrength;
+			half _SmoothnessMin;
+			half _SmoothnessMax;
+			half _SmoothnessPower;
+			half _MicroSmoothnessMod;
+			half _AOStrength;
+			half _MicroNormalStrength;
+			half _ForeheadScatterScale;
+			half _CheekScatterScale;
+			half _EarSmoothnessMod;
+			half _RSmoothnessMod;
+			half _GSmoothnessMod;
+			half _BSmoothnessMod;
+			half _ASmoothnessMod;
+			half _RScatterScale;
+			half _GScatterScale;
+			half _BScatterScale;
+			half _AScatterScale;
+			half _UnmaskedSmoothnessMod;
+			half _UnmaskedScatterScale;
+			half _LipsCavityAO;
+			half _NostrilCavityAO;
+			half _CheekSmoothnessMod;
+			half _ThicknessScale;
+			half _UpperLipSmoothnessMod;
+			half _ChinSmoothnessMod;
+			half _NeckSmoothnessMod;
+			half _NormalStrength;
+			half _ForeheadSmoothnessMod;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -390,7 +390,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			TEXTURE2D(_ThicknessMap);
 
 
-			void SkinMask179( float4 In1, float4 Mod1, float4 Scatter1, float UMMS, float UMSS, out float SmoothnessMod, out float ScatterMask )
+			void SkinMask179( half4 In1, half4 Mod1, half4 Scatter1, half UMMS, half UMSS, out half SmoothnessMod, out half ScatterMask )
 			{
 				float mask = saturate(In1.r + In1.g + In1.b + In1.a);
 				float unmask = 1.0 - mask;
@@ -399,7 +399,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				return;
 			}
 			
-			void HeadMask156( float4 In1, float4 In2, float4 In3, float4 Mod1, float4 Mod2, float4 Mod3, float4 Scatter1, float4 Scatter2, float4 Scatter3, float UMMS, float UMSS, out float SmoothnessMod, out float ScatterMask )
+			void HeadMask156( half4 In1, half4 In2, half4 In3, half4 Mod1, half4 Mod2, half4 Mod3, half4 Scatter1, half4 Scatter2, half4 Scatter3, half UMMS, half UMSS, out half SmoothnessMod, out half ScatterMask )
 			{
 				In3.zw = 0;
 				float4 m = In1 + In2 + In3;
@@ -608,111 +608,111 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
 				float2 uv_DiffuseMap = IN.ase_texcoord7.xy * _DiffuseMap_ST.xy + _DiffuseMap_ST.zw;
-				float4 temp_output_339_0 = ( _DiffuseColor * SAMPLE_TEXTURE2D( _DiffuseMap, sampler_DiffuseMap, uv_DiffuseMap ) );
+				half4 temp_output_339_0 = ( _DiffuseColor * SAMPLE_TEXTURE2D( _DiffuseMap, sampler_DiffuseMap, uv_DiffuseMap ) );
 				float2 uv_ColorBlendMap = IN.ase_texcoord7.xy * _ColorBlendMap_ST.xy + _ColorBlendMap_ST.zw;
-				float4 blendOpSrc13 = SAMPLE_TEXTURE2D( _ColorBlendMap, sampler_DiffuseMap, uv_ColorBlendMap );
-				float4 blendOpDest13 = temp_output_339_0;
-				float4 lerpBlendMode13 = lerp(blendOpDest13,(( blendOpDest13 > 0.5 ) ? ( 1.0 - 2.0 * ( 1.0 - blendOpDest13 ) * ( 1.0 - blendOpSrc13 ) ) : ( 2.0 * blendOpDest13 * blendOpSrc13 ) ),_ColorBlendStrength);
+				half4 blendOpSrc13 = SAMPLE_TEXTURE2D( _ColorBlendMap, sampler_DiffuseMap, uv_ColorBlendMap );
+				half4 blendOpDest13 = temp_output_339_0;
+				half4 lerpBlendMode13 = lerp(blendOpDest13,(( blendOpDest13 > 0.5 ) ? ( 1.0 - 2.0 * ( 1.0 - blendOpDest13 ) * ( 1.0 - blendOpSrc13 ) ) : ( 2.0 * blendOpDest13 * blendOpSrc13 ) ),_ColorBlendStrength);
 				float2 uv_MNAOMap = IN.ase_texcoord7.xy * _MNAOMap_ST.xy + _MNAOMap_ST.zw;
-				float4 tex2DNode196 = SAMPLE_TEXTURE2D( _MNAOMap, sampler_MNAOMap, uv_MNAOMap );
-				float saferPower201 = abs( tex2DNode196.g );
-				float saferPower202 = abs( tex2DNode196.b );
-				float saferPower203 = abs( tex2DNode196.a );
-				float cavityAO280 = ( pow( saferPower201 , _MouthCavityAO ) * pow( saferPower202 , _NostrilCavityAO ) * pow( saferPower203 , _LipsCavityAO ) );
+				half4 tex2DNode196 = SAMPLE_TEXTURE2D( _MNAOMap, sampler_MNAOMap, uv_MNAOMap );
+				half saferPower201 = abs( tex2DNode196.g );
+				half saferPower202 = abs( tex2DNode196.b );
+				half saferPower203 = abs( tex2DNode196.a );
+				half cavityAO280 = ( pow( saferPower201 , _MouthCavityAO ) * pow( saferPower202 , _NostrilCavityAO ) * pow( saferPower203 , _LipsCavityAO ) );
 				#ifdef BOOLEAN_IS_HEAD_ON
-				float4 staticSwitch72 = ( ( saturate( lerpBlendMode13 )) * cavityAO280 );
+				half4 staticSwitch72 = ( ( saturate( lerpBlendMode13 )) * cavityAO280 );
 				#else
-				float4 staticSwitch72 = temp_output_339_0;
+				half4 staticSwitch72 = temp_output_339_0;
 				#endif
-				float4 baseColor266 = staticSwitch72;
+				half4 baseColor266 = staticSwitch72;
 				
 				float2 uv_NormalMap = IN.ase_texcoord7.xy * _NormalMap_ST.xy + _NormalMap_ST.zw;
 				float2 uv_SSSMap = IN.ase_texcoord7.xy * _SSSMap_ST.xy + _SSSMap_ST.zw;
-				float localSkinMask179 = ( 0.0 );
+				half localSkinMask179 = ( 0.0 );
 				float2 uv_RGBAMask = IN.ase_texcoord7.xy * _RGBAMask_ST.xy + _RGBAMask_ST.zw;
-				float4 tex2DNode123 = SAMPLE_TEXTURE2D( _RGBAMask, sampler_RGBAMask, uv_RGBAMask );
-				float4 In1179 = tex2DNode123;
-				float4 appendResult150 = (float4(_RSmoothnessMod , _GSmoothnessMod , _BSmoothnessMod , _ASmoothnessMod));
-				float4 Mod1179 = appendResult150;
-				float4 appendResult153 = (float4(_RScatterScale , _GScatterScale , _BScatterScale , _AScatterScale));
-				float4 Scatter1179 = appendResult153;
-				float UMMS179 = _UnmaskedSmoothnessMod;
-				float UMSS179 = _UnmaskedScatterScale;
-				float SmoothnessMod179 = 0.0;
-				float ScatterMask179 = 0.0;
+				half4 tex2DNode123 = SAMPLE_TEXTURE2D( _RGBAMask, sampler_RGBAMask, uv_RGBAMask );
+				half4 In1179 = tex2DNode123;
+				half4 appendResult150 = (half4(_RSmoothnessMod , _GSmoothnessMod , _BSmoothnessMod , _ASmoothnessMod));
+				half4 Mod1179 = appendResult150;
+				half4 appendResult153 = (half4(_RScatterScale , _GScatterScale , _BScatterScale , _AScatterScale));
+				half4 Scatter1179 = appendResult153;
+				half UMMS179 = _UnmaskedSmoothnessMod;
+				half UMSS179 = _UnmaskedScatterScale;
+				half SmoothnessMod179 = 0.0;
+				half ScatterMask179 = 0.0;
 				SkinMask179( In1179 , Mod1179 , Scatter1179 , UMMS179 , UMSS179 , SmoothnessMod179 , ScatterMask179 );
-				float localHeadMask156 = ( 0.0 );
-				float4 In1156 = tex2DNode123;
+				half localHeadMask156 = ( 0.0 );
+				half4 In1156 = tex2DNode123;
 				float2 uv_CFULCMask = IN.ase_texcoord7.xy * _CFULCMask_ST.xy + _CFULCMask_ST.zw;
-				float4 In2156 = SAMPLE_TEXTURE2D( _CFULCMask, sampler_RGBAMask, uv_CFULCMask );
+				half4 In2156 = SAMPLE_TEXTURE2D( _CFULCMask, sampler_RGBAMask, uv_CFULCMask );
 				float2 uv_EarNeckMask = IN.ase_texcoord7.xy * _EarNeckMask_ST.xy + _EarNeckMask_ST.zw;
-				float4 In3156 = SAMPLE_TEXTURE2D( _EarNeckMask, sampler_RGBAMask, uv_EarNeckMask );
-				float4 Mod1156 = appendResult150;
-				float4 appendResult151 = (float4(_CheekSmoothnessMod , _ForeheadSmoothnessMod , _UpperLipSmoothnessMod , _ChinSmoothnessMod));
-				float4 Mod2156 = appendResult151;
-				float4 appendResult152 = (float4(_NeckSmoothnessMod , _EarSmoothnessMod , 0.0 , 0.0));
-				float4 Mod3156 = appendResult152;
-				float4 Scatter1156 = appendResult153;
-				float4 appendResult154 = (float4(_CheekScatterScale , _ForeheadScatterScale , _UpperLipScatterScale , _ChinScatterScale));
-				float4 Scatter2156 = appendResult154;
-				float4 appendResult155 = (float4(_NeckScatterScale , _EarScatterScale , 0.0 , 0.0));
-				float4 Scatter3156 = appendResult155;
-				float UMMS156 = _UnmaskedSmoothnessMod;
-				float UMSS156 = _UnmaskedScatterScale;
-				float SmoothnessMod156 = 0.0;
-				float ScatterMask156 = 0.0;
+				half4 In3156 = SAMPLE_TEXTURE2D( _EarNeckMask, sampler_RGBAMask, uv_EarNeckMask );
+				half4 Mod1156 = appendResult150;
+				half4 appendResult151 = (half4(_CheekSmoothnessMod , _ForeheadSmoothnessMod , _UpperLipSmoothnessMod , _ChinSmoothnessMod));
+				half4 Mod2156 = appendResult151;
+				half4 appendResult152 = (half4(_NeckSmoothnessMod , _EarSmoothnessMod , 0.0 , 0.0));
+				half4 Mod3156 = appendResult152;
+				half4 Scatter1156 = appendResult153;
+				half4 appendResult154 = (half4(_CheekScatterScale , _ForeheadScatterScale , _UpperLipScatterScale , _ChinScatterScale));
+				half4 Scatter2156 = appendResult154;
+				half4 appendResult155 = (half4(_NeckScatterScale , _EarScatterScale , 0.0 , 0.0));
+				half4 Scatter3156 = appendResult155;
+				half UMMS156 = _UnmaskedSmoothnessMod;
+				half UMSS156 = _UnmaskedScatterScale;
+				half SmoothnessMod156 = 0.0;
+				half ScatterMask156 = 0.0;
 				HeadMask156( In1156 , In2156 , In3156 , Mod1156 , Mod2156 , Mod3156 , Scatter1156 , Scatter2156 , Scatter3156 , UMMS156 , UMSS156 , SmoothnessMod156 , ScatterMask156 );
 				#ifdef BOOLEAN_IS_HEAD_ON
-				float staticSwitch169 = ScatterMask156;
+				half staticSwitch169 = ScatterMask156;
 				#else
-				float staticSwitch169 = ScatterMask179;
+				half staticSwitch169 = ScatterMask179;
 				#endif
-				float microScatteringMultiplier277 = ( _SubsurfaceScale * staticSwitch169 );
-				float temp_output_336_0 = saturate( ( SAMPLE_TEXTURE2D( _SSSMap, sampler_SSSMap, uv_SSSMap ).g * microScatteringMultiplier277 ) );
-				float subsurfaceFlattenNormals274 = saturate( ( 1.0 - ( temp_output_336_0 * temp_output_336_0 * _SubsurfaceNormalSoften ) ) );
-				float3 unpack48 = UnpackNormalScale( SAMPLE_TEXTURE2D( _NormalMap, sampler_NormalMap, uv_NormalMap ), ( _NormalStrength * subsurfaceFlattenNormals274 ) );
+				half microScatteringMultiplier277 = ( _SubsurfaceScale * staticSwitch169 );
+				half temp_output_336_0 = saturate( ( SAMPLE_TEXTURE2D( _SSSMap, sampler_SSSMap, uv_SSSMap ).g * microScatteringMultiplier277 ) );
+				half subsurfaceFlattenNormals274 = saturate( ( 1.0 - ( temp_output_336_0 * temp_output_336_0 * _SubsurfaceNormalSoften ) ) );
+				half3 unpack48 = UnpackNormalScale( SAMPLE_TEXTURE2D( _NormalMap, sampler_NormalMap, uv_NormalMap ), ( _NormalStrength * subsurfaceFlattenNormals274 ) );
 				unpack48.z = lerp( 1, unpack48.z, saturate(( _NormalStrength * subsurfaceFlattenNormals274 )) );
-				float3 tex2DNode48 = unpack48;
+				half3 tex2DNode48 = unpack48;
 				float2 uv_NormalBlendMap = IN.ase_texcoord7.xy * _NormalBlendMap_ST.xy + _NormalBlendMap_ST.zw;
-				float3 unpack50 = UnpackNormalScale( SAMPLE_TEXTURE2D( _NormalBlendMap, sampler_NormalMap, uv_NormalBlendMap ), ( subsurfaceFlattenNormals274 * _NormalBlendStrength ) );
+				half3 unpack50 = UnpackNormalScale( SAMPLE_TEXTURE2D( _NormalBlendMap, sampler_NormalMap, uv_NormalBlendMap ), ( subsurfaceFlattenNormals274 * _NormalBlendStrength ) );
 				unpack50.z = lerp( 1, unpack50.z, saturate(( subsurfaceFlattenNormals274 * _NormalBlendStrength )) );
 				#ifdef BOOLEAN_IS_HEAD_ON
-				float3 staticSwitch71 = BlendNormal( tex2DNode48 , unpack50 );
+				half3 staticSwitch71 = BlendNormal( tex2DNode48 , unpack50 );
 				#else
-				float3 staticSwitch71 = tex2DNode48;
+				half3 staticSwitch71 = tex2DNode48;
 				#endif
-				float2 temp_cast_5 = (_MicroNormalTiling).xx;
-				float2 texCoord308 = IN.ase_texcoord7.xy * temp_cast_5 + float2( 0,0 );
+				half2 temp_cast_5 = (_MicroNormalTiling).xx;
+				half2 texCoord308 = IN.ase_texcoord7.xy * temp_cast_5 + float2( 0,0 );
 				float2 uv_MaskMap = IN.ase_texcoord7.xy * _MaskMap_ST.xy + _MaskMap_ST.zw;
-				float4 tex2DNode32 = SAMPLE_TEXTURE2D( _MaskMap, sampler_MaskMap, uv_MaskMap );
-				float microNormalMask287 = tex2DNode32.b;
-				float3 unpack52 = UnpackNormalScale( SAMPLE_TEXTURE2D( _MicroNormalMap, sampler_MicroNormalMap, texCoord308 ), ( _MicroNormalStrength * microNormalMask287 * subsurfaceFlattenNormals274 ) );
+				half4 tex2DNode32 = SAMPLE_TEXTURE2D( _MaskMap, sampler_MaskMap, uv_MaskMap );
+				half microNormalMask287 = tex2DNode32.b;
+				half3 unpack52 = UnpackNormalScale( SAMPLE_TEXTURE2D( _MicroNormalMap, sampler_MicroNormalMap, texCoord308 ), ( _MicroNormalStrength * microNormalMask287 * subsurfaceFlattenNormals274 ) );
 				unpack52.z = lerp( 1, unpack52.z, saturate(( _MicroNormalStrength * microNormalMask287 * subsurfaceFlattenNormals274 )) );
 				
 				float2 uv_EmissionMap = IN.ase_texcoord7.xy * _EmissionMap_ST.xy + _EmissionMap_ST.zw;
 				
-				float metallicMap285 = tex2DNode32.r;
+				half metallicMap285 = tex2DNode32.r;
 				
-				float smoothnessMap288 = tex2DNode32.a;
-				float cavityMask295 = tex2DNode196.r;
+				half smoothnessMap288 = tex2DNode32.a;
+				half cavityMask295 = tex2DNode196.r;
 				#ifdef BOOLEAN_IS_HEAD_ON
-				float staticSwitch223 = ( cavityMask295 * smoothnessMap288 );
+				half staticSwitch223 = ( cavityMask295 * smoothnessMap288 );
 				#else
-				float staticSwitch223 = smoothnessMap288;
+				half staticSwitch223 = smoothnessMap288;
 				#endif
-				float saferPower39 = abs( staticSwitch223 );
-				float lerpResult41 = lerp( _SmoothnessMin , _SmoothnessMax , pow( saferPower39 , _SmoothnessPower ));
+				half saferPower39 = abs( staticSwitch223 );
+				half lerpResult41 = lerp( _SmoothnessMin , _SmoothnessMax , pow( saferPower39 , _SmoothnessPower ));
 				#ifdef BOOLEAN_IS_HEAD_ON
-				float staticSwitch170 = SmoothnessMod156;
+				half staticSwitch170 = SmoothnessMod156;
 				#else
-				float staticSwitch170 = SmoothnessMod179;
+				half staticSwitch170 = SmoothnessMod179;
 				#endif
-				float microSmoothnessMod276 = ( staticSwitch170 + _MicroSmoothnessMod );
+				half microSmoothnessMod276 = ( staticSwitch170 + _MicroSmoothnessMod );
 				
-				float ambientOcclusionMap286 = tex2DNode32.g;
+				half ambientOcclusionMap286 = tex2DNode32.g;
 				
 				float2 uv_ThicknessMap = IN.ase_texcoord7.xy * _ThicknessMap_ST.xy + _ThicknessMap_ST.zw;
-				float4 temp_output_307_0 = ( baseColor266 * _SubsurfaceFalloff );
+				half4 temp_output_307_0 = ( baseColor266 * _SubsurfaceFalloff );
 				
 				float3 Albedo = baseColor266.rgb;
 				float3 Normal = BlendNormal( staticSwitch71 , unpack52 );
@@ -898,7 +898,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			#define _TRANSMISSION_ASE 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 100900
+			#define ASE_SRP_VERSION 101001
 			#define ASE_USING_SAMPLING_MACROS 1
 
 			
@@ -939,59 +939,59 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _DiffuseColor;
-			float4 _ThicknessMap_ST;
-			float4 _EmissionMap_ST;
-			float4 _EmissiveColor;
-			float4 _MaskMap_ST;
-			float4 _NormalBlendMap_ST;
-			float4 _EarNeckMask_ST;
-			float4 _CFULCMask_ST;
-			float4 _RGBAMask_ST;
-			float4 _SSSMap_ST;
-			float4 _SubsurfaceFalloff;
-			float4 _MNAOMap_ST;
-			float4 _NormalMap_ST;
-			float4 _DiffuseMap_ST;
-			float4 _ColorBlendMap_ST;
-			float _ChinScatterScale;
-			float _NeckScatterScale;
-			float _EarScatterScale;
-			float _SubsurfaceNormalSoften;
-			float _MouthCavityAO;
-			float _NormalBlendStrength;
-			float _MicroNormalTiling;
-			float _SubsurfaceScale;
-			float _UpperLipScatterScale;
-			float _ColorBlendStrength;
-			float _SmoothnessMin;
-			float _SmoothnessMax;
-			float _SmoothnessPower;
-			float _MicroSmoothnessMod;
-			float _AOStrength;
-			float _MicroNormalStrength;
-			float _ForeheadScatterScale;
-			float _CheekScatterScale;
-			float _EarSmoothnessMod;
-			float _RSmoothnessMod;
-			float _GSmoothnessMod;
-			float _BSmoothnessMod;
-			float _ASmoothnessMod;
-			float _RScatterScale;
-			float _GScatterScale;
-			float _BScatterScale;
-			float _AScatterScale;
-			float _UnmaskedSmoothnessMod;
-			float _UnmaskedScatterScale;
-			float _LipsCavityAO;
-			float _NostrilCavityAO;
-			float _CheekSmoothnessMod;
-			float _ThicknessScale;
-			float _UpperLipSmoothnessMod;
-			float _ChinSmoothnessMod;
-			float _NeckSmoothnessMod;
-			float _NormalStrength;
-			float _ForeheadSmoothnessMod;
+			half4 _DiffuseColor;
+			half4 _ThicknessMap_ST;
+			half4 _EmissionMap_ST;
+			half4 _EmissiveColor;
+			half4 _MaskMap_ST;
+			half4 _NormalBlendMap_ST;
+			half4 _EarNeckMask_ST;
+			half4 _CFULCMask_ST;
+			half4 _RGBAMask_ST;
+			half4 _SSSMap_ST;
+			half4 _SubsurfaceFalloff;
+			half4 _MNAOMap_ST;
+			half4 _NormalMap_ST;
+			half4 _DiffuseMap_ST;
+			half4 _ColorBlendMap_ST;
+			half _ChinScatterScale;
+			half _NeckScatterScale;
+			half _EarScatterScale;
+			half _SubsurfaceNormalSoften;
+			half _MouthCavityAO;
+			half _NormalBlendStrength;
+			half _MicroNormalTiling;
+			half _SubsurfaceScale;
+			half _UpperLipScatterScale;
+			half _ColorBlendStrength;
+			half _SmoothnessMin;
+			half _SmoothnessMax;
+			half _SmoothnessPower;
+			half _MicroSmoothnessMod;
+			half _AOStrength;
+			half _MicroNormalStrength;
+			half _ForeheadScatterScale;
+			half _CheekScatterScale;
+			half _EarSmoothnessMod;
+			half _RSmoothnessMod;
+			half _GSmoothnessMod;
+			half _BSmoothnessMod;
+			half _ASmoothnessMod;
+			half _RScatterScale;
+			half _GScatterScale;
+			half _BScatterScale;
+			half _AScatterScale;
+			half _UnmaskedSmoothnessMod;
+			half _UnmaskedScatterScale;
+			half _LipsCavityAO;
+			half _NostrilCavityAO;
+			half _CheekSmoothnessMod;
+			half _ThicknessScale;
+			half _UpperLipSmoothnessMod;
+			half _ChinSmoothnessMod;
+			half _NeckSmoothnessMod;
+			half _NormalStrength;
+			half _ForeheadSmoothnessMod;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -1235,7 +1235,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			#define _TRANSMISSION_ASE 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 100900
+			#define ASE_SRP_VERSION 101001
 			#define ASE_USING_SAMPLING_MACROS 1
 
 			
@@ -1274,59 +1274,59 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _DiffuseColor;
-			float4 _ThicknessMap_ST;
-			float4 _EmissionMap_ST;
-			float4 _EmissiveColor;
-			float4 _MaskMap_ST;
-			float4 _NormalBlendMap_ST;
-			float4 _EarNeckMask_ST;
-			float4 _CFULCMask_ST;
-			float4 _RGBAMask_ST;
-			float4 _SSSMap_ST;
-			float4 _SubsurfaceFalloff;
-			float4 _MNAOMap_ST;
-			float4 _NormalMap_ST;
-			float4 _DiffuseMap_ST;
-			float4 _ColorBlendMap_ST;
-			float _ChinScatterScale;
-			float _NeckScatterScale;
-			float _EarScatterScale;
-			float _SubsurfaceNormalSoften;
-			float _MouthCavityAO;
-			float _NormalBlendStrength;
-			float _MicroNormalTiling;
-			float _SubsurfaceScale;
-			float _UpperLipScatterScale;
-			float _ColorBlendStrength;
-			float _SmoothnessMin;
-			float _SmoothnessMax;
-			float _SmoothnessPower;
-			float _MicroSmoothnessMod;
-			float _AOStrength;
-			float _MicroNormalStrength;
-			float _ForeheadScatterScale;
-			float _CheekScatterScale;
-			float _EarSmoothnessMod;
-			float _RSmoothnessMod;
-			float _GSmoothnessMod;
-			float _BSmoothnessMod;
-			float _ASmoothnessMod;
-			float _RScatterScale;
-			float _GScatterScale;
-			float _BScatterScale;
-			float _AScatterScale;
-			float _UnmaskedSmoothnessMod;
-			float _UnmaskedScatterScale;
-			float _LipsCavityAO;
-			float _NostrilCavityAO;
-			float _CheekSmoothnessMod;
-			float _ThicknessScale;
-			float _UpperLipSmoothnessMod;
-			float _ChinSmoothnessMod;
-			float _NeckSmoothnessMod;
-			float _NormalStrength;
-			float _ForeheadSmoothnessMod;
+			half4 _DiffuseColor;
+			half4 _ThicknessMap_ST;
+			half4 _EmissionMap_ST;
+			half4 _EmissiveColor;
+			half4 _MaskMap_ST;
+			half4 _NormalBlendMap_ST;
+			half4 _EarNeckMask_ST;
+			half4 _CFULCMask_ST;
+			half4 _RGBAMask_ST;
+			half4 _SSSMap_ST;
+			half4 _SubsurfaceFalloff;
+			half4 _MNAOMap_ST;
+			half4 _NormalMap_ST;
+			half4 _DiffuseMap_ST;
+			half4 _ColorBlendMap_ST;
+			half _ChinScatterScale;
+			half _NeckScatterScale;
+			half _EarScatterScale;
+			half _SubsurfaceNormalSoften;
+			half _MouthCavityAO;
+			half _NormalBlendStrength;
+			half _MicroNormalTiling;
+			half _SubsurfaceScale;
+			half _UpperLipScatterScale;
+			half _ColorBlendStrength;
+			half _SmoothnessMin;
+			half _SmoothnessMax;
+			half _SmoothnessPower;
+			half _MicroSmoothnessMod;
+			half _AOStrength;
+			half _MicroNormalStrength;
+			half _ForeheadScatterScale;
+			half _CheekScatterScale;
+			half _EarSmoothnessMod;
+			half _RSmoothnessMod;
+			half _GSmoothnessMod;
+			half _BSmoothnessMod;
+			half _ASmoothnessMod;
+			half _RScatterScale;
+			half _GScatterScale;
+			half _BScatterScale;
+			half _AScatterScale;
+			half _UnmaskedSmoothnessMod;
+			half _UnmaskedScatterScale;
+			half _LipsCavityAO;
+			half _NostrilCavityAO;
+			half _CheekSmoothnessMod;
+			half _ThicknessScale;
+			half _UpperLipSmoothnessMod;
+			half _ChinSmoothnessMod;
+			half _NeckSmoothnessMod;
+			half _NormalStrength;
+			half _ForeheadSmoothnessMod;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -1537,7 +1537,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			#define _TRANSMISSION_ASE 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 100900
+			#define ASE_SRP_VERSION 101001
 			#define ASE_USING_SAMPLING_MACROS 1
 
 			
@@ -1581,59 +1581,59 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _DiffuseColor;
-			float4 _ThicknessMap_ST;
-			float4 _EmissionMap_ST;
-			float4 _EmissiveColor;
-			float4 _MaskMap_ST;
-			float4 _NormalBlendMap_ST;
-			float4 _EarNeckMask_ST;
-			float4 _CFULCMask_ST;
-			float4 _RGBAMask_ST;
-			float4 _SSSMap_ST;
-			float4 _SubsurfaceFalloff;
-			float4 _MNAOMap_ST;
-			float4 _NormalMap_ST;
-			float4 _DiffuseMap_ST;
-			float4 _ColorBlendMap_ST;
-			float _ChinScatterScale;
-			float _NeckScatterScale;
-			float _EarScatterScale;
-			float _SubsurfaceNormalSoften;
-			float _MouthCavityAO;
-			float _NormalBlendStrength;
-			float _MicroNormalTiling;
-			float _SubsurfaceScale;
-			float _UpperLipScatterScale;
-			float _ColorBlendStrength;
-			float _SmoothnessMin;
-			float _SmoothnessMax;
-			float _SmoothnessPower;
-			float _MicroSmoothnessMod;
-			float _AOStrength;
-			float _MicroNormalStrength;
-			float _ForeheadScatterScale;
-			float _CheekScatterScale;
-			float _EarSmoothnessMod;
-			float _RSmoothnessMod;
-			float _GSmoothnessMod;
-			float _BSmoothnessMod;
-			float _ASmoothnessMod;
-			float _RScatterScale;
-			float _GScatterScale;
-			float _BScatterScale;
-			float _AScatterScale;
-			float _UnmaskedSmoothnessMod;
-			float _UnmaskedScatterScale;
-			float _LipsCavityAO;
-			float _NostrilCavityAO;
-			float _CheekSmoothnessMod;
-			float _ThicknessScale;
-			float _UpperLipSmoothnessMod;
-			float _ChinSmoothnessMod;
-			float _NeckSmoothnessMod;
-			float _NormalStrength;
-			float _ForeheadSmoothnessMod;
+			half4 _DiffuseColor;
+			half4 _ThicknessMap_ST;
+			half4 _EmissionMap_ST;
+			half4 _EmissiveColor;
+			half4 _MaskMap_ST;
+			half4 _NormalBlendMap_ST;
+			half4 _EarNeckMask_ST;
+			half4 _CFULCMask_ST;
+			half4 _RGBAMask_ST;
+			half4 _SSSMap_ST;
+			half4 _SubsurfaceFalloff;
+			half4 _MNAOMap_ST;
+			half4 _NormalMap_ST;
+			half4 _DiffuseMap_ST;
+			half4 _ColorBlendMap_ST;
+			half _ChinScatterScale;
+			half _NeckScatterScale;
+			half _EarScatterScale;
+			half _SubsurfaceNormalSoften;
+			half _MouthCavityAO;
+			half _NormalBlendStrength;
+			half _MicroNormalTiling;
+			half _SubsurfaceScale;
+			half _UpperLipScatterScale;
+			half _ColorBlendStrength;
+			half _SmoothnessMin;
+			half _SmoothnessMax;
+			half _SmoothnessPower;
+			half _MicroSmoothnessMod;
+			half _AOStrength;
+			half _MicroNormalStrength;
+			half _ForeheadScatterScale;
+			half _CheekScatterScale;
+			half _EarSmoothnessMod;
+			half _RSmoothnessMod;
+			half _GSmoothnessMod;
+			half _BSmoothnessMod;
+			half _ASmoothnessMod;
+			half _RScatterScale;
+			half _GScatterScale;
+			half _BScatterScale;
+			half _AScatterScale;
+			half _UnmaskedSmoothnessMod;
+			half _UnmaskedScatterScale;
+			half _LipsCavityAO;
+			half _NostrilCavityAO;
+			half _CheekSmoothnessMod;
+			half _ThicknessScale;
+			half _UpperLipSmoothnessMod;
+			half _ChinSmoothnessMod;
+			half _NeckSmoothnessMod;
+			half _NormalStrength;
+			half _ForeheadSmoothnessMod;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -1810,23 +1810,23 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				#endif
 
 				float2 uv_DiffuseMap = IN.ase_texcoord2.xy * _DiffuseMap_ST.xy + _DiffuseMap_ST.zw;
-				float4 temp_output_339_0 = ( _DiffuseColor * SAMPLE_TEXTURE2D( _DiffuseMap, sampler_DiffuseMap, uv_DiffuseMap ) );
+				half4 temp_output_339_0 = ( _DiffuseColor * SAMPLE_TEXTURE2D( _DiffuseMap, sampler_DiffuseMap, uv_DiffuseMap ) );
 				float2 uv_ColorBlendMap = IN.ase_texcoord2.xy * _ColorBlendMap_ST.xy + _ColorBlendMap_ST.zw;
-				float4 blendOpSrc13 = SAMPLE_TEXTURE2D( _ColorBlendMap, sampler_DiffuseMap, uv_ColorBlendMap );
-				float4 blendOpDest13 = temp_output_339_0;
-				float4 lerpBlendMode13 = lerp(blendOpDest13,(( blendOpDest13 > 0.5 ) ? ( 1.0 - 2.0 * ( 1.0 - blendOpDest13 ) * ( 1.0 - blendOpSrc13 ) ) : ( 2.0 * blendOpDest13 * blendOpSrc13 ) ),_ColorBlendStrength);
+				half4 blendOpSrc13 = SAMPLE_TEXTURE2D( _ColorBlendMap, sampler_DiffuseMap, uv_ColorBlendMap );
+				half4 blendOpDest13 = temp_output_339_0;
+				half4 lerpBlendMode13 = lerp(blendOpDest13,(( blendOpDest13 > 0.5 ) ? ( 1.0 - 2.0 * ( 1.0 - blendOpDest13 ) * ( 1.0 - blendOpSrc13 ) ) : ( 2.0 * blendOpDest13 * blendOpSrc13 ) ),_ColorBlendStrength);
 				float2 uv_MNAOMap = IN.ase_texcoord2.xy * _MNAOMap_ST.xy + _MNAOMap_ST.zw;
-				float4 tex2DNode196 = SAMPLE_TEXTURE2D( _MNAOMap, sampler_MNAOMap, uv_MNAOMap );
-				float saferPower201 = abs( tex2DNode196.g );
-				float saferPower202 = abs( tex2DNode196.b );
-				float saferPower203 = abs( tex2DNode196.a );
-				float cavityAO280 = ( pow( saferPower201 , _MouthCavityAO ) * pow( saferPower202 , _NostrilCavityAO ) * pow( saferPower203 , _LipsCavityAO ) );
+				half4 tex2DNode196 = SAMPLE_TEXTURE2D( _MNAOMap, sampler_MNAOMap, uv_MNAOMap );
+				half saferPower201 = abs( tex2DNode196.g );
+				half saferPower202 = abs( tex2DNode196.b );
+				half saferPower203 = abs( tex2DNode196.a );
+				half cavityAO280 = ( pow( saferPower201 , _MouthCavityAO ) * pow( saferPower202 , _NostrilCavityAO ) * pow( saferPower203 , _LipsCavityAO ) );
 				#ifdef BOOLEAN_IS_HEAD_ON
-				float4 staticSwitch72 = ( ( saturate( lerpBlendMode13 )) * cavityAO280 );
+				half4 staticSwitch72 = ( ( saturate( lerpBlendMode13 )) * cavityAO280 );
 				#else
-				float4 staticSwitch72 = temp_output_339_0;
+				half4 staticSwitch72 = temp_output_339_0;
 				#endif
-				float4 baseColor266 = staticSwitch72;
+				half4 baseColor266 = staticSwitch72;
 				
 				float2 uv_EmissionMap = IN.ase_texcoord2.xy * _EmissionMap_ST.xy + _EmissionMap_ST.zw;
 				
@@ -1873,7 +1873,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			#define _TRANSMISSION_ASE 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 100900
+			#define ASE_SRP_VERSION 101001
 			#define ASE_USING_SAMPLING_MACROS 1
 
 			
@@ -1916,59 +1916,59 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _DiffuseColor;
-			float4 _ThicknessMap_ST;
-			float4 _EmissionMap_ST;
-			float4 _EmissiveColor;
-			float4 _MaskMap_ST;
-			float4 _NormalBlendMap_ST;
-			float4 _EarNeckMask_ST;
-			float4 _CFULCMask_ST;
-			float4 _RGBAMask_ST;
-			float4 _SSSMap_ST;
-			float4 _SubsurfaceFalloff;
-			float4 _MNAOMap_ST;
-			float4 _NormalMap_ST;
-			float4 _DiffuseMap_ST;
-			float4 _ColorBlendMap_ST;
-			float _ChinScatterScale;
-			float _NeckScatterScale;
-			float _EarScatterScale;
-			float _SubsurfaceNormalSoften;
-			float _MouthCavityAO;
-			float _NormalBlendStrength;
-			float _MicroNormalTiling;
-			float _SubsurfaceScale;
-			float _UpperLipScatterScale;
-			float _ColorBlendStrength;
-			float _SmoothnessMin;
-			float _SmoothnessMax;
-			float _SmoothnessPower;
-			float _MicroSmoothnessMod;
-			float _AOStrength;
-			float _MicroNormalStrength;
-			float _ForeheadScatterScale;
-			float _CheekScatterScale;
-			float _EarSmoothnessMod;
-			float _RSmoothnessMod;
-			float _GSmoothnessMod;
-			float _BSmoothnessMod;
-			float _ASmoothnessMod;
-			float _RScatterScale;
-			float _GScatterScale;
-			float _BScatterScale;
-			float _AScatterScale;
-			float _UnmaskedSmoothnessMod;
-			float _UnmaskedScatterScale;
-			float _LipsCavityAO;
-			float _NostrilCavityAO;
-			float _CheekSmoothnessMod;
-			float _ThicknessScale;
-			float _UpperLipSmoothnessMod;
-			float _ChinSmoothnessMod;
-			float _NeckSmoothnessMod;
-			float _NormalStrength;
-			float _ForeheadSmoothnessMod;
+			half4 _DiffuseColor;
+			half4 _ThicknessMap_ST;
+			half4 _EmissionMap_ST;
+			half4 _EmissiveColor;
+			half4 _MaskMap_ST;
+			half4 _NormalBlendMap_ST;
+			half4 _EarNeckMask_ST;
+			half4 _CFULCMask_ST;
+			half4 _RGBAMask_ST;
+			half4 _SSSMap_ST;
+			half4 _SubsurfaceFalloff;
+			half4 _MNAOMap_ST;
+			half4 _NormalMap_ST;
+			half4 _DiffuseMap_ST;
+			half4 _ColorBlendMap_ST;
+			half _ChinScatterScale;
+			half _NeckScatterScale;
+			half _EarScatterScale;
+			half _SubsurfaceNormalSoften;
+			half _MouthCavityAO;
+			half _NormalBlendStrength;
+			half _MicroNormalTiling;
+			half _SubsurfaceScale;
+			half _UpperLipScatterScale;
+			half _ColorBlendStrength;
+			half _SmoothnessMin;
+			half _SmoothnessMax;
+			half _SmoothnessPower;
+			half _MicroSmoothnessMod;
+			half _AOStrength;
+			half _MicroNormalStrength;
+			half _ForeheadScatterScale;
+			half _CheekScatterScale;
+			half _EarSmoothnessMod;
+			half _RSmoothnessMod;
+			half _GSmoothnessMod;
+			half _BSmoothnessMod;
+			half _ASmoothnessMod;
+			half _RScatterScale;
+			half _GScatterScale;
+			half _BScatterScale;
+			half _AScatterScale;
+			half _UnmaskedSmoothnessMod;
+			half _UnmaskedScatterScale;
+			half _LipsCavityAO;
+			half _NostrilCavityAO;
+			half _CheekSmoothnessMod;
+			half _ThicknessScale;
+			half _UpperLipSmoothnessMod;
+			half _ChinSmoothnessMod;
+			half _NeckSmoothnessMod;
+			half _NormalStrength;
+			half _ForeheadSmoothnessMod;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -2140,23 +2140,23 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				#endif
 
 				float2 uv_DiffuseMap = IN.ase_texcoord2.xy * _DiffuseMap_ST.xy + _DiffuseMap_ST.zw;
-				float4 temp_output_339_0 = ( _DiffuseColor * SAMPLE_TEXTURE2D( _DiffuseMap, sampler_DiffuseMap, uv_DiffuseMap ) );
+				half4 temp_output_339_0 = ( _DiffuseColor * SAMPLE_TEXTURE2D( _DiffuseMap, sampler_DiffuseMap, uv_DiffuseMap ) );
 				float2 uv_ColorBlendMap = IN.ase_texcoord2.xy * _ColorBlendMap_ST.xy + _ColorBlendMap_ST.zw;
-				float4 blendOpSrc13 = SAMPLE_TEXTURE2D( _ColorBlendMap, sampler_DiffuseMap, uv_ColorBlendMap );
-				float4 blendOpDest13 = temp_output_339_0;
-				float4 lerpBlendMode13 = lerp(blendOpDest13,(( blendOpDest13 > 0.5 ) ? ( 1.0 - 2.0 * ( 1.0 - blendOpDest13 ) * ( 1.0 - blendOpSrc13 ) ) : ( 2.0 * blendOpDest13 * blendOpSrc13 ) ),_ColorBlendStrength);
+				half4 blendOpSrc13 = SAMPLE_TEXTURE2D( _ColorBlendMap, sampler_DiffuseMap, uv_ColorBlendMap );
+				half4 blendOpDest13 = temp_output_339_0;
+				half4 lerpBlendMode13 = lerp(blendOpDest13,(( blendOpDest13 > 0.5 ) ? ( 1.0 - 2.0 * ( 1.0 - blendOpDest13 ) * ( 1.0 - blendOpSrc13 ) ) : ( 2.0 * blendOpDest13 * blendOpSrc13 ) ),_ColorBlendStrength);
 				float2 uv_MNAOMap = IN.ase_texcoord2.xy * _MNAOMap_ST.xy + _MNAOMap_ST.zw;
-				float4 tex2DNode196 = SAMPLE_TEXTURE2D( _MNAOMap, sampler_MNAOMap, uv_MNAOMap );
-				float saferPower201 = abs( tex2DNode196.g );
-				float saferPower202 = abs( tex2DNode196.b );
-				float saferPower203 = abs( tex2DNode196.a );
-				float cavityAO280 = ( pow( saferPower201 , _MouthCavityAO ) * pow( saferPower202 , _NostrilCavityAO ) * pow( saferPower203 , _LipsCavityAO ) );
+				half4 tex2DNode196 = SAMPLE_TEXTURE2D( _MNAOMap, sampler_MNAOMap, uv_MNAOMap );
+				half saferPower201 = abs( tex2DNode196.g );
+				half saferPower202 = abs( tex2DNode196.b );
+				half saferPower203 = abs( tex2DNode196.a );
+				half cavityAO280 = ( pow( saferPower201 , _MouthCavityAO ) * pow( saferPower202 , _NostrilCavityAO ) * pow( saferPower203 , _LipsCavityAO ) );
 				#ifdef BOOLEAN_IS_HEAD_ON
-				float4 staticSwitch72 = ( ( saturate( lerpBlendMode13 )) * cavityAO280 );
+				half4 staticSwitch72 = ( ( saturate( lerpBlendMode13 )) * cavityAO280 );
 				#else
-				float4 staticSwitch72 = temp_output_339_0;
+				half4 staticSwitch72 = temp_output_339_0;
 				#endif
-				float4 baseColor266 = staticSwitch72;
+				half4 baseColor266 = staticSwitch72;
 				
 				
 				float3 Albedo = baseColor266.rgb;
@@ -2197,7 +2197,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			#define _TRANSMISSION_ASE 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 100900
+			#define ASE_SRP_VERSION 101001
 			#define ASE_USING_SAMPLING_MACROS 1
 
 			
@@ -2237,59 +2237,59 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _DiffuseColor;
-			float4 _ThicknessMap_ST;
-			float4 _EmissionMap_ST;
-			float4 _EmissiveColor;
-			float4 _MaskMap_ST;
-			float4 _NormalBlendMap_ST;
-			float4 _EarNeckMask_ST;
-			float4 _CFULCMask_ST;
-			float4 _RGBAMask_ST;
-			float4 _SSSMap_ST;
-			float4 _SubsurfaceFalloff;
-			float4 _MNAOMap_ST;
-			float4 _NormalMap_ST;
-			float4 _DiffuseMap_ST;
-			float4 _ColorBlendMap_ST;
-			float _ChinScatterScale;
-			float _NeckScatterScale;
-			float _EarScatterScale;
-			float _SubsurfaceNormalSoften;
-			float _MouthCavityAO;
-			float _NormalBlendStrength;
-			float _MicroNormalTiling;
-			float _SubsurfaceScale;
-			float _UpperLipScatterScale;
-			float _ColorBlendStrength;
-			float _SmoothnessMin;
-			float _SmoothnessMax;
-			float _SmoothnessPower;
-			float _MicroSmoothnessMod;
-			float _AOStrength;
-			float _MicroNormalStrength;
-			float _ForeheadScatterScale;
-			float _CheekScatterScale;
-			float _EarSmoothnessMod;
-			float _RSmoothnessMod;
-			float _GSmoothnessMod;
-			float _BSmoothnessMod;
-			float _ASmoothnessMod;
-			float _RScatterScale;
-			float _GScatterScale;
-			float _BScatterScale;
-			float _AScatterScale;
-			float _UnmaskedSmoothnessMod;
-			float _UnmaskedScatterScale;
-			float _LipsCavityAO;
-			float _NostrilCavityAO;
-			float _CheekSmoothnessMod;
-			float _ThicknessScale;
-			float _UpperLipSmoothnessMod;
-			float _ChinSmoothnessMod;
-			float _NeckSmoothnessMod;
-			float _NormalStrength;
-			float _ForeheadSmoothnessMod;
+			half4 _DiffuseColor;
+			half4 _ThicknessMap_ST;
+			half4 _EmissionMap_ST;
+			half4 _EmissiveColor;
+			half4 _MaskMap_ST;
+			half4 _NormalBlendMap_ST;
+			half4 _EarNeckMask_ST;
+			half4 _CFULCMask_ST;
+			half4 _RGBAMask_ST;
+			half4 _SSSMap_ST;
+			half4 _SubsurfaceFalloff;
+			half4 _MNAOMap_ST;
+			half4 _NormalMap_ST;
+			half4 _DiffuseMap_ST;
+			half4 _ColorBlendMap_ST;
+			half _ChinScatterScale;
+			half _NeckScatterScale;
+			half _EarScatterScale;
+			half _SubsurfaceNormalSoften;
+			half _MouthCavityAO;
+			half _NormalBlendStrength;
+			half _MicroNormalTiling;
+			half _SubsurfaceScale;
+			half _UpperLipScatterScale;
+			half _ColorBlendStrength;
+			half _SmoothnessMin;
+			half _SmoothnessMax;
+			half _SmoothnessPower;
+			half _MicroSmoothnessMod;
+			half _AOStrength;
+			half _MicroNormalStrength;
+			half _ForeheadScatterScale;
+			half _CheekScatterScale;
+			half _EarSmoothnessMod;
+			half _RSmoothnessMod;
+			half _GSmoothnessMod;
+			half _BSmoothnessMod;
+			half _ASmoothnessMod;
+			half _RScatterScale;
+			half _GScatterScale;
+			half _BScatterScale;
+			half _AScatterScale;
+			half _UnmaskedSmoothnessMod;
+			half _UnmaskedScatterScale;
+			half _LipsCavityAO;
+			half _NostrilCavityAO;
+			half _CheekSmoothnessMod;
+			half _ThicknessScale;
+			half _UpperLipSmoothnessMod;
+			half _ChinSmoothnessMod;
+			half _NeckSmoothnessMod;
+			half _NormalStrength;
+			half _ForeheadSmoothnessMod;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -2509,7 +2509,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			#define _TRANSMISSION_ASE 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 100900
+			#define ASE_SRP_VERSION 101001
 			#define ASE_USING_SAMPLING_MACROS 1
 
 			
@@ -2578,59 +2578,59 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _DiffuseColor;
-			float4 _ThicknessMap_ST;
-			float4 _EmissionMap_ST;
-			float4 _EmissiveColor;
-			float4 _MaskMap_ST;
-			float4 _NormalBlendMap_ST;
-			float4 _EarNeckMask_ST;
-			float4 _CFULCMask_ST;
-			float4 _RGBAMask_ST;
-			float4 _SSSMap_ST;
-			float4 _SubsurfaceFalloff;
-			float4 _MNAOMap_ST;
-			float4 _NormalMap_ST;
-			float4 _DiffuseMap_ST;
-			float4 _ColorBlendMap_ST;
-			float _ChinScatterScale;
-			float _NeckScatterScale;
-			float _EarScatterScale;
-			float _SubsurfaceNormalSoften;
-			float _MouthCavityAO;
-			float _NormalBlendStrength;
-			float _MicroNormalTiling;
-			float _SubsurfaceScale;
-			float _UpperLipScatterScale;
-			float _ColorBlendStrength;
-			float _SmoothnessMin;
-			float _SmoothnessMax;
-			float _SmoothnessPower;
-			float _MicroSmoothnessMod;
-			float _AOStrength;
-			float _MicroNormalStrength;
-			float _ForeheadScatterScale;
-			float _CheekScatterScale;
-			float _EarSmoothnessMod;
-			float _RSmoothnessMod;
-			float _GSmoothnessMod;
-			float _BSmoothnessMod;
-			float _ASmoothnessMod;
-			float _RScatterScale;
-			float _GScatterScale;
-			float _BScatterScale;
-			float _AScatterScale;
-			float _UnmaskedSmoothnessMod;
-			float _UnmaskedScatterScale;
-			float _LipsCavityAO;
-			float _NostrilCavityAO;
-			float _CheekSmoothnessMod;
-			float _ThicknessScale;
-			float _UpperLipSmoothnessMod;
-			float _ChinSmoothnessMod;
-			float _NeckSmoothnessMod;
-			float _NormalStrength;
-			float _ForeheadSmoothnessMod;
+			half4 _DiffuseColor;
+			half4 _ThicknessMap_ST;
+			half4 _EmissionMap_ST;
+			half4 _EmissiveColor;
+			half4 _MaskMap_ST;
+			half4 _NormalBlendMap_ST;
+			half4 _EarNeckMask_ST;
+			half4 _CFULCMask_ST;
+			half4 _RGBAMask_ST;
+			half4 _SSSMap_ST;
+			half4 _SubsurfaceFalloff;
+			half4 _MNAOMap_ST;
+			half4 _NormalMap_ST;
+			half4 _DiffuseMap_ST;
+			half4 _ColorBlendMap_ST;
+			half _ChinScatterScale;
+			half _NeckScatterScale;
+			half _EarScatterScale;
+			half _SubsurfaceNormalSoften;
+			half _MouthCavityAO;
+			half _NormalBlendStrength;
+			half _MicroNormalTiling;
+			half _SubsurfaceScale;
+			half _UpperLipScatterScale;
+			half _ColorBlendStrength;
+			half _SmoothnessMin;
+			half _SmoothnessMax;
+			half _SmoothnessPower;
+			half _MicroSmoothnessMod;
+			half _AOStrength;
+			half _MicroNormalStrength;
+			half _ForeheadScatterScale;
+			half _CheekScatterScale;
+			half _EarSmoothnessMod;
+			half _RSmoothnessMod;
+			half _GSmoothnessMod;
+			half _BSmoothnessMod;
+			half _ASmoothnessMod;
+			half _RScatterScale;
+			half _GScatterScale;
+			half _BScatterScale;
+			half _AScatterScale;
+			half _UnmaskedSmoothnessMod;
+			half _UnmaskedScatterScale;
+			half _LipsCavityAO;
+			half _NostrilCavityAO;
+			half _CheekSmoothnessMod;
+			half _ThicknessScale;
+			half _UpperLipSmoothnessMod;
+			half _ChinSmoothnessMod;
+			half _NeckSmoothnessMod;
+			half _NormalStrength;
+			half _ForeheadSmoothnessMod;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -2674,7 +2674,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			TEXTURE2D(_ThicknessMap);
 
 
-			void SkinMask179( float4 In1, float4 Mod1, float4 Scatter1, float UMMS, float UMSS, out float SmoothnessMod, out float ScatterMask )
+			void SkinMask179( half4 In1, half4 Mod1, half4 Scatter1, half UMMS, half UMSS, out half SmoothnessMod, out half ScatterMask )
 			{
 				float mask = saturate(In1.r + In1.g + In1.b + In1.a);
 				float unmask = 1.0 - mask;
@@ -2683,7 +2683,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				return;
 			}
 			
-			void HeadMask156( float4 In1, float4 In2, float4 In3, float4 Mod1, float4 Mod2, float4 Mod3, float4 Scatter1, float4 Scatter2, float4 Scatter3, float UMMS, float UMSS, out float SmoothnessMod, out float ScatterMask )
+			void HeadMask156( half4 In1, half4 In2, half4 In3, half4 Mod1, half4 Mod2, half4 Mod3, half4 Scatter1, half4 Scatter2, half4 Scatter3, half UMMS, half UMSS, out half SmoothnessMod, out half ScatterMask )
 			{
 				In3.zw = 0;
 				float4 m = In1 + In2 + In3;
@@ -2891,111 +2891,111 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
 				float2 uv_DiffuseMap = IN.ase_texcoord7.xy * _DiffuseMap_ST.xy + _DiffuseMap_ST.zw;
-				float4 temp_output_339_0 = ( _DiffuseColor * SAMPLE_TEXTURE2D( _DiffuseMap, sampler_DiffuseMap, uv_DiffuseMap ) );
+				half4 temp_output_339_0 = ( _DiffuseColor * SAMPLE_TEXTURE2D( _DiffuseMap, sampler_DiffuseMap, uv_DiffuseMap ) );
 				float2 uv_ColorBlendMap = IN.ase_texcoord7.xy * _ColorBlendMap_ST.xy + _ColorBlendMap_ST.zw;
-				float4 blendOpSrc13 = SAMPLE_TEXTURE2D( _ColorBlendMap, sampler_DiffuseMap, uv_ColorBlendMap );
-				float4 blendOpDest13 = temp_output_339_0;
-				float4 lerpBlendMode13 = lerp(blendOpDest13,(( blendOpDest13 > 0.5 ) ? ( 1.0 - 2.0 * ( 1.0 - blendOpDest13 ) * ( 1.0 - blendOpSrc13 ) ) : ( 2.0 * blendOpDest13 * blendOpSrc13 ) ),_ColorBlendStrength);
+				half4 blendOpSrc13 = SAMPLE_TEXTURE2D( _ColorBlendMap, sampler_DiffuseMap, uv_ColorBlendMap );
+				half4 blendOpDest13 = temp_output_339_0;
+				half4 lerpBlendMode13 = lerp(blendOpDest13,(( blendOpDest13 > 0.5 ) ? ( 1.0 - 2.0 * ( 1.0 - blendOpDest13 ) * ( 1.0 - blendOpSrc13 ) ) : ( 2.0 * blendOpDest13 * blendOpSrc13 ) ),_ColorBlendStrength);
 				float2 uv_MNAOMap = IN.ase_texcoord7.xy * _MNAOMap_ST.xy + _MNAOMap_ST.zw;
-				float4 tex2DNode196 = SAMPLE_TEXTURE2D( _MNAOMap, sampler_MNAOMap, uv_MNAOMap );
-				float saferPower201 = abs( tex2DNode196.g );
-				float saferPower202 = abs( tex2DNode196.b );
-				float saferPower203 = abs( tex2DNode196.a );
-				float cavityAO280 = ( pow( saferPower201 , _MouthCavityAO ) * pow( saferPower202 , _NostrilCavityAO ) * pow( saferPower203 , _LipsCavityAO ) );
+				half4 tex2DNode196 = SAMPLE_TEXTURE2D( _MNAOMap, sampler_MNAOMap, uv_MNAOMap );
+				half saferPower201 = abs( tex2DNode196.g );
+				half saferPower202 = abs( tex2DNode196.b );
+				half saferPower203 = abs( tex2DNode196.a );
+				half cavityAO280 = ( pow( saferPower201 , _MouthCavityAO ) * pow( saferPower202 , _NostrilCavityAO ) * pow( saferPower203 , _LipsCavityAO ) );
 				#ifdef BOOLEAN_IS_HEAD_ON
-				float4 staticSwitch72 = ( ( saturate( lerpBlendMode13 )) * cavityAO280 );
+				half4 staticSwitch72 = ( ( saturate( lerpBlendMode13 )) * cavityAO280 );
 				#else
-				float4 staticSwitch72 = temp_output_339_0;
+				half4 staticSwitch72 = temp_output_339_0;
 				#endif
-				float4 baseColor266 = staticSwitch72;
+				half4 baseColor266 = staticSwitch72;
 				
 				float2 uv_NormalMap = IN.ase_texcoord7.xy * _NormalMap_ST.xy + _NormalMap_ST.zw;
 				float2 uv_SSSMap = IN.ase_texcoord7.xy * _SSSMap_ST.xy + _SSSMap_ST.zw;
-				float localSkinMask179 = ( 0.0 );
+				half localSkinMask179 = ( 0.0 );
 				float2 uv_RGBAMask = IN.ase_texcoord7.xy * _RGBAMask_ST.xy + _RGBAMask_ST.zw;
-				float4 tex2DNode123 = SAMPLE_TEXTURE2D( _RGBAMask, sampler_RGBAMask, uv_RGBAMask );
-				float4 In1179 = tex2DNode123;
-				float4 appendResult150 = (float4(_RSmoothnessMod , _GSmoothnessMod , _BSmoothnessMod , _ASmoothnessMod));
-				float4 Mod1179 = appendResult150;
-				float4 appendResult153 = (float4(_RScatterScale , _GScatterScale , _BScatterScale , _AScatterScale));
-				float4 Scatter1179 = appendResult153;
-				float UMMS179 = _UnmaskedSmoothnessMod;
-				float UMSS179 = _UnmaskedScatterScale;
-				float SmoothnessMod179 = 0.0;
-				float ScatterMask179 = 0.0;
+				half4 tex2DNode123 = SAMPLE_TEXTURE2D( _RGBAMask, sampler_RGBAMask, uv_RGBAMask );
+				half4 In1179 = tex2DNode123;
+				half4 appendResult150 = (half4(_RSmoothnessMod , _GSmoothnessMod , _BSmoothnessMod , _ASmoothnessMod));
+				half4 Mod1179 = appendResult150;
+				half4 appendResult153 = (half4(_RScatterScale , _GScatterScale , _BScatterScale , _AScatterScale));
+				half4 Scatter1179 = appendResult153;
+				half UMMS179 = _UnmaskedSmoothnessMod;
+				half UMSS179 = _UnmaskedScatterScale;
+				half SmoothnessMod179 = 0.0;
+				half ScatterMask179 = 0.0;
 				SkinMask179( In1179 , Mod1179 , Scatter1179 , UMMS179 , UMSS179 , SmoothnessMod179 , ScatterMask179 );
-				float localHeadMask156 = ( 0.0 );
-				float4 In1156 = tex2DNode123;
+				half localHeadMask156 = ( 0.0 );
+				half4 In1156 = tex2DNode123;
 				float2 uv_CFULCMask = IN.ase_texcoord7.xy * _CFULCMask_ST.xy + _CFULCMask_ST.zw;
-				float4 In2156 = SAMPLE_TEXTURE2D( _CFULCMask, sampler_RGBAMask, uv_CFULCMask );
+				half4 In2156 = SAMPLE_TEXTURE2D( _CFULCMask, sampler_RGBAMask, uv_CFULCMask );
 				float2 uv_EarNeckMask = IN.ase_texcoord7.xy * _EarNeckMask_ST.xy + _EarNeckMask_ST.zw;
-				float4 In3156 = SAMPLE_TEXTURE2D( _EarNeckMask, sampler_RGBAMask, uv_EarNeckMask );
-				float4 Mod1156 = appendResult150;
-				float4 appendResult151 = (float4(_CheekSmoothnessMod , _ForeheadSmoothnessMod , _UpperLipSmoothnessMod , _ChinSmoothnessMod));
-				float4 Mod2156 = appendResult151;
-				float4 appendResult152 = (float4(_NeckSmoothnessMod , _EarSmoothnessMod , 0.0 , 0.0));
-				float4 Mod3156 = appendResult152;
-				float4 Scatter1156 = appendResult153;
-				float4 appendResult154 = (float4(_CheekScatterScale , _ForeheadScatterScale , _UpperLipScatterScale , _ChinScatterScale));
-				float4 Scatter2156 = appendResult154;
-				float4 appendResult155 = (float4(_NeckScatterScale , _EarScatterScale , 0.0 , 0.0));
-				float4 Scatter3156 = appendResult155;
-				float UMMS156 = _UnmaskedSmoothnessMod;
-				float UMSS156 = _UnmaskedScatterScale;
-				float SmoothnessMod156 = 0.0;
-				float ScatterMask156 = 0.0;
+				half4 In3156 = SAMPLE_TEXTURE2D( _EarNeckMask, sampler_RGBAMask, uv_EarNeckMask );
+				half4 Mod1156 = appendResult150;
+				half4 appendResult151 = (half4(_CheekSmoothnessMod , _ForeheadSmoothnessMod , _UpperLipSmoothnessMod , _ChinSmoothnessMod));
+				half4 Mod2156 = appendResult151;
+				half4 appendResult152 = (half4(_NeckSmoothnessMod , _EarSmoothnessMod , 0.0 , 0.0));
+				half4 Mod3156 = appendResult152;
+				half4 Scatter1156 = appendResult153;
+				half4 appendResult154 = (half4(_CheekScatterScale , _ForeheadScatterScale , _UpperLipScatterScale , _ChinScatterScale));
+				half4 Scatter2156 = appendResult154;
+				half4 appendResult155 = (half4(_NeckScatterScale , _EarScatterScale , 0.0 , 0.0));
+				half4 Scatter3156 = appendResult155;
+				half UMMS156 = _UnmaskedSmoothnessMod;
+				half UMSS156 = _UnmaskedScatterScale;
+				half SmoothnessMod156 = 0.0;
+				half ScatterMask156 = 0.0;
 				HeadMask156( In1156 , In2156 , In3156 , Mod1156 , Mod2156 , Mod3156 , Scatter1156 , Scatter2156 , Scatter3156 , UMMS156 , UMSS156 , SmoothnessMod156 , ScatterMask156 );
 				#ifdef BOOLEAN_IS_HEAD_ON
-				float staticSwitch169 = ScatterMask156;
+				half staticSwitch169 = ScatterMask156;
 				#else
-				float staticSwitch169 = ScatterMask179;
+				half staticSwitch169 = ScatterMask179;
 				#endif
-				float microScatteringMultiplier277 = ( _SubsurfaceScale * staticSwitch169 );
-				float temp_output_336_0 = saturate( ( SAMPLE_TEXTURE2D( _SSSMap, sampler_SSSMap, uv_SSSMap ).g * microScatteringMultiplier277 ) );
-				float subsurfaceFlattenNormals274 = saturate( ( 1.0 - ( temp_output_336_0 * temp_output_336_0 * _SubsurfaceNormalSoften ) ) );
-				float3 unpack48 = UnpackNormalScale( SAMPLE_TEXTURE2D( _NormalMap, sampler_NormalMap, uv_NormalMap ), ( _NormalStrength * subsurfaceFlattenNormals274 ) );
+				half microScatteringMultiplier277 = ( _SubsurfaceScale * staticSwitch169 );
+				half temp_output_336_0 = saturate( ( SAMPLE_TEXTURE2D( _SSSMap, sampler_SSSMap, uv_SSSMap ).g * microScatteringMultiplier277 ) );
+				half subsurfaceFlattenNormals274 = saturate( ( 1.0 - ( temp_output_336_0 * temp_output_336_0 * _SubsurfaceNormalSoften ) ) );
+				half3 unpack48 = UnpackNormalScale( SAMPLE_TEXTURE2D( _NormalMap, sampler_NormalMap, uv_NormalMap ), ( _NormalStrength * subsurfaceFlattenNormals274 ) );
 				unpack48.z = lerp( 1, unpack48.z, saturate(( _NormalStrength * subsurfaceFlattenNormals274 )) );
-				float3 tex2DNode48 = unpack48;
+				half3 tex2DNode48 = unpack48;
 				float2 uv_NormalBlendMap = IN.ase_texcoord7.xy * _NormalBlendMap_ST.xy + _NormalBlendMap_ST.zw;
-				float3 unpack50 = UnpackNormalScale( SAMPLE_TEXTURE2D( _NormalBlendMap, sampler_NormalMap, uv_NormalBlendMap ), ( subsurfaceFlattenNormals274 * _NormalBlendStrength ) );
+				half3 unpack50 = UnpackNormalScale( SAMPLE_TEXTURE2D( _NormalBlendMap, sampler_NormalMap, uv_NormalBlendMap ), ( subsurfaceFlattenNormals274 * _NormalBlendStrength ) );
 				unpack50.z = lerp( 1, unpack50.z, saturate(( subsurfaceFlattenNormals274 * _NormalBlendStrength )) );
 				#ifdef BOOLEAN_IS_HEAD_ON
-				float3 staticSwitch71 = BlendNormal( tex2DNode48 , unpack50 );
+				half3 staticSwitch71 = BlendNormal( tex2DNode48 , unpack50 );
 				#else
-				float3 staticSwitch71 = tex2DNode48;
+				half3 staticSwitch71 = tex2DNode48;
 				#endif
-				float2 temp_cast_5 = (_MicroNormalTiling).xx;
-				float2 texCoord308 = IN.ase_texcoord7.xy * temp_cast_5 + float2( 0,0 );
+				half2 temp_cast_5 = (_MicroNormalTiling).xx;
+				half2 texCoord308 = IN.ase_texcoord7.xy * temp_cast_5 + float2( 0,0 );
 				float2 uv_MaskMap = IN.ase_texcoord7.xy * _MaskMap_ST.xy + _MaskMap_ST.zw;
-				float4 tex2DNode32 = SAMPLE_TEXTURE2D( _MaskMap, sampler_MaskMap, uv_MaskMap );
-				float microNormalMask287 = tex2DNode32.b;
-				float3 unpack52 = UnpackNormalScale( SAMPLE_TEXTURE2D( _MicroNormalMap, sampler_MicroNormalMap, texCoord308 ), ( _MicroNormalStrength * microNormalMask287 * subsurfaceFlattenNormals274 ) );
+				half4 tex2DNode32 = SAMPLE_TEXTURE2D( _MaskMap, sampler_MaskMap, uv_MaskMap );
+				half microNormalMask287 = tex2DNode32.b;
+				half3 unpack52 = UnpackNormalScale( SAMPLE_TEXTURE2D( _MicroNormalMap, sampler_MicroNormalMap, texCoord308 ), ( _MicroNormalStrength * microNormalMask287 * subsurfaceFlattenNormals274 ) );
 				unpack52.z = lerp( 1, unpack52.z, saturate(( _MicroNormalStrength * microNormalMask287 * subsurfaceFlattenNormals274 )) );
 				
 				float2 uv_EmissionMap = IN.ase_texcoord7.xy * _EmissionMap_ST.xy + _EmissionMap_ST.zw;
 				
-				float metallicMap285 = tex2DNode32.r;
+				half metallicMap285 = tex2DNode32.r;
 				
-				float smoothnessMap288 = tex2DNode32.a;
-				float cavityMask295 = tex2DNode196.r;
+				half smoothnessMap288 = tex2DNode32.a;
+				half cavityMask295 = tex2DNode196.r;
 				#ifdef BOOLEAN_IS_HEAD_ON
-				float staticSwitch223 = ( cavityMask295 * smoothnessMap288 );
+				half staticSwitch223 = ( cavityMask295 * smoothnessMap288 );
 				#else
-				float staticSwitch223 = smoothnessMap288;
+				half staticSwitch223 = smoothnessMap288;
 				#endif
-				float saferPower39 = abs( staticSwitch223 );
-				float lerpResult41 = lerp( _SmoothnessMin , _SmoothnessMax , pow( saferPower39 , _SmoothnessPower ));
+				half saferPower39 = abs( staticSwitch223 );
+				half lerpResult41 = lerp( _SmoothnessMin , _SmoothnessMax , pow( saferPower39 , _SmoothnessPower ));
 				#ifdef BOOLEAN_IS_HEAD_ON
-				float staticSwitch170 = SmoothnessMod156;
+				half staticSwitch170 = SmoothnessMod156;
 				#else
-				float staticSwitch170 = SmoothnessMod179;
+				half staticSwitch170 = SmoothnessMod179;
 				#endif
-				float microSmoothnessMod276 = ( staticSwitch170 + _MicroSmoothnessMod );
+				half microSmoothnessMod276 = ( staticSwitch170 + _MicroSmoothnessMod );
 				
-				float ambientOcclusionMap286 = tex2DNode32.g;
+				half ambientOcclusionMap286 = tex2DNode32.g;
 				
 				float2 uv_ThicknessMap = IN.ase_texcoord7.xy * _ThicknessMap_ST.xy + _ThicknessMap_ST.zw;
-				float4 temp_output_307_0 = ( baseColor266 * _SubsurfaceFalloff );
+				half4 temp_output_307_0 = ( baseColor266 * _SubsurfaceFalloff );
 				
 				float3 Albedo = baseColor266.rgb;
 				float3 Normal = BlendNormal( staticSwitch71 , unpack52 );
@@ -3158,8 +3158,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 	
 }
 /*ASEBEGIN
-Version=19001
-1913;24;1920;1005;5189.642;-625.8923;4.041849;True;False
+Version=19100
 Node;AmplifyShaderEditor.CommentaryNode;229;-5908.021,48.08539;Inherit;False;3216.245;1858.522;;57;276;277;174;170;171;172;68;169;156;179;165;164;167;168;166;181;182;147;146;161;159;163;180;157;123;183;152;153;155;124;125;151;154;121;138;150;144;140;133;137;148;142;120;122;131;134;145;139;132;141;130;135;143;129;127;126;128;Micro-Smoothess/Scattering;0.4764151,1,0.9938402,1;0;0
 Node;AmplifyShaderEditor.RangedFloatNode;128;-5857.031,769.2485;Inherit;False;Property;_BSmoothnessMod;Upper Lid/B Smoothness Mod;33;0;Create;False;0;0;0;False;0;False;0;0.3;-1.5;1.5;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;127;-5858.013,693.2935;Inherit;False;Property;_GSmoothnessMod;Mouth/G Smoothness Mod;32;0;Create;False;0;0;0;False;0;False;0;-0.034;-1.5;1.5;0;1;FLOAT;0
@@ -3296,7 +3295,6 @@ Node;AmplifyShaderEditor.GetLocalVarNode;267;-489.2372,2986.478;Inherit;False;26
 Node;AmplifyShaderEditor.RangedFloatNode;42;-875.9194,1536.553;Inherit;False;Property;_SmoothnessMin;SmoothnessMin;7;0;Create;True;0;0;0;False;0;False;0;0;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.TexturePropertyNode;231;-663.3489,921.8763;Inherit;True;Property;_EmissionMap;Emission Map;53;0;Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
 Node;AmplifyShaderEditor.TexturePropertyNode;53;-1724.141,-120.4369;Inherit;True;Property;_MicroNormalMap;Micro Normal Map;13;1;[Normal];Create;True;0;0;0;False;0;False;None;None;True;bump;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
-Node;AmplifyShaderEditor.RangedFloatNode;261;-676.9075,3354.999;Inherit;False;Constant;_SubsurfaceWrapMax;Subsurface Wrap Max;53;0;Create;True;0;0;0;False;0;False;0.2;0.5;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.TextureCoordinatesNode;308;-1715.351,86.57606;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.RegisterLocalVarNode;285;-2905.11,2193.511;Inherit;False;metallicMap;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.ColorNode;233;-313.2517,777.3322;Inherit;False;Property;_EmissiveColor;Emissive Color;54;1;[HDR];Create;True;0;0;0;False;0;False;0,0,0,0;0,0,0,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
@@ -3326,14 +3324,15 @@ Node;AmplifyShaderEditor.StickyNoteNode;197;-4275.65,-395.1431;Inherit;False;182
 Node;AmplifyShaderEditor.WireNode;264;997.1307,2521.128;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.WireNode;306;1007.982,682.2925;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.WireNode;322;1006.677,795.0045;Inherit;False;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;22;525,305;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;2;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;True;1;LightMode=DepthOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;24;525,305;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;2;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Universal2D;0;5;Universal2D;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=Universal2D;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;20;1398.347,820.2733;Half;False;True;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;11;Reallusion/Amplify/RL_SkinShader_Variants_URP;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;18;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalForward;False;False;0;Hidden/InternalErrorShader;0;0;Standard;38;Workflow;1;637772825850121632;Surface;0;637772825868519660;  Refraction Model;0;0;  Blend;0;0;Two Sided;1;0;Fragment Normal Space,InvertActionOnDeselection;0;0;Transmission;1;637772850612646128;  Transmission Shadow;0.5,False,;637782843343460286;Translucency;1;637772840223650237;  Translucency Strength;1,False,;637782843347113608;  Normal Distortion;0.5,False,;637782843350385796;  Scattering;2,False,;637782843353567621;  Direct;0.9,False,;637782843356998360;  Ambient;0.1,False,;637782843360478407;  Shadow;0.5,False,;637782843364399850;Cast Shadows;1;0;  Use Shadow Threshold;0;0;Receive Shadows;1;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;1;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;DOTS Instancing;0;0;Tessellation;0;637772870354882285;  Phong;0;637772870352635162;  Strength;0,False,;637772870307115194;  Type;0;0;  Tess;1,False,;637772870321916518;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Write Depth;0;0;  Early Z;0;0;Vertex Position,InvertActionOnDeselection;1;0;0;8;False;True;True;True;True;True;True;True;False;;True;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;26;525,305;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;2;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;GBuffer;0;7;GBuffer;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalGBuffer;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;23;525,305;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;2;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Meta;0;4;Meta;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Meta;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;25;525,305;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;2;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthNormals;0;6;DepthNormals;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=DepthNormals;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;21;525,305;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;2;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=ShadowCaster;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;19;-231.2036,-1128.382;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;2;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;0;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;22;525,305;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;True;1;LightMode=DepthOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;24;525,305;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Universal2D;0;5;Universal2D;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=Universal2D;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;20;1398.347,820.2733;Half;False;True;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;Reallusion/Amplify/RL_SkinShader_Variants_URP;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;18;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalForward;False;False;0;Hidden/InternalErrorShader;0;0;Standard;38;Workflow;1;637772825850121632;Surface;0;637772825868519660;  Refraction Model;0;0;  Blend;0;0;Two Sided;1;0;Fragment Normal Space,InvertActionOnDeselection;0;0;Transmission;1;637772850612646128;  Transmission Shadow;0.5,False,;637782843343460286;Translucency;1;637772840223650237;  Translucency Strength;1,False,;637782843347113608;  Normal Distortion;0.5,False,;637782843350385796;  Scattering;2,False,;637782843353567621;  Direct;0.9,False,;637782843356998360;  Ambient;0.1,False,;637782843360478407;  Shadow;0.5,False,;637782843364399850;Cast Shadows;1;0;  Use Shadow Threshold;0;0;Receive Shadows;1;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;1;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;DOTS Instancing;0;0;Tessellation;0;637772870354882285;  Phong;0;637772870352635162;  Strength;0,False,;637772870307115194;  Type;0;0;  Tess;1,False,;637772870321916518;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Write Depth;0;0;  Early Z;0;0;Vertex Position,InvertActionOnDeselection;1;0;0;8;False;True;True;True;True;True;True;True;False;;True;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;26;525,305;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;GBuffer;0;7;GBuffer;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalGBuffer;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;23;525,305;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Meta;0;4;Meta;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Meta;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;25;525,305;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthNormals;0;6;DepthNormals;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=DepthNormals;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;21;525,305;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=ShadowCaster;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;19;-231.2036,-1128.382;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;0;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.RangedFloatNode;261;-676.9075,3354.999;Inherit;False;Constant;_SubsurfaceWrapMax;Subsurface Wrap Max;53;0;Create;True;0;0;0;False;0;False;0.2;0.5;0;1;0;1;FLOAT;0
 WireConnection;150;0;126;0
 WireConnection;150;1;127;0
 WireConnection;150;2;128;0
@@ -3514,4 +3513,4 @@ WireConnection;20;5;273;0
 WireConnection;20;14;264;0
 WireConnection;20;15;265;0
 ASEEND*/
-//CHKSM=57FBDA1613CD05E47E8B00B976274827C9E72C71
+//CHKSM=A7FA829BEB9DF7CAA4ACCF03EFC3EEC9136BB592
