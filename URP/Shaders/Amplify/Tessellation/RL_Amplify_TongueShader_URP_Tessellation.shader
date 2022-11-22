@@ -1,4 +1,4 @@
-// Made with Amplify Shader Editor v1.9.0.1
+// Made with Amplify Shader Editor v1.9.1
 // Available at the Unity Asset Store - http://u3d.as/y3X 
 Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 {
@@ -23,12 +23,13 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 		_MicroNormalMap("Micro Normal Map", 2D) = "bump" {}
 		_MicroNormalStrength("Micro Normal Strength", Range( 0 , 1)) = 0.5
 		_MicroNormalTiling("Micro Normal Tiling", Range( 0 , 10)) = 4
+		_EmissionMap("Emission Map", 2D) = "white" {}
+		_EmissiveColor("Emissive Color", Color) = (0,0,0,0)
 		_GradientAOMap("Gradient AO Map", 2D) = "white" {}
 		_FrontAO("Front AO", Range( 0 , 1.5)) = 1
-		_RearAO("Rear AO", Range( 0 , 1.5)) = 0
-		_EmissionMap("Emission Map", 2D) = "white" {}
-		[ASEEnd]_EmissiveColor("Emissive Color", Color) = (0,0,0,0)
+		[ASEEnd]_RearAO("Rear AO", Range( 0 , 1.5)) = 0
 		[HideInInspector] _texcoord( "", 2D ) = "white" {}
+
 
 		_TransmissionShadow( "Transmission Shadow", Range( 0, 1 ) ) = 0.5
 		_TransStrength( "Strength", Range( 0, 50 ) ) = 1
@@ -43,6 +44,10 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 		//_TessMax( "Tess Max Distance", Float ) = 25
 		_TessEdgeLength ( "Edge length", Range( 2, 50 ) ) = 16
 		//_TessMaxDisp( "Tess Max Displacement", Float ) = 25
+
+		[HideInInspector][ToggleOff] _SpecularHighlights("Specular Highlights", Float) = 1.0
+		[HideInInspector][ToggleOff] _EnvironmentReflections("Environment Reflections", Float) = 1.0
+		[HideInInspector][ToggleOff] _ReceiveShadows("Receive Shadows", Float) = 1.0
 	}
 
 	SubShader
@@ -52,14 +57,19 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 		
 
 		Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Opaque" "Queue"="Geometry" }
+
 		Cull Back
+		ZWrite On
+		ZTest LEqual
+		Offset 0 , 0
 		AlphaToMask Off
+
 		
+
 		HLSLINCLUDE
 		#pragma target 4.6
-
 		#pragma prefer_hlslcc gles
-		#pragma exclude_renderers d3d11_9x 
+		// ensure rendering platforms toggle list is visible
 
 		#ifndef ASE_TESS_FUNCS
 		#define ASE_TESS_FUNCS
@@ -67,7 +77,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 		{
 			return tessValue;
 		}
-		
+
 		float CalcDistanceTessFactor (float4 vertex, float minDist, float maxDist, float tess, float4x4 o2w, float3 cameraPos )
 		{
 			float3 wpos = mul(o2w,vertex).xyz;
@@ -104,17 +114,17 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 		{
 			float4 planeTest;
 			planeTest.x = (( DistanceFromPlane(wpos0, planes[0]) > -cullEps) ? 1.0f : 0.0f ) +
-						  (( DistanceFromPlane(wpos1, planes[0]) > -cullEps) ? 1.0f : 0.0f ) +
-						  (( DistanceFromPlane(wpos2, planes[0]) > -cullEps) ? 1.0f : 0.0f );
+							(( DistanceFromPlane(wpos1, planes[0]) > -cullEps) ? 1.0f : 0.0f ) +
+							(( DistanceFromPlane(wpos2, planes[0]) > -cullEps) ? 1.0f : 0.0f );
 			planeTest.y = (( DistanceFromPlane(wpos0, planes[1]) > -cullEps) ? 1.0f : 0.0f ) +
-						  (( DistanceFromPlane(wpos1, planes[1]) > -cullEps) ? 1.0f : 0.0f ) +
-						  (( DistanceFromPlane(wpos2, planes[1]) > -cullEps) ? 1.0f : 0.0f );
+							(( DistanceFromPlane(wpos1, planes[1]) > -cullEps) ? 1.0f : 0.0f ) +
+							(( DistanceFromPlane(wpos2, planes[1]) > -cullEps) ? 1.0f : 0.0f );
 			planeTest.z = (( DistanceFromPlane(wpos0, planes[2]) > -cullEps) ? 1.0f : 0.0f ) +
-						  (( DistanceFromPlane(wpos1, planes[2]) > -cullEps) ? 1.0f : 0.0f ) +
-						  (( DistanceFromPlane(wpos2, planes[2]) > -cullEps) ? 1.0f : 0.0f );
+							(( DistanceFromPlane(wpos1, planes[2]) > -cullEps) ? 1.0f : 0.0f ) +
+							(( DistanceFromPlane(wpos2, planes[2]) > -cullEps) ? 1.0f : 0.0f );
 			planeTest.w = (( DistanceFromPlane(wpos0, planes[3]) > -cullEps) ? 1.0f : 0.0f ) +
-						  (( DistanceFromPlane(wpos1, planes[3]) > -cullEps) ? 1.0f : 0.0f ) +
-						  (( DistanceFromPlane(wpos2, planes[3]) > -cullEps) ? 1.0f : 0.0f );
+							(( DistanceFromPlane(wpos1, planes[3]) > -cullEps) ? 1.0f : 0.0f ) +
+							(( DistanceFromPlane(wpos2, planes[3]) > -cullEps) ? 1.0f : 0.0f );
 			return !all (planeTest);
 		}
 
@@ -162,7 +172,6 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			return tess;
 		}
 		#endif //ASE_TESS_FUNCS
-
 		ENDHLSL
 
 		
@@ -171,24 +180,25 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			
 			Name "Forward"
 			Tags { "LightMode"="UniversalForward" }
-			
+
 			Blend One Zero, One Zero
 			ZWrite On
 			ZTest LEqual
 			Offset 0 , 0
 			ColorMask RGBA
+
 			
 
 			HLSLPROGRAM
-			
+
 			#define _NORMAL_DROPOFF_TS 1
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
-			#define _TRANSMISSION_ASE 1
-			#define _TRANSLUCENCY_ASE 1
-			#define TESSELLATION_ON 1
+			#define ASE_TRANSMISSION 1
+			#define ASE_TRANSLUCENCY 1
+			#define ASE_TESSELLATION 1
 			#pragma require tessellation tessHW
 			#pragma hull HullFunction
 			#pragma domain DomainFunction
@@ -196,17 +206,24 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 100900
+			#define ASE_SRP_VERSION 101001
+
+
+			#pragma shader_feature_local _RECEIVE_SHADOWS_OFF
+			#pragma shader_feature_local_fragment _SPECULARHIGHLIGHTS_OFF
+			#pragma shader_feature_local_fragment _ENVIRONMENTREFLECTIONS_OFF
 
 			
-			#pragma multi_compile _ _SCREEN_SPACE_OCCLUSION
 			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS
 			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
-			#pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS _ADDITIONAL_OFF
-			#pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS
-			#pragma multi_compile _ _SHADOWS_SOFT
-			#pragma multi_compile _ _MIXED_LIGHTING_SUBTRACTIVE
+		
+
 			
+
+			#pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS
+			#pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
+			#pragma multi_compile_fragment _ _SHADOWS_SOFT
+			#pragma multi_compile_fragment _ _SCREEN_SPACE_OCCLUSION
 			#pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
 			#pragma multi_compile _ SHADOWS_SHADOWMASK
 
@@ -216,20 +233,16 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#define SHADERPASS_FORWARD
+			#define SHADERPASS SHADERPASS_FORWARD
 
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
-			
-			#if ASE_SRP_VERSION <= 70108
-			#define REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR
-			#endif
+			#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
 
 			#if defined(UNITY_INSTANCING_ENABLED) && defined(_TERRAIN_INSTANCED_PERPIXEL_NORMAL)
-			    #define ENABLE_TERRAIN_PERPIXEL_NORMAL
+				#define ENABLE_TERRAIN_PERPIXEL_NORMAL
 			#endif
 
 			
@@ -239,8 +252,8 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float4 vertex : POSITION;
 				float3 ase_normal : NORMAL;
 				float4 ase_tangent : TANGENT;
-				float4 texcoord1 : TEXCOORD1;
 				float4 texcoord : TEXCOORD0;
+				float4 texcoord1 : TEXCOORD1;
 				
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -251,13 +264,13 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float4 lightmapUVOrVertexSH : TEXCOORD0;
 				half4 fogFactorAndVertexLight : TEXCOORD1;
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
-				float4 shadowCoord : TEXCOORD2;
+					float4 shadowCoord : TEXCOORD2;
 				#endif
 				float4 tSpace0 : TEXCOORD3;
 				float4 tSpace1 : TEXCOORD4;
 				float4 tSpace2 : TEXCOORD5;
 				#if defined(ASE_NEEDS_FRAG_SCREEN_POSITION)
-				float4 screenPos : TEXCOORD6;
+					float4 screenPos : TEXCOORD6;
 				#endif
 				float4 ase_texcoord7 : TEXCOORD7;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -286,10 +299,10 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			float _TongueSaturation;
 			float _MicroNormalStrength;
 			float _TongueSSS;
-			#ifdef _TRANSMISSION_ASE
+			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
-			#ifdef _TRANSLUCENCY_ASE
+			#ifdef ASE_TRANSLUCENCY
 				float _TransStrength;
 				float _TransNormal;
 				float _TransScattering;
@@ -297,7 +310,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float _TransAmbient;
 				float _TransShadow;
 			#endif
-			#ifdef TESSELLATION_ON
+			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
 				float _TessMin;
@@ -306,6 +319,18 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
+
+			// Property used by ScenePickingPass
+			#ifdef SCENEPICKINGPASS
+				float4 _SelectionID;
+			#endif
+
+			// Properties used by SceneSelectionPass
+			#ifdef SCENESELECTIONPASS
+				int _ObjectId;
+				int _PassValue;
+			#endif
+
 			sampler2D _DiffuseMap;
 			sampler2D _GradientAOMap;
 			sampler2D _NormalMap;
@@ -342,12 +367,15 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord7.zw = 0;
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
+
 				float3 vertexValue = defaultVertexValue;
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -365,8 +393,13 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				o.tSpace1 = float4( normalInput.tangentWS, positionWS.y);
 				o.tSpace2 = float4( normalInput.bitangentWS, positionWS.z);
 
-				OUTPUT_LIGHTMAP_UV( v.texcoord1, unity_LightmapST, o.lightmapUVOrVertexSH.xy );
-				OUTPUT_SH( normalInput.normalWS.xyz, o.lightmapUVOrVertexSH.xyz );
+				#if defined(LIGHTMAP_ON)
+					OUTPUT_LIGHTMAP_UV( v.texcoord1, unity_LightmapST, o.lightmapUVOrVertexSH.xy );
+				#endif
+
+				#if !defined(LIGHTMAP_ON)
+					OUTPUT_SH( normalInput.normalWS.xyz, o.lightmapUVOrVertexSH.xyz );
+				#endif
 
 				#if defined(ENABLE_TERRAIN_PERPIXEL_NORMAL)
 					o.lightmapUVOrVertexSH.zw = v.texcoord;
@@ -374,28 +407,32 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				#endif
 
 				half3 vertexLight = VertexLighting( positionWS, normalInput.normalWS );
+
 				#ifdef ASE_FOG
 					half fogFactor = ComputeFogFactor( positionCS.z );
 				#else
 					half fogFactor = 0;
 				#endif
+
 				o.fogFactorAndVertexLight = half4(fogFactor, vertexLight);
-				
+
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
-				VertexPositionInputs vertexInput = (VertexPositionInputs)0;
-				vertexInput.positionWS = positionWS;
-				vertexInput.positionCS = positionCS;
-				o.shadowCoord = GetShadowCoord( vertexInput );
+					VertexPositionInputs vertexInput = (VertexPositionInputs)0;
+					vertexInput.positionWS = positionWS;
+					vertexInput.positionCS = positionCS;
+					o.shadowCoord = GetShadowCoord( vertexInput );
 				#endif
-				
+
 				o.clipPos = positionCS;
+
 				#if defined(ASE_NEEDS_FRAG_SCREEN_POSITION)
-				o.screenPos = ComputeScreenPos(positionCS);
+					o.screenPos = ComputeScreenPos(positionCS);
 				#endif
+
 				return o;
 			}
-			
-			#if defined(TESSELLATION_ON)
+
+			#if defined(ASE_TESSELLATION)
 			struct VertexControl
 			{
 				float4 vertex : INTERNALTESSPOS;
@@ -453,7 +490,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			[outputcontrolpoints(3)]
 			VertexControl HullFunction(InputPatch<VertexControl, 3> patch, uint id : SV_OutputControlPointID)
 			{
-			   return patch[id];
+				return patch[id];
 			}
 
 			[domain("tri")]
@@ -484,12 +521,12 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			#endif
 
 			#if defined(ASE_EARLY_Z_DEPTH_OPTIMIZE)
-				#define ASE_SV_DEPTH SV_DepthLessEqual  
+				#define ASE_SV_DEPTH SV_DepthLessEqual
 			#else
 				#define ASE_SV_DEPTH SV_Depth
 			#endif
 
-			half4 frag ( VertexOutput IN 
+			half4 frag ( VertexOutput IN
 						#ifdef ASE_DEPTH_WRITE_ON
 						,out float outputDepth : ASE_SV_DEPTH
 						#endif
@@ -512,11 +549,13 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 					float3 WorldTangent = IN.tSpace1.xyz;
 					float3 WorldBiTangent = IN.tSpace2.xyz;
 				#endif
+
 				float3 WorldPosition = float3(IN.tSpace0.w,IN.tSpace1.w,IN.tSpace2.w);
 				float3 WorldViewDirection = _WorldSpaceCameraPos.xyz  - WorldPosition;
 				float4 ShadowCoords = float4( 0, 0, 0, 0 );
+
 				#if defined(ASE_NEEDS_FRAG_SCREEN_POSITION)
-				float4 ScreenPos = IN.screenPos;
+					float4 ScreenPos = IN.screenPos;
 				#endif
 
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
@@ -524,7 +563,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				#elif defined(MAIN_LIGHT_CALCULATE_SHADOWS)
 					ShadowCoords = TransformWorldToShadowCoord( WorldPosition );
 				#endif
-	
+
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
 				float2 uv_DiffuseMap = IN.ase_texcoord7.xy * _DiffuseMap_ST.xy + _DiffuseMap_ST.zw;
@@ -554,7 +593,8 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float3 baseColor98 = lerpResult40;
 				float4 temp_output_100_0 = ( _SubsurfaceFalloff * float4( baseColor98 , 0.0 ) );
 				
-				float3 Albedo = lerpResult40;
+
+				float3 BaseColor = lerpResult40;
 				float3 Normal = BlendNormal( unpack75 , unpack76 );
 				float3 Emission = ( tex2D( _EmissionMap, uv_EmissionMap ) * _EmissiveColor ).rgb;
 				float3 Specular = 0.5;
@@ -569,8 +609,9 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float RefractionIndex = 1;
 				float3 Transmission = ( _TongueThickness * temp_output_100_0 ).rgb;
 				float3 Translucency = ( _TongueSSS * 0.5 * temp_output_100_0 ).rgb;
+
 				#ifdef ASE_DEPTH_WRITE_ON
-				float DepthValue = 0;
+					float DepthValue = 0;
 				#endif
 
 				#ifdef _ALPHATEST_ON
@@ -583,13 +624,13 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				inputData.shadowCoord = ShadowCoords;
 
 				#ifdef _NORMALMAP
-					#if _NORMAL_DROPOFF_TS
-					inputData.normalWS = TransformTangentToWorld(Normal, half3x3( WorldTangent, WorldBiTangent, WorldNormal ));
-					#elif _NORMAL_DROPOFF_OS
-					inputData.normalWS = TransformObjectToWorldNormal(Normal);
-					#elif _NORMAL_DROPOFF_WS
-					inputData.normalWS = Normal;
-					#endif
+						#if _NORMAL_DROPOFF_TS
+							inputData.normalWS = TransformTangentToWorld(Normal, half3x3(WorldTangent, WorldBiTangent, WorldNormal));
+						#elif _NORMAL_DROPOFF_OS
+							inputData.normalWS = TransformObjectToWorldNormal(Normal);
+						#elif _NORMAL_DROPOFF_WS
+							inputData.normalWS = Normal;
+						#endif
 					inputData.normalWS = NormalizeNormalPerPixel(inputData.normalWS);
 				#else
 					inputData.normalWS = WorldNormal;
@@ -598,8 +639,8 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				#ifdef ASE_FOG
 					inputData.fogCoord = IN.fogFactorAndVertexLight.x;
 				#endif
+					inputData.vertexLighting = IN.fogFactorAndVertexLight.yzw;
 
-				inputData.vertexLighting = IN.fogFactorAndVertexLight.yzw;
 				#if defined(ENABLE_TERRAIN_PERPIXEL_NORMAL)
 					float3 SH = SampleSH(inputData.normalWS.xyz);
 				#else
@@ -607,24 +648,25 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				#endif
 
 				inputData.bakedGI = SAMPLE_GI( IN.lightmapUVOrVertexSH.xy, SH, inputData.normalWS );
-				#ifdef _ASE_BAKEDGI
+
+				#ifdef ASE_BAKEDGI
 					inputData.bakedGI = BakedGI;
 				#endif
-				
+
 				inputData.normalizedScreenSpaceUV = GetNormalizedScreenSpaceUV(IN.clipPos);
 				inputData.shadowMask = SAMPLE_SHADOWMASK(IN.lightmapUVOrVertexSH.xy);
 
 				half4 color = UniversalFragmentPBR(
-					inputData, 
-					Albedo, 
-					Metallic, 
-					Specular, 
-					Smoothness, 
-					Occlusion, 
-					Emission, 
+					inputData,
+					BaseColor,
+					Metallic,
+					Specular,
+					Smoothness,
+					Occlusion,
+					Emission,
 					Alpha);
 
-				#ifdef _TRANSMISSION_ASE
+				#ifdef ASE_TRANSMISSION
 				{
 					float shadow = _TransmissionShadow;
 
@@ -632,7 +674,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 					float3 mainAtten = mainLight.color * mainLight.distanceAttenuation;
 					mainAtten = lerp( mainAtten, mainAtten * mainLight.shadowAttenuation, shadow );
 					half3 mainTransmission = max(0 , -dot(inputData.normalWS, mainLight.direction)) * mainAtten * Transmission;
-					color.rgb += Albedo * mainTransmission;
+					color.rgb += BaseColor * mainTransmission;
 
 					#ifdef _ADDITIONAL_LIGHTS
 						int transPixelLightCount = GetAdditionalLightsCount();
@@ -643,13 +685,13 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 							atten = lerp( atten, atten * light.shadowAttenuation, shadow );
 
 							half3 transmission = max(0 , -dot(inputData.normalWS, light.direction)) * atten * Transmission;
-							color.rgb += Albedo * transmission;
+							color.rgb += BaseColor * transmission;
 						}
 					#endif
 				}
 				#endif
 
-				#ifdef _TRANSLUCENCY_ASE
+				#ifdef ASE_TRANSLUCENCY
 				{
 					float shadow = _TransShadow;
 					float normal = _TransNormal;
@@ -665,7 +707,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 					half3 mainLightDir = mainLight.direction + inputData.normalWS * normal;
 					half mainVdotL = pow( saturate( dot( inputData.viewDirectionWS, -mainLightDir ) ), scattering );
 					half3 mainTranslucency = mainAtten * ( mainVdotL * direct + inputData.bakedGI * ambient ) * Translucency;
-					color.rgb += Albedo * mainTranslucency * strength;
+					color.rgb += BaseColor * mainTranslucency * strength;
 
 					#ifdef _ADDITIONAL_LIGHTS
 						int transPixelLightCount = GetAdditionalLightsCount();
@@ -678,13 +720,13 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 							half3 lightDir = light.direction + inputData.normalWS * normal;
 							half VdotL = pow( saturate( dot( inputData.viewDirectionWS, -lightDir ) ), scattering );
 							half3 translucency = atten * ( VdotL * direct + inputData.bakedGI * ambient ) * Translucency;
-							color.rgb += Albedo * translucency * strength;
+							color.rgb += BaseColor * translucency * strength;
 						}
 					#endif
 				}
 				#endif
 
-				#ifdef _REFRACTION_ASE
+				#ifdef ASE_REFRACTION
 					float4 projScreenPos = ScreenPos / ScreenPos.w;
 					float3 refractionOffset = ( RefractionIndex - 1.0 ) * mul( UNITY_MATRIX_V, float4( WorldNormal,0 ) ).xyz * ( 1.0 - dot( WorldNormal, WorldViewDirection ) );
 					projScreenPos.xy += refractionOffset.xy;
@@ -728,15 +770,15 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			ColorMask 0
 
 			HLSLPROGRAM
-			
+
 			#define _NORMAL_DROPOFF_TS 1
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
-			#define _TRANSMISSION_ASE 1
-			#define _TRANSLUCENCY_ASE 1
-			#define TESSELLATION_ON 1
+			#define ASE_TRANSMISSION 1
+			#define ASE_TRANSLUCENCY 1
+			#define ASE_TESSELLATION 1
 			#pragma require tessellation tessHW
 			#pragma hull HullFunction
 			#pragma domain DomainFunction
@@ -744,20 +786,18 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 100900
+			#define ASE_SRP_VERSION 101001
 
-			
+
 			#pragma vertex vert
 			#pragma fragment frag
-#if ASE_SRP_VERSION >= 110000
-			#pragma multi_compile _ _CASTING_PUNCTUAL_LIGHT_SHADOW
-#endif
-			#define SHADERPASS_SHADOWCASTER
 
+			#define SHADERPASS SHADERPASS_SHADOWCASTER
+
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 
 			
 
@@ -773,10 +813,10 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			{
 				float4 clipPos : SV_POSITION;
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 worldPos : TEXCOORD0;
+					float3 worldPos : TEXCOORD0;
 				#endif
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
-				float4 shadowCoord : TEXCOORD1;
+					float4 shadowCoord : TEXCOORD1;
 				#endif
 				float4 ase_texcoord2 : TEXCOORD2;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -805,10 +845,10 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			float _TongueSaturation;
 			float _MicroNormalStrength;
 			float _TongueSSS;
-			#ifdef _TRANSMISSION_ASE
+			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
-			#ifdef _TRANSLUCENCY_ASE
+			#ifdef ASE_TRANSLUCENCY
 				float _TransStrength;
 				float _TransNormal;
 				float _TransScattering;
@@ -816,7 +856,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float _TransAmbient;
 				float _TransShadow;
 			#endif
-			#ifdef TESSELLATION_ON
+			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
 				float _TessMin;
@@ -825,14 +865,27 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
+
+			// Property used by ScenePickingPass
+			#ifdef SCENEPICKINGPASS
+				float4 _SelectionID;
+			#endif
+
+			// Properties used by SceneSelectionPass
+			#ifdef SCENESELECTIONPASS
+				int _ObjectId;
+				int _PassValue;
+			#endif
+
 			sampler2D _DiffuseMap;
 
 
 			
 			float3 _LightDirection;
-#if ASE_SRP_VERSION >= 110000 
-			float3 _LightPosition;
-#endif
+			#if ASE_SRP_VERSION >= 110000
+				float3 _LightPosition;
+			#endif
+
 			VertexOutput VertexFunction( VertexInput v )
 			{
 				VertexOutput o;
@@ -844,11 +897,13 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord2.zw = 0;
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
+
 				float3 vertexValue = defaultVertexValue;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
@@ -859,31 +914,35 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				v.ase_normal = v.ase_normal;
 
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
+
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				o.worldPos = positionWS;
+					o.worldPos = positionWS;
 				#endif
+
 				float3 normalWS = TransformObjectToWorldDir(v.ase_normal);
 
-		#if ASE_SRP_VERSION >= 110000 
-			#if _CASTING_PUNCTUAL_LIGHT_SHADOW
-				float3 lightDirectionWS = normalize(_LightPosition - positionWS);
-			#else
-				float3 lightDirectionWS = _LightDirection;
-			#endif
-				float4 clipPos = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, lightDirectionWS));
-			#if UNITY_REVERSED_Z
-				clipPos.z = min(clipPos.z, UNITY_NEAR_CLIP_VALUE);
-			#else
-				clipPos.z = max(clipPos.z, UNITY_NEAR_CLIP_VALUE);
-			#endif
-		#else
-				float4 clipPos = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, _LightDirection));
-			#if UNITY_REVERSED_Z
-				clipPos.z = min(clipPos.z, clipPos.w * UNITY_NEAR_CLIP_VALUE);
-			#else
-				clipPos.z = max(clipPos.z, clipPos.w * UNITY_NEAR_CLIP_VALUE);
-			#endif
-		#endif
+				#if ASE_SRP_VERSION >= 110000
+					#if _CASTING_PUNCTUAL_LIGHT_SHADOW
+						float3 lightDirectionWS = normalize(_LightPosition - positionWS);
+					#else
+						float3 lightDirectionWS = _LightDirection;
+					#endif
+
+					float4 clipPos = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, lightDirectionWS));
+
+					#if UNITY_REVERSED_Z
+						clipPos.z = min(clipPos.z, UNITY_NEAR_CLIP_VALUE);
+					#else
+						clipPos.z = max(clipPos.z, UNITY_NEAR_CLIP_VALUE);
+					#endif
+				#else
+					float4 clipPos = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, _LightDirection));
+					#if UNITY_REVERSED_Z
+						clipPos.z = min(clipPos.z, clipPos.w * UNITY_NEAR_CLIP_VALUE);
+					#else
+						clipPos.z = max(clipPos.z, clipPos.w * UNITY_NEAR_CLIP_VALUE);
+					#endif
+				#endif
 
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
 					VertexPositionInputs vertexInput = (VertexPositionInputs)0;
@@ -891,11 +950,13 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 					vertexInput.positionCS = clipPos;
 					o.shadowCoord = GetShadowCoord( vertexInput );
 				#endif
+
 				o.clipPos = clipPos;
+
 				return o;
 			}
 
-			#if defined(TESSELLATION_ON)
+			#if defined(ASE_TESSELLATION)
 			struct VertexControl
 			{
 				float4 vertex : INTERNALTESSPOS;
@@ -948,7 +1009,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			[outputcontrolpoints(3)]
 			VertexControl HullFunction(InputPatch<VertexControl, 3> patch, uint id : SV_OutputControlPointID)
 			{
-			   return patch[id];
+				return patch[id];
 			}
 
 			[domain("tri")]
@@ -976,12 +1037,12 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			#endif
 
 			#if defined(ASE_EARLY_Z_DEPTH_OPTIMIZE)
-				#define ASE_SV_DEPTH SV_DepthLessEqual  
+				#define ASE_SV_DEPTH SV_DepthLessEqual
 			#else
 				#define ASE_SV_DEPTH SV_Depth
 			#endif
 
-			half4 frag(	VertexOutput IN 
+			half4 frag(	VertexOutput IN
 						#ifdef ASE_DEPTH_WRITE_ON
 						,out float outputDepth : ASE_SV_DEPTH
 						#endif
@@ -989,10 +1050,11 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			{
 				UNITY_SETUP_INSTANCE_ID( IN );
 				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX( IN );
-				
+
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 WorldPosition = IN.worldPos;
+					float3 WorldPosition = IN.worldPos;
 				#endif
+
 				float4 ShadowCoords = float4( 0, 0, 0, 0 );
 
 				#if defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
@@ -1006,11 +1068,13 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float2 uv_DiffuseMap = IN.ase_texcoord2.xy * _DiffuseMap_ST.xy + _DiffuseMap_ST.zw;
 				float4 tex2DNode32 = tex2D( _DiffuseMap, uv_DiffuseMap );
 				
+
 				float Alpha = tex2DNode32.a;
 				float AlphaClipThreshold = 0.5;
 				float AlphaClipThresholdShadow = 0.5;
+
 				#ifdef ASE_DEPTH_WRITE_ON
-				float DepthValue = 0;
+					float DepthValue = 0;
 				#endif
 
 				#ifdef _ALPHATEST_ON
@@ -1024,12 +1088,13 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				#ifdef LOD_FADE_CROSSFADE
 					LODDitheringTransition( IN.clipPos.xyz, unity_LODFade.x );
 				#endif
+
 				#ifdef ASE_DEPTH_WRITE_ON
 					outputDepth = DepthValue;
 				#endif
+
 				return 0;
 			}
-
 			ENDHLSL
 		}
 
@@ -1045,15 +1110,15 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			AlphaToMask Off
 
 			HLSLPROGRAM
-			
+
 			#define _NORMAL_DROPOFF_TS 1
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
-			#define _TRANSMISSION_ASE 1
-			#define _TRANSLUCENCY_ASE 1
-			#define TESSELLATION_ON 1
+			#define ASE_TRANSMISSION 1
+			#define ASE_TRANSLUCENCY 1
+			#define ASE_TESSELLATION 1
 			#pragma require tessellation tessHW
 			#pragma hull HullFunction
 			#pragma domain DomainFunction
@@ -1061,18 +1126,18 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 100900
+			#define ASE_SRP_VERSION 101001
 
-			
+
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#define SHADERPASS_DEPTHONLY
+			#define SHADERPASS SHADERPASS_DEPTHONLY
 
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 
 			
 
@@ -1120,10 +1185,10 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			float _TongueSaturation;
 			float _MicroNormalStrength;
 			float _TongueSSS;
-			#ifdef _TRANSMISSION_ASE
+			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
-			#ifdef _TRANSLUCENCY_ASE
+			#ifdef ASE_TRANSLUCENCY
 				float _TransStrength;
 				float _TransNormal;
 				float _TransScattering;
@@ -1131,7 +1196,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float _TransAmbient;
 				float _TransShadow;
 			#endif
-			#ifdef TESSELLATION_ON
+			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
 				float _TessMin;
@@ -1140,6 +1205,18 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
+
+			// Property used by ScenePickingPass
+			#ifdef SCENEPICKINGPASS
+				float4 _SelectionID;
+			#endif
+
+			// Properties used by SceneSelectionPass
+			#ifdef SCENESELECTIONPASS
+				int _ObjectId;
+				int _PassValue;
+			#endif
+
 			sampler2D _DiffuseMap;
 
 
@@ -1155,12 +1232,15 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord2.zw = 0;
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
+
 				float3 vertexValue = defaultVertexValue;
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -1172,7 +1252,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float4 positionCS = TransformWorldToHClip( positionWS );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				o.worldPos = positionWS;
+					o.worldPos = positionWS;
 				#endif
 
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
@@ -1181,11 +1261,13 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 					vertexInput.positionCS = positionCS;
 					o.shadowCoord = GetShadowCoord( vertexInput );
 				#endif
+
 				o.clipPos = positionCS;
+
 				return o;
 			}
 
-			#if defined(TESSELLATION_ON)
+			#if defined(ASE_TESSELLATION)
 			struct VertexControl
 			{
 				float4 vertex : INTERNALTESSPOS;
@@ -1238,7 +1320,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			[outputcontrolpoints(3)]
 			VertexControl HullFunction(InputPatch<VertexControl, 3> patch, uint id : SV_OutputControlPointID)
 			{
-			   return patch[id];
+				return patch[id];
 			}
 
 			[domain("tri")]
@@ -1266,11 +1348,12 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			#endif
 
 			#if defined(ASE_EARLY_Z_DEPTH_OPTIMIZE)
-				#define ASE_SV_DEPTH SV_DepthLessEqual  
+				#define ASE_SV_DEPTH SV_DepthLessEqual
 			#else
 				#define ASE_SV_DEPTH SV_Depth
 			#endif
-			half4 frag(	VertexOutput IN 
+
+			half4 frag(	VertexOutput IN
 						#ifdef ASE_DEPTH_WRITE_ON
 						,out float outputDepth : ASE_SV_DEPTH
 						#endif
@@ -1282,6 +1365,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
 				float3 WorldPosition = IN.worldPos;
 				#endif
+
 				float4 ShadowCoords = float4( 0, 0, 0, 0 );
 
 				#if defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
@@ -1295,10 +1379,11 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float2 uv_DiffuseMap = IN.ase_texcoord2.xy * _DiffuseMap_ST.xy + _DiffuseMap_ST.zw;
 				float4 tex2DNode32 = tex2D( _DiffuseMap, uv_DiffuseMap );
 				
+
 				float Alpha = tex2DNode32.a;
 				float AlphaClipThreshold = 0.5;
 				#ifdef ASE_DEPTH_WRITE_ON
-				float DepthValue = 0;
+					float DepthValue = 0;
 				#endif
 
 				#ifdef _ALPHATEST_ON
@@ -1308,15 +1393,16 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				#ifdef LOD_FADE_CROSSFADE
 					LODDitheringTransition( IN.clipPos.xyz, unity_LODFade.x );
 				#endif
+
 				#ifdef ASE_DEPTH_WRITE_ON
-				outputDepth = DepthValue;
+					outputDepth = DepthValue;
 				#endif
 
 				return 0;
 			}
 			ENDHLSL
 		}
-		
+
 		
 		Pass
 		{
@@ -1327,15 +1413,15 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			Cull Off
 
 			HLSLPROGRAM
-			
+
 			#define _NORMAL_DROPOFF_TS 1
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
-			#define _TRANSMISSION_ASE 1
-			#define _TRANSLUCENCY_ASE 1
-			#define TESSELLATION_ON 1
+			#define ASE_TRANSMISSION 1
+			#define ASE_TRANSLUCENCY 1
+			#define ASE_TESSELLATION 1
 			#pragma require tessellation tessHW
 			#pragma hull HullFunction
 			#pragma domain DomainFunction
@@ -1343,22 +1429,21 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 100900
+			#define ASE_SRP_VERSION 101001
 
-			
+
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#define SHADERPASS_META
+			#define SHADERPASS SHADERPASS_META
 
-			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/MetaInput.hlsl"
-			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/MetaInput.hlsl"
 
 			
-
-			#pragma shader_feature _ _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
 
 			struct VertexInput
 			{
@@ -1374,10 +1459,10 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			{
 				float4 clipPos : SV_POSITION;
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 worldPos : TEXCOORD0;
+					float3 worldPos : TEXCOORD0;
 				#endif
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
-				float4 shadowCoord : TEXCOORD1;
+					float4 shadowCoord : TEXCOORD1;
 				#endif
 				float4 ase_texcoord2 : TEXCOORD2;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -1406,10 +1491,10 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			float _TongueSaturation;
 			float _MicroNormalStrength;
 			float _TongueSSS;
-			#ifdef _TRANSMISSION_ASE
+			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
-			#ifdef _TRANSLUCENCY_ASE
+			#ifdef ASE_TRANSLUCENCY
 				float _TransStrength;
 				float _TransNormal;
 				float _TransScattering;
@@ -1417,7 +1502,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float _TransAmbient;
 				float _TransShadow;
 			#endif
-			#ifdef TESSELLATION_ON
+			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
 				float _TessMin;
@@ -1426,6 +1511,18 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
+
+			// Property used by ScenePickingPass
+			#ifdef SCENEPICKINGPASS
+				float4 _SelectionID;
+			#endif
+
+			// Properties used by SceneSelectionPass
+			#ifdef SCENESELECTIONPASS
+				int _ObjectId;
+				int _PassValue;
+			#endif
+
 			sampler2D _DiffuseMap;
 			sampler2D _GradientAOMap;
 			sampler2D _EmissionMap;
@@ -1459,13 +1556,15 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord2.zw = 0;
-				
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
+
 				float3 vertexValue = defaultVertexValue;
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -1475,21 +1574,24 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				v.ase_normal = v.ase_normal;
 
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
+
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				o.worldPos = positionWS;
+					o.worldPos = positionWS;
 				#endif
 
 				o.clipPos = MetaVertexPosition( v.vertex, v.texcoord1.xy, v.texcoord1.xy, unity_LightmapST, unity_DynamicLightmapST );
+
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
 					VertexPositionInputs vertexInput = (VertexPositionInputs)0;
 					vertexInput.positionWS = positionWS;
 					vertexInput.positionCS = o.clipPos;
 					o.shadowCoord = GetShadowCoord( vertexInput );
 				#endif
+
 				return o;
 			}
 
-			#if defined(TESSELLATION_ON)
+			#if defined(ASE_TESSELLATION)
 			struct VertexControl
 			{
 				float4 vertex : INTERNALTESSPOS;
@@ -1546,7 +1648,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			[outputcontrolpoints(3)]
 			VertexControl HullFunction(InputPatch<VertexControl, 3> patch, uint id : SV_OutputControlPointID)
 			{
-			   return patch[id];
+				return patch[id];
 			}
 
 			[domain("tri")]
@@ -1581,8 +1683,9 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX( IN );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 WorldPosition = IN.worldPos;
+					float3 WorldPosition = IN.worldPos;
 				#endif
+
 				float4 ShadowCoords = float4( 0, 0, 0, 0 );
 
 				#if defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
@@ -1603,8 +1706,8 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				
 				float2 uv_EmissionMap = IN.ase_texcoord2.xy * _EmissionMap_ST.xy + _EmissionMap_ST.zw;
 				
-				
-				float3 Albedo = lerpResult40;
+
+				float3 BaseColor = lerpResult40;
 				float3 Emission = ( tex2D( _EmissionMap, uv_EmissionMap ) * _EmissiveColor ).rgb;
 				float Alpha = tex2DNode32.a;
 				float AlphaClipThreshold = 0.5;
@@ -1614,9 +1717,9 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				#endif
 
 				MetaInput metaInput = (MetaInput)0;
-				metaInput.Albedo = Albedo;
+				metaInput.Albedo = BaseColor;
 				metaInput.Emission = Emission;
-				
+
 				return MetaFragment(metaInput);
 			}
 			ENDHLSL
@@ -1636,15 +1739,15 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			ColorMask RGBA
 
 			HLSLPROGRAM
-			
+
 			#define _NORMAL_DROPOFF_TS 1
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
-			#define _TRANSMISSION_ASE 1
-			#define _TRANSLUCENCY_ASE 1
-			#define TESSELLATION_ON 1
+			#define ASE_TRANSMISSION 1
+			#define ASE_TRANSLUCENCY 1
+			#define ASE_TESSELLATION 1
 			#pragma require tessellation tessHW
 			#pragma hull HullFunction
 			#pragma domain DomainFunction
@@ -1652,23 +1755,20 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 100900
+			#define ASE_SRP_VERSION 101001
 
-			
+
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#define SHADERPASS_2D
+			#define SHADERPASS SHADERPASS_2D
 
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
-			
-			
 
-			#pragma shader_feature _ _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+			
 
 			struct VertexInput
 			{
@@ -1682,10 +1782,10 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			{
 				float4 clipPos : SV_POSITION;
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 worldPos : TEXCOORD0;
+					float3 worldPos : TEXCOORD0;
 				#endif
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
-				float4 shadowCoord : TEXCOORD1;
+					float4 shadowCoord : TEXCOORD1;
 				#endif
 				float4 ase_texcoord2 : TEXCOORD2;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -1714,10 +1814,10 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			float _TongueSaturation;
 			float _MicroNormalStrength;
 			float _TongueSSS;
-			#ifdef _TRANSMISSION_ASE
+			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
-			#ifdef _TRANSLUCENCY_ASE
+			#ifdef ASE_TRANSLUCENCY
 				float _TransStrength;
 				float _TransNormal;
 				float _TransScattering;
@@ -1725,7 +1825,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float _TransAmbient;
 				float _TransShadow;
 			#endif
-			#ifdef TESSELLATION_ON
+			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
 				float _TessMin;
@@ -1734,6 +1834,18 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
+
+			// Property used by ScenePickingPass
+			#ifdef SCENEPICKINGPASS
+				float4 _SelectionID;
+			#endif
+
+			// Properties used by SceneSelectionPass
+			#ifdef SCENESELECTIONPASS
+				int _ObjectId;
+				int _PassValue;
+			#endif
+
 			sampler2D _DiffuseMap;
 			sampler2D _GradientAOMap;
 
@@ -1766,13 +1878,15 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord2.zw = 0;
-				
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
+
 				float3 vertexValue = defaultVertexValue;
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -1785,7 +1899,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float4 positionCS = TransformWorldToHClip( positionWS );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				o.worldPos = positionWS;
+					o.worldPos = positionWS;
 				#endif
 
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
@@ -1796,10 +1910,11 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				#endif
 
 				o.clipPos = positionCS;
+
 				return o;
 			}
 
-			#if defined(TESSELLATION_ON)
+			#if defined(ASE_TESSELLATION)
 			struct VertexControl
 			{
 				float4 vertex : INTERNALTESSPOS;
@@ -1852,7 +1967,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			[outputcontrolpoints(3)]
 			VertexControl HullFunction(InputPatch<VertexControl, 3> patch, uint id : SV_OutputControlPointID)
 			{
-			   return patch[id];
+				return patch[id];
 			}
 
 			[domain("tri")]
@@ -1885,8 +2000,9 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX( IN );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 WorldPosition = IN.worldPos;
+					float3 WorldPosition = IN.worldPos;
 				#endif
+
 				float4 ShadowCoords = float4( 0, 0, 0, 0 );
 
 				#if defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
@@ -1905,12 +2021,12 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float4 tex2DNode31 = tex2D( _GradientAOMap, uv_GradientAOMap );
 				float3 lerpResult40 = lerp( ( _RearAO * hsvTorgb36 ) , ( hsvTorgb36 * _FrontAO ) , tex2DNode31.b);
 				
-				
-				float3 Albedo = lerpResult40;
+
+				float3 BaseColor = lerpResult40;
 				float Alpha = tex2DNode32.a;
 				float AlphaClipThreshold = 0.5;
 
-				half4 color = half4( Albedo, Alpha );
+				half4 color = half4(BaseColor, Alpha );
 
 				#ifdef _ALPHATEST_ON
 					clip(Alpha - AlphaClipThreshold);
@@ -1930,19 +2046,19 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 
 			ZWrite On
 			Blend One Zero
-            ZTest LEqual
-            ZWrite On
+			ZTest LEqual
+			ZWrite On
 
 			HLSLPROGRAM
-			
+
 			#define _NORMAL_DROPOFF_TS 1
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
-			#define _TRANSMISSION_ASE 1
-			#define _TRANSLUCENCY_ASE 1
-			#define TESSELLATION_ON 1
+			#define ASE_TRANSMISSION 1
+			#define ASE_TRANSLUCENCY 1
+			#define ASE_TESSELLATION 1
 			#pragma require tessellation tessHW
 			#pragma hull HullFunction
 			#pragma domain DomainFunction
@@ -1950,18 +2066,18 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 100900
+			#define ASE_SRP_VERSION 101001
 
-			
+
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#define SHADERPASS_DEPTHNORMALSONLY
+			#define SHADERPASS SHADERPASS_DEPTHNORMALSONLY
 
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 
 			
 
@@ -1977,10 +2093,10 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			{
 				float4 clipPos : SV_POSITION;
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 worldPos : TEXCOORD0;
+					float3 worldPos : TEXCOORD0;
 				#endif
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
-				float4 shadowCoord : TEXCOORD1;
+					float4 shadowCoord : TEXCOORD1;
 				#endif
 				float3 worldNormal : TEXCOORD2;
 				float4 ase_texcoord3 : TEXCOORD3;
@@ -2010,10 +2126,10 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			float _TongueSaturation;
 			float _MicroNormalStrength;
 			float _TongueSSS;
-			#ifdef _TRANSMISSION_ASE
+			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
-			#ifdef _TRANSLUCENCY_ASE
+			#ifdef ASE_TRANSLUCENCY
 				float _TransStrength;
 				float _TransNormal;
 				float _TransScattering;
@@ -2021,7 +2137,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float _TransAmbient;
 				float _TransShadow;
 			#endif
-			#ifdef TESSELLATION_ON
+			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
 				float _TessMin;
@@ -2030,6 +2146,18 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
+
+			// Property used by ScenePickingPass
+			#ifdef SCENEPICKINGPASS
+				float4 _SelectionID;
+			#endif
+
+			// Properties used by SceneSelectionPass
+			#ifdef SCENESELECTIONPASS
+				int _ObjectId;
+				int _PassValue;
+			#endif
+
 			sampler2D _DiffuseMap;
 
 
@@ -2050,7 +2178,9 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
+
 				float3 vertexValue = defaultVertexValue;
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -2063,7 +2193,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float4 positionCS = TransformWorldToHClip( positionWS );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				o.worldPos = positionWS;
+					o.worldPos = positionWS;
 				#endif
 
 				o.worldNormal = normalWS;
@@ -2074,11 +2204,13 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 					vertexInput.positionCS = positionCS;
 					o.shadowCoord = GetShadowCoord( vertexInput );
 				#endif
+
 				o.clipPos = positionCS;
+
 				return o;
 			}
 
-			#if defined(TESSELLATION_ON)
+			#if defined(ASE_TESSELLATION)
 			struct VertexControl
 			{
 				float4 vertex : INTERNALTESSPOS;
@@ -2131,7 +2263,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			[outputcontrolpoints(3)]
 			VertexControl HullFunction(InputPatch<VertexControl, 3> patch, uint id : SV_OutputControlPointID)
 			{
-			   return patch[id];
+				return patch[id];
 			}
 
 			[domain("tri")]
@@ -2159,11 +2291,12 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			#endif
 
 			#if defined(ASE_EARLY_Z_DEPTH_OPTIMIZE)
-				#define ASE_SV_DEPTH SV_DepthLessEqual  
+				#define ASE_SV_DEPTH SV_DepthLessEqual
 			#else
 				#define ASE_SV_DEPTH SV_Depth
 			#endif
-			half4 frag(	VertexOutput IN 
+
+			half4 frag(	VertexOutput IN
 						#ifdef ASE_DEPTH_WRITE_ON
 						,out float outputDepth : ASE_SV_DEPTH
 						#endif
@@ -2173,8 +2306,9 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX( IN );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 WorldPosition = IN.worldPos;
+					float3 WorldPosition = IN.worldPos;
 				#endif
+
 				float4 ShadowCoords = float4( 0, 0, 0, 0 );
 
 				#if defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
@@ -2188,10 +2322,11 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float2 uv_DiffuseMap = IN.ase_texcoord3.xy * _DiffuseMap_ST.xy + _DiffuseMap_ST.zw;
 				float4 tex2DNode32 = tex2D( _DiffuseMap, uv_DiffuseMap );
 				
+
 				float Alpha = tex2DNode32.a;
 				float AlphaClipThreshold = 0.5;
 				#ifdef ASE_DEPTH_WRITE_ON
-				float DepthValue = 0;
+					float DepthValue = 0;
 				#endif
 
 				#ifdef _ALPHATEST_ON
@@ -2201,12 +2336,18 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				#ifdef LOD_FADE_CROSSFADE
 					LODDitheringTransition( IN.clipPos.xyz, unity_LODFade.x );
 				#endif
-				
+
 				#ifdef ASE_DEPTH_WRITE_ON
-				outputDepth = DepthValue;
+					outputDepth = DepthValue;
 				#endif
-				
-				return float4(PackNormalOctRectEncode(TransformWorldToViewDir(IN.worldNormal, true)), 0.0, 0.0);
+
+				#if ASE_SRP_VERSION >= 110000
+					return float4(PackNormalOctRectEncode(TransformWorldToViewDir(IN.worldNormal, true)), 0.0, 0.0);
+				#elif ASE_SRP_VERSION >= 100900
+					return float4(PackNormalOctRectEncode(normalize(IN.worldNormal)), 0.0, 0.0);
+				#else
+					return float4(PackNormalOctRectEncode(TransformWorldToViewDir(IN.worldNormal, true)), 0.0, 0.0);
+				#endif
 			}
 			ENDHLSL
 		}
@@ -2217,7 +2358,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			
 			Name "GBuffer"
 			Tags { "LightMode"="UniversalGBuffer" }
-			
+
 			Blend One Zero, One Zero
 			ZWrite On
 			ZTest LEqual
@@ -2226,15 +2367,15 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			
 
 			HLSLPROGRAM
-			
+
 			#define _NORMAL_DROPOFF_TS 1
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
-			#define _TRANSMISSION_ASE 1
-			#define _TRANSLUCENCY_ASE 1
-			#define TESSELLATION_ON 1
+			#define ASE_TRANSMISSION 1
+			#define ASE_TRANSLUCENCY 1
+			#define ASE_TESSELLATION 1
 			#pragma require tessellation tessHW
 			#pragma hull HullFunction
 			#pragma domain DomainFunction
@@ -2242,38 +2383,41 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 100900
+			#define ASE_SRP_VERSION 101001
+
+
+			#pragma shader_feature_local _RECEIVE_SHADOWS_OFF
+			#pragma shader_feature_local_fragment _SPECULARHIGHLIGHTS_OFF
+			#pragma shader_feature_local_fragment _ENVIRONMENTREFLECTIONS_OFF
 
 			
 			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS
 			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
-			#pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS
-			#pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS
-			#pragma multi_compile _ _SHADOWS_SOFT
 			#pragma multi_compile _ _MIXED_LIGHTING_SUBTRACTIVE
-			#pragma multi_compile _ _GBUFFER_NORMALS_OCT
+		
+
 			
+
+			#pragma multi_compile_fragment _ _SHADOWS_SOFT
+
 			#pragma multi_compile _ DIRLIGHTMAP_COMBINED
 			#pragma multi_compile _ LIGHTMAP_ON
+			#pragma multi_compile_fragment _ _GBUFFER_NORMALS_OCT
 
 			#pragma vertex vert
 			#pragma fragment frag
 
 			#define SHADERPASS SHADERPASS_GBUFFER
 
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
+
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
-			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/UnityGBuffer.hlsl"
-
-			#if ASE_SRP_VERSION <= 70108
-			#define REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR
-			#endif
 
 			#if defined(UNITY_INSTANCING_ENABLED) && defined(_TERRAIN_INSTANCED_PERPIXEL_NORMAL)
-			    #define ENABLE_TERRAIN_PERPIXEL_NORMAL
+				#define ENABLE_TERRAIN_PERPIXEL_NORMAL
 			#endif
 
 			
@@ -2283,8 +2427,8 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float4 vertex : POSITION;
 				float3 ase_normal : NORMAL;
 				float4 ase_tangent : TANGENT;
-				float4 texcoord1 : TEXCOORD1;
 				float4 texcoord : TEXCOORD0;
+				float4 texcoord1 : TEXCOORD1;
 				
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -2330,10 +2474,10 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			float _TongueSaturation;
 			float _MicroNormalStrength;
 			float _TongueSSS;
-			#ifdef _TRANSMISSION_ASE
+			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
-			#ifdef _TRANSLUCENCY_ASE
+			#ifdef ASE_TRANSLUCENCY
 				float _TransStrength;
 				float _TransNormal;
 				float _TransScattering;
@@ -2341,7 +2485,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float _TransAmbient;
 				float _TransShadow;
 			#endif
-			#ifdef TESSELLATION_ON
+			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
 				float _TessMin;
@@ -2350,6 +2494,18 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
+
+			// Property used by ScenePickingPass
+			#ifdef SCENEPICKINGPASS
+				float4 _SelectionID;
+			#endif
+
+			// Properties used by SceneSelectionPass
+			#ifdef SCENESELECTIONPASS
+				int _ObjectId;
+				int _PassValue;
+			#endif
+
 			sampler2D _DiffuseMap;
 			sampler2D _GradientAOMap;
 			sampler2D _NormalMap;
@@ -2357,6 +2513,8 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			sampler2D _EmissionMap;
 			sampler2D _MaskMap;
 
+
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/UnityGBuffer.hlsl"
 
 			float3 HSVToRGB( float3 c )
 			{
@@ -2391,12 +2549,15 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
+
 				float3 vertexValue = defaultVertexValue;
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
 					v.vertex.xyz += vertexValue;
 				#endif
+
 				v.ase_normal = v.ase_normal;
 
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
@@ -2410,7 +2571,10 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				o.tSpace2 = float4( normalInput.bitangentWS, positionWS.z);
 
 				OUTPUT_LIGHTMAP_UV( v.texcoord1, unity_LightmapST, o.lightmapUVOrVertexSH.xy );
-				OUTPUT_SH( normalInput.normalWS.xyz, o.lightmapUVOrVertexSH.xyz );
+
+				#if !defined(LIGHTMAP_ON)
+					OUTPUT_SH(normalInput.normalWS.xyz, o.lightmapUVOrVertexSH.xyz);
+				#endif
 
 				#if defined(ENABLE_TERRAIN_PERPIXEL_NORMAL)
 					o.lightmapUVOrVertexSH.zw = v.texcoord;
@@ -2418,28 +2582,32 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				#endif
 
 				half3 vertexLight = VertexLighting( positionWS, normalInput.normalWS );
+
 				#ifdef ASE_FOG
 					half fogFactor = ComputeFogFactor( positionCS.z );
 				#else
 					half fogFactor = 0;
 				#endif
+
 				o.fogFactorAndVertexLight = half4(fogFactor, vertexLight);
-				
+
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
-				VertexPositionInputs vertexInput = (VertexPositionInputs)0;
-				vertexInput.positionWS = positionWS;
-				vertexInput.positionCS = positionCS;
-				o.shadowCoord = GetShadowCoord( vertexInput );
+					VertexPositionInputs vertexInput = (VertexPositionInputs)0;
+					vertexInput.positionWS = positionWS;
+					vertexInput.positionCS = positionCS;
+					o.shadowCoord = GetShadowCoord( vertexInput );
 				#endif
-				
-				o.clipPos = positionCS;
+
+					o.clipPos = positionCS;
+
 				#if defined(ASE_NEEDS_FRAG_SCREEN_POSITION)
-				o.screenPos = ComputeScreenPos(positionCS);
+					o.screenPos = ComputeScreenPos(positionCS);
 				#endif
+
 				return o;
 			}
-			
-			#if defined(TESSELLATION_ON)
+
+			#if defined(ASE_TESSELLATION)
 			struct VertexControl
 			{
 				float4 vertex : INTERNALTESSPOS;
@@ -2497,7 +2665,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			[outputcontrolpoints(3)]
 			VertexControl HullFunction(InputPatch<VertexControl, 3> patch, uint id : SV_OutputControlPointID)
 			{
-			   return patch[id];
+				return patch[id];
 			}
 
 			[domain("tri")]
@@ -2528,11 +2696,12 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 			#endif
 
 			#if defined(ASE_EARLY_Z_DEPTH_OPTIMIZE)
-				#define ASE_SV_DEPTH SV_DepthLessEqual  
+				#define ASE_SV_DEPTH SV_DepthLessEqual
 			#else
 				#define ASE_SV_DEPTH SV_Depth
 			#endif
-			FragmentOutput frag ( VertexOutput IN 
+
+			FragmentOutput frag ( VertexOutput IN
 								#ifdef ASE_DEPTH_WRITE_ON
 								,out float outputDepth : ASE_SV_DEPTH
 								#endif
@@ -2555,19 +2724,23 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 					float3 WorldTangent = IN.tSpace1.xyz;
 					float3 WorldBiTangent = IN.tSpace2.xyz;
 				#endif
+
 				float3 WorldPosition = float3(IN.tSpace0.w,IN.tSpace1.w,IN.tSpace2.w);
 				float3 WorldViewDirection = _WorldSpaceCameraPos.xyz  - WorldPosition;
 				float4 ShadowCoords = float4( 0, 0, 0, 0 );
+
 				#if defined(ASE_NEEDS_FRAG_SCREEN_POSITION)
-				float4 ScreenPos = IN.screenPos;
+					float4 ScreenPos = IN.screenPos;
 				#endif
 
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
 					ShadowCoords = IN.shadowCoord;
 				#elif defined(MAIN_LIGHT_CALCULATE_SHADOWS)
 					ShadowCoords = TransformWorldToShadowCoord( WorldPosition );
+				#else
+					ShadowCoords = float4(0, 0, 0, 0);
 				#endif
-	
+
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
 				float2 uv_DiffuseMap = IN.ase_texcoord7.xy * _DiffuseMap_ST.xy + _DiffuseMap_ST.zw;
@@ -2597,7 +2770,8 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float3 baseColor98 = lerpResult40;
 				float4 temp_output_100_0 = ( _SubsurfaceFalloff * float4( baseColor98 , 0.0 ) );
 				
-				float3 Albedo = lerpResult40;
+
+				float3 BaseColor = lerpResult40;
 				float3 Normal = BlendNormal( unpack75 , unpack76 );
 				float3 Emission = ( tex2D( _EmissionMap, uv_EmissionMap ) * _EmissiveColor ).rgb;
 				float3 Specular = 0.5;
@@ -2612,8 +2786,9 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				float RefractionIndex = 1;
 				float3 Transmission = ( _TongueThickness * temp_output_100_0 ).rgb;
 				float3 Translucency = ( _TongueSSS * 0.5 * temp_output_100_0 ).rgb;
+
 				#ifdef ASE_DEPTH_WRITE_ON
-				float DepthValue = 0;
+					float DepthValue = 0;
 				#endif
 
 				#ifdef _ALPHATEST_ON
@@ -2639,7 +2814,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				#endif
 
 				#ifdef ASE_FOG
-					inputData.fogCoord = IN.fogFactorAndVertexLight.x;
+					inputData.fogCoord = 0; // we don't apply fog in the gbuffer pass
 				#endif
 
 				inputData.vertexLighting = IN.fogFactorAndVertexLight.yzw;
@@ -2650,89 +2825,21 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 				#endif
 
 				inputData.bakedGI = SAMPLE_GI( IN.lightmapUVOrVertexSH.xy, SH, inputData.normalWS );
-				#ifdef _ASE_BAKEDGI
+
+				#ifdef ASE_BAKEDGI
 					inputData.bakedGI = BakedGI;
 				#endif
 
 				BRDFData brdfData;
-				InitializeBRDFData( Albedo, Metallic, Specular, Smoothness, Alpha, brdfData);
+				InitializeBRDFData( BaseColor, Metallic, Specular, Smoothness, Alpha, brdfData);
 				half4 color;
 				color.rgb = GlobalIllumination( brdfData, inputData.bakedGI, Occlusion, inputData.normalWS, inputData.viewDirectionWS);
 				color.a = Alpha;
 
-				#ifdef _TRANSMISSION_ASE
-				{
-					float shadow = _TransmissionShadow;
-				
-					Light mainLight = GetMainLight( inputData.shadowCoord );
-					float3 mainAtten = mainLight.color * mainLight.distanceAttenuation;
-					mainAtten = lerp( mainAtten, mainAtten * mainLight.shadowAttenuation, shadow );
-					half3 mainTransmission = max(0 , -dot(inputData.normalWS, mainLight.direction)) * mainAtten * Transmission;
-					color.rgb += Albedo * mainTransmission;
-				
-					#ifdef _ADDITIONAL_LIGHTS
-						int transPixelLightCount = GetAdditionalLightsCount();
-						for (int i = 0; i < transPixelLightCount; ++i)
-						{
-							Light light = GetAdditionalLight(i, inputData.positionWS);
-							float3 atten = light.color * light.distanceAttenuation;
-							atten = lerp( atten, atten * light.shadowAttenuation, shadow );
-				
-							half3 transmission = max(0 , -dot(inputData.normalWS, light.direction)) * atten * Transmission;
-							color.rgb += Albedo * transmission;
-						}
-					#endif
-				}
-				#endif
-				
-				#ifdef _TRANSLUCENCY_ASE
-				{
-					float shadow = _TransShadow;
-					float normal = _TransNormal;
-					float scattering = _TransScattering;
-					float direct = _TransDirect;
-					float ambient = _TransAmbient;
-					float strength = _TransStrength;
-				
-					Light mainLight = GetMainLight( inputData.shadowCoord );
-					float3 mainAtten = mainLight.color * mainLight.distanceAttenuation;
-					mainAtten = lerp( mainAtten, mainAtten * mainLight.shadowAttenuation, shadow );
-				
-					half3 mainLightDir = mainLight.direction + inputData.normalWS * normal;
-					half mainVdotL = pow( saturate( dot( inputData.viewDirectionWS, -mainLightDir ) ), scattering );
-					half3 mainTranslucency = mainAtten * ( mainVdotL * direct + inputData.bakedGI * ambient ) * Translucency;
-					color.rgb += Albedo * mainTranslucency * strength;
-				
-					#ifdef _ADDITIONAL_LIGHTS
-						int transPixelLightCount = GetAdditionalLightsCount();
-						for (int i = 0; i < transPixelLightCount; ++i)
-						{
-							Light light = GetAdditionalLight(i, inputData.positionWS);
-							float3 atten = light.color * light.distanceAttenuation;
-							atten = lerp( atten, atten * light.shadowAttenuation, shadow );
-				
-							half3 lightDir = light.direction + inputData.normalWS * normal;
-							half VdotL = pow( saturate( dot( inputData.viewDirectionWS, -lightDir ) ), scattering );
-							half3 translucency = atten * ( VdotL * direct + inputData.bakedGI * ambient ) * Translucency;
-							color.rgb += Albedo * translucency * strength;
-						}
-					#endif
-				}
-				#endif
-				
-				#ifdef _REFRACTION_ASE
-					float4 projScreenPos = ScreenPos / ScreenPos.w;
-					float3 refractionOffset = ( RefractionIndex - 1.0 ) * mul( UNITY_MATRIX_V, float4( WorldNormal, 0 ) ).xyz * ( 1.0 - dot( WorldNormal, WorldViewDirection ) );
-					projScreenPos.xy += refractionOffset.xy;
-					float3 refraction = SHADERGRAPH_SAMPLE_SCENE_COLOR( projScreenPos.xy ) * RefractionColor;
-					color.rgb = lerp( refraction, color.rgb, color.a );
-					color.a = 1;
-				#endif
-				
 				#ifdef ASE_FINAL_COLOR_ALPHA_MULTIPLY
 					color.rgb *= color.a;
 				#endif
-				
+
 				#ifdef ASE_FOG
 					#ifdef TERRAIN_SPLAT_ADDPASS
 						color.rgb = MixFogColor(color.rgb, half3( 0, 0, 0 ), IN.fogFactorAndVertexLight.x );
@@ -2740,11 +2847,11 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 						color.rgb = MixFog(color.rgb, IN.fogFactorAndVertexLight.x);
 					#endif
 				#endif
-				
+
 				#ifdef ASE_DEPTH_WRITE_ON
 					outputDepth = DepthValue;
 				#endif
-				
+
 				return BRDFDataToGbuffer(brdfData, inputData, Smoothness, Emission + color.rgb);
 			}
 
@@ -2758,8 +2865,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP_Tessellation"
 	
 }
 /*ASEBEGIN
-Version=19001
-1913;30;1920;999;2658.504;-1543.415;1;True;False
+Version=19100
 Node;AmplifyShaderEditor.CommentaryNode;74;-3493.593,-1702.376;Inherit;False;2241.031;624.6102;;20;8;32;33;21;22;46;35;34;37;45;24;36;42;23;39;38;41;44;40;98;Base Color;0,1,0.1846018,1;0;0
 Node;AmplifyShaderEditor.TexturePropertyNode;8;-3443.593,-1607.289;Inherit;True;Property;_DiffuseMap;Diffuse Map;0;0;Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
 Node;AmplifyShaderEditor.CommentaryNode;93;-4471.664,-192.7987;Inherit;False;667.9326;346.7067;Comment;2;12;31;Gradient AO Map;1,1,1,1;0;0
@@ -2767,15 +2873,15 @@ Node;AmplifyShaderEditor.SamplerNode;32;-3153.32,-1539.403;Inherit;True;Property
 Node;AmplifyShaderEditor.CommentaryNode;92;-4445.581,982.2064;Inherit;False;718.9189;375.1714;Comment;2;9;52;Mask Map;1,1,1,1;0;0
 Node;AmplifyShaderEditor.RangedFloatNode;22;-2768.547,-1352.211;Inherit;False;Property;_TongueBrightness;Tongue Brightness;2;0;Create;True;0;0;0;False;0;False;1;0;0;2;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RGBToHSVNode;33;-2709.32,-1532.403;Inherit;False;1;0;FLOAT3;0,0,0;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
-Node;AmplifyShaderEditor.TexturePropertyNode;12;-4421.664,-142.7987;Inherit;True;Property;_GradientAOMap;Gradient AO Map;17;0;Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.TexturePropertyNode;12;-4421.664,-142.7987;Inherit;True;Property;_GradientAOMap;Gradient AO Map;19;0;Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
 Node;AmplifyShaderEditor.RangedFloatNode;21;-2760.547,-1629.209;Inherit;False;Property;_TongueSaturation;Tongue Saturation;1;0;Create;True;0;0;0;False;0;False;0.88;0;0;2;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;34;-2376.32,-1515.403;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.WireNode;37;-2335.94,-1582.436;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;35;-2378.32,-1407.403;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SamplerNode;31;-4123.732,-76.09189;Inherit;True;Property;_TextureSample0;Texture Sample 0;22;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.TexturePropertyNode;9;-4395.581,1032.206;Inherit;True;Property;_MaskMap;Mask Map;6;0;Create;True;0;0;0;False;0;False;None;None;False;black;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
-Node;AmplifyShaderEditor.RangedFloatNode;23;-2103.724,-1310.377;Inherit;False;Property;_FrontAO;Front AO;18;0;Create;True;0;0;0;False;0;False;1;0;0;1.5;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;24;-2082.724,-1652.376;Inherit;False;Property;_RearAO;Rear AO;19;0;Create;True;0;0;0;False;0;False;0;0;0;1.5;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;23;-2103.724,-1310.377;Inherit;False;Property;_FrontAO;Front AO;20;0;Create;True;0;0;0;False;0;False;1;0;0;1.5;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;24;-2082.724,-1652.376;Inherit;False;Property;_RearAO;Rear AO;21;0;Create;True;0;0;0;False;0;False;0;0;0;1.5;0;1;FLOAT;0
 Node;AmplifyShaderEditor.WireNode;42;-3376.364,-1159.767;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.HSVToRGBNode;36;-2145.94,-1512.436;Inherit;False;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
 Node;AmplifyShaderEditor.SamplerNode;52;-4046.661,1127.378;Inherit;True;Property;_TextureSample3;Texture Sample 3;22;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
@@ -2813,7 +2919,7 @@ Node;AmplifyShaderEditor.TextureCoordinatesNode;77;-2307.1,-395.9956;Inherit;Fal
 Node;AmplifyShaderEditor.LerpOp;60;-1750.107,896.8268;Inherit;False;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;99;-2039.541,2183.726;Inherit;False;98;baseColor;1;0;OBJECT;;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.TexturePropertyNode;11;-2322.445,-594.3717;Inherit;True;Property;_MicroNormalMap;Micro Normal Map;14;0;Create;True;0;0;0;False;0;False;None;None;False;bump;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
-Node;AmplifyShaderEditor.TexturePropertyNode;28;-2049.196,43.35661;Inherit;True;Property;_EmissionMap;Emission Map;20;0;Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.TexturePropertyNode;28;-2049.196,43.35661;Inherit;True;Property;_EmissionMap;Emission Map;17;0;Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
 Node;AmplifyShaderEditor.RangedFloatNode;17;-1782.565,1048.708;Inherit;False;Property;_SmoothnessPower;Smoothness Power;8;0;Create;True;0;0;0;False;0;False;0.5;0;0.25;2;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SaturateNode;96;-1574.723,851.9303;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;25;-2058.189,2295.563;Inherit;False;Property;_TongueSSS;Tongue Subsurface Scatter;3;0;Create;False;0;0;0;False;0;False;1;0;0;1;0;1;FLOAT;0
@@ -2825,7 +2931,7 @@ Node;AmplifyShaderEditor.WireNode;57;-2380.78,758.2738;Inherit;False;1;0;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;54;-1642.181,1445.357;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.WireNode;45;-1886.07,-1215.011;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;97;-2055.254,2380.608;Inherit;False;Constant;_ConstTranslucencyWrap;Const Translucency Wrap;17;0;Create;True;0;0;0;False;0;False;0.5;0;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.ColorNode;29;-1727.197,335.3574;Inherit;False;Property;_EmissiveColor;Emissive Color;21;0;Create;True;0;0;0;False;0;False;0,0,0,0;0,0,0,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.ColorNode;29;-1727.197,335.3574;Inherit;False;Property;_EmissiveColor;Emissive Color;18;0;Create;True;0;0;0;False;0;False;0,0,0,0;0,0,0,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SamplerNode;48;-1777.698,129.8341;Inherit;True;Property;_TextureSample2;Texture Sample 2;22;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.WireNode;56;-1383.936,755.6859;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.OneMinusNode;55;-1447.181,1462.357;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
@@ -2844,14 +2950,14 @@ Node;AmplifyShaderEditor.WireNode;85;-402.2762,378.3149;Inherit;False;1;0;FLOAT;
 Node;AmplifyShaderEditor.WireNode;89;-402.5412,-22.638;Inherit;False;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.WireNode;102;-399.1502,456.1989;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.WireNode;83;-401.9291,556.7205;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;2;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=ShadowCaster;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;1;179,-2;Float;False;True;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;11;Reallusion/Amplify/RL_TongueShader_URP_Tessellation;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;18;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;6;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalForward;False;False;0;Hidden/InternalErrorShader;0;0;Standard;38;Workflow;1;0;Surface;0;0;  Refraction Model;0;0;  Blend;0;0;Two Sided;1;0;Fragment Normal Space,InvertActionOnDeselection;0;0;Transmission;1;637781863003969542;  Transmission Shadow;0.5,False,;0;Translucency;1;637781863019529545;  Translucency Strength;1,False,;0;  Normal Distortion;0.5,False,;0;  Scattering;2,False,;0;  Direct;0.9,False,;0;  Ambient;0.1,False,;0;  Shadow;0.5,False,;0;Cast Shadows;1;0;  Use Shadow Threshold;0;0;Receive Shadows;1;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;1;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;DOTS Instancing;0;0;Tessellation;1;637999711966331759;  Phong;1;637999711977798522;  Strength;0,False,;0;  Type;2;637999719452201718;  Tess;1,False,;0;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Write Depth;0;0;  Early Z;0;0;Vertex Position,InvertActionOnDeselection;1;0;0;8;False;True;True;True;True;True;True;True;False;;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;5;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Universal2D;0;5;Universal2D;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=Universal2D;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;0;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;0;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;7;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;GBuffer;0;7;GBuffer;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalGBuffer;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;4;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Meta;0;4;Meta;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Meta;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;6;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthNormals;0;6;DepthNormals;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=DepthNormals;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;3;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;True;1;LightMode=DepthOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;2;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=ShadowCaster;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;1;179,-2;Float;False;True;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;Reallusion/Amplify/RL_TongueShader_URP_Tessellation;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;18;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;6;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalForward;False;False;0;Hidden/InternalErrorShader;0;0;Standard;38;Workflow;1;0;Surface;0;0;  Refraction Model;0;0;  Blend;0;0;Two Sided;1;0;Fragment Normal Space,InvertActionOnDeselection;0;0;Transmission;1;637781863003969542;  Transmission Shadow;0.5,False,;0;Translucency;1;637781863019529545;  Translucency Strength;1,False,;0;  Normal Distortion;0.5,False,;0;  Scattering;2,False,;0;  Direct;0.9,False,;0;  Ambient;0.1,False,;0;  Shadow;0.5,False,;0;Cast Shadows;1;0;  Use Shadow Threshold;0;0;Receive Shadows;1;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;1;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;DOTS Instancing;0;0;Tessellation;1;637999711966331759;  Phong;1;637999711977798522;  Strength;0,False,;0;  Type;2;637999719452201718;  Tess;1,False,;0;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Write Depth;0;0;  Early Z;0;0;Vertex Position,InvertActionOnDeselection;1;0;0;8;False;True;True;True;True;True;True;True;False;;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;5;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Universal2D;0;5;Universal2D;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;5;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=Universal2D;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;0;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;5;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;0;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;7;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;GBuffer;0;7;GBuffer;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;5;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalGBuffer;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;4;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Meta;0;4;Meta;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Meta;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;6;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthNormals;0;6;DepthNormals;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;5;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=DepthNormals;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;3;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;True;1;LightMode=DepthOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 WireConnection;32;0;8;0
 WireConnection;33;0;32;0
 WireConnection;34;0;21;0
@@ -2937,4 +3043,4 @@ WireConnection;1;6;90;0
 WireConnection;1;14;102;0
 WireConnection;1;15;83;0
 ASEEND*/
-//CHKSM=A201654959A0E31F09C6E93EFD7B7E14FD1E4B47
+//CHKSM=7D1245208E758187F7DDA648A34BE3698D28BDB0

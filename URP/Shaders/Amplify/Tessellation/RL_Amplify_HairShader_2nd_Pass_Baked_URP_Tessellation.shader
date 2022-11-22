@@ -1,4 +1,4 @@
-// Made with Amplify Shader Editor v1.9.0.1
+// Made with Amplify Shader Editor v1.9.1
 // Available at the Unity Asset Store - http://u3d.as/y3X 
 Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 {
@@ -33,6 +33,7 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 		_Translucency("Translucency", Range( 0 , 1)) = 0
 		[HideInInspector] _texcoord( "", 2D ) = "white" {}
 
+
 		_TessPhongStrength( "Phong Tess Strength", Range( 0, 1 ) ) = 0.5
 		//_TessValue( "Tess Max Tessellation", Range( 1, 32 ) ) = 16
 		//_TessMin( "Tess Min Distance", Float ) = 10
@@ -46,16 +47,18 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 		LOD 0
 
 		
+
 		Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Transparent" "Queue"="Transparent" }
-		
+
 		Cull Off
 		AlphaToMask Off
+
 		
+
 		HLSLINCLUDE
 		#pragma target 4.6
-
 		#pragma prefer_hlslcc gles
-		#pragma exclude_renderers d3d11_9x 
+		// ensure rendering platforms toggle list is visible
 
 		#ifndef ASE_TESS_FUNCS
 		#define ASE_TESS_FUNCS
@@ -63,7 +66,7 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 		{
 			return tessValue;
 		}
-		
+
 		float CalcDistanceTessFactor (float4 vertex, float minDist, float maxDist, float tess, float4x4 o2w, float3 cameraPos )
 		{
 			float3 wpos = mul(o2w,vertex).xyz;
@@ -158,7 +161,6 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 			return tess;
 		}
 		#endif //ASE_TESS_FUNCS
-
 		ENDHLSL
 
 		
@@ -167,29 +169,31 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 			
 			Name "Forward"
 			Tags { "LightMode"="UniversalForward" }
-			
+
 			Blend SrcAlpha OneMinusSrcAlpha, One OneMinusSrcAlpha
 			ZWrite Off
 			ZTest Less
 			Offset 0 , 0
 			ColorMask RGBA
+
 			
 
 			HLSLPROGRAM
-			
+
 			#pragma multi_compile_instancing
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
-			#define TESSELLATION_ON 1
+			#define _SURFACE_TYPE_TRANSPARENT 1
+			#define ASE_TESSELLATION 1
 			#pragma require tessellation tessHW
 			#pragma hull HullFunction
 			#pragma domain DomainFunction
 			#define ASE_PHONG_TESSELLATION
 			#define ASE_LENGTH_TESSELLATION
 			#define _ALPHATEST_ON 1
-			#define ASE_SRP_VERSION 100900
+			#define ASE_SRP_VERSION 101001
 
-			
+
 			#pragma vertex vert
 			#pragma fragment frag
 
@@ -199,19 +203,19 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
 
-			#if ASE_SRP_VERSION <= 70108
-			#define REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR
-			#endif
-
 			#define ASE_NEEDS_FRAG_WORLD_POSITION
 			#define ASE_NEEDS_FRAG_SHADOWCOORDS
 			#define ASE_NEEDS_VERT_NORMAL
-			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS
-			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
-			#pragma multi_compile _ _SHADOWS_SOFT
+			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
+			#pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS
+			#pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
+			#pragma multi_compile_fragment _ _SHADOWS_SOFT
 			#pragma multi_compile _ DIRLIGHTMAP_COMBINED
 			#pragma multi_compile _ LIGHTMAP_ON
 			#pragma multi_compile _ _MIXED_LIGHTING_SUBTRACTIVE
+			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS
+			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
+			#pragma multi_compile _ _SHADOWS_SOFT
 			#pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS
 			#pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS
 
@@ -221,8 +225,8 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 				float4 vertex : POSITION;
 				float3 ase_normal : NORMAL;
 				float4 ase_texcoord : TEXCOORD0;
-				float4 ase_tangent : TANGENT;
-				float4 ase_color : COLOR;
+				half4 ase_tangent : TANGENT;
+				half4 ase_color : COLOR;
 				float4 texcoord1 : TEXCOORD1;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -231,13 +235,13 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 			{
 				float4 clipPos : SV_POSITION;
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 worldPos : TEXCOORD0;
+					float3 worldPos : TEXCOORD0;
 				#endif
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
-				float4 shadowCoord : TEXCOORD1;
+					float4 shadowCoord : TEXCOORD1;
 				#endif
 				#ifdef ASE_FOG
-				float fogFactor : TEXCOORD2;
+					float fogFactor : TEXCOORD2;
 				#endif
 				float4 ase_texcoord3 : TEXCOORD3;
 				float4 ase_texcoord4 : TEXCOORD4;
@@ -251,32 +255,32 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _FlowMap_ST;
-			float4 _VertexBaseColor;
-			float4 _BaseMap_ST;
-			float4 _BaseColor;
-			float4 _EmissionMap_ST;
-			float4 _OcclusionMap_ST;
-			float4 _MetallicGlossMap_ST;
-			float4 _SpecularTint;
-			float4 _EmissiveColor;
-			float4 _BumpMap_ST;
-			float4 _IDMap_ST;
-			float _AOOccludeAll;
-			float _OcclusionStrength;
-			float _RimTransmissionIntensity;
-			float _RimPower;
-			float _Translucency;
-			float _SpecularMix;
-			float _VertexColorStrength;
-			float _BumpScale;
-			float _SpecularShiftMin;
-			float _SpecularMultiplier;
-			float _SpecularShiftMax;
-			float _SpecularPowerScale;
-			float _FlowMapFlipGreen;
-			float _GlossMapScale;
-			#ifdef TESSELLATION_ON
+			half4 _FlowMap_ST;
+			half4 _VertexBaseColor;
+			half4 _BaseMap_ST;
+			half4 _BaseColor;
+			half4 _EmissionMap_ST;
+			half4 _OcclusionMap_ST;
+			half4 _MetallicGlossMap_ST;
+			half4 _SpecularTint;
+			half4 _EmissiveColor;
+			half4 _BumpMap_ST;
+			half4 _IDMap_ST;
+			half _AOOccludeAll;
+			half _OcclusionStrength;
+			half _RimTransmissionIntensity;
+			half _RimPower;
+			half _Translucency;
+			half _SpecularMix;
+			half _VertexColorStrength;
+			half _BumpScale;
+			half _SpecularShiftMin;
+			half _SpecularMultiplier;
+			half _SpecularShiftMax;
+			half _SpecularPowerScale;
+			half _FlowMapFlipGreen;
+			half _GlossMapScale;
+			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
 				float _TessMin;
@@ -285,6 +289,7 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
+
 			sampler2D _FlowMap;
 			sampler2D _BumpMap;
 			sampler2D _IDMap;
@@ -294,14 +299,14 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 			sampler2D _EmissionMap;
 
 
-			float3 TangentToWorld13_g857( float3 NormalTS, float3x3 TBN )
+			half3 TangentToWorld13_g857( half3 NormalTS, half3x3 TBN )
 			{
 				float3 NormalWS = TransformTangentToWorld(NormalTS, TBN);
 				NormalWS = NormalizeNormalPerPixel(NormalWS);
 				return NormalWS;
 			}
 			
-			float3 RL_Amplify_Expression_HairLighting_Additional126_g854( float3 Color, float3 TangentWorld, float3 ViewDir, float3 NormalWorld, float3 SpecularColor, float SpecularTint, float SpecularPower, float SpecularMultiplier, float3 PositionWorld, float Translucency, float RimTransmission, float RimPower )
+			half3 RL_Amplify_Expression_HairLighting_Additional126_g854( half3 Color, half3 TangentWorld, half3 ViewDir, half3 NormalWorld, half3 SpecularColor, half SpecularTint, half SpecularPower, half SpecularMultiplier, half3 PositionWorld, half Translucency, half RimTransmission, half RimPower )
 			{
 				half3 addColor = 0;
 				half4 shadowMask = 1;
@@ -326,8 +331,8 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 					// Because additional lights usually don't cast shadows, 
 					// the shadow attenuation doesn't mask specular for back faces correctly.
 					// So use the lambertMask value to mask out specular for back faces.
-					//half3 specular = (dirAtten * SpecularMultiplier * wrappedLambert) * SpecularColor;
-					half3 specular = (dirAtten * SpecularMultiplier) * SpecularColor;
+					half3 specular = (dirAtten * SpecularMultiplier * wrappedLambert) * SpecularColor;
+					//half3 specular = (dirAtten * SpecularMultiplier) * SpecularColor;
 					specular = lerp(specular, specular * Color, SpecularTint);	
 					half3 AttLightColor = light.color * (light.distanceAttenuation * light.shadowAttenuation);	
 					addColor += (diffuse + specular) * AttLightColor;
@@ -345,7 +350,7 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 			#endif
 			}
 			
-			
+
 			VertexOutput VertexFunction ( VertexInput v  )
 			{
 				VertexOutput o = (VertexOutput)0;
@@ -353,11 +358,11 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
-				float3 ase_worldTangent = TransformObjectToWorldDir(v.ase_tangent.xyz);
+				half3 ase_worldTangent = TransformObjectToWorldDir(v.ase_tangent.xyz);
 				o.ase_texcoord4.xyz = ase_worldTangent;
-				float3 ase_worldNormal = TransformObjectToWorldNormal(v.ase_normal);
+				half3 ase_worldNormal = TransformObjectToWorldNormal(v.ase_normal);
 				o.ase_texcoord5.xyz = ase_worldNormal;
-				float ase_vertexTangentSign = v.ase_tangent.w * unity_WorldTransformParams.w;
+				half ase_vertexTangentSign = v.ase_tangent.w * ( unity_WorldTransformParams.w >= 0.0 ? 1.0 : -1.0 );
 				float3 ase_worldBitangent = cross( ase_worldNormal, ase_worldTangent ) * ase_vertexTangentSign;
 				o.ase_texcoord6.xyz = ase_worldBitangent;
 				OUTPUT_LIGHTMAP_UV( v.texcoord1, unity_LightmapST, o.lightmapUVOrVertexSH.xy );
@@ -372,46 +377,54 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 				o.ase_texcoord4.w = 0;
 				o.ase_texcoord5.w = 0;
 				o.ase_texcoord6.w = 0;
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
+
 				float3 vertexValue = defaultVertexValue;
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
 					v.vertex.xyz += vertexValue;
 				#endif
+
 				v.ase_normal = v.ase_normal;
 
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
 				float4 positionCS = TransformWorldToHClip( positionWS );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				o.worldPos = positionWS;
+					o.worldPos = positionWS;
 				#endif
+
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
-				VertexPositionInputs vertexInput = (VertexPositionInputs)0;
-				vertexInput.positionWS = positionWS;
-				vertexInput.positionCS = positionCS;
-				o.shadowCoord = GetShadowCoord( vertexInput );
+					VertexPositionInputs vertexInput = (VertexPositionInputs)0;
+					vertexInput.positionWS = positionWS;
+					vertexInput.positionCS = positionCS;
+					o.shadowCoord = GetShadowCoord( vertexInput );
 				#endif
+
 				#ifdef ASE_FOG
-				o.fogFactor = ComputeFogFactor( positionCS.z );
+					o.fogFactor = ComputeFogFactor( positionCS.z );
 				#endif
+
 				o.clipPos = positionCS;
+
 				return o;
 			}
 
-			#if defined(TESSELLATION_ON)
+			#if defined(ASE_TESSELLATION)
 			struct VertexControl
 			{
 				float4 vertex : INTERNALTESSPOS;
 				float3 ase_normal : NORMAL;
 				float4 ase_texcoord : TEXCOORD0;
-				float4 ase_tangent : TANGENT;
-				float4 ase_color : COLOR;
+				half4 ase_tangent : TANGENT;
+				half4 ase_color : COLOR;
 				float4 texcoord1 : TEXCOORD1;
 
 				UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -499,8 +512,9 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX( IN );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 WorldPosition = IN.worldPos;
+					float3 WorldPosition = IN.worldPos;
 				#endif
+
 				float4 ShadowCoords = float4( 0, 0, 0, 0 );
 
 				#if defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
@@ -510,98 +524,99 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 						ShadowCoords = TransformWorldToShadowCoord( WorldPosition );
 					#endif
 				#endif
+
 				float ase_lightAtten = 0;
 				Light ase_mainLight = GetMainLight( ShadowCoords );
 				ase_lightAtten = ase_mainLight.distanceAttenuation * ase_mainLight.shadowAttenuation;
 				float2 uv_FlowMap = IN.ase_texcoord3.xy * _FlowMap_ST.xy + _FlowMap_ST.zw;
-				float4 break109_g854 = tex2D( _FlowMap, uv_FlowMap );
-				float lerpResult123_g854 = lerp( break109_g854.g , ( 1.0 - break109_g854.g ) , _FlowMapFlipGreen);
-				float3 appendResult98_g854 = (float3(break109_g854.r , lerpResult123_g854 , break109_g854.b));
-				float3 NormalTS13_g857 = ( ( appendResult98_g854 * float3( 2,2,2 ) ) - float3( 1,1,1 ) );
-				float3 ase_worldTangent = IN.ase_texcoord4.xyz;
-				float3 ase_worldNormal = IN.ase_texcoord5.xyz;
-				float3 Binormal5_g857 = ( ( IN.ase_tangent.w > 0.0 ? 1.0 : -1.0 ) * cross( ase_worldNormal , ase_worldTangent ) );
-				float3x3 TBN1_g857 = float3x3(ase_worldTangent, Binormal5_g857, ase_worldNormal);
-				float3x3 TBN13_g857 = TBN1_g857;
-				float3 localTangentToWorld13_g857 = TangentToWorld13_g857( NormalTS13_g857 , TBN13_g857 );
-				float3 flowTangent107_g854 = localTangentToWorld13_g857;
+				half4 break109_g854 = tex2D( _FlowMap, uv_FlowMap );
+				half lerpResult123_g854 = lerp( break109_g854.g , ( 1.0 - break109_g854.g ) , _FlowMapFlipGreen);
+				half3 appendResult98_g854 = (half3(break109_g854.r , lerpResult123_g854 , break109_g854.b));
+				half3 NormalTS13_g857 = ( ( appendResult98_g854 * float3( 2,2,2 ) ) - float3( 1,1,1 ) );
+				half3 ase_worldTangent = IN.ase_texcoord4.xyz;
+				half3 ase_worldNormal = IN.ase_texcoord5.xyz;
+				half3 Binormal5_g857 = ( ( IN.ase_tangent.w > 0.0 ? 1.0 : -1.0 ) * cross( ase_worldNormal , ase_worldTangent ) );
+				half3x3 TBN1_g857 = float3x3(ase_worldTangent, Binormal5_g857, ase_worldNormal);
+				half3x3 TBN13_g857 = TBN1_g857;
+				half3 localTangentToWorld13_g857 = TangentToWorld13_g857( NormalTS13_g857 , TBN13_g857 );
+				half3 flowTangent107_g854 = localTangentToWorld13_g857;
 				float2 uv_BumpMap = IN.ase_texcoord3.xy * _BumpMap_ST.xy + _BumpMap_ST.zw;
-				float3 unpack629 = UnpackNormalScale( tex2D( _BumpMap, uv_BumpMap ), _BumpScale );
+				half3 unpack629 = UnpackNormalScale( tex2D( _BumpMap, uv_BumpMap ), _BumpScale );
 				unpack629.z = lerp( 1, unpack629.z, saturate(_BumpScale) );
-				float3 normal282 = unpack629;
+				half3 normal282 = unpack629;
 				float3 ase_worldBitangent = IN.ase_texcoord6.xyz;
-				float3 tanToWorld0 = float3( ase_worldTangent.x, ase_worldBitangent.x, ase_worldNormal.x );
-				float3 tanToWorld1 = float3( ase_worldTangent.y, ase_worldBitangent.y, ase_worldNormal.y );
-				float3 tanToWorld2 = float3( ase_worldTangent.z, ase_worldBitangent.z, ase_worldNormal.z );
+				half3 tanToWorld0 = float3( ase_worldTangent.x, ase_worldBitangent.x, ase_worldNormal.x );
+				half3 tanToWorld1 = float3( ase_worldTangent.y, ase_worldBitangent.y, ase_worldNormal.y );
+				half3 tanToWorld2 = float3( ase_worldTangent.z, ase_worldBitangent.z, ase_worldNormal.z );
 				float3 tanNormal85_g854 = normal282;
-				float3 worldNormal85_g854 = normalize( float3(dot(tanToWorld0,tanNormal85_g854), dot(tanToWorld1,tanNormal85_g854), dot(tanToWorld2,tanNormal85_g854)) );
-				float3 worldNormal86_g854 = worldNormal85_g854;
+				half3 worldNormal85_g854 = normalize( float3(dot(tanToWorld0,tanNormal85_g854), dot(tanToWorld1,tanNormal85_g854), dot(tanToWorld2,tanNormal85_g854)) );
+				half3 worldNormal86_g854 = worldNormal85_g854;
 				float2 uv_IDMap = IN.ase_texcoord3.xy * _IDMap_ST.xy + _IDMap_ST.zw;
-				float idMap383 = tex2D( _IDMap, uv_IDMap ).r;
-				float lerpResult81_g854 = lerp( _SpecularShiftMin , _SpecularShiftMax , idMap383);
-				float3 normalizeResult10_g858 = normalize( ( flowTangent107_g854 + ( worldNormal86_g854 * lerpResult81_g854 ) ) );
-				float3 shiftedTangent119_g854 = normalizeResult10_g858;
+				half idMap383 = tex2D( _IDMap, uv_IDMap ).r;
+				half lerpResult81_g854 = lerp( _SpecularShiftMin , _SpecularShiftMax , idMap383);
+				half3 normalizeResult10_g858 = normalize( ( flowTangent107_g854 + ( worldNormal86_g854 * lerpResult81_g854 ) ) );
+				half3 shiftedTangent119_g854 = normalizeResult10_g858;
 				float3 ase_worldViewDir = ( _WorldSpaceCameraPos.xyz - WorldPosition );
 				ase_worldViewDir = SafeNormalize( ase_worldViewDir );
-				float3 viewDIr52_g855 = ase_worldViewDir;
-				float3 worldLight248_g854 = SafeNormalize(_MainLightPosition.xyz);
-				float3 lightDir55_g855 = worldLight248_g854;
-				float3 normalizeResult14_g856 = normalize( ( viewDIr52_g855 + lightDir55_g855 ) );
-				float dotResult16_g856 = dot( shiftedTangent119_g854 , normalizeResult14_g856 );
-				float smoothstepResult22_g856 = smoothstep( -1.0 , 0.0 , dotResult16_g856);
+				half3 viewDIr52_g855 = ase_worldViewDir;
+				half3 worldLight248_g854 = SafeNormalize(_MainLightPosition.xyz);
+				half3 lightDir55_g855 = worldLight248_g854;
+				half3 normalizeResult14_g856 = normalize( ( viewDIr52_g855 + lightDir55_g855 ) );
+				half dotResult16_g856 = dot( shiftedTangent119_g854 , normalizeResult14_g856 );
+				half smoothstepResult22_g856 = smoothstep( -1.0 , 0.0 , dotResult16_g856);
 				float2 uv_MetallicGlossMap = IN.ase_texcoord3.xy * _MetallicGlossMap_ST.xy + _MetallicGlossMap_ST.zw;
-				float smoothness643 = ( tex2D( _MetallicGlossMap, uv_MetallicGlossMap ).a * _GlossMapScale );
-				float temp_output_233_0_g854 = max( ( 1.0 - smoothness643 ) , 0.001 );
-				float specularPower237_g854 = ( max( ( ( 2.0 / ( temp_output_233_0_g854 * temp_output_233_0_g854 ) ) - 2.0 ) , 0.001 ) * _SpecularPowerScale );
+				half smoothness643 = ( tex2D( _MetallicGlossMap, uv_MetallicGlossMap ).a * _GlossMapScale );
+				half temp_output_233_0_g854 = max( ( 1.0 - smoothness643 ) , 0.001 );
+				half specularPower237_g854 = ( max( ( ( 2.0 / ( temp_output_233_0_g854 * temp_output_233_0_g854 ) ) - 2.0 ) , 0.001 ) * _SpecularPowerScale );
 				float2 uv_OcclusionMap = IN.ase_texcoord3.xy * _OcclusionMap_ST.xy + _OcclusionMap_ST.zw;
-				float4 tex2DNode617 = tex2D( _OcclusionMap, uv_OcclusionMap );
-				float specularMask645 = tex2DNode617.a;
-				float temp_output_132_0_g854 = ( specularMask645 * _SpecularMultiplier );
-				float4 temp_output_131_0_g854 = _SpecularTint;
-				float4 temp_output_13_0_g855 = ( ( smoothstepResult22_g856 * pow( saturate( ( 1.0 - ( dotResult16_g856 * dotResult16_g856 ) ) ) , specularPower237_g854 ) ) * temp_output_132_0_g854 * temp_output_131_0_g854 );
+				half4 tex2DNode617 = tex2D( _OcclusionMap, uv_OcclusionMap );
+				half specularMask645 = tex2DNode617.a;
+				half temp_output_132_0_g854 = ( specularMask645 * _SpecularMultiplier );
+				half4 temp_output_131_0_g854 = _SpecularTint;
+				half4 temp_output_13_0_g855 = ( ( smoothstepResult22_g856 * pow( saturate( ( 1.0 - ( dotResult16_g856 * dotResult16_g856 ) ) ) , specularPower237_g854 ) ) * temp_output_132_0_g854 * temp_output_131_0_g854 );
 				float2 uv_BaseMap = IN.ase_texcoord3.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
-				float4 tex2DNode19 = tex2D( _BaseMap, uv_BaseMap );
-				float4 lerpResult112 = lerp( tex2DNode19 , _VertexBaseColor , ( ( 1.0 - IN.ase_color.r ) * _VertexColorStrength ));
-				float4 baseColor331 = ( _BaseColor * lerpResult112 );
-				float4 temp_output_42_0_g854 = baseColor331;
-				float4 temp_output_32_0_g855 = temp_output_42_0_g854;
-				float temp_output_172_0_g854 = _SpecularMix;
-				float4 lerpResult36_g855 = lerp( temp_output_13_0_g855 , ( temp_output_13_0_g855 * temp_output_32_0_g855 ) , temp_output_172_0_g854);
-				float3 temp_output_24_0_g855 = worldNormal86_g854;
-				float dotResult15_g855 = dot( lightDir55_g855 , temp_output_24_0_g855 );
-				float temp_output_200_0_g854 = _Translucency;
-				float temp_output_40_0_g855 = temp_output_200_0_g854;
-				float dotResult54_g855 = dot( temp_output_24_0_g855 , viewDIr52_g855 );
-				float dotResult57_g855 = dot( viewDIr52_g855 , lightDir55_g855 );
-				float temp_output_208_0_g854 = _RimPower;
-				float temp_output_207_0_g854 = _RimTransmissionIntensity;
-				float3 Color126_g854 = temp_output_42_0_g854.rgb;
-				float3 TangentWorld126_g854 = shiftedTangent119_g854;
-				float3 ViewDir126_g854 = ase_worldViewDir;
-				float3 NormalWorld126_g854 = worldNormal86_g854;
-				float3 SpecularColor126_g854 = temp_output_131_0_g854.rgb;
-				float SpecularTint126_g854 = temp_output_172_0_g854;
-				float SpecularPower126_g854 = specularPower237_g854;
-				float SpecularMultiplier126_g854 = temp_output_132_0_g854;
-				float3 worldPosition129_g854 = WorldPosition;
-				float3 PositionWorld126_g854 = worldPosition129_g854;
-				float Translucency126_g854 = temp_output_200_0_g854;
-				float RimTransmission126_g854 = temp_output_207_0_g854;
-				float RimPower126_g854 = temp_output_208_0_g854;
-				float3 localRL_Amplify_Expression_HairLighting_Additional126_g854 = RL_Amplify_Expression_HairLighting_Additional126_g854( Color126_g854 , TangentWorld126_g854 , ViewDir126_g854 , NormalWorld126_g854 , SpecularColor126_g854 , SpecularTint126_g854 , SpecularPower126_g854 , SpecularMultiplier126_g854 , PositionWorld126_g854 , Translucency126_g854 , RimTransmission126_g854 , RimPower126_g854 );
-				float lerpResult652 = lerp( 1.0 , tex2DNode617.g , _OcclusionStrength);
-				float ambientOcclusion570 = lerpResult652;
-				float temp_output_161_0_g854 = ambientOcclusion570;
-				float lerpResult280_g854 = lerp( 1.0 , temp_output_161_0_g854 , _AOOccludeAll);
-				float3 bakedGI53_g854 = ASEIndirectDiffuse( IN.lightmapUVOrVertexSH.xy, worldNormal86_g854);
+				half4 tex2DNode19 = tex2D( _BaseMap, uv_BaseMap );
+				half4 lerpResult112 = lerp( tex2DNode19 , _VertexBaseColor , ( ( 1.0 - IN.ase_color.r ) * _VertexColorStrength ));
+				half4 baseColor331 = ( _BaseColor * lerpResult112 );
+				half4 temp_output_42_0_g854 = baseColor331;
+				half4 temp_output_32_0_g855 = temp_output_42_0_g854;
+				half temp_output_172_0_g854 = _SpecularMix;
+				half4 lerpResult36_g855 = lerp( temp_output_13_0_g855 , ( temp_output_13_0_g855 * temp_output_32_0_g855 ) , temp_output_172_0_g854);
+				half3 temp_output_24_0_g855 = worldNormal86_g854;
+				half dotResult15_g855 = dot( lightDir55_g855 , temp_output_24_0_g855 );
+				half temp_output_200_0_g854 = _Translucency;
+				half temp_output_40_0_g855 = temp_output_200_0_g854;
+				half dotResult54_g855 = dot( temp_output_24_0_g855 , viewDIr52_g855 );
+				half dotResult57_g855 = dot( viewDIr52_g855 , lightDir55_g855 );
+				half temp_output_208_0_g854 = _RimPower;
+				half temp_output_207_0_g854 = _RimTransmissionIntensity;
+				half3 Color126_g854 = temp_output_42_0_g854.rgb;
+				half3 TangentWorld126_g854 = shiftedTangent119_g854;
+				half3 ViewDir126_g854 = ase_worldViewDir;
+				half3 NormalWorld126_g854 = worldNormal86_g854;
+				half3 SpecularColor126_g854 = temp_output_131_0_g854.rgb;
+				half SpecularTint126_g854 = temp_output_172_0_g854;
+				half SpecularPower126_g854 = specularPower237_g854;
+				half SpecularMultiplier126_g854 = temp_output_132_0_g854;
+				half3 worldPosition129_g854 = WorldPosition;
+				half3 PositionWorld126_g854 = worldPosition129_g854;
+				half Translucency126_g854 = temp_output_200_0_g854;
+				half RimTransmission126_g854 = temp_output_207_0_g854;
+				half RimPower126_g854 = temp_output_208_0_g854;
+				half3 localRL_Amplify_Expression_HairLighting_Additional126_g854 = RL_Amplify_Expression_HairLighting_Additional126_g854( Color126_g854 , TangentWorld126_g854 , ViewDir126_g854 , NormalWorld126_g854 , SpecularColor126_g854 , SpecularTint126_g854 , SpecularPower126_g854 , SpecularMultiplier126_g854 , PositionWorld126_g854 , Translucency126_g854 , RimTransmission126_g854 , RimPower126_g854 );
+				half lerpResult652 = lerp( 1.0 , tex2DNode617.g , _OcclusionStrength);
+				half ambientOcclusion570 = lerpResult652;
+				half temp_output_161_0_g854 = ambientOcclusion570;
+				half lerpResult280_g854 = lerp( 1.0 , temp_output_161_0_g854 , _AOOccludeAll);
+				half3 bakedGI53_g854 = ASEIndirectDiffuse( IN.lightmapUVOrVertexSH.xy, worldNormal86_g854);
 				MixRealtimeAndBakedGI(ase_mainLight, worldNormal86_g854, bakedGI53_g854, half4(0,0,0,0));
 				float2 uv_EmissionMap = IN.ase_texcoord3.xy * _EmissionMap_ST.xy + _EmissionMap_ST.zw;
 				
-				float alpha518 = tex2DNode19.a;
+				half alpha518 = tex2DNode19.a;
 				
 				float3 BakedAlbedo = 0;
 				float3 BakedEmission = 0;
-				float3 Color = ( ( ( ( ( ase_lightAtten * ( ( lerpResult36_g855 + ( ( saturate( ( ( dotResult15_g855 * ( 1.0 - temp_output_40_0_g855 ) ) + temp_output_40_0_g855 ) ) + ( pow( ( max( ( 1.0 - abs( dotResult54_g855 ) ) , 0.0 ) * max( ( 0.0 - dotResult57_g855 ) , 0.0 ) ) , temp_output_208_0_g854 ) * temp_output_207_0_g854 ) ) * temp_output_32_0_g855 ) ) * _MainLightColor ) ) + float4( localRL_Amplify_Expression_HairLighting_Additional126_g854 , 0.0 ) ) * lerpResult280_g854 ) + ( float4( bakedGI53_g854 , 0.0 ) * temp_output_42_0_g854 * temp_output_161_0_g854 ) ) + ( tex2D( _EmissionMap, uv_EmissionMap ) * _EmissiveColor ) ).rgb;
+				float3 Color = ( ( ( ( ( ase_lightAtten * ( ( lerpResult36_g855 + ( ( saturate( ( ( dotResult15_g855 * ( 1.0 - temp_output_40_0_g855 ) ) + temp_output_40_0_g855 ) ) + ( pow( ( max( ( 1.0 - abs( dotResult54_g855 ) ) , 0.0 ) * max( ( 0.0 - dotResult57_g855 ) , 0.0 ) ) , temp_output_208_0_g854 ) * temp_output_207_0_g854 ) ) * temp_output_32_0_g855 ) ) * _MainLightColor ) ) + half4( localRL_Amplify_Expression_HairLighting_Additional126_g854 , 0.0 ) ) * lerpResult280_g854 ) + ( half4( bakedGI53_g854 , 0.0 ) * temp_output_42_0_g854 * temp_output_161_0_g854 ) ) + ( tex2D( _EmissionMap, uv_EmissionMap ) * _EmissiveColor ) ).rgb;
 				float Alpha = alpha518;
 				float AlphaClipThreshold = 0.05;
 				float AlphaClipThresholdShadow = 0.5;
@@ -620,7 +635,6 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 
 				return half4( Color, Alpha );
 			}
-
 			ENDHLSL
 		}
 
@@ -636,20 +650,21 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 			AlphaToMask Off
 
 			HLSLPROGRAM
-			
+
 			#pragma multi_compile_instancing
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
-			#define TESSELLATION_ON 1
+			#define _SURFACE_TYPE_TRANSPARENT 1
+			#define ASE_TESSELLATION 1
 			#pragma require tessellation tessHW
 			#pragma hull HullFunction
 			#pragma domain DomainFunction
 			#define ASE_PHONG_TESSELLATION
 			#define ASE_LENGTH_TESSELLATION
 			#define _ALPHATEST_ON 1
-			#define ASE_SRP_VERSION 100900
+			#define ASE_SRP_VERSION 101001
 
-			
+
 			#pragma vertex vert
 			#pragma fragment frag
 
@@ -685,32 +700,32 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _FlowMap_ST;
-			float4 _VertexBaseColor;
-			float4 _BaseMap_ST;
-			float4 _BaseColor;
-			float4 _EmissionMap_ST;
-			float4 _OcclusionMap_ST;
-			float4 _MetallicGlossMap_ST;
-			float4 _SpecularTint;
-			float4 _EmissiveColor;
-			float4 _BumpMap_ST;
-			float4 _IDMap_ST;
-			float _AOOccludeAll;
-			float _OcclusionStrength;
-			float _RimTransmissionIntensity;
-			float _RimPower;
-			float _Translucency;
-			float _SpecularMix;
-			float _VertexColorStrength;
-			float _BumpScale;
-			float _SpecularShiftMin;
-			float _SpecularMultiplier;
-			float _SpecularShiftMax;
-			float _SpecularPowerScale;
-			float _FlowMapFlipGreen;
-			float _GlossMapScale;
-			#ifdef TESSELLATION_ON
+			half4 _FlowMap_ST;
+			half4 _VertexBaseColor;
+			half4 _BaseMap_ST;
+			half4 _BaseColor;
+			half4 _EmissionMap_ST;
+			half4 _OcclusionMap_ST;
+			half4 _MetallicGlossMap_ST;
+			half4 _SpecularTint;
+			half4 _EmissiveColor;
+			half4 _BumpMap_ST;
+			half4 _IDMap_ST;
+			half _AOOccludeAll;
+			half _OcclusionStrength;
+			half _RimTransmissionIntensity;
+			half _RimPower;
+			half _Translucency;
+			half _SpecularMix;
+			half _VertexColorStrength;
+			half _BumpScale;
+			half _SpecularShiftMin;
+			half _SpecularMultiplier;
+			half _SpecularShiftMax;
+			half _SpecularPowerScale;
+			half _FlowMapFlipGreen;
+			half _GlossMapScale;
+			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
 				float _TessMin;
@@ -719,6 +734,7 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
+
 			sampler2D _BaseMap;
 
 
@@ -734,12 +750,15 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord2.zw = 0;
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
+
 				float3 vertexValue = defaultVertexValue;
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -751,7 +770,7 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				o.worldPos = positionWS;
+					o.worldPos = positionWS;
 				#endif
 
 				o.clipPos = TransformWorldToHClip( positionWS );
@@ -761,10 +780,11 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 					vertexInput.positionCS = o.clipPos;
 					o.shadowCoord = GetShadowCoord( vertexInput );
 				#endif
+
 				return o;
 			}
 
-			#if defined(TESSELLATION_ON)
+			#if defined(ASE_TESSELLATION)
 			struct VertexControl
 			{
 				float4 vertex : INTERNALTESSPOS;
@@ -850,8 +870,9 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX( IN );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 WorldPosition = IN.worldPos;
+					float3 WorldPosition = IN.worldPos;
 				#endif
+
 				float4 ShadowCoords = float4( 0, 0, 0, 0 );
 
 				#if defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
@@ -863,9 +884,10 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 				#endif
 
 				float2 uv_BaseMap = IN.ase_texcoord2.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
-				float4 tex2DNode19 = tex2D( _BaseMap, uv_BaseMap );
-				float alpha518 = tex2DNode19.a;
+				half4 tex2DNode19 = tex2D( _BaseMap, uv_BaseMap );
+				half alpha518 = tex2DNode19.a;
 				
+
 				float Alpha = alpha518;
 				float AlphaClipThreshold = 0.05;
 
@@ -881,266 +903,7 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 			ENDHLSL
 		}
 
-		
-		Pass
-		{
-			
-			Name "Meta"
-			Tags { "LightMode"="Meta" }
-
-			Cull Off
-
-			HLSLPROGRAM
-			
-			#pragma multi_compile_instancing
-			#pragma multi_compile_fog
-			#define ASE_FOG 1
-			#define TESSELLATION_ON 1
-			#pragma require tessellation tessHW
-			#pragma hull HullFunction
-			#pragma domain DomainFunction
-			#define ASE_PHONG_TESSELLATION
-			#define ASE_LENGTH_TESSELLATION
-			#define _ALPHATEST_ON 1
-			#define ASE_SRP_VERSION 100900
-
-			
-			#pragma vertex vert
-			#pragma fragment frag
-
-			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/MetaInput.hlsl"
-			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
-
-			#pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS
-			#pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS
-
-
-			struct VertexInput
-			{
-				float4 vertex : POSITION;
-				float3 ase_normal : NORMAL;
-				float4 texcoord1 : TEXCOORD1;
-				float4 texcoord2 : TEXCOORD2;
-				float4 ase_texcoord : TEXCOORD0;
-				UNITY_VERTEX_INPUT_INSTANCE_ID
-			};
-
-			struct VertexOutput
-			{
-				float4 clipPos : SV_POSITION;
-				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 worldPos : TEXCOORD0;
-				#endif
-				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
-				float4 shadowCoord : TEXCOORD1;
-				#endif
-				float4 ase_texcoord2 : TEXCOORD2;
-				UNITY_VERTEX_INPUT_INSTANCE_ID
-				UNITY_VERTEX_OUTPUT_STEREO
-			};
-
-			CBUFFER_START(UnityPerMaterial)
-			float4 _FlowMap_ST;
-			float4 _VertexBaseColor;
-			float4 _BaseMap_ST;
-			float4 _BaseColor;
-			float4 _EmissionMap_ST;
-			float4 _OcclusionMap_ST;
-			float4 _MetallicGlossMap_ST;
-			float4 _SpecularTint;
-			float4 _EmissiveColor;
-			float4 _BumpMap_ST;
-			float4 _IDMap_ST;
-			float _AOOccludeAll;
-			float _OcclusionStrength;
-			float _RimTransmissionIntensity;
-			float _RimPower;
-			float _Translucency;
-			float _SpecularMix;
-			float _VertexColorStrength;
-			float _BumpScale;
-			float _SpecularShiftMin;
-			float _SpecularMultiplier;
-			float _SpecularShiftMax;
-			float _SpecularPowerScale;
-			float _FlowMapFlipGreen;
-			float _GlossMapScale;
-			#ifdef TESSELLATION_ON
-				float _TessPhongStrength;
-				float _TessValue;
-				float _TessMin;
-				float _TessMax;
-				float _TessEdgeLength;
-				float _TessMaxDisp;
-			#endif
-			CBUFFER_END
-			sampler2D _BaseMap;
-
-
-			
-			VertexOutput VertexFunction( VertexInput v  )
-			{
-				VertexOutput o = (VertexOutput)0;
-				UNITY_SETUP_INSTANCE_ID(v);
-				UNITY_TRANSFER_INSTANCE_ID(v, o);
-				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
-
-				o.ase_texcoord2.xy = v.ase_texcoord.xy;
-				
-				//setting value to unused interpolator channels and avoid initialization warnings
-				o.ase_texcoord2.zw = 0;
-				#ifdef ASE_ABSOLUTE_VERTEX_POS
-					float3 defaultVertexValue = v.vertex.xyz;
-				#else
-					float3 defaultVertexValue = float3(0, 0, 0);
-				#endif
-				float3 vertexValue = defaultVertexValue;
-				#ifdef ASE_ABSOLUTE_VERTEX_POS
-					v.vertex.xyz = vertexValue;
-				#else
-					v.vertex.xyz += vertexValue;
-				#endif
-
-				v.ase_normal = v.ase_normal;
-
-				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
-
-				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				o.worldPos = positionWS;
-				#endif
-
-				o.clipPos = MetaVertexPosition( v.vertex, v.texcoord1.xy, v.texcoord1.xy, unity_LightmapST, unity_DynamicLightmapST );
-				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
-					VertexPositionInputs vertexInput = (VertexPositionInputs)0;
-					vertexInput.positionWS = positionWS;
-					vertexInput.positionCS = o.clipPos;
-					o.shadowCoord = GetShadowCoord( vertexInput );
-				#endif
-				return o;
-			}
-
-			#if defined(TESSELLATION_ON)
-			struct VertexControl
-			{
-				float4 vertex : INTERNALTESSPOS;
-				float3 ase_normal : NORMAL;
-				float4 ase_texcoord : TEXCOORD0;
-
-				UNITY_VERTEX_INPUT_INSTANCE_ID
-			};
-
-			struct TessellationFactors
-			{
-				float edge[3] : SV_TessFactor;
-				float inside : SV_InsideTessFactor;
-			};
-
-			VertexControl vert ( VertexInput v )
-			{
-				VertexControl o;
-				UNITY_SETUP_INSTANCE_ID(v);
-				UNITY_TRANSFER_INSTANCE_ID(v, o);
-				o.vertex = v.vertex;
-				o.ase_normal = v.ase_normal;
-				o.ase_texcoord = v.ase_texcoord;
-				return o;
-			}
-
-			TessellationFactors TessellationFunction (InputPatch<VertexControl,3> v)
-			{
-				TessellationFactors o;
-				float4 tf = 1;
-				float tessValue = _TessValue; float tessMin = _TessMin; float tessMax = _TessMax;
-				float edgeLength = _TessEdgeLength; float tessMaxDisp = _TessMaxDisp;
-				#if defined(ASE_FIXED_TESSELLATION)
-				tf = FixedTess( tessValue );
-				#elif defined(ASE_DISTANCE_TESSELLATION)
-				tf = DistanceBasedTess(v[0].vertex, v[1].vertex, v[2].vertex, tessValue, tessMin, tessMax, GetObjectToWorldMatrix(), _WorldSpaceCameraPos );
-				#elif defined(ASE_LENGTH_TESSELLATION)
-				tf = EdgeLengthBasedTess(v[0].vertex, v[1].vertex, v[2].vertex, edgeLength, GetObjectToWorldMatrix(), _WorldSpaceCameraPos, _ScreenParams );
-				#elif defined(ASE_LENGTH_CULL_TESSELLATION)
-				tf = EdgeLengthBasedTessCull(v[0].vertex, v[1].vertex, v[2].vertex, edgeLength, tessMaxDisp, GetObjectToWorldMatrix(), _WorldSpaceCameraPos, _ScreenParams, unity_CameraWorldClipPlanes );
-				#endif
-				o.edge[0] = tf.x; o.edge[1] = tf.y; o.edge[2] = tf.z; o.inside = tf.w;
-				return o;
-			}
-
-			[domain("tri")]
-			[partitioning("fractional_odd")]
-			[outputtopology("triangle_cw")]
-			[patchconstantfunc("TessellationFunction")]
-			[outputcontrolpoints(3)]
-			VertexControl HullFunction(InputPatch<VertexControl, 3> patch, uint id : SV_OutputControlPointID)
-			{
-			   return patch[id];
-			}
-
-			[domain("tri")]
-			VertexOutput DomainFunction(TessellationFactors factors, OutputPatch<VertexControl, 3> patch, float3 bary : SV_DomainLocation)
-			{
-				VertexInput o = (VertexInput) 0;
-				o.vertex = patch[0].vertex * bary.x + patch[1].vertex * bary.y + patch[2].vertex * bary.z;
-				o.ase_normal = patch[0].ase_normal * bary.x + patch[1].ase_normal * bary.y + patch[2].ase_normal * bary.z;
-				o.ase_texcoord = patch[0].ase_texcoord * bary.x + patch[1].ase_texcoord * bary.y + patch[2].ase_texcoord * bary.z;
-				#if defined(ASE_PHONG_TESSELLATION)
-				float3 pp[3];
-				for (int i = 0; i < 3; ++i)
-					pp[i] = o.vertex.xyz - patch[i].ase_normal * (dot(o.vertex.xyz, patch[i].ase_normal) - dot(patch[i].vertex.xyz, patch[i].ase_normal));
-				float phongStrength = _TessPhongStrength;
-				o.vertex.xyz = phongStrength * (pp[0]*bary.x + pp[1]*bary.y + pp[2]*bary.z) + (1.0f-phongStrength) * o.vertex.xyz;
-				#endif
-				UNITY_TRANSFER_INSTANCE_ID(patch[0], o);
-				return VertexFunction(o);
-			}
-			#else
-			VertexOutput vert ( VertexInput v )
-			{
-				return VertexFunction( v );
-			}
-			#endif
-
-			half4 frag(VertexOutput IN  ) : SV_TARGET
-			{
-				UNITY_SETUP_INSTANCE_ID(IN);
-				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX( IN );
-
-				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 WorldPosition = IN.worldPos;
-				#endif
-				float4 ShadowCoords = float4( 0, 0, 0, 0 );
-
-				#if defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
-					#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
-						ShadowCoords = IN.shadowCoord;
-					#elif defined(MAIN_LIGHT_CALCULATE_SHADOWS)
-						ShadowCoords = TransformWorldToShadowCoord( WorldPosition );
-					#endif
-				#endif
-
-				float2 uv_BaseMap = IN.ase_texcoord2.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
-				float4 tex2DNode19 = tex2D( _BaseMap, uv_BaseMap );
-				float alpha518 = tex2DNode19.a;
-				
-				float3 BakedAlbedo = 0;
-				float3 BakedEmission = 0;
-				float Alpha = alpha518;
-				float AlphaClipThreshold = 0.05;
-
-				#ifdef _ALPHATEST_ON
-					clip(Alpha - AlphaClipThreshold);
-				#endif
-
-				MetaInput metaInput = (MetaInput)0;
-				metaInput.Albedo = BakedAlbedo;
-				metaInput.Emission = BakedEmission;
-				
-				return MetaFragment(metaInput);
-			}
-			ENDHLSL
-		}
-		
+	
 	}
 	
 	CustomEditor "ASEMaterialInspector"
@@ -1148,8 +911,7 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation"
 	
 }
 /*ASEBEGIN
-Version=19001
-1913;30;1920;999;1589.338;-681.8656;1;True;False
+Version=19100
 Node;AmplifyShaderEditor.CommentaryNode;121;-2209.837,-395.2434;Inherit;False;1295.191;809.48;;14;610;19;518;106;105;331;107;112;113;104;380;646;649;650;Final Color Blending;0.514151,1,0.6056049,1;0;0
 Node;AmplifyShaderEditor.SamplerNode;19;-2148.696,-235.3144;Inherit;True;Property;_BaseMap;Base Map;0;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.CommentaryNode;512;-2387.855,1180.407;Inherit;False;680.6748;262.7862;;2;383;50;Maps;0.504717,0.9903985,1,1;0;0
@@ -1212,11 +974,11 @@ Node;AmplifyShaderEditor.SimpleMultiplyOpNode;635;-1071.372,1270.615;Inherit;Fal
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;638;-1277.709,1914.066;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;539;-679.4417,923.2449;Inherit;False;Property;_Translucency;Translucency;24;0;Create;True;0;0;0;False;0;False;0;0;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;650;-1229.12,-123.6244;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;296;601.0043,1008.494;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;3;New Amplify Shader;2992e84f91cbeb14eab234972e07ea9d;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;0;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;297;867.6932,1172.645;Half;False;True;-1;2;ASEMaterialInspector;0;12;Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation;2992e84f91cbeb14eab234972e07ea9d;True;Forward;0;1;Forward;8;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;2;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Transparent=RenderType;Queue=Transparent=Queue=0;True;6;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;5;False;;10;False;;1;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;True;True;2;False;;True;1;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalForward;False;False;0;Hidden/InternalErrorShader;0;0;Standard;22;Surface;1;637809477043103459;  Blend;0;0;Two Sided;0;637786971353641789;Cast Shadows;0;637809477107126903;  Use Shadow Threshold;1;637787018088018178;Receive Shadows;1;0;GPU Instancing;1;0;LOD CrossFade;0;0;Built-in Fog;1;637787992251365997;DOTS Instancing;0;0;Meta Pass;1;637793397279481765;Extra Pre Pass;0;0;Tessellation;1;637999710039909139;  Phong;1;637999710052359383;  Strength;0.5,False,;637999710066354213;  Type;2;637999719968826452;  Tess;16,False,;637999710074910842;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Vertex Position,InvertActionOnDeselection;1;0;0;5;False;True;False;True;True;False;;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;298;601.0043,1008.494;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;3;New Amplify Shader;2992e84f91cbeb14eab234972e07ea9d;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=ShadowCaster;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;300;601.0043,1008.494;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;3;New Amplify Shader;2992e84f91cbeb14eab234972e07ea9d;True;Meta;0;4;Meta;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Meta;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;299;601.0043,1008.494;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;3;New Amplify Shader;2992e84f91cbeb14eab234972e07ea9d;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;True;1;LightMode=DepthOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;296;601.0043,1008.494;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;3;New Amplify Shader;2992e84f91cbeb14eab234972e07ea9d;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;5;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;0;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;297;867.6932,1172.645;Half;False;True;-1;2;ASEMaterialInspector;0;13;Reallusion/Amplify/RL_HairShader_2nd_Pass_Baked_URP_Tessellation;2992e84f91cbeb14eab234972e07ea9d;True;Forward;0;1;Forward;8;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;2;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Transparent=RenderType;Queue=Transparent=Queue=0;True;6;True;12;all;0;False;True;1;5;False;;10;False;;1;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;True;True;2;False;;True;1;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalForward;False;False;0;Hidden/InternalErrorShader;0;0;Standard;22;Surface;1;637809477043103459;  Blend;0;0;Two Sided;0;637786971353641789;Cast Shadows;0;637809477107126903;  Use Shadow Threshold;1;637787018088018178;Receive Shadows;1;0;GPU Instancing;1;0;LOD CrossFade;0;0;Built-in Fog;1;637787992251365997;DOTS Instancing;0;0;Meta Pass;0;638047162127053407;Extra Pre Pass;0;0;Tessellation;1;637999710039909139;  Phong;1;637999710052359383;  Strength;0.5,False,;637999710066354213;  Type;2;637999719968826452;  Tess;16,False,;637999710074910842;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Vertex Position,InvertActionOnDeselection;1;0;0;5;False;True;False;True;False;False;;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;298;601.0043,1008.494;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;3;New Amplify Shader;2992e84f91cbeb14eab234972e07ea9d;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=ShadowCaster;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;300;601.0043,1008.494;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;3;New Amplify Shader;2992e84f91cbeb14eab234972e07ea9d;True;Meta;0;4;Meta;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Meta;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;299;601.0043,1008.494;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;3;New Amplify Shader;2992e84f91cbeb14eab234972e07ea9d;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;True;1;LightMode=DepthOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 WireConnection;518;0;19;4
 WireConnection;643;0;638;0
 WireConnection;282;0;629;0
@@ -1267,4 +1029,4 @@ WireConnection;297;2;574;0
 WireConnection;297;3;521;0
 WireConnection;297;4;644;0
 ASEEND*/
-//CHKSM=053266CDF880CA741CD557C32A68F1F8505A90A5
+//CHKSM=C57A93FAAD0955407DA56B72A7B7028466F191FF

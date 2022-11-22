@@ -8,8 +8,6 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 		[HideInInspector] _AlphaCutoff("Alpha Cutoff ", Range(0, 1)) = 0.5
 		[ASEBegin]_DiffuseMap("Diffuse Map", 2D) = "white" {}
 		_DiffuseColor("Diffuse Color", Color) = (1,1,1,0)
-		_ColorBlendMap("Color Blend Map (Head)", 2D) = "gray" {}
-		_ColorBlendStrength("Color Blend Strength", Range( 0 , 1)) = 0
 		_MaskMap("Mask Map", 2D) = "gray" {}
 		_AOStrength("AO Strength", Range( 0 , 1)) = 0
 		_SmoothnessPower("SmoothnessPower", Range( 0.1 , 2)) = 0.1
@@ -17,8 +15,6 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 		_SmoothnessMax("SmoothnessMax", Range( 0 , 1)) = 0
 		[Normal]_NormalMap("Normal Map", 2D) = "bump" {}
 		_NormalStrength("Normal Strength", Range( 0 , 2)) = 1
-		[Normal]_NormalBlendMap("Normal Blend Map (Head)", 2D) = "bump" {}
-		_NormalBlendStrength("Normal Blend Strength (Head)", Range( 0 , 2)) = 0
 		[Normal]_MicroNormalMap("Micro Normal Map", 2D) = "bump" {}
 		_MicroNormalStrength("Micro Normal Strength", Range( 0 , 1)) = 0.5
 		_MicroNormalTiling("Micro Normal Tiling", Range( 0 , 50)) = 25
@@ -28,40 +24,45 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 		_SubsurfaceNormalSoften("Subsurface Normal Soften", Range( 0 , 1)) = 0.4
 		_ThicknessMap("Thickness Map", 2D) = "black" {}
 		_ThicknessScale("ThicknessScale", Range( 0 , 1)) = 1
+		_EmissionMap("Emission Map", 2D) = "white" {}
+		[HDR]_EmissiveColor("Emissive Color", Color) = (0,0,0,0)
+		_RGBAMask("RGBAMask", 2D) = "black" {}
+		_MicroSmoothnessMod("Micro Smoothness Mod", Range( -1.5 , 1.5)) = 0
+		_RSmoothnessMod("R/Nose Smoothness Mod", Range( -1.5 , 1.5)) = 0
+		_GSmoothnessMod("G/Mouth Smoothness Mod", Range( -1.5 , 1.5)) = 0
+		_BSmoothnessMod("B/Upper Lid Smoothness Mod", Range( -1.5 , 1.5)) = 0
+		_ASmoothnessMod("A/Inner Lid Smoothness Mod", Range( -1.5 , 1.5)) = 0
+		_UnmaskedSmoothnessMod("Unmasked Smoothness Mod", Range( -1.5 , 1.5)) = 0
+		_RScatterScale("R/Nose Scatter Scale", Range( 0 , 2)) = 1
+		_GScatterScale("G/Mouth Scatter Scale", Range( 0 , 2)) = 1
+		_BScatterScale("B/Upper Lid Scatter Scale", Range( 0 , 2)) = 1
+		_AScatterScale("A/Inner Lid Scatter Scale", Range( 0 , 2)) = 1
+		_UnmaskedScatterScale("Unmasked Scatter Scale", Range( 0 , 2)) = 1
+		[Toggle(BOOLEAN_IS_HEAD_ON)] BOOLEAN_IS_HEAD("Is Head", Float) = 1
+		_ColorBlendMap("Color Blend Map (Head)", 2D) = "gray" {}
+		_ColorBlendStrength("Color Blend Strength", Range( 0 , 1)) = 0
+		[Normal]_NormalBlendMap("Normal Blend Map (Head)", 2D) = "bump" {}
+		_NormalBlendStrength("Normal Blend Strength (Head)", Range( 0 , 2)) = 0
 		_MNAOMap("Cavity AO Map", 2D) = "white" {}
 		_MouthCavityAO("Mouth Cavity AO", Range( 0 , 5)) = 2.5
 		_NostrilCavityAO("Nostril Cavity AO", Range( 0 , 5)) = 2.5
 		_LipsCavityAO("Lips Cavity AO", Range( 0 , 5)) = 2.5
-		_RGBAMask("RGBAMask", 2D) = "black" {}
 		_CFULCMask("CFULCMask", 2D) = "black" {}
-		_EarNeckMask("EarNeckMask", 2D) = "black" {}
-		[Toggle(BOOLEAN_IS_HEAD_ON)] BOOLEAN_IS_HEAD("Is Head", Float) = 1
-		_MicroSmoothnessMod("Micro Smoothness Mod", Range( -1.5 , 1.5)) = 0
-		_RSmoothnessMod("Nose/R Smoothness Mod", Range( -1.5 , 1.5)) = 0
-		_GSmoothnessMod("Mouth/G Smoothness Mod", Range( -1.5 , 1.5)) = 0
-		_BSmoothnessMod("Upper Lid/B Smoothness Mod", Range( -1.5 , 1.5)) = 0
-		_ASmoothnessMod("Inner Lid/A Smoothness Mod", Range( -1.5 , 1.5)) = 0
-		_EarSmoothnessMod("Ear Smoothness Mod", Range( -1.5 , 1.5)) = 0
-		_NeckSmoothnessMod("Neck Smoothness Mod", Range( -1.5 , 1.5)) = 0
 		_CheekSmoothnessMod("Cheek Smoothness Mod", Range( -1.5 , 1.5)) = 0
 		_ForeheadSmoothnessMod("Forehead Smoothness Mod", Range( -1.5 , 1.5)) = 0
 		_UpperLipSmoothnessMod("Upper Lip Smoothness Mod", Range( -1.5 , 1.5)) = 0
 		_ChinSmoothnessMod("Chin Smoothness Mod", Range( -1.5 , 1.5)) = 0
-		_UnmaskedSmoothnessMod("Unmasked Smoothness Mod", Range( -1.5 , 1.5)) = 0
-		_RScatterScale("Nose/R Scatter Scale", Range( 0 , 2)) = 1
-		_GScatterScale("Mouth/G Scatter Scale", Range( 0 , 2)) = 1
-		_BScatterScale("Upper Lid/B Scatter Scale", Range( 0 , 2)) = 1
-		_AScatterScale("Inner Lid/A Scatter Scale", Range( 0 , 2)) = 1
-		_EarScatterScale("Ear Scatter Scale", Range( 0 , 2)) = 1
-		_NeckScatterScale("Neck Scatter Scale", Range( 0 , 2)) = 1
 		_CheekScatterScale("Cheek Scatter Scale", Range( 0 , 2)) = 1
 		_ForeheadScatterScale("Forehead Scatter Scale", Range( 0 , 2)) = 1
 		_UpperLipScatterScale("Upper Lip Scatter Scale", Range( 0 , 2)) = 1
 		_ChinScatterScale("Chin Scatter Scale", Range( 0 , 2)) = 1
-		_UnmaskedScatterScale("Unmasked Scatter Scale", Range( 0 , 2)) = 1
-		_EmissionMap("Emission Map", 2D) = "white" {}
-		[ASEEnd][HDR]_EmissiveColor("Emissive Color", Color) = (0,0,0,0)
+		_EarNeckMask("EarNeckMask", 2D) = "black" {}
+		_EarSmoothnessMod("Ear Smoothness Mod", Range( -1.5 , 1.5)) = 0
+		_NeckSmoothnessMod("Neck Smoothness Mod", Range( -1.5 , 1.5)) = 0
+		_EarScatterScale("Ear Scatter Scale", Range( 0 , 2)) = 1
+		[ASEEnd]_NeckScatterScale("Neck Scatter Scale", Range( 0 , 2)) = 1
 		[HideInInspector] _texcoord( "", 2D ) = "white" {}
+
 
 		_TransmissionShadow( "Transmission Shadow", Range( 0, 1 ) ) = 0.5
 		_TransStrength( "Strength", Range( 0, 50 ) ) = 1
@@ -76,6 +77,10 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 		//_TessMax( "Tess Max Distance", Float ) = 25
 		//_TessEdgeLength ( "Tess Edge length", Range( 2, 50 ) ) = 16
 		//_TessMaxDisp( "Tess Max Displacement", Float ) = 25
+
+		[HideInInspector][ToggleOff] _SpecularHighlights("Specular Highlights", Float) = 1.0
+		[HideInInspector][ToggleOff] _EnvironmentReflections("Environment Reflections", Float) = 1.0
+		[HideInInspector][ToggleOff] _ReceiveShadows("Receive Shadows", Float) = 1.0
 	}
 
 	SubShader
@@ -85,14 +90,19 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 		
 
 		Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Opaque" "Queue"="Geometry" }
+
 		Cull Back
+		ZWrite On
+		ZTest LEqual
+		Offset 0 , 0
 		AlphaToMask Off
+
 		
+
 		HLSLINCLUDE
 		#pragma target 3.0
-
 		#pragma prefer_hlslcc gles
-		
+		// ensure rendering platforms toggle list is visible
 
 		#ifndef ASE_TESS_FUNCS
 		#define ASE_TESS_FUNCS
@@ -100,7 +110,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 		{
 			return tessValue;
 		}
-		
+
 		float CalcDistanceTessFactor (float4 vertex, float minDist, float maxDist, float tess, float4x4 o2w, float3 cameraPos )
 		{
 			float3 wpos = mul(o2w,vertex).xyz;
@@ -137,17 +147,17 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 		{
 			float4 planeTest;
 			planeTest.x = (( DistanceFromPlane(wpos0, planes[0]) > -cullEps) ? 1.0f : 0.0f ) +
-						  (( DistanceFromPlane(wpos1, planes[0]) > -cullEps) ? 1.0f : 0.0f ) +
-						  (( DistanceFromPlane(wpos2, planes[0]) > -cullEps) ? 1.0f : 0.0f );
+							(( DistanceFromPlane(wpos1, planes[0]) > -cullEps) ? 1.0f : 0.0f ) +
+							(( DistanceFromPlane(wpos2, planes[0]) > -cullEps) ? 1.0f : 0.0f );
 			planeTest.y = (( DistanceFromPlane(wpos0, planes[1]) > -cullEps) ? 1.0f : 0.0f ) +
-						  (( DistanceFromPlane(wpos1, planes[1]) > -cullEps) ? 1.0f : 0.0f ) +
-						  (( DistanceFromPlane(wpos2, planes[1]) > -cullEps) ? 1.0f : 0.0f );
+							(( DistanceFromPlane(wpos1, planes[1]) > -cullEps) ? 1.0f : 0.0f ) +
+							(( DistanceFromPlane(wpos2, planes[1]) > -cullEps) ? 1.0f : 0.0f );
 			planeTest.z = (( DistanceFromPlane(wpos0, planes[2]) > -cullEps) ? 1.0f : 0.0f ) +
-						  (( DistanceFromPlane(wpos1, planes[2]) > -cullEps) ? 1.0f : 0.0f ) +
-						  (( DistanceFromPlane(wpos2, planes[2]) > -cullEps) ? 1.0f : 0.0f );
+							(( DistanceFromPlane(wpos1, planes[2]) > -cullEps) ? 1.0f : 0.0f ) +
+							(( DistanceFromPlane(wpos2, planes[2]) > -cullEps) ? 1.0f : 0.0f );
 			planeTest.w = (( DistanceFromPlane(wpos0, planes[3]) > -cullEps) ? 1.0f : 0.0f ) +
-						  (( DistanceFromPlane(wpos1, planes[3]) > -cullEps) ? 1.0f : 0.0f ) +
-						  (( DistanceFromPlane(wpos2, planes[3]) > -cullEps) ? 1.0f : 0.0f );
+							(( DistanceFromPlane(wpos1, planes[3]) > -cullEps) ? 1.0f : 0.0f ) +
+							(( DistanceFromPlane(wpos2, planes[3]) > -cullEps) ? 1.0f : 0.0f );
 			return !all (planeTest);
 		}
 
@@ -195,7 +205,6 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			return tess;
 		}
 		#endif //ASE_TESS_FUNCS
-
 		ENDHLSL
 
 		
@@ -204,37 +213,45 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			
 			Name "Forward"
 			Tags { "LightMode"="UniversalForward" }
-			
+
 			Blend One Zero, One Zero
 			ZWrite On
 			ZTest LEqual
 			Offset 0 , 0
 			ColorMask RGBA
+
 			
 
 			HLSLPROGRAM
-			
+
 			#define _NORMAL_DROPOFF_TS 1
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
-			#define _TRANSLUCENCY_ASE 1
-			#define _TRANSMISSION_ASE 1
+			#define ASE_TRANSLUCENCY 1
+			#define ASE_TRANSMISSION 1
 			#define _EMISSION
 			#define _NORMALMAP 1
 			#define ASE_SRP_VERSION 101001
 			#define ASE_USING_SAMPLING_MACROS 1
 
+
+			#pragma shader_feature_local _RECEIVE_SHADOWS_OFF
+			#pragma shader_feature_local_fragment _SPECULARHIGHLIGHTS_OFF
+			#pragma shader_feature_local_fragment _ENVIRONMENTREFLECTIONS_OFF
+
 			
-			#pragma multi_compile _ _SCREEN_SPACE_OCCLUSION
 			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS
 			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
-			#pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS _ADDITIONAL_OFF
-			#pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS
-			#pragma multi_compile _ _SHADOWS_SOFT
-			#pragma multi_compile _ _MIXED_LIGHTING_SUBTRACTIVE
+		
+
 			
+
+			#pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS
+			#pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
+			#pragma multi_compile_fragment _ _SHADOWS_SOFT
+			#pragma multi_compile_fragment _ _SCREEN_SPACE_OCCLUSION
 			#pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
 			#pragma multi_compile _ SHADOWS_SHADOWMASK
 
@@ -244,20 +261,16 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#define SHADERPASS_FORWARD
+			#define SHADERPASS SHADERPASS_FORWARD
 
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
-			
-			#if ASE_SRP_VERSION <= 70108
-			#define REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR
-			#endif
+			#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
 
 			#if defined(UNITY_INSTANCING_ENABLED) && defined(_TERRAIN_INSTANCED_PERPIXEL_NORMAL)
-			    #define ENABLE_TERRAIN_PERPIXEL_NORMAL
+				#define ENABLE_TERRAIN_PERPIXEL_NORMAL
 			#endif
 
 			#pragma shader_feature_local BOOLEAN_IS_HEAD_ON
@@ -268,8 +281,8 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				float4 vertex : POSITION;
 				float3 ase_normal : NORMAL;
 				float4 ase_tangent : TANGENT;
-				float4 texcoord1 : TEXCOORD1;
 				float4 texcoord : TEXCOORD0;
+				float4 texcoord1 : TEXCOORD1;
 				
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -280,13 +293,13 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				float4 lightmapUVOrVertexSH : TEXCOORD0;
 				half4 fogFactorAndVertexLight : TEXCOORD1;
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
-				float4 shadowCoord : TEXCOORD2;
+					float4 shadowCoord : TEXCOORD2;
 				#endif
 				float4 tSpace0 : TEXCOORD3;
 				float4 tSpace1 : TEXCOORD4;
 				float4 tSpace2 : TEXCOORD5;
 				#if defined(ASE_NEEDS_FRAG_SCREEN_POSITION)
-				float4 screenPos : TEXCOORD6;
+					float4 screenPos : TEXCOORD6;
 				#endif
 				float4 ase_texcoord7 : TEXCOORD7;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -347,10 +360,10 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			half _NeckSmoothnessMod;
 			half _NormalStrength;
 			half _ForeheadSmoothnessMod;
-			#ifdef _TRANSMISSION_ASE
+			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
-			#ifdef _TRANSLUCENCY_ASE
+			#ifdef ASE_TRANSLUCENCY
 				float _TransStrength;
 				float _TransNormal;
 				float _TransScattering;
@@ -358,7 +371,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				float _TransAmbient;
 				float _TransShadow;
 			#endif
-			#ifdef TESSELLATION_ON
+			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
 				float _TessMin;
@@ -367,6 +380,18 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
+
+			// Property used by ScenePickingPass
+			#ifdef SCENEPICKINGPASS
+				float4 _SelectionID;
+			#endif
+
+			// Properties used by SceneSelectionPass
+			#ifdef SCENESELECTIONPASS
+				int _ObjectId;
+				int _PassValue;
+			#endif
+
 			TEXTURE2D(_DiffuseMap);
 			SAMPLER(sampler_DiffuseMap);
 			TEXTURE2D(_ColorBlendMap);
@@ -422,12 +447,15 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord7.zw = 0;
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
+
 				float3 vertexValue = defaultVertexValue;
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -445,8 +473,13 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				o.tSpace1 = float4( normalInput.tangentWS, positionWS.y);
 				o.tSpace2 = float4( normalInput.bitangentWS, positionWS.z);
 
-				OUTPUT_LIGHTMAP_UV( v.texcoord1, unity_LightmapST, o.lightmapUVOrVertexSH.xy );
-				OUTPUT_SH( normalInput.normalWS.xyz, o.lightmapUVOrVertexSH.xyz );
+				#if defined(LIGHTMAP_ON)
+					OUTPUT_LIGHTMAP_UV( v.texcoord1, unity_LightmapST, o.lightmapUVOrVertexSH.xy );
+				#endif
+
+				#if !defined(LIGHTMAP_ON)
+					OUTPUT_SH( normalInput.normalWS.xyz, o.lightmapUVOrVertexSH.xyz );
+				#endif
 
 				#if defined(ENABLE_TERRAIN_PERPIXEL_NORMAL)
 					o.lightmapUVOrVertexSH.zw = v.texcoord;
@@ -454,28 +487,32 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				#endif
 
 				half3 vertexLight = VertexLighting( positionWS, normalInput.normalWS );
+
 				#ifdef ASE_FOG
 					half fogFactor = ComputeFogFactor( positionCS.z );
 				#else
 					half fogFactor = 0;
 				#endif
+
 				o.fogFactorAndVertexLight = half4(fogFactor, vertexLight);
-				
+
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
-				VertexPositionInputs vertexInput = (VertexPositionInputs)0;
-				vertexInput.positionWS = positionWS;
-				vertexInput.positionCS = positionCS;
-				o.shadowCoord = GetShadowCoord( vertexInput );
+					VertexPositionInputs vertexInput = (VertexPositionInputs)0;
+					vertexInput.positionWS = positionWS;
+					vertexInput.positionCS = positionCS;
+					o.shadowCoord = GetShadowCoord( vertexInput );
 				#endif
-				
+
 				o.clipPos = positionCS;
+
 				#if defined(ASE_NEEDS_FRAG_SCREEN_POSITION)
-				o.screenPos = ComputeScreenPos(positionCS);
+					o.screenPos = ComputeScreenPos(positionCS);
 				#endif
+
 				return o;
 			}
-			
-			#if defined(TESSELLATION_ON)
+
+			#if defined(ASE_TESSELLATION)
 			struct VertexControl
 			{
 				float4 vertex : INTERNALTESSPOS;
@@ -533,7 +570,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			[outputcontrolpoints(3)]
 			VertexControl HullFunction(InputPatch<VertexControl, 3> patch, uint id : SV_OutputControlPointID)
 			{
-			   return patch[id];
+				return patch[id];
 			}
 
 			[domain("tri")]
@@ -564,12 +601,12 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			#endif
 
 			#if defined(ASE_EARLY_Z_DEPTH_OPTIMIZE)
-				#define ASE_SV_DEPTH SV_DepthLessEqual  
+				#define ASE_SV_DEPTH SV_DepthLessEqual
 			#else
 				#define ASE_SV_DEPTH SV_Depth
 			#endif
 
-			half4 frag ( VertexOutput IN 
+			half4 frag ( VertexOutput IN
 						#ifdef ASE_DEPTH_WRITE_ON
 						,out float outputDepth : ASE_SV_DEPTH
 						#endif
@@ -592,11 +629,13 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 					float3 WorldTangent = IN.tSpace1.xyz;
 					float3 WorldBiTangent = IN.tSpace2.xyz;
 				#endif
+
 				float3 WorldPosition = float3(IN.tSpace0.w,IN.tSpace1.w,IN.tSpace2.w);
 				float3 WorldViewDirection = _WorldSpaceCameraPos.xyz  - WorldPosition;
 				float4 ShadowCoords = float4( 0, 0, 0, 0 );
+
 				#if defined(ASE_NEEDS_FRAG_SCREEN_POSITION)
-				float4 ScreenPos = IN.screenPos;
+					float4 ScreenPos = IN.screenPos;
 				#endif
 
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
@@ -604,7 +643,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				#elif defined(MAIN_LIGHT_CALCULATE_SHADOWS)
 					ShadowCoords = TransformWorldToShadowCoord( WorldPosition );
 				#endif
-	
+
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
 				float2 uv_DiffuseMap = IN.ase_texcoord7.xy * _DiffuseMap_ST.xy + _DiffuseMap_ST.zw;
@@ -714,7 +753,8 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				float2 uv_ThicknessMap = IN.ase_texcoord7.xy * _ThicknessMap_ST.xy + _ThicknessMap_ST.zw;
 				half4 temp_output_307_0 = ( baseColor266 * _SubsurfaceFalloff );
 				
-				float3 Albedo = baseColor266.rgb;
+
+				float3 BaseColor = baseColor266.rgb;
 				float3 Normal = BlendNormal( staticSwitch71 , unpack52 );
 				float3 Emission = ( _EmissiveColor * SAMPLE_TEXTURE2D( _EmissionMap, sampler_EmissionMap, uv_EmissionMap ) ).rgb;
 				float3 Specular = 0.5;
@@ -729,8 +769,9 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				float RefractionIndex = 1;
 				float3 Transmission = ( SAMPLE_TEXTURE2D( _ThicknessMap, sampler_SSSMap, uv_ThicknessMap ).g * _ThicknessScale * temp_output_307_0 ).rgb;
 				float3 Translucency = ( temp_output_307_0 * ( temp_output_336_0 * 0.2 ) ).rgb;
+
 				#ifdef ASE_DEPTH_WRITE_ON
-				float DepthValue = 0;
+					float DepthValue = 0;
 				#endif
 
 				#ifdef _ALPHATEST_ON
@@ -743,13 +784,13 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				inputData.shadowCoord = ShadowCoords;
 
 				#ifdef _NORMALMAP
-					#if _NORMAL_DROPOFF_TS
-					inputData.normalWS = TransformTangentToWorld(Normal, half3x3( WorldTangent, WorldBiTangent, WorldNormal ));
-					#elif _NORMAL_DROPOFF_OS
-					inputData.normalWS = TransformObjectToWorldNormal(Normal);
-					#elif _NORMAL_DROPOFF_WS
-					inputData.normalWS = Normal;
-					#endif
+						#if _NORMAL_DROPOFF_TS
+							inputData.normalWS = TransformTangentToWorld(Normal, half3x3(WorldTangent, WorldBiTangent, WorldNormal));
+						#elif _NORMAL_DROPOFF_OS
+							inputData.normalWS = TransformObjectToWorldNormal(Normal);
+						#elif _NORMAL_DROPOFF_WS
+							inputData.normalWS = Normal;
+						#endif
 					inputData.normalWS = NormalizeNormalPerPixel(inputData.normalWS);
 				#else
 					inputData.normalWS = WorldNormal;
@@ -758,8 +799,8 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				#ifdef ASE_FOG
 					inputData.fogCoord = IN.fogFactorAndVertexLight.x;
 				#endif
+					inputData.vertexLighting = IN.fogFactorAndVertexLight.yzw;
 
-				inputData.vertexLighting = IN.fogFactorAndVertexLight.yzw;
 				#if defined(ENABLE_TERRAIN_PERPIXEL_NORMAL)
 					float3 SH = SampleSH(inputData.normalWS.xyz);
 				#else
@@ -767,24 +808,25 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				#endif
 
 				inputData.bakedGI = SAMPLE_GI( IN.lightmapUVOrVertexSH.xy, SH, inputData.normalWS );
-				#ifdef _ASE_BAKEDGI
+
+				#ifdef ASE_BAKEDGI
 					inputData.bakedGI = BakedGI;
 				#endif
-				
+
 				inputData.normalizedScreenSpaceUV = GetNormalizedScreenSpaceUV(IN.clipPos);
 				inputData.shadowMask = SAMPLE_SHADOWMASK(IN.lightmapUVOrVertexSH.xy);
 
 				half4 color = UniversalFragmentPBR(
-					inputData, 
-					Albedo, 
-					Metallic, 
-					Specular, 
-					Smoothness, 
-					Occlusion, 
-					Emission, 
+					inputData,
+					BaseColor,
+					Metallic,
+					Specular,
+					Smoothness,
+					Occlusion,
+					Emission,
 					Alpha);
 
-				#ifdef _TRANSMISSION_ASE
+				#ifdef ASE_TRANSMISSION
 				{
 					float shadow = _TransmissionShadow;
 
@@ -792,7 +834,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 					float3 mainAtten = mainLight.color * mainLight.distanceAttenuation;
 					mainAtten = lerp( mainAtten, mainAtten * mainLight.shadowAttenuation, shadow );
 					half3 mainTransmission = max(0 , -dot(inputData.normalWS, mainLight.direction)) * mainAtten * Transmission;
-					color.rgb += Albedo * mainTransmission;
+					color.rgb += BaseColor * mainTransmission;
 
 					#ifdef _ADDITIONAL_LIGHTS
 						int transPixelLightCount = GetAdditionalLightsCount();
@@ -803,13 +845,13 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 							atten = lerp( atten, atten * light.shadowAttenuation, shadow );
 
 							half3 transmission = max(0 , -dot(inputData.normalWS, light.direction)) * atten * Transmission;
-							color.rgb += Albedo * transmission;
+							color.rgb += BaseColor * transmission;
 						}
 					#endif
 				}
 				#endif
 
-				#ifdef _TRANSLUCENCY_ASE
+				#ifdef ASE_TRANSLUCENCY
 				{
 					float shadow = _TransShadow;
 					float normal = _TransNormal;
@@ -825,7 +867,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 					half3 mainLightDir = mainLight.direction + inputData.normalWS * normal;
 					half mainVdotL = pow( saturate( dot( inputData.viewDirectionWS, -mainLightDir ) ), scattering );
 					half3 mainTranslucency = mainAtten * ( mainVdotL * direct + inputData.bakedGI * ambient ) * Translucency;
-					color.rgb += Albedo * mainTranslucency * strength;
+					color.rgb += BaseColor * mainTranslucency * strength;
 
 					#ifdef _ADDITIONAL_LIGHTS
 						int transPixelLightCount = GetAdditionalLightsCount();
@@ -838,13 +880,13 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 							half3 lightDir = light.direction + inputData.normalWS * normal;
 							half VdotL = pow( saturate( dot( inputData.viewDirectionWS, -lightDir ) ), scattering );
 							half3 translucency = atten * ( VdotL * direct + inputData.bakedGI * ambient ) * Translucency;
-							color.rgb += Albedo * translucency * strength;
+							color.rgb += BaseColor * translucency * strength;
 						}
 					#endif
 				}
 				#endif
 
-				#ifdef _REFRACTION_ASE
+				#ifdef ASE_REFRACTION
 					float4 projScreenPos = ScreenPos / ScreenPos.w;
 					float3 refractionOffset = ( RefractionIndex - 1.0 ) * mul( UNITY_MATRIX_V, float4( WorldNormal,0 ) ).xyz * ( 1.0 - dot( WorldNormal, WorldViewDirection ) );
 					projScreenPos.xy += refractionOffset.xy;
@@ -888,31 +930,29 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			ColorMask 0
 
 			HLSLPROGRAM
-			
+
 			#define _NORMAL_DROPOFF_TS 1
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
-			#define _TRANSLUCENCY_ASE 1
-			#define _TRANSMISSION_ASE 1
+			#define ASE_TRANSLUCENCY 1
+			#define ASE_TRANSMISSION 1
 			#define _EMISSION
 			#define _NORMALMAP 1
 			#define ASE_SRP_VERSION 101001
 			#define ASE_USING_SAMPLING_MACROS 1
 
-			
+
 			#pragma vertex vert
 			#pragma fragment frag
-#if ASE_SRP_VERSION >= 110000
-			#pragma multi_compile _ _CASTING_PUNCTUAL_LIGHT_SHADOW
-#endif
-			#define SHADERPASS_SHADOWCASTER
 
+			#define SHADERPASS SHADERPASS_SHADOWCASTER
+
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 
 			
 
@@ -928,10 +968,10 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			{
 				float4 clipPos : SV_POSITION;
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 worldPos : TEXCOORD0;
+					float3 worldPos : TEXCOORD0;
 				#endif
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
-				float4 shadowCoord : TEXCOORD1;
+					float4 shadowCoord : TEXCOORD1;
 				#endif
 				
 				UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -992,10 +1032,10 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			half _NeckSmoothnessMod;
 			half _NormalStrength;
 			half _ForeheadSmoothnessMod;
-			#ifdef _TRANSMISSION_ASE
+			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
-			#ifdef _TRANSLUCENCY_ASE
+			#ifdef ASE_TRANSLUCENCY
 				float _TransStrength;
 				float _TransNormal;
 				float _TransScattering;
@@ -1003,7 +1043,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				float _TransAmbient;
 				float _TransShadow;
 			#endif
-			#ifdef TESSELLATION_ON
+			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
 				float _TessMin;
@@ -1012,13 +1052,26 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
+
+			// Property used by ScenePickingPass
+			#ifdef SCENEPICKINGPASS
+				float4 _SelectionID;
+			#endif
+
+			// Properties used by SceneSelectionPass
+			#ifdef SCENESELECTIONPASS
+				int _ObjectId;
+				int _PassValue;
+			#endif
+
 			
 
 			
 			float3 _LightDirection;
-#if ASE_SRP_VERSION >= 110000 
-			float3 _LightPosition;
-#endif
+			#if ASE_SRP_VERSION >= 110000
+				float3 _LightPosition;
+			#endif
+
 			VertexOutput VertexFunction( VertexInput v )
 			{
 				VertexOutput o;
@@ -1027,11 +1080,13 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO( o );
 
 				
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
+
 				float3 vertexValue = defaultVertexValue;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
@@ -1042,31 +1097,35 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				v.ase_normal = v.ase_normal;
 
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
+
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				o.worldPos = positionWS;
+					o.worldPos = positionWS;
 				#endif
+
 				float3 normalWS = TransformObjectToWorldDir(v.ase_normal);
 
-		#if ASE_SRP_VERSION >= 110000 
-			#if _CASTING_PUNCTUAL_LIGHT_SHADOW
-				float3 lightDirectionWS = normalize(_LightPosition - positionWS);
-			#else
-				float3 lightDirectionWS = _LightDirection;
-			#endif
-				float4 clipPos = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, lightDirectionWS));
-			#if UNITY_REVERSED_Z
-				clipPos.z = min(clipPos.z, UNITY_NEAR_CLIP_VALUE);
-			#else
-				clipPos.z = max(clipPos.z, UNITY_NEAR_CLIP_VALUE);
-			#endif
-		#else
-				float4 clipPos = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, _LightDirection));
-			#if UNITY_REVERSED_Z
-				clipPos.z = min(clipPos.z, clipPos.w * UNITY_NEAR_CLIP_VALUE);
-			#else
-				clipPos.z = max(clipPos.z, clipPos.w * UNITY_NEAR_CLIP_VALUE);
-			#endif
-		#endif
+				#if ASE_SRP_VERSION >= 110000
+					#if _CASTING_PUNCTUAL_LIGHT_SHADOW
+						float3 lightDirectionWS = normalize(_LightPosition - positionWS);
+					#else
+						float3 lightDirectionWS = _LightDirection;
+					#endif
+
+					float4 clipPos = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, lightDirectionWS));
+
+					#if UNITY_REVERSED_Z
+						clipPos.z = min(clipPos.z, UNITY_NEAR_CLIP_VALUE);
+					#else
+						clipPos.z = max(clipPos.z, UNITY_NEAR_CLIP_VALUE);
+					#endif
+				#else
+					float4 clipPos = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, _LightDirection));
+					#if UNITY_REVERSED_Z
+						clipPos.z = min(clipPos.z, clipPos.w * UNITY_NEAR_CLIP_VALUE);
+					#else
+						clipPos.z = max(clipPos.z, clipPos.w * UNITY_NEAR_CLIP_VALUE);
+					#endif
+				#endif
 
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
 					VertexPositionInputs vertexInput = (VertexPositionInputs)0;
@@ -1074,11 +1133,13 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 					vertexInput.positionCS = clipPos;
 					o.shadowCoord = GetShadowCoord( vertexInput );
 				#endif
+
 				o.clipPos = clipPos;
+
 				return o;
 			}
 
-			#if defined(TESSELLATION_ON)
+			#if defined(ASE_TESSELLATION)
 			struct VertexControl
 			{
 				float4 vertex : INTERNALTESSPOS;
@@ -1130,7 +1191,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			[outputcontrolpoints(3)]
 			VertexControl HullFunction(InputPatch<VertexControl, 3> patch, uint id : SV_OutputControlPointID)
 			{
-			   return patch[id];
+				return patch[id];
 			}
 
 			[domain("tri")]
@@ -1158,12 +1219,12 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			#endif
 
 			#if defined(ASE_EARLY_Z_DEPTH_OPTIMIZE)
-				#define ASE_SV_DEPTH SV_DepthLessEqual  
+				#define ASE_SV_DEPTH SV_DepthLessEqual
 			#else
 				#define ASE_SV_DEPTH SV_Depth
 			#endif
 
-			half4 frag(	VertexOutput IN 
+			half4 frag(	VertexOutput IN
 						#ifdef ASE_DEPTH_WRITE_ON
 						,out float outputDepth : ASE_SV_DEPTH
 						#endif
@@ -1171,10 +1232,11 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			{
 				UNITY_SETUP_INSTANCE_ID( IN );
 				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX( IN );
-				
+
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 WorldPosition = IN.worldPos;
+					float3 WorldPosition = IN.worldPos;
 				#endif
+
 				float4 ShadowCoords = float4( 0, 0, 0, 0 );
 
 				#if defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
@@ -1186,11 +1248,13 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				#endif
 
 				
+
 				float Alpha = 1;
 				float AlphaClipThreshold = 0.5;
 				float AlphaClipThresholdShadow = 0.5;
+
 				#ifdef ASE_DEPTH_WRITE_ON
-				float DepthValue = 0;
+					float DepthValue = 0;
 				#endif
 
 				#ifdef _ALPHATEST_ON
@@ -1204,12 +1268,13 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				#ifdef LOD_FADE_CROSSFADE
 					LODDitheringTransition( IN.clipPos.xyz, unity_LODFade.x );
 				#endif
+
 				#ifdef ASE_DEPTH_WRITE_ON
 					outputDepth = DepthValue;
 				#endif
+
 				return 0;
 			}
-
 			ENDHLSL
 		}
 
@@ -1225,29 +1290,29 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			AlphaToMask Off
 
 			HLSLPROGRAM
-			
+
 			#define _NORMAL_DROPOFF_TS 1
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
-			#define _TRANSLUCENCY_ASE 1
-			#define _TRANSMISSION_ASE 1
+			#define ASE_TRANSLUCENCY 1
+			#define ASE_TRANSMISSION 1
 			#define _EMISSION
 			#define _NORMALMAP 1
 			#define ASE_SRP_VERSION 101001
 			#define ASE_USING_SAMPLING_MACROS 1
 
-			
+
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#define SHADERPASS_DEPTHONLY
+			#define SHADERPASS SHADERPASS_DEPTHONLY
 
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 
 			
 
@@ -1327,10 +1392,10 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			half _NeckSmoothnessMod;
 			half _NormalStrength;
 			half _ForeheadSmoothnessMod;
-			#ifdef _TRANSMISSION_ASE
+			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
-			#ifdef _TRANSLUCENCY_ASE
+			#ifdef ASE_TRANSLUCENCY
 				float _TransStrength;
 				float _TransNormal;
 				float _TransScattering;
@@ -1338,7 +1403,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				float _TransAmbient;
 				float _TransShadow;
 			#endif
-			#ifdef TESSELLATION_ON
+			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
 				float _TessMin;
@@ -1347,6 +1412,18 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
+
+			// Property used by ScenePickingPass
+			#ifdef SCENEPICKINGPASS
+				float4 _SelectionID;
+			#endif
+
+			// Properties used by SceneSelectionPass
+			#ifdef SCENESELECTIONPASS
+				int _ObjectId;
+				int _PassValue;
+			#endif
+
 			
 
 			
@@ -1358,12 +1435,15 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
 				
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
+
 				float3 vertexValue = defaultVertexValue;
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -1375,7 +1455,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				float4 positionCS = TransformWorldToHClip( positionWS );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				o.worldPos = positionWS;
+					o.worldPos = positionWS;
 				#endif
 
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
@@ -1384,11 +1464,13 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 					vertexInput.positionCS = positionCS;
 					o.shadowCoord = GetShadowCoord( vertexInput );
 				#endif
+
 				o.clipPos = positionCS;
+
 				return o;
 			}
 
-			#if defined(TESSELLATION_ON)
+			#if defined(ASE_TESSELLATION)
 			struct VertexControl
 			{
 				float4 vertex : INTERNALTESSPOS;
@@ -1440,7 +1522,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			[outputcontrolpoints(3)]
 			VertexControl HullFunction(InputPatch<VertexControl, 3> patch, uint id : SV_OutputControlPointID)
 			{
-			   return patch[id];
+				return patch[id];
 			}
 
 			[domain("tri")]
@@ -1468,11 +1550,12 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			#endif
 
 			#if defined(ASE_EARLY_Z_DEPTH_OPTIMIZE)
-				#define ASE_SV_DEPTH SV_DepthLessEqual  
+				#define ASE_SV_DEPTH SV_DepthLessEqual
 			#else
 				#define ASE_SV_DEPTH SV_Depth
 			#endif
-			half4 frag(	VertexOutput IN 
+
+			half4 frag(	VertexOutput IN
 						#ifdef ASE_DEPTH_WRITE_ON
 						,out float outputDepth : ASE_SV_DEPTH
 						#endif
@@ -1484,6 +1567,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
 				float3 WorldPosition = IN.worldPos;
 				#endif
+
 				float4 ShadowCoords = float4( 0, 0, 0, 0 );
 
 				#if defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
@@ -1495,10 +1579,11 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				#endif
 
 				
+
 				float Alpha = 1;
 				float AlphaClipThreshold = 0.5;
 				#ifdef ASE_DEPTH_WRITE_ON
-				float DepthValue = 0;
+					float DepthValue = 0;
 				#endif
 
 				#ifdef _ALPHATEST_ON
@@ -1508,15 +1593,16 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				#ifdef LOD_FADE_CROSSFADE
 					LODDitheringTransition( IN.clipPos.xyz, unity_LODFade.x );
 				#endif
+
 				#ifdef ASE_DEPTH_WRITE_ON
-				outputDepth = DepthValue;
+					outputDepth = DepthValue;
 				#endif
 
 				return 0;
 			}
 			ENDHLSL
 		}
-		
+
 		
 		Pass
 		{
@@ -1527,34 +1613,33 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			Cull Off
 
 			HLSLPROGRAM
-			
+
 			#define _NORMAL_DROPOFF_TS 1
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
-			#define _TRANSLUCENCY_ASE 1
-			#define _TRANSMISSION_ASE 1
+			#define ASE_TRANSLUCENCY 1
+			#define ASE_TRANSMISSION 1
 			#define _EMISSION
 			#define _NORMALMAP 1
 			#define ASE_SRP_VERSION 101001
 			#define ASE_USING_SAMPLING_MACROS 1
 
-			
+
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#define SHADERPASS_META
+			#define SHADERPASS SHADERPASS_META
 
-			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/MetaInput.hlsl"
-			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/MetaInput.hlsl"
 
 			#pragma shader_feature_local BOOLEAN_IS_HEAD_ON
 
-
-			#pragma shader_feature _ _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
 
 			struct VertexInput
 			{
@@ -1570,10 +1655,10 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			{
 				float4 clipPos : SV_POSITION;
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 worldPos : TEXCOORD0;
+					float3 worldPos : TEXCOORD0;
 				#endif
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
-				float4 shadowCoord : TEXCOORD1;
+					float4 shadowCoord : TEXCOORD1;
 				#endif
 				float4 ase_texcoord2 : TEXCOORD2;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -1634,10 +1719,10 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			half _NeckSmoothnessMod;
 			half _NormalStrength;
 			half _ForeheadSmoothnessMod;
-			#ifdef _TRANSMISSION_ASE
+			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
-			#ifdef _TRANSLUCENCY_ASE
+			#ifdef ASE_TRANSLUCENCY
 				float _TransStrength;
 				float _TransNormal;
 				float _TransScattering;
@@ -1645,7 +1730,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				float _TransAmbient;
 				float _TransShadow;
 			#endif
-			#ifdef TESSELLATION_ON
+			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
 				float _TessMin;
@@ -1654,6 +1739,18 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
+
+			// Property used by ScenePickingPass
+			#ifdef SCENEPICKINGPASS
+				float4 _SelectionID;
+			#endif
+
+			// Properties used by SceneSelectionPass
+			#ifdef SCENESELECTIONPASS
+				int _ObjectId;
+				int _PassValue;
+			#endif
+
 			TEXTURE2D(_DiffuseMap);
 			SAMPLER(sampler_DiffuseMap);
 			TEXTURE2D(_ColorBlendMap);
@@ -1675,13 +1772,15 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord2.zw = 0;
-				
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
+
 				float3 vertexValue = defaultVertexValue;
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -1691,21 +1790,24 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				v.ase_normal = v.ase_normal;
 
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
+
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				o.worldPos = positionWS;
+					o.worldPos = positionWS;
 				#endif
 
 				o.clipPos = MetaVertexPosition( v.vertex, v.texcoord1.xy, v.texcoord1.xy, unity_LightmapST, unity_DynamicLightmapST );
+
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
 					VertexPositionInputs vertexInput = (VertexPositionInputs)0;
 					vertexInput.positionWS = positionWS;
 					vertexInput.positionCS = o.clipPos;
 					o.shadowCoord = GetShadowCoord( vertexInput );
 				#endif
+
 				return o;
 			}
 
-			#if defined(TESSELLATION_ON)
+			#if defined(ASE_TESSELLATION)
 			struct VertexControl
 			{
 				float4 vertex : INTERNALTESSPOS;
@@ -1762,7 +1864,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			[outputcontrolpoints(3)]
 			VertexControl HullFunction(InputPatch<VertexControl, 3> patch, uint id : SV_OutputControlPointID)
 			{
-			   return patch[id];
+				return patch[id];
 			}
 
 			[domain("tri")]
@@ -1797,8 +1899,9 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX( IN );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 WorldPosition = IN.worldPos;
+					float3 WorldPosition = IN.worldPos;
 				#endif
+
 				float4 ShadowCoords = float4( 0, 0, 0, 0 );
 
 				#if defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
@@ -1830,8 +1933,8 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				
 				float2 uv_EmissionMap = IN.ase_texcoord2.xy * _EmissionMap_ST.xy + _EmissionMap_ST.zw;
 				
-				
-				float3 Albedo = baseColor266.rgb;
+
+				float3 BaseColor = baseColor266.rgb;
 				float3 Emission = ( _EmissiveColor * SAMPLE_TEXTURE2D( _EmissionMap, sampler_EmissionMap, uv_EmissionMap ) ).rgb;
 				float Alpha = 1;
 				float AlphaClipThreshold = 0.5;
@@ -1841,9 +1944,9 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				#endif
 
 				MetaInput metaInput = (MetaInput)0;
-				metaInput.Albedo = Albedo;
+				metaInput.Albedo = BaseColor;
 				metaInput.Emission = Emission;
-				
+
 				return MetaFragment(metaInput);
 			}
 			ENDHLSL
@@ -1863,35 +1966,32 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			ColorMask RGBA
 
 			HLSLPROGRAM
-			
+
 			#define _NORMAL_DROPOFF_TS 1
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
-			#define _TRANSLUCENCY_ASE 1
-			#define _TRANSMISSION_ASE 1
+			#define ASE_TRANSLUCENCY 1
+			#define ASE_TRANSMISSION 1
 			#define _EMISSION
 			#define _NORMALMAP 1
 			#define ASE_SRP_VERSION 101001
 			#define ASE_USING_SAMPLING_MACROS 1
 
-			
+
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#define SHADERPASS_2D
+			#define SHADERPASS SHADERPASS_2D
 
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
-			
+
 			#pragma shader_feature_local BOOLEAN_IS_HEAD_ON
 
-
-			#pragma shader_feature _ _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
 
 			struct VertexInput
 			{
@@ -1905,10 +2005,10 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			{
 				float4 clipPos : SV_POSITION;
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 worldPos : TEXCOORD0;
+					float3 worldPos : TEXCOORD0;
 				#endif
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
-				float4 shadowCoord : TEXCOORD1;
+					float4 shadowCoord : TEXCOORD1;
 				#endif
 				float4 ase_texcoord2 : TEXCOORD2;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -1969,10 +2069,10 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			half _NeckSmoothnessMod;
 			half _NormalStrength;
 			half _ForeheadSmoothnessMod;
-			#ifdef _TRANSMISSION_ASE
+			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
-			#ifdef _TRANSLUCENCY_ASE
+			#ifdef ASE_TRANSLUCENCY
 				float _TransStrength;
 				float _TransNormal;
 				float _TransScattering;
@@ -1980,7 +2080,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				float _TransAmbient;
 				float _TransShadow;
 			#endif
-			#ifdef TESSELLATION_ON
+			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
 				float _TessMin;
@@ -1989,6 +2089,18 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
+
+			// Property used by ScenePickingPass
+			#ifdef SCENEPICKINGPASS
+				float4 _SelectionID;
+			#endif
+
+			// Properties used by SceneSelectionPass
+			#ifdef SCENESELECTIONPASS
+				int _ObjectId;
+				int _PassValue;
+			#endif
+
 			TEXTURE2D(_DiffuseMap);
 			SAMPLER(sampler_DiffuseMap);
 			TEXTURE2D(_ColorBlendMap);
@@ -2008,13 +2120,15 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord2.zw = 0;
-				
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
+
 				float3 vertexValue = defaultVertexValue;
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -2027,7 +2141,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				float4 positionCS = TransformWorldToHClip( positionWS );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				o.worldPos = positionWS;
+					o.worldPos = positionWS;
 				#endif
 
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
@@ -2038,10 +2152,11 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				#endif
 
 				o.clipPos = positionCS;
+
 				return o;
 			}
 
-			#if defined(TESSELLATION_ON)
+			#if defined(ASE_TESSELLATION)
 			struct VertexControl
 			{
 				float4 vertex : INTERNALTESSPOS;
@@ -2094,7 +2209,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			[outputcontrolpoints(3)]
 			VertexControl HullFunction(InputPatch<VertexControl, 3> patch, uint id : SV_OutputControlPointID)
 			{
-			   return patch[id];
+				return patch[id];
 			}
 
 			[domain("tri")]
@@ -2127,8 +2242,9 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX( IN );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 WorldPosition = IN.worldPos;
+					float3 WorldPosition = IN.worldPos;
 				#endif
+
 				float4 ShadowCoords = float4( 0, 0, 0, 0 );
 
 				#if defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
@@ -2158,12 +2274,12 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				#endif
 				half4 baseColor266 = staticSwitch72;
 				
-				
-				float3 Albedo = baseColor266.rgb;
+
+				float3 BaseColor = baseColor266.rgb;
 				float Alpha = 1;
 				float AlphaClipThreshold = 0.5;
 
-				half4 color = half4( Albedo, Alpha );
+				half4 color = half4(BaseColor, Alpha );
 
 				#ifdef _ALPHATEST_ON
 					clip(Alpha - AlphaClipThreshold);
@@ -2183,33 +2299,33 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 
 			ZWrite On
 			Blend One Zero
-            ZTest LEqual
-            ZWrite On
+			ZTest LEqual
+			ZWrite On
 
 			HLSLPROGRAM
-			
+
 			#define _NORMAL_DROPOFF_TS 1
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
-			#define _TRANSLUCENCY_ASE 1
-			#define _TRANSMISSION_ASE 1
+			#define ASE_TRANSLUCENCY 1
+			#define ASE_TRANSMISSION 1
 			#define _EMISSION
 			#define _NORMALMAP 1
 			#define ASE_SRP_VERSION 101001
 			#define ASE_USING_SAMPLING_MACROS 1
 
-			
+
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#define SHADERPASS_DEPTHNORMALSONLY
+			#define SHADERPASS SHADERPASS_DEPTHNORMALSONLY
 
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 
 			
 
@@ -2225,10 +2341,10 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			{
 				float4 clipPos : SV_POSITION;
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 worldPos : TEXCOORD0;
+					float3 worldPos : TEXCOORD0;
 				#endif
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
-				float4 shadowCoord : TEXCOORD1;
+					float4 shadowCoord : TEXCOORD1;
 				#endif
 				float3 worldNormal : TEXCOORD2;
 				
@@ -2290,10 +2406,10 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			half _NeckSmoothnessMod;
 			half _NormalStrength;
 			half _ForeheadSmoothnessMod;
-			#ifdef _TRANSMISSION_ASE
+			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
-			#ifdef _TRANSLUCENCY_ASE
+			#ifdef ASE_TRANSLUCENCY
 				float _TransStrength;
 				float _TransNormal;
 				float _TransScattering;
@@ -2301,7 +2417,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				float _TransAmbient;
 				float _TransShadow;
 			#endif
-			#ifdef TESSELLATION_ON
+			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
 				float _TessMin;
@@ -2310,6 +2426,18 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
+
+			// Property used by ScenePickingPass
+			#ifdef SCENEPICKINGPASS
+				float4 _SelectionID;
+			#endif
+
+			// Properties used by SceneSelectionPass
+			#ifdef SCENESELECTIONPASS
+				int _ObjectId;
+				int _PassValue;
+			#endif
+
 			
 
 			
@@ -2326,7 +2454,9 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
+
 				float3 vertexValue = defaultVertexValue;
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -2339,7 +2469,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				float4 positionCS = TransformWorldToHClip( positionWS );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				o.worldPos = positionWS;
+					o.worldPos = positionWS;
 				#endif
 
 				o.worldNormal = normalWS;
@@ -2350,11 +2480,13 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 					vertexInput.positionCS = positionCS;
 					o.shadowCoord = GetShadowCoord( vertexInput );
 				#endif
+
 				o.clipPos = positionCS;
+
 				return o;
 			}
 
-			#if defined(TESSELLATION_ON)
+			#if defined(ASE_TESSELLATION)
 			struct VertexControl
 			{
 				float4 vertex : INTERNALTESSPOS;
@@ -2406,7 +2538,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			[outputcontrolpoints(3)]
 			VertexControl HullFunction(InputPatch<VertexControl, 3> patch, uint id : SV_OutputControlPointID)
 			{
-			   return patch[id];
+				return patch[id];
 			}
 
 			[domain("tri")]
@@ -2434,11 +2566,12 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			#endif
 
 			#if defined(ASE_EARLY_Z_DEPTH_OPTIMIZE)
-				#define ASE_SV_DEPTH SV_DepthLessEqual  
+				#define ASE_SV_DEPTH SV_DepthLessEqual
 			#else
 				#define ASE_SV_DEPTH SV_Depth
 			#endif
-			half4 frag(	VertexOutput IN 
+
+			half4 frag(	VertexOutput IN
 						#ifdef ASE_DEPTH_WRITE_ON
 						,out float outputDepth : ASE_SV_DEPTH
 						#endif
@@ -2448,8 +2581,9 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX( IN );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 WorldPosition = IN.worldPos;
+					float3 WorldPosition = IN.worldPos;
 				#endif
+
 				float4 ShadowCoords = float4( 0, 0, 0, 0 );
 
 				#if defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
@@ -2461,10 +2595,11 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				#endif
 
 				
+
 				float Alpha = 1;
 				float AlphaClipThreshold = 0.5;
 				#ifdef ASE_DEPTH_WRITE_ON
-				float DepthValue = 0;
+					float DepthValue = 0;
 				#endif
 
 				#ifdef _ALPHATEST_ON
@@ -2474,12 +2609,18 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				#ifdef LOD_FADE_CROSSFADE
 					LODDitheringTransition( IN.clipPos.xyz, unity_LODFade.x );
 				#endif
-				
+
 				#ifdef ASE_DEPTH_WRITE_ON
-				outputDepth = DepthValue;
+					outputDepth = DepthValue;
 				#endif
-				
-				return float4(PackNormalOctRectEncode(TransformWorldToViewDir(IN.worldNormal, true)), 0.0, 0.0);
+
+				#if ASE_SRP_VERSION >= 110000
+					return float4(PackNormalOctRectEncode(TransformWorldToViewDir(IN.worldNormal, true)), 0.0, 0.0);
+				#elif ASE_SRP_VERSION >= 100900
+					return float4(PackNormalOctRectEncode(normalize(IN.worldNormal)), 0.0, 0.0);
+				#else
+					return float4(PackNormalOctRectEncode(TransformWorldToViewDir(IN.worldNormal, true)), 0.0, 0.0);
+				#endif
 			}
 			ENDHLSL
 		}
@@ -2490,7 +2631,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			
 			Name "GBuffer"
 			Tags { "LightMode"="UniversalGBuffer" }
-			
+
 			Blend One Zero, One Zero
 			ZWrite On
 			ZTest LEqual
@@ -2499,49 +2640,52 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			
 
 			HLSLPROGRAM
-			
+
 			#define _NORMAL_DROPOFF_TS 1
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
-			#define _TRANSLUCENCY_ASE 1
-			#define _TRANSMISSION_ASE 1
+			#define ASE_TRANSLUCENCY 1
+			#define ASE_TRANSMISSION 1
 			#define _EMISSION
 			#define _NORMALMAP 1
 			#define ASE_SRP_VERSION 101001
 			#define ASE_USING_SAMPLING_MACROS 1
 
+
+			#pragma shader_feature_local _RECEIVE_SHADOWS_OFF
+			#pragma shader_feature_local_fragment _SPECULARHIGHLIGHTS_OFF
+			#pragma shader_feature_local_fragment _ENVIRONMENTREFLECTIONS_OFF
+
 			
 			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS
 			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
-			#pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS
-			#pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS
-			#pragma multi_compile _ _SHADOWS_SOFT
 			#pragma multi_compile _ _MIXED_LIGHTING_SUBTRACTIVE
-			#pragma multi_compile _ _GBUFFER_NORMALS_OCT
+		
+
 			
+
+			#pragma multi_compile_fragment _ _SHADOWS_SOFT
+
 			#pragma multi_compile _ DIRLIGHTMAP_COMBINED
 			#pragma multi_compile _ LIGHTMAP_ON
+			#pragma multi_compile_fragment _ _GBUFFER_NORMALS_OCT
 
 			#pragma vertex vert
 			#pragma fragment frag
 
 			#define SHADERPASS SHADERPASS_GBUFFER
 
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
+
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
-			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/UnityGBuffer.hlsl"
-
-			#if ASE_SRP_VERSION <= 70108
-			#define REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR
-			#endif
 
 			#if defined(UNITY_INSTANCING_ENABLED) && defined(_TERRAIN_INSTANCED_PERPIXEL_NORMAL)
-			    #define ENABLE_TERRAIN_PERPIXEL_NORMAL
+				#define ENABLE_TERRAIN_PERPIXEL_NORMAL
 			#endif
 
 			#pragma shader_feature_local BOOLEAN_IS_HEAD_ON
@@ -2552,8 +2696,8 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				float4 vertex : POSITION;
 				float3 ase_normal : NORMAL;
 				float4 ase_tangent : TANGENT;
-				float4 texcoord1 : TEXCOORD1;
 				float4 texcoord : TEXCOORD0;
+				float4 texcoord1 : TEXCOORD1;
 				
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -2631,10 +2775,10 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			half _NeckSmoothnessMod;
 			half _NormalStrength;
 			half _ForeheadSmoothnessMod;
-			#ifdef _TRANSMISSION_ASE
+			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
-			#ifdef _TRANSLUCENCY_ASE
+			#ifdef ASE_TRANSLUCENCY
 				float _TransStrength;
 				float _TransNormal;
 				float _TransScattering;
@@ -2642,7 +2786,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				float _TransAmbient;
 				float _TransShadow;
 			#endif
-			#ifdef TESSELLATION_ON
+			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
 				float _TessMin;
@@ -2651,6 +2795,18 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
+
+			// Property used by ScenePickingPass
+			#ifdef SCENEPICKINGPASS
+				float4 _SelectionID;
+			#endif
+
+			// Properties used by SceneSelectionPass
+			#ifdef SCENESELECTIONPASS
+				int _ObjectId;
+				int _PassValue;
+			#endif
+
 			TEXTURE2D(_DiffuseMap);
 			SAMPLER(sampler_DiffuseMap);
 			TEXTURE2D(_ColorBlendMap);
@@ -2673,6 +2829,8 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			SAMPLER(sampler_EmissionMap);
 			TEXTURE2D(_ThicknessMap);
 
+
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/UnityGBuffer.hlsl"
 
 			void SkinMask179( half4 In1, half4 Mod1, half4 Scatter1, half UMMS, half UMSS, out half SmoothnessMod, out half ScatterMask )
 			{
@@ -2711,12 +2869,15 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
+
 				float3 vertexValue = defaultVertexValue;
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
 					v.vertex.xyz += vertexValue;
 				#endif
+
 				v.ase_normal = v.ase_normal;
 
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
@@ -2730,7 +2891,10 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				o.tSpace2 = float4( normalInput.bitangentWS, positionWS.z);
 
 				OUTPUT_LIGHTMAP_UV( v.texcoord1, unity_LightmapST, o.lightmapUVOrVertexSH.xy );
-				OUTPUT_SH( normalInput.normalWS.xyz, o.lightmapUVOrVertexSH.xyz );
+
+				#if !defined(LIGHTMAP_ON)
+					OUTPUT_SH(normalInput.normalWS.xyz, o.lightmapUVOrVertexSH.xyz);
+				#endif
 
 				#if defined(ENABLE_TERRAIN_PERPIXEL_NORMAL)
 					o.lightmapUVOrVertexSH.zw = v.texcoord;
@@ -2738,28 +2902,32 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				#endif
 
 				half3 vertexLight = VertexLighting( positionWS, normalInput.normalWS );
+
 				#ifdef ASE_FOG
 					half fogFactor = ComputeFogFactor( positionCS.z );
 				#else
 					half fogFactor = 0;
 				#endif
+
 				o.fogFactorAndVertexLight = half4(fogFactor, vertexLight);
-				
+
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
-				VertexPositionInputs vertexInput = (VertexPositionInputs)0;
-				vertexInput.positionWS = positionWS;
-				vertexInput.positionCS = positionCS;
-				o.shadowCoord = GetShadowCoord( vertexInput );
+					VertexPositionInputs vertexInput = (VertexPositionInputs)0;
+					vertexInput.positionWS = positionWS;
+					vertexInput.positionCS = positionCS;
+					o.shadowCoord = GetShadowCoord( vertexInput );
 				#endif
-				
-				o.clipPos = positionCS;
+
+					o.clipPos = positionCS;
+
 				#if defined(ASE_NEEDS_FRAG_SCREEN_POSITION)
-				o.screenPos = ComputeScreenPos(positionCS);
+					o.screenPos = ComputeScreenPos(positionCS);
 				#endif
+
 				return o;
 			}
-			
-			#if defined(TESSELLATION_ON)
+
+			#if defined(ASE_TESSELLATION)
 			struct VertexControl
 			{
 				float4 vertex : INTERNALTESSPOS;
@@ -2817,7 +2985,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			[outputcontrolpoints(3)]
 			VertexControl HullFunction(InputPatch<VertexControl, 3> patch, uint id : SV_OutputControlPointID)
 			{
-			   return patch[id];
+				return patch[id];
 			}
 
 			[domain("tri")]
@@ -2848,11 +3016,12 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			#endif
 
 			#if defined(ASE_EARLY_Z_DEPTH_OPTIMIZE)
-				#define ASE_SV_DEPTH SV_DepthLessEqual  
+				#define ASE_SV_DEPTH SV_DepthLessEqual
 			#else
 				#define ASE_SV_DEPTH SV_Depth
 			#endif
-			FragmentOutput frag ( VertexOutput IN 
+
+			FragmentOutput frag ( VertexOutput IN
 								#ifdef ASE_DEPTH_WRITE_ON
 								,out float outputDepth : ASE_SV_DEPTH
 								#endif
@@ -2875,19 +3044,23 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 					float3 WorldTangent = IN.tSpace1.xyz;
 					float3 WorldBiTangent = IN.tSpace2.xyz;
 				#endif
+
 				float3 WorldPosition = float3(IN.tSpace0.w,IN.tSpace1.w,IN.tSpace2.w);
 				float3 WorldViewDirection = _WorldSpaceCameraPos.xyz  - WorldPosition;
 				float4 ShadowCoords = float4( 0, 0, 0, 0 );
+
 				#if defined(ASE_NEEDS_FRAG_SCREEN_POSITION)
-				float4 ScreenPos = IN.screenPos;
+					float4 ScreenPos = IN.screenPos;
 				#endif
 
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
 					ShadowCoords = IN.shadowCoord;
 				#elif defined(MAIN_LIGHT_CALCULATE_SHADOWS)
 					ShadowCoords = TransformWorldToShadowCoord( WorldPosition );
+				#else
+					ShadowCoords = float4(0, 0, 0, 0);
 				#endif
-	
+
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
 				float2 uv_DiffuseMap = IN.ase_texcoord7.xy * _DiffuseMap_ST.xy + _DiffuseMap_ST.zw;
@@ -2997,7 +3170,8 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				float2 uv_ThicknessMap = IN.ase_texcoord7.xy * _ThicknessMap_ST.xy + _ThicknessMap_ST.zw;
 				half4 temp_output_307_0 = ( baseColor266 * _SubsurfaceFalloff );
 				
-				float3 Albedo = baseColor266.rgb;
+
+				float3 BaseColor = baseColor266.rgb;
 				float3 Normal = BlendNormal( staticSwitch71 , unpack52 );
 				float3 Emission = ( _EmissiveColor * SAMPLE_TEXTURE2D( _EmissionMap, sampler_EmissionMap, uv_EmissionMap ) ).rgb;
 				float3 Specular = 0.5;
@@ -3012,8 +3186,9 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				float RefractionIndex = 1;
 				float3 Transmission = ( SAMPLE_TEXTURE2D( _ThicknessMap, sampler_SSSMap, uv_ThicknessMap ).g * _ThicknessScale * temp_output_307_0 ).rgb;
 				float3 Translucency = ( temp_output_307_0 * ( temp_output_336_0 * 0.2 ) ).rgb;
+
 				#ifdef ASE_DEPTH_WRITE_ON
-				float DepthValue = 0;
+					float DepthValue = 0;
 				#endif
 
 				#ifdef _ALPHATEST_ON
@@ -3039,7 +3214,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				#endif
 
 				#ifdef ASE_FOG
-					inputData.fogCoord = IN.fogFactorAndVertexLight.x;
+					inputData.fogCoord = 0; // we don't apply fog in the gbuffer pass
 				#endif
 
 				inputData.vertexLighting = IN.fogFactorAndVertexLight.yzw;
@@ -3050,89 +3225,21 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 				#endif
 
 				inputData.bakedGI = SAMPLE_GI( IN.lightmapUVOrVertexSH.xy, SH, inputData.normalWS );
-				#ifdef _ASE_BAKEDGI
+
+				#ifdef ASE_BAKEDGI
 					inputData.bakedGI = BakedGI;
 				#endif
 
 				BRDFData brdfData;
-				InitializeBRDFData( Albedo, Metallic, Specular, Smoothness, Alpha, brdfData);
+				InitializeBRDFData( BaseColor, Metallic, Specular, Smoothness, Alpha, brdfData);
 				half4 color;
 				color.rgb = GlobalIllumination( brdfData, inputData.bakedGI, Occlusion, inputData.normalWS, inputData.viewDirectionWS);
 				color.a = Alpha;
 
-				#ifdef _TRANSMISSION_ASE
-				{
-					float shadow = _TransmissionShadow;
-				
-					Light mainLight = GetMainLight( inputData.shadowCoord );
-					float3 mainAtten = mainLight.color * mainLight.distanceAttenuation;
-					mainAtten = lerp( mainAtten, mainAtten * mainLight.shadowAttenuation, shadow );
-					half3 mainTransmission = max(0 , -dot(inputData.normalWS, mainLight.direction)) * mainAtten * Transmission;
-					color.rgb += Albedo * mainTransmission;
-				
-					#ifdef _ADDITIONAL_LIGHTS
-						int transPixelLightCount = GetAdditionalLightsCount();
-						for (int i = 0; i < transPixelLightCount; ++i)
-						{
-							Light light = GetAdditionalLight(i, inputData.positionWS);
-							float3 atten = light.color * light.distanceAttenuation;
-							atten = lerp( atten, atten * light.shadowAttenuation, shadow );
-				
-							half3 transmission = max(0 , -dot(inputData.normalWS, light.direction)) * atten * Transmission;
-							color.rgb += Albedo * transmission;
-						}
-					#endif
-				}
-				#endif
-				
-				#ifdef _TRANSLUCENCY_ASE
-				{
-					float shadow = _TransShadow;
-					float normal = _TransNormal;
-					float scattering = _TransScattering;
-					float direct = _TransDirect;
-					float ambient = _TransAmbient;
-					float strength = _TransStrength;
-				
-					Light mainLight = GetMainLight( inputData.shadowCoord );
-					float3 mainAtten = mainLight.color * mainLight.distanceAttenuation;
-					mainAtten = lerp( mainAtten, mainAtten * mainLight.shadowAttenuation, shadow );
-				
-					half3 mainLightDir = mainLight.direction + inputData.normalWS * normal;
-					half mainVdotL = pow( saturate( dot( inputData.viewDirectionWS, -mainLightDir ) ), scattering );
-					half3 mainTranslucency = mainAtten * ( mainVdotL * direct + inputData.bakedGI * ambient ) * Translucency;
-					color.rgb += Albedo * mainTranslucency * strength;
-				
-					#ifdef _ADDITIONAL_LIGHTS
-						int transPixelLightCount = GetAdditionalLightsCount();
-						for (int i = 0; i < transPixelLightCount; ++i)
-						{
-							Light light = GetAdditionalLight(i, inputData.positionWS);
-							float3 atten = light.color * light.distanceAttenuation;
-							atten = lerp( atten, atten * light.shadowAttenuation, shadow );
-				
-							half3 lightDir = light.direction + inputData.normalWS * normal;
-							half VdotL = pow( saturate( dot( inputData.viewDirectionWS, -lightDir ) ), scattering );
-							half3 translucency = atten * ( VdotL * direct + inputData.bakedGI * ambient ) * Translucency;
-							color.rgb += Albedo * translucency * strength;
-						}
-					#endif
-				}
-				#endif
-				
-				#ifdef _REFRACTION_ASE
-					float4 projScreenPos = ScreenPos / ScreenPos.w;
-					float3 refractionOffset = ( RefractionIndex - 1.0 ) * mul( UNITY_MATRIX_V, float4( WorldNormal, 0 ) ).xyz * ( 1.0 - dot( WorldNormal, WorldViewDirection ) );
-					projScreenPos.xy += refractionOffset.xy;
-					float3 refraction = SHADERGRAPH_SAMPLE_SCENE_COLOR( projScreenPos.xy ) * RefractionColor;
-					color.rgb = lerp( refraction, color.rgb, color.a );
-					color.a = 1;
-				#endif
-				
 				#ifdef ASE_FINAL_COLOR_ALPHA_MULTIPLY
 					color.rgb *= color.a;
 				#endif
-				
+
 				#ifdef ASE_FOG
 					#ifdef TERRAIN_SPLAT_ADDPASS
 						color.rgb = MixFogColor(color.rgb, half3( 0, 0, 0 ), IN.fogFactorAndVertexLight.x );
@@ -3140,11 +3247,11 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 						color.rgb = MixFog(color.rgb, IN.fogFactorAndVertexLight.x);
 					#endif
 				#endif
-				
+
 				#ifdef ASE_DEPTH_WRITE_ON
 					outputDepth = DepthValue;
 				#endif
-				
+
 				return BRDFDataToGbuffer(brdfData, inputData, Smoothness, Emission + color.rgb);
 			}
 
@@ -3160,30 +3267,21 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 /*ASEBEGIN
 Version=19100
 Node;AmplifyShaderEditor.CommentaryNode;229;-5908.021,48.08539;Inherit;False;3216.245;1858.522;;57;276;277;174;170;171;172;68;169;156;179;165;164;167;168;166;181;182;147;146;161;159;163;180;157;123;183;152;153;155;124;125;151;154;121;138;150;144;140;133;137;148;142;120;122;131;134;145;139;132;141;130;135;143;129;127;126;128;Micro-Smoothess/Scattering;0.4764151,1,0.9938402,1;0;0
-Node;AmplifyShaderEditor.RangedFloatNode;128;-5857.031,769.2485;Inherit;False;Property;_BSmoothnessMod;Upper Lid/B Smoothness Mod;33;0;Create;False;0;0;0;False;0;False;0;0.3;-1.5;1.5;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;127;-5858.013,693.2935;Inherit;False;Property;_GSmoothnessMod;Mouth/G Smoothness Mod;32;0;Create;False;0;0;0;False;0;False;0;-0.034;-1.5;1.5;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;126;-5858.013,619.4265;Inherit;False;Property;_RSmoothnessMod;Nose/R Smoothness Mod;31;0;Create;False;0;0;0;False;0;False;0;-0.119;-1.5;1.5;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;129;-5858.021,849.2174;Inherit;False;Property;_ASmoothnessMod;Inner Lid/A Smoothness Mod;34;0;Create;False;0;0;0;False;0;False;0;0.574;-1.5;1.5;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;144;-5202.717,1679.614;Inherit;False;Property;_NeckScatterScale;Neck Scatter Scale;47;0;Create;True;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;139;-5205.919,1285.915;Inherit;False;Property;_AScatterScale;Inner Lid/A Scatter Scale;45;0;Create;False;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;131;-5857.152,1009.909;Inherit;False;Property;_ForeheadSmoothnessMod;Forehead Smoothness Mod;38;0;Create;True;0;0;0;False;0;False;0;0;-1.5;1.5;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;130;-5857.083,930.9144;Inherit;False;Property;_CheekSmoothnessMod;Cheek Smoothness Mod;37;0;Create;True;0;0;0;False;0;False;0;0;-1.5;1.5;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;143;-5203.217,1602.014;Inherit;False;Property;_ChinScatterScale;Chin Scatter Scale;51;0;Create;True;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;140;-5209.221,1370.914;Inherit;False;Property;_CheekScatterScale;Cheek Scatter Scale;48;0;Create;True;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;137;-5206.919,1138.915;Inherit;False;Property;_GScatterScale;Mouth/G Scatter Scale;43;0;Create;False;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;141;-5207.318,1445.414;Inherit;False;Property;_ForeheadScatterScale;Forehead Scatter Scale;49;0;Create;True;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;135;-5851.211,1314.774;Inherit;False;Property;_EarSmoothnessMod;Ear Smoothness Mod;35;0;Create;True;0;0;0;False;0;False;0;0;-1.5;1.5;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;144;-5202.717,1679.614;Inherit;False;Property;_NeckScatterScale;Neck Scatter Scale;54;0;Create;True;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;131;-5857.152,1009.909;Inherit;False;Property;_ForeheadSmoothnessMod;Forehead Smoothness Mod;43;0;Create;True;0;0;0;False;0;False;0;0;-1.5;1.5;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;130;-5857.083,930.9144;Inherit;False;Property;_CheekSmoothnessMod;Cheek Smoothness Mod;42;0;Create;True;0;0;0;False;0;False;0;0;-1.5;1.5;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;143;-5203.217,1602.014;Inherit;False;Property;_ChinScatterScale;Chin Scatter Scale;49;0;Create;True;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;140;-5209.221,1370.914;Inherit;False;Property;_CheekScatterScale;Cheek Scatter Scale;46;0;Create;True;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;141;-5207.318,1445.414;Inherit;False;Property;_ForeheadScatterScale;Forehead Scatter Scale;47;0;Create;True;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;135;-5851.211,1314.774;Inherit;False;Property;_EarSmoothnessMod;Ear Smoothness Mod;51;0;Create;True;0;0;0;False;0;False;0;0;-1.5;1.5;0;1;FLOAT;0
 Node;AmplifyShaderEditor.DynamicAppendNode;150;-5468.931,750.5865;Inherit;False;FLOAT4;4;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;1;FLOAT4;0
-Node;AmplifyShaderEditor.RangedFloatNode;138;-5204.919,1214.915;Inherit;False;Property;_BScatterScale;Upper Lid/B Scatter Scale;44;0;Create;False;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;148;-5206.476,1070.36;Inherit;False;Property;_RScatterScale;Nose/R Scatter Scale;42;0;Create;False;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
-Node;AmplifyShaderEditor.TexturePropertyNode;122;-5251.381,554.1195;Inherit;True;Property;_EarNeckMask;EarNeckMask;28;0;Create;True;0;0;0;False;0;False;None;None;False;black;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
-Node;AmplifyShaderEditor.RangedFloatNode;132;-5855.17,1085.966;Inherit;False;Property;_UpperLipSmoothnessMod;Upper Lip Smoothness Mod;39;0;Create;True;0;0;0;False;0;False;0;0;-1.5;1.5;0;1;FLOAT;0
-Node;AmplifyShaderEditor.TexturePropertyNode;120;-5265.44,100.9764;Inherit;True;Property;_RGBAMask;RGBAMask;26;0;Create;True;0;0;0;False;0;False;None;None;False;black;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
-Node;AmplifyShaderEditor.RangedFloatNode;142;-5202.318,1525.714;Inherit;False;Property;_UpperLipScatterScale;Upper Lip Scatter Scale;50;0;Create;True;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
-Node;AmplifyShaderEditor.TexturePropertyNode;121;-5254.381,333.1195;Inherit;True;Property;_CFULCMask;CFULCMask;27;0;Create;True;0;0;0;False;0;False;None;None;False;black;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
-Node;AmplifyShaderEditor.RangedFloatNode;134;-5854.502,1236.706;Inherit;False;Property;_NeckSmoothnessMod;Neck Smoothness Mod;36;0;Create;True;0;0;0;False;0;False;0;0;-1.5;1.5;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;133;-5857.21,1159.966;Inherit;False;Property;_ChinSmoothnessMod;Chin Smoothness Mod;40;0;Create;True;0;0;0;False;0;False;0;0;-1.5;1.5;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;145;-5202.918,1762.014;Inherit;False;Property;_EarScatterScale;Ear Scatter Scale;46;0;Create;True;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;132;-5855.17,1085.966;Inherit;False;Property;_UpperLipSmoothnessMod;Upper Lip Smoothness Mod;44;0;Create;True;0;0;0;False;0;False;0;0;-1.5;1.5;0;1;FLOAT;0
+Node;AmplifyShaderEditor.TexturePropertyNode;120;-5265.44,100.9764;Inherit;True;Property;_RGBAMask;RGBAMask;20;0;Create;True;0;0;0;False;0;False;None;None;False;black;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.RangedFloatNode;142;-5202.318,1525.714;Inherit;False;Property;_UpperLipScatterScale;Upper Lip Scatter Scale;48;0;Create;True;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.TexturePropertyNode;121;-5254.381,333.1195;Inherit;True;Property;_CFULCMask;CFULCMask;41;0;Create;True;0;0;0;False;0;False;None;None;False;black;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.RangedFloatNode;134;-5854.502,1236.706;Inherit;False;Property;_NeckSmoothnessMod;Neck Smoothness Mod;52;0;Create;True;0;0;0;False;0;False;0;0;-1.5;1.5;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;133;-5857.21,1159.966;Inherit;False;Property;_ChinSmoothnessMod;Chin Smoothness Mod;45;0;Create;True;0;0;0;False;0;False;0;0;-1.5;1.5;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;145;-5202.918,1762.014;Inherit;False;Property;_EarScatterScale;Ear Scatter Scale;53;0;Create;True;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
 Node;AmplifyShaderEditor.WireNode;183;-5016.906,829.2422;Inherit;False;1;0;FLOAT4;0,0,0,0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.SamplerNode;124;-4951.618,329.9945;Inherit;True;Property;_TextureSample9;Texture Sample 9;32;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.DynamicAppendNode;155;-4799.142,1555.208;Inherit;False;FLOAT4;4;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;1;FLOAT4;0
@@ -3195,7 +3293,7 @@ Node;AmplifyShaderEditor.DynamicAppendNode;152;-5465.315,1076.229;Inherit;False;
 Node;AmplifyShaderEditor.DynamicAppendNode;153;-4809.106,1226.433;Inherit;False;FLOAT4;4;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.WireNode;157;-4471.977,1300.425;Inherit;False;1;0;FLOAT4;0,0,0,0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.WireNode;164;-4475.381,827.9884;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.RangedFloatNode;147;-4790.822,1794.684;Inherit;False;Property;_UnmaskedScatterScale;Unmasked Scatter Scale;52;0;Create;True;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;147;-4790.822,1794.684;Inherit;False;Property;_UnmaskedScatterScale;Unmasked Scatter Scale;31;0;Create;True;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
 Node;AmplifyShaderEditor.WireNode;180;-4263.971,1253.895;Inherit;False;1;0;FLOAT4;0,0,0,0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.WireNode;182;-4281.644,1267.539;Inherit;False;1;0;FLOAT4;0,0,0,0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.WireNode;165;-4484.802,892.7705;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
@@ -3204,30 +3302,30 @@ Node;AmplifyShaderEditor.WireNode;167;-5026.845,882.4905;Inherit;False;1;0;FLOAT
 Node;AmplifyShaderEditor.WireNode;168;-5031.45,910.5963;Inherit;False;1;0;FLOAT4;0,0,0,0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.WireNode;163;-4470.252,754.4565;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.WireNode;181;-4269.323,865.2314;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.RangedFloatNode;146;-4791.422,1720.184;Inherit;False;Property;_UnmaskedSmoothnessMod;Unmasked Smoothness Mod;41;0;Create;True;0;0;0;False;0;False;0;0;-1.5;1.5;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;146;-4791.422,1720.184;Inherit;False;Property;_UnmaskedSmoothnessMod;Unmasked Smoothness Mod;26;0;Create;True;0;0;0;False;0;False;0;0;-1.5;1.5;0;1;FLOAT;0
 Node;AmplifyShaderEditor.WireNode;159;-4469.809,1343.422;Inherit;False;1;0;FLOAT4;0,0,0,0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.WireNode;166;-5022.944,855.5648;Inherit;False;1;0;FLOAT4;0,0,0,0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.CustomExpressionNode;179;-4103.264,1453.281;Inherit;False;float mask = saturate(In1.r + In1.g + In1.b + In1.a)@$float unmask = 1.0 - mask@$$SmoothnessMod = dot(In1, Mod1) + (UMMS * unmask)@$ScatterMask = dot(In1, Scatter1) + (UMSS * unmask)@$return@;7;Create;7;True;In1;FLOAT4;0,0,0,0;In;;Inherit;False;True;Mod1;FLOAT4;0,0,0,0;In;;Inherit;False;True;Scatter1;FLOAT4;0,0,0,0;In;;Inherit;False;True;UMMS;FLOAT;0;In;;Inherit;False;True;UMSS;FLOAT;0;In;;Inherit;False;True;SmoothnessMod;FLOAT;0;Out;;Inherit;False;True;ScatterMask;FLOAT;0;Out;;Inherit;False;SkinMask;True;False;0;;False;8;0;FLOAT;0;False;1;FLOAT4;0,0,0,0;False;2;FLOAT4;0,0,0,0;False;3;FLOAT4;0,0,0,0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;3;FLOAT;0;FLOAT;7;FLOAT;8
 Node;AmplifyShaderEditor.CustomExpressionNode;156;-4103.297,1089.082;Inherit;False;In3.zw = 0@$float4 m = In1 + In2 + In3@$float mask = saturate(m.x + m.y + m.z + m.w)@$float unmask = 1.0 - mask@$$SmoothnessMod = dot(In1, Mod1) + dot(In2, Mod2) + dot(In3, Mod3) + (UMMS * unmask)@$ScatterMask = dot(In1, Scatter1) + dot(In2, Scatter2) + dot(In3, Scatter3) + (UMSS * unmask)@$return@;7;Create;13;True;In1;FLOAT4;0,0,0,0;In;;Inherit;False;True;In2;FLOAT4;0,0,0,0;In;;Inherit;False;True;In3;FLOAT4;0,0,0,0;In;;Inherit;False;True;Mod1;FLOAT4;0,0,0,0;In;;Inherit;False;True;Mod2;FLOAT4;0,0,0,0;In;;Inherit;False;True;Mod3;FLOAT4;0,0,0,0;In;;Inherit;False;True;Scatter1;FLOAT4;0,0,0,0;In;;Inherit;False;True;Scatter2;FLOAT4;0,0,0,0;In;;Inherit;False;True;Scatter3;FLOAT4;0,0,0,0;In;;Inherit;False;True;UMMS;FLOAT;0;In;;Inherit;False;True;UMSS;FLOAT;0;In;;Inherit;False;True;SmoothnessMod;FLOAT;0;Out;;Inherit;False;True;ScatterMask;FLOAT;0;Out;;Inherit;False;HeadMask;True;False;0;;False;14;0;FLOAT;0;False;1;FLOAT4;0,0,0,0;False;2;FLOAT4;0,0,0,0;False;3;FLOAT4;0,0,0,0;False;4;FLOAT4;0,0,0,0;False;5;FLOAT4;0,0,0,0;False;6;FLOAT4;0,0,0,0;False;7;FLOAT4;0,0,0,0;False;8;FLOAT4;0,0,0,0;False;9;FLOAT4;0,0,0,0;False;10;FLOAT;0;False;11;FLOAT;0;False;12;FLOAT;0;False;13;FLOAT;0;False;3;FLOAT;0;FLOAT;13;FLOAT;14
 Node;AmplifyShaderEditor.StaticSwitch;169;-3551.095,1558.494;Inherit;False;Property;BOOLEAN_IS_HEAD;Is Head;29;0;Create;False;0;0;0;False;0;False;0;1;1;True;BOOLEAN_IS_HEAD_ON;Toggle;2;Key0;Key1;Reference;170;True;False;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;68;-3574.522,1467.09;Inherit;False;Property;_SubsurfaceScale;Subsurface Scale;17;0;Create;True;0;0;0;False;0;False;1;0.85;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;68;-3574.522,1467.09;Inherit;False;Property;_SubsurfaceScale;Subsurface Scale;13;0;Create;True;0;0;0;False;0;False;1;0.85;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.CommentaryNode;220;-1735.542,2667.253;Inherit;False;1913.987;862.4985;;15;27;28;29;114;30;66;69;119;115;261;267;279;307;327;336;Subsurface Scattering;1,0.5051794,0.495283,1;0;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;172;-3199.837,1508.122;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.TexturePropertyNode;27;-1643.384,3009.34;Inherit;True;Property;_SSSMap;Subsurface Map;16;0;Create;False;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.TexturePropertyNode;27;-1643.384,3009.34;Inherit;True;Property;_SSSMap;Subsurface Map;12;0;Create;False;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
 Node;AmplifyShaderEditor.RegisterLocalVarNode;277;-2964.243,1523.669;Inherit;False;microScatteringMultiplier;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SamplerNode;28;-1351.417,3093.075;Inherit;True;Property;_TextureSample2;Texture Sample 2;2;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.GetLocalVarNode;279;-1326.702,3290.222;Inherit;False;277;microScatteringMultiplier;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.CommentaryNode;208;-4654.008,-805.9103;Inherit;False;1980.672;617.1674;;12;280;203;202;201;197;207;204;205;206;196;195;295;Head Cavity Mask;0.5235849,1,0.9775805,1;0;0
-Node;AmplifyShaderEditor.TexturePropertyNode;195;-4484.008,-668.7567;Inherit;True;Property;_MNAOMap;Cavity AO Map;22;0;Create;False;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.TexturePropertyNode;195;-4484.008,-668.7567;Inherit;True;Property;_MNAOMap;Cavity AO Map;37;0;Create;False;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
 Node;AmplifyShaderEditor.CommentaryNode;314;-1060.737,3655.976;Inherit;False;1243.882;319.7932;Subsurface Normal Flattening;5;274;312;311;310;313;;1,1,1,1;0;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;69;-1025.345,3214.753;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;2;False;1;FLOAT;0
 Node;AmplifyShaderEditor.CommentaryNode;212;-1709.511,-1821.26;Inherit;False;1853.025;934.288;;13;338;339;12;14;1;11;2;209;281;13;19;266;72;Base Color;0.495283,1,0.5625787,1;0;0
-Node;AmplifyShaderEditor.RangedFloatNode;204;-3977.836,-446.3848;Inherit;False;Property;_MouthCavityAO;Mouth Cavity AO;23;0;Create;True;0;0;0;False;0;False;2.5;2.5;0;5;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;205;-3977.836,-371.3848;Inherit;False;Property;_NostrilCavityAO;Nostril Cavity AO;24;0;Create;True;0;0;0;False;0;False;2.5;2.5;0;5;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;313;-1026.737,3835.976;Inherit;False;Property;_SubsurfaceNormalSoften;Subsurface Normal Soften;19;0;Create;True;0;0;0;False;0;False;0.4;0.65;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;204;-3977.836,-446.3848;Inherit;False;Property;_MouthCavityAO;Mouth Cavity AO;38;0;Create;True;0;0;0;False;0;False;2.5;2.5;0;5;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;205;-3977.836,-371.3848;Inherit;False;Property;_NostrilCavityAO;Nostril Cavity AO;39;0;Create;True;0;0;0;False;0;False;2.5;2.5;0;5;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;313;-1026.737,3835.976;Inherit;False;Property;_SubsurfaceNormalSoften;Subsurface Normal Soften;15;0;Create;True;0;0;0;False;0;False;0.4;0.65;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SamplerNode;196;-3997.858,-661.9286;Inherit;True;Property;_TextureSample11;Texture Sample 11;32;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SaturateNode;336;-877.075,3225.632;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;206;-3977.836,-296.3848;Inherit;False;Property;_LipsCavityAO;Lips Cavity AO;25;0;Create;True;0;0;0;False;0;False;2.5;2.5;0;5;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;206;-3977.836,-296.3848;Inherit;False;Property;_LipsCavityAO;Lips Cavity AO;40;0;Create;True;0;0;0;False;0;False;2.5;2.5;0;5;0;1;FLOAT;0
 Node;AmplifyShaderEditor.PowerNode;203;-3341.862,-431.3848;Inherit;False;True;2;0;FLOAT;0;False;1;FLOAT;1;False;1;FLOAT;0
 Node;AmplifyShaderEditor.TexturePropertyNode;2;-1667.491,-1435.096;Inherit;True;Property;_DiffuseMap;Diffuse Map;0;0;Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
 Node;AmplifyShaderEditor.PowerNode;201;-3342.862,-643.385;Inherit;False;True;2;0;FLOAT;0;False;1;FLOAT;1;False;1;FLOAT;0
@@ -3235,15 +3333,15 @@ Node;AmplifyShaderEditor.CommentaryNode;294;-3752.904,2143.511;Inherit;False;109
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;310;-698.7376,3760.976;Inherit;False;3;3;0;FLOAT;0;False;1;FLOAT;0.5;False;2;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.PowerNode;202;-3343.862,-536.3851;Inherit;False;True;2;0;FLOAT;0;False;1;FLOAT;1;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SamplerNode;1;-1352.489,-1456.096;Inherit;True;Property;_TextureSample0;Texture Sample 0;0;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.TexturePropertyNode;11;-1669.96,-1221.841;Inherit;True;Property;_ColorBlendMap;Color Blend Map (Head);2;0;Create;False;0;0;0;False;0;False;None;None;False;gray;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.TexturePropertyNode;11;-1669.96,-1221.841;Inherit;True;Property;_ColorBlendMap;Color Blend Map (Head);33;0;Create;False;0;0;0;False;0;False;None;None;False;gray;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;207;-3083.988,-560.6332;Inherit;False;3;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.TexturePropertyNode;31;-3702.905,2255.651;Inherit;True;Property;_MaskMap;Mask Map;4;0;Create;False;0;0;0;False;0;False;None;None;False;gray;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.TexturePropertyNode;31;-3702.905,2255.651;Inherit;True;Property;_MaskMap;Mask Map;2;0;Create;False;0;0;0;False;0;False;None;None;False;gray;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
 Node;AmplifyShaderEditor.OneMinusNode;311;-512.8137,3791.382;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.ColorNode;338;-1312.911,-1664.071;Inherit;False;Property;_DiffuseColor;Diffuse Color;1;0;Create;True;0;0;0;False;0;False;1,1,1,0;1,1,1,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.RegisterLocalVarNode;280;-2885.78,-566.2528;Inherit;False;cavityAO;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;339;-1027.845,-1510.532;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.SamplerNode;32;-3340.386,2257.809;Inherit;True;Property;_TextureSample4;Texture Sample 4;6;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.RangedFloatNode;14;-1358.219,-1049.525;Inherit;False;Property;_ColorBlendStrength;Color Blend Strength;3;0;Create;True;0;0;0;False;0;False;0;1;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;14;-1358.219,-1049.525;Inherit;False;Property;_ColorBlendStrength;Color Blend Strength;34;0;Create;True;0;0;0;False;0;False;0;1;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SaturateNode;312;-313.7972,3792.8;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SamplerNode;12;-1353.956,-1258.842;Inherit;True;Property;_TextureSample1;Texture Sample 1;2;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.BlendOpsNode;13;-828.2365,-1312.348;Inherit;False;Overlay;True;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;1;False;1;COLOR;0
@@ -3253,13 +3351,13 @@ Node;AmplifyShaderEditor.GetLocalVarNode;281;-809.6323,-1160.13;Inherit;False;28
 Node;AmplifyShaderEditor.CommentaryNode;213;-2240.617,-782.9695;Inherit;False;2378.617;1318.153;;19;59;60;61;52;71;54;53;308;57;50;48;62;58;289;51;49;323;325;326;Normal Blending;0.4858491,0.5398334,1,1;0;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;288;-2905.118,2479.318;Inherit;False;smoothnessMap;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;274;-119.2839,3788.979;Inherit;False;subsurfaceFlattenNormals;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;60;-2152.274,-658.4672;Inherit;False;Property;_NormalStrength;Normal Strength;10;0;Create;True;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;60;-2152.274,-658.4672;Inherit;False;Property;_NormalStrength;Normal Strength;8;0;Create;True;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;282;-1778.271,1722.772;Inherit;False;295;cavityMask;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;209;-571.6563,-1265.26;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;FLOAT;0;False;1;COLOR;0
-Node;AmplifyShaderEditor.RangedFloatNode;59;-2171.121,-74.08789;Inherit;False;Property;_NormalBlendStrength;Normal Blend Strength (Head);12;0;Create;False;0;0;0;False;0;False;0;1;0;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;59;-2171.121,-74.08789;Inherit;False;Property;_NormalBlendStrength;Normal Blend Strength (Head);36;0;Create;False;0;0;0;False;0;False;0;1;0;2;0;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;325;-2191.167,-377.4025;Inherit;False;274;subsurfaceFlattenNormals;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;292;-1781.937,1620.358;Inherit;False;288;smoothnessMap;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;171;-3562.313,1330.478;Inherit;False;Property;_MicroSmoothnessMod;Micro Smoothness Mod;30;0;Create;True;0;0;0;False;0;False;0;-0.05;-1.5;1.5;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;171;-3562.313,1330.478;Inherit;False;Property;_MicroSmoothnessMod;Micro Smoothness Mod;21;0;Create;True;0;0;0;False;0;False;0;-0.05;-1.5;1.5;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;222;-1551.795,1754.497;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;287;-2911.776,2386.466;Inherit;False;microNormalMask;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;286;-2926.939,2292.405;Inherit;False;ambientOcclusionMap;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
@@ -3267,44 +3365,44 @@ Node;AmplifyShaderEditor.CommentaryNode;82;-775.9232,2212.324;Inherit;False;929.
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;323;-1843.224,-532.8947;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.StaticSwitch;170;-3557.483,1206.089;Inherit;False;Property;BOOLEAN_IS_HEAD;Is Head;29;0;Create;False;0;0;0;False;0;False;0;1;1;True;BOOLEAN_IS_HEAD_ON;Toggle;2;Key0;Key1;Reference;-1;True;False;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;324;-1855.969,-229.5575;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.TexturePropertyNode;49;-1715.109,-732.9696;Inherit;True;Property;_NormalMap;Normal Map;9;1;[Normal];Create;True;0;0;0;False;0;False;None;None;True;bump;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
-Node;AmplifyShaderEditor.TexturePropertyNode;51;-1721.925,-416.9095;Inherit;True;Property;_NormalBlendMap;Normal Blend Map (Head);11;1;[Normal];Create;False;0;0;0;False;0;False;None;None;True;bump;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
-Node;AmplifyShaderEditor.StaticSwitch;72;-369.157,-1372.652;Inherit;False;Property;BOOLEAN_IS_HEAD;Is Head;29;0;Create;False;0;0;0;False;0;False;0;1;1;True;BOOLEAN_IS_HEAD_ON;Toggle;2;Key0;Key1;Create;True;False;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.TexturePropertyNode;49;-1715.109,-732.9696;Inherit;True;Property;_NormalMap;Normal Map;7;1;[Normal];Create;True;0;0;0;False;0;False;None;None;True;bump;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.TexturePropertyNode;51;-1721.925,-416.9095;Inherit;True;Property;_NormalBlendMap;Normal Blend Map (Head);35;1;[Normal];Create;False;0;0;0;False;0;False;None;None;True;bump;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.StaticSwitch;72;-369.157,-1372.652;Inherit;False;Property;BOOLEAN_IS_HEAD;Is Head;32;0;Create;False;0;0;0;False;0;False;0;1;1;True;BOOLEAN_IS_HEAD_ON;Toggle;2;Key0;Key1;Create;True;False;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;266;-103.9292,-1272.774;Inherit;False;baseColor;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.RangedFloatNode;62;-2081.277,126.7674;Inherit;False;Property;_MicroNormalTiling;Micro Normal Tiling;15;0;Create;True;0;0;0;False;0;False;25;20;0;50;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;62;-2081.277,126.7674;Inherit;False;Property;_MicroNormalTiling;Micro Normal Tiling;11;0;Create;True;0;0;0;False;0;False;25;20;0;50;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SamplerNode;50;-1360.625,-340.1081;Inherit;True;Property;_TextureSample6;Texture Sample 6;2;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;True;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.GetLocalVarNode;293;-744.9214,2263.6;Inherit;False;286;ambientOcclusionMap;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.CommentaryNode;235;-712.3485,727.3322;Inherit;False;853.0981;468.4968;;4;231;232;233;234;Emission;0.989594,0.495283,1,1;0;0
 Node;AmplifyShaderEditor.StaticSwitch;223;-1383.707,1655.434;Inherit;False;Property;BOOLEAN_IS_HEAD;Is Head;25;0;Create;False;0;0;0;False;0;False;0;1;1;True;BOOLEAN_IS_HEAD_ON;Toggle;2;Key0;Key1;Reference;-1;True;False;All;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;58;-2079.897,224.414;Inherit;False;Property;_MicroNormalStrength;Micro Normal Strength;14;0;Create;True;0;0;0;False;0;False;0.5;0.5;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;58;-2079.897,224.414;Inherit;False;Property;_MicroNormalStrength;Micro Normal Strength;10;0;Create;True;0;0;0;False;0;False;0.5;0.5;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;326;-2075.185,414.078;Inherit;False;274;subsurfaceFlattenNormals;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;40;-871.9211,1800.792;Inherit;False;Property;_SmoothnessPower;SmoothnessPower;6;0;Create;True;0;0;0;False;0;False;0.1;1.35;0.1;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;40;-871.9211,1800.792;Inherit;False;Property;_SmoothnessPower;SmoothnessPower;4;0;Create;True;0;0;0;False;0;False;0.1;1.35;0.1;2;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SamplerNode;48;-1368.809,-653.1702;Inherit;True;Property;_TextureSample5;Texture Sample 5;2;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;True;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.GetLocalVarNode;289;-2023.831,325.1693;Inherit;False;287;microNormalMask;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleAddOpNode;174;-3191.699,1240.569;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.OneMinusNode;33;-419.5572,2268.659;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.PowerNode;39;-556.8064,1721.507;Inherit;False;True;2;0;FLOAT;0;False;1;FLOAT;1;False;1;FLOAT;0
 Node;AmplifyShaderEditor.BlendNormalsNode;54;-938.3805,-461.7799;Inherit;False;0;3;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.TexturePropertyNode;29;-1295.003,2736.873;Inherit;True;Property;_ThicknessMap;Thickness Map;20;0;Create;True;0;0;0;False;0;False;None;None;False;black;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
-Node;AmplifyShaderEditor.RangedFloatNode;36;-565.9235,2368.116;Inherit;False;Property;_AOStrength;AO Strength;5;0;Create;True;0;0;0;False;0;False;0;1;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.TexturePropertyNode;29;-1295.003,2736.873;Inherit;True;Property;_ThicknessMap;Thickness Map;16;0;Create;True;0;0;0;False;0;False;None;None;False;black;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.RangedFloatNode;36;-565.9235,2368.116;Inherit;False;Property;_AOStrength;AO Strength;3;0;Create;True;0;0;0;False;0;False;0;1;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;57;-1634.541,213.7224;Inherit;False;3;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.ColorNode;66;-512.8407,3074.174;Inherit;False;Property;_SubsurfaceFalloff;Subsurface Falloff;18;0;Create;True;0;0;0;False;0;False;1,0.3686275,0.2980392,0;1,0.3686274,0.2980392,1;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.RangedFloatNode;43;-875.0477,1635.282;Inherit;False;Property;_SmoothnessMax;SmoothnessMax;8;0;Create;True;0;0;0;False;0;False;0;0.8661538;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.ColorNode;66;-512.8407,3074.174;Inherit;False;Property;_SubsurfaceFalloff;Subsurface Falloff;14;0;Create;True;0;0;0;False;0;False;1,0.3686275,0.2980392,0;1,0.3686274,0.2980392,1;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.RangedFloatNode;43;-875.0477,1635.282;Inherit;False;Property;_SmoothnessMax;SmoothnessMax;6;0;Create;True;0;0;0;False;0;False;0;0.8661538;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;276;-2960.786,1235.781;Inherit;False;microSmoothnessMod;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;267;-489.2372,2986.478;Inherit;False;266;baseColor;1;0;OBJECT;;False;1;COLOR;0
-Node;AmplifyShaderEditor.RangedFloatNode;42;-875.9194,1536.553;Inherit;False;Property;_SmoothnessMin;SmoothnessMin;7;0;Create;True;0;0;0;False;0;False;0;0;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.TexturePropertyNode;231;-663.3489,921.8763;Inherit;True;Property;_EmissionMap;Emission Map;53;0;Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
-Node;AmplifyShaderEditor.TexturePropertyNode;53;-1724.141,-120.4369;Inherit;True;Property;_MicroNormalMap;Micro Normal Map;13;1;[Normal];Create;True;0;0;0;False;0;False;None;None;True;bump;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.RangedFloatNode;42;-875.9194,1536.553;Inherit;False;Property;_SmoothnessMin;SmoothnessMin;5;0;Create;True;0;0;0;False;0;False;0;0;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.TexturePropertyNode;231;-663.3489,921.8763;Inherit;True;Property;_EmissionMap;Emission Map;18;0;Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.TexturePropertyNode;53;-1724.141,-120.4369;Inherit;True;Property;_MicroNormalMap;Micro Normal Map;9;1;[Normal];Create;True;0;0;0;False;0;False;None;None;True;bump;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
 Node;AmplifyShaderEditor.TextureCoordinatesNode;308;-1715.351,86.57606;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.RegisterLocalVarNode;285;-2905.11,2193.511;Inherit;False;metallicMap;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.ColorNode;233;-313.2517,777.3322;Inherit;False;Property;_EmissiveColor;Emissive Color;54;1;[HDR];Create;True;0;0;0;False;0;False;0,0,0,0;0,0,0,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.ColorNode;233;-313.2517,777.3322;Inherit;False;Property;_EmissiveColor;Emissive Color;19;1;[HDR];Create;True;0;0;0;False;0;False;0,0,0,0;0,0,0,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SamplerNode;232;-382.6018,965.829;Inherit;True;Property;_TextureSample12;Texture Sample 12;2;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SamplerNode;30;-939.8237,2737.313;Inherit;True;Property;_TextureSample3;Texture Sample 3;2;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;307;-263.7095,3057.134;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.GetLocalVarNode;278;-325.832,1795.122;Inherit;False;276;microSmoothnessMod;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.StaticSwitch;71;-677.6676,-636.5413;Inherit;False;Property;BOOLEAN_IS_HEAD;Is Head;22;0;Create;False;0;0;0;False;0;False;0;1;1;True;BOOLEAN_IS_HEAD_ON;Toggle;2;Key0;Key1;Reference;-1;True;False;All;9;1;FLOAT3;0,0,0;False;0;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT3;0,0,0;False;4;FLOAT3;0,0,0;False;5;FLOAT3;0,0,0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT3;0,0,0;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;327;-255.7886,3224.537;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;2;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;114;-931.1096,2932.94;Inherit;False;Property;_ThicknessScale;ThicknessScale;21;0;Create;True;0;0;0;False;0;False;1;0.4;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;114;-931.1096,2932.94;Inherit;False;Property;_ThicknessScale;ThicknessScale;17;0;Create;True;0;0;0;False;0;False;1;0.4;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.LerpOp;41;-287.2786,1612.065;Inherit;False;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SamplerNode;52;-1362.721,30.26169;Inherit;True;Property;_TextureSample7;Texture Sample 7;2;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;True;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;35;-198.9745,2262.323;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
@@ -3324,15 +3422,24 @@ Node;AmplifyShaderEditor.StickyNoteNode;197;-4275.65,-395.1431;Inherit;False;182
 Node;AmplifyShaderEditor.WireNode;264;997.1307,2521.128;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.WireNode;306;1007.982,682.2925;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.WireNode;322;1006.677,795.0045;Inherit;False;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;22;525,305;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;True;1;LightMode=DepthOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;24;525,305;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Universal2D;0;5;Universal2D;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=Universal2D;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;20;1398.347,820.2733;Half;False;True;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;Reallusion/Amplify/RL_SkinShader_Variants_URP;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;18;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalForward;False;False;0;Hidden/InternalErrorShader;0;0;Standard;38;Workflow;1;637772825850121632;Surface;0;637772825868519660;  Refraction Model;0;0;  Blend;0;0;Two Sided;1;0;Fragment Normal Space,InvertActionOnDeselection;0;0;Transmission;1;637772850612646128;  Transmission Shadow;0.5,False,;637782843343460286;Translucency;1;637772840223650237;  Translucency Strength;1,False,;637782843347113608;  Normal Distortion;0.5,False,;637782843350385796;  Scattering;2,False,;637782843353567621;  Direct;0.9,False,;637782843356998360;  Ambient;0.1,False,;637782843360478407;  Shadow;0.5,False,;637782843364399850;Cast Shadows;1;0;  Use Shadow Threshold;0;0;Receive Shadows;1;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;1;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;DOTS Instancing;0;0;Tessellation;0;637772870354882285;  Phong;0;637772870352635162;  Strength;0,False,;637772870307115194;  Type;0;0;  Tess;1,False,;637772870321916518;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Write Depth;0;0;  Early Z;0;0;Vertex Position,InvertActionOnDeselection;1;0;0;8;False;True;True;True;True;True;True;True;False;;True;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;26;525,305;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;GBuffer;0;7;GBuffer;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalGBuffer;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;23;525,305;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Meta;0;4;Meta;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Meta;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;25;525,305;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthNormals;0;6;DepthNormals;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=DepthNormals;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;21;525,305;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=ShadowCaster;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;19;-231.2036,-1128.382;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;0;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;22;525,305;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;True;1;LightMode=DepthOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;24;525,305;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Universal2D;0;5;Universal2D;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;5;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=Universal2D;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;20;1398.347,820.2733;Half;False;True;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;Reallusion/Amplify/RL_SkinShader_Variants_URP;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;18;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalForward;False;False;0;Hidden/InternalErrorShader;0;0;Standard;38;Workflow;1;637772825850121632;Surface;0;637772825868519660;  Refraction Model;0;0;  Blend;0;0;Two Sided;1;0;Fragment Normal Space,InvertActionOnDeselection;0;0;Transmission;1;637772850612646128;  Transmission Shadow;0.5,False,;637782843343460286;Translucency;1;637772840223650237;  Translucency Strength;1,False,;637782843347113608;  Normal Distortion;0.5,False,;637782843350385796;  Scattering;2,False,;637782843353567621;  Direct;0.9,False,;637782843356998360;  Ambient;0.1,False,;637782843360478407;  Shadow;0.5,False,;637782843364399850;Cast Shadows;1;0;  Use Shadow Threshold;0;0;Receive Shadows;1;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;1;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;DOTS Instancing;0;0;Tessellation;0;637772870354882285;  Phong;0;637772870352635162;  Strength;0,False,;637772870307115194;  Type;0;0;  Tess;1,False,;637772870321916518;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Write Depth;0;0;  Early Z;0;0;Vertex Position,InvertActionOnDeselection;1;0;0;8;False;True;True;True;True;True;True;True;False;;True;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;26;525,305;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;GBuffer;0;7;GBuffer;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;5;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalGBuffer;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;23;525,305;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Meta;0;4;Meta;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Meta;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;25;525,305;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthNormals;0;6;DepthNormals;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;5;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=DepthNormals;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;21;525,305;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=ShadowCaster;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;19;-231.2036,-1128.382;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;5;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;0;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.RangedFloatNode;261;-676.9075,3354.999;Inherit;False;Constant;_SubsurfaceWrapMax;Subsurface Wrap Max;53;0;Create;True;0;0;0;False;0;False;0.2;0.5;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.TexturePropertyNode;122;-5251.381,554.1195;Inherit;True;Property;_EarNeckMask;EarNeckMask;50;0;Create;True;0;0;0;False;0;False;None;None;False;black;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.RangedFloatNode;126;-5858.013,619.4265;Inherit;False;Property;_RSmoothnessMod;R/Nose Smoothness Mod;22;0;Create;False;0;0;0;False;0;False;0;-0.119;-1.5;1.5;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;127;-5858.013,693.2935;Inherit;False;Property;_GSmoothnessMod;G/Mouth Smoothness Mod;23;0;Create;False;0;0;0;False;0;False;0;-0.034;-1.5;1.5;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;128;-5857.031,769.2485;Inherit;False;Property;_BSmoothnessMod;B/Upper Lid Smoothness Mod;24;0;Create;False;0;0;0;False;0;False;0;0.3;-1.5;1.5;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;129;-5858.021,849.2174;Inherit;False;Property;_ASmoothnessMod;A/Inner Lid Smoothness Mod;25;0;Create;False;0;0;0;False;0;False;0;0.574;-1.5;1.5;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;148;-5206.476,1070.36;Inherit;False;Property;_RScatterScale;R/Nose Scatter Scale;27;0;Create;False;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;137;-5206.919,1138.915;Inherit;False;Property;_GScatterScale;G/Mouth Scatter Scale;28;0;Create;False;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;138;-5204.919,1214.915;Inherit;False;Property;_BScatterScale;B/Upper Lid Scatter Scale;29;0;Create;False;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;139;-5205.919,1285.915;Inherit;False;Property;_AScatterScale;A/Inner Lid Scatter Scale;30;0;Create;False;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
 WireConnection;150;0;126;0
 WireConnection;150;1;127;0
 WireConnection;150;2;128;0
@@ -3513,4 +3620,4 @@ WireConnection;20;5;273;0
 WireConnection;20;14;264;0
 WireConnection;20;15;265;0
 ASEEND*/
-//CHKSM=A7FA829BEB9DF7CAA4ACCF03EFC3EEC9136BB592
+//CHKSM=C04E875F82B4CAB15E9AEDCAA404662664640F41
