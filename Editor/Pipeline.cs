@@ -279,7 +279,7 @@ namespace Reallusion.Import
         public const string SHADER_HQ_TONGUE = "RL_TongueShader_3D";
         public const string SHADER_HQ_ALPHACLIP = "Universal Render Pipeline/Lit";
         public const string SHADER_HQ_OPAQUE = "Universal Render Pipeline/Lit";
-        public const string SHADER_HQ_SSS = "RL_SSS_3D";
+        public const string SHADER_HQ_SSS = "LitSSS";
         // eye types
         public const string SHADER_HQ_CORNEA_PARALLAX = "RL_CorneaShaderParallax_3D";
         public const string SHADER_HQ_EYE_PARALLAX = "RL_EyeShaderParallax_Dummy_3D"; // Dummy shader (unlit no textures)
