@@ -10,7 +10,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_Baked_URP_Tessellation"
 		_BaseColor("Base Color", Color) = (1,1,1,0)
 		_MetallicGlossMap("Metallic Gloss Map", 2D) = "white" {}
 		_Metallic("Metallic", Range( 0 , 1)) = 0
-		_GlossMapScale("Gloss Map Scale", Range( 0 , 1)) = 1
+		_Smoothness("Smoothness", Range( 0 , 1)) = 1
 		_BumpMap("Bump Map", 2D) = "bump" {}
 		_BumpScale("Bump Scale", Range( 0 , 2)) = 1
 		_OcclusionMap("Occlusion Map", 2D) = "white" {}
@@ -296,7 +296,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_Baked_URP_Tessellation"
 			half _IOR;
 			half _Metallic;
 			half _PupilScale;
-			half _GlossMapScale;
+			half _Smoothness;
 			half _OcclusionStrength;
 			half _IrisDepth;
 			#ifdef ASE_TRANSMISSION
@@ -599,7 +599,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_Baked_URP_Tessellation"
 				float3 Emission = ( tex2D( _EmissionMap, uv_EmissionMap ) * _EmissiveColor ).rgb;
 				float3 Specular = 0.5;
 				float Metallic = ( _Metallic * tex2DNode412.g );
-				float Smoothness = ( tex2DNode412.a * _GlossMapScale );
+				float Smoothness = ( tex2DNode412.a * _Smoothness );
 				float Occlusion = ( 1.0 - ( _OcclusionStrength * ( 1.0 - tex2D( _OcclusionMap, uv_OcclusionMap ).g ) ) );
 				float Alpha = 1;
 				float AlphaClipThreshold = 0.5;
@@ -840,7 +840,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_Baked_URP_Tessellation"
 			half _IOR;
 			half _Metallic;
 			half _PupilScale;
-			half _GlossMapScale;
+			half _Smoothness;
 			half _OcclusionStrength;
 			half _IrisDepth;
 			#ifdef ASE_TRANSMISSION
@@ -1171,7 +1171,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_Baked_URP_Tessellation"
 			half _IOR;
 			half _Metallic;
 			half _PupilScale;
-			half _GlossMapScale;
+			half _Smoothness;
 			half _OcclusionStrength;
 			half _IrisDepth;
 			#ifdef ASE_TRANSMISSION
@@ -1474,7 +1474,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_Baked_URP_Tessellation"
 			half _IOR;
 			half _Metallic;
 			half _PupilScale;
-			half _GlossMapScale;
+			half _Smoothness;
 			half _OcclusionStrength;
 			half _IrisDepth;
 			#ifdef ASE_TRANSMISSION
@@ -1820,7 +1820,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_Baked_URP_Tessellation"
 			half _IOR;
 			half _Metallic;
 			half _PupilScale;
-			half _GlossMapScale;
+			half _Smoothness;
 			half _OcclusionStrength;
 			half _IrisDepth;
 			#ifdef ASE_TRANSMISSION
@@ -2149,7 +2149,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_Baked_URP_Tessellation"
 			half _IOR;
 			half _Metallic;
 			half _PupilScale;
-			half _GlossMapScale;
+			half _Smoothness;
 			half _OcclusionStrength;
 			half _IrisDepth;
 			#ifdef ASE_TRANSMISSION
@@ -2492,7 +2492,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_Baked_URP_Tessellation"
 			half _IOR;
 			half _Metallic;
 			half _PupilScale;
-			half _GlossMapScale;
+			half _Smoothness;
 			half _OcclusionStrength;
 			half _IrisDepth;
 			#ifdef ASE_TRANSMISSION
@@ -2797,7 +2797,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_Baked_URP_Tessellation"
 				float3 Emission = ( tex2D( _EmissionMap, uv_EmissionMap ) * _EmissiveColor ).rgb;
 				float3 Specular = 0.5;
 				float Metallic = ( _Metallic * tex2DNode412.g );
-				float Smoothness = ( tex2DNode412.a * _GlossMapScale );
+				float Smoothness = ( tex2DNode412.a * _Smoothness );
 				float Occlusion = ( 1.0 - ( _OcclusionStrength * ( 1.0 - tex2D( _OcclusionMap, uv_OcclusionMap ).g ) ) );
 				float Alpha = 1;
 				float AlphaClipThreshold = 0.5;
@@ -2963,7 +2963,6 @@ Node;AmplifyShaderEditor.RangedFloatNode;414;-1066.539,2803.613;Inherit;False;Co
 Node;AmplifyShaderEditor.ColorNode;415;-1014.613,1369.526;Inherit;False;Property;_EmissiveColor;Emissive Color;13;1;[HDR];Create;True;0;0;0;False;0;False;0,0,0,0;0,0,0,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SamplerNode;407;-1083.525,2886.528;Inherit;True;Property;_SubsurfaceMaskMap;Subsurface Mask Map;14;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;402;-948.2836,63.63201;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.RangedFloatNode;409;-1043.326,2041.198;Inherit;False;Property;_GlossMapScale;Gloss Map Scale;4;0;Create;True;0;0;0;False;0;False;1;1;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;411;-1051.143,1729.025;Inherit;False;Property;_Metallic;Metallic;3;0;Create;True;0;0;0;False;0;False;0;0;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;403;-860.0905,2354.67;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SamplerNode;406;-1182.522,550.7614;Inherit;True;Property;_BumpMap;Bump Map;5;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;bump;Auto;True;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
@@ -2983,6 +2982,7 @@ Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;12;0,0;Float;False;False;-1
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;15;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;2;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthNormals;0;6;DepthNormals;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=DepthNormals;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;10;509.1178,952.8544;Half;False;True;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;Reallusion/Amplify/RL_CorneaShaderParallax_Baked_URP_Tessellation;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;18;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;6;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalForward;False;False;0;Hidden/InternalErrorShader;0;0;Standard;38;Workflow;1;637781667002105518;Surface;0;637781667019125558;  Refraction Model;0;0;  Blend;0;0;Two Sided;1;0;Fragment Normal Space,InvertActionOnDeselection;0;0;Transmission;0;637808772351133955;  Transmission Shadow;0.5,False,;637808772336543931;Translucency;1;637781762524256068;  Translucency Strength;1,False,;637782805023987511;  Normal Distortion;0.5,False,;637782805027308440;  Scattering;2,False,;637782805030872054;  Direct;0.9,False,;637782805034534697;  Ambient;0.1,False,;637782805037984542;  Shadow;0.5,False,;637782805041162307;Cast Shadows;1;637781667262285565;  Use Shadow Threshold;0;637808759830423392;Receive Shadows;1;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;1;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;DOTS Instancing;0;0;Tessellation;1;637999708528095890;  Phong;1;637999708387562924;  Strength;0,False,;637999709153052157;  Type;2;637999719006627661;  Tess;1,False,;637999709296159589;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;637999708697792261;  Max Displacement;25,False,;0;Write Depth;0;0;  Early Z;0;0;Vertex Position,InvertActionOnDeselection;1;0;0;8;False;True;True;True;True;True;True;True;False;;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;9;-523.0753,414.8108;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;2;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;0;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.RangedFloatNode;409;-1043.326,2041.198;Inherit;False;Property;_Smoothness;Smoothness;4;0;Create;True;0;0;0;False;0;False;1;1;0;1;0;1;FLOAT;0
 WireConnection;219;0;72;0
 WireConnection;71;0;69;0
 WireConnection;71;1;220;0
@@ -3068,4 +3068,4 @@ WireConnection;10;4;419;0
 WireConnection;10;5;417;0
 WireConnection;10;15;423;0
 ASEEND*/
-//CHKSM=CCBE2A8EADACE5251E344A85F9BF94E8475B40C9
+//CHKSM=AAC07639631F80C48ED1711820C29EA5D8C6E6DA

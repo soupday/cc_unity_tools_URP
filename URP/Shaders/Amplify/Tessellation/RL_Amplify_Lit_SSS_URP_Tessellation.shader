@@ -10,7 +10,7 @@ Shader "Reallusion/Amplify/LitSSS Tessellation"
 		_BaseColor("Base Color", Color) = (1,1,1,0)
 		_MetallicGlossMap("Metallic Gloss Map", 2D) = "white" {}
 		_Metallic("Metallic", Range( 0 , 1)) = 0
-		_GlossMapScale("Gloss Map Scale", Range( 0 , 1)) = 1
+		_Smoothness("Smoothness", Range( 0 , 1)) = 1
 		[Normal]_BumpMap("Bump Map", 2D) = "bump" {}
 		_BumpScale("Bump Scale", Range( 0 , 2)) = 2
 		_OcclusionMap("Occlusion Map", 2D) = "white" {}
@@ -289,7 +289,7 @@ Shader "Reallusion/Amplify/LitSSS Tessellation"
 			float4 _DetailMask_ST;
 			float _DetailNormalMapScale;
 			float _SubsurfaceMask;
-			float _GlossMapScale;
+			float _Smoothness;
 			float _OcclusionStrength;
 			float _BumpScale;
 			float _Thickness;
@@ -578,7 +578,7 @@ Shader "Reallusion/Amplify/LitSSS Tessellation"
 				float3 Emission = ( tex2D( _EmissionMap, uv_EmissionMap ) * _EmissiveColor ).rgb;
 				float3 Specular = 0.5;
 				float Metallic = ( _Metallic * tex2DNode150.g );
-				float Smoothness = ( tex2DNode150.a * _GlossMapScale );
+				float Smoothness = ( tex2DNode150.a * _Smoothness );
 				float Occlusion = ( 1.0 - ( _OcclusionStrength * ( 1.0 - tex2D( _OcclusionMap, uv_OcclusionMap ).g ) ) );
 				float Alpha = tex2DNode145.a;
 				float AlphaClipThreshold = 0.5;
@@ -817,7 +817,7 @@ Shader "Reallusion/Amplify/LitSSS Tessellation"
 			float4 _DetailMask_ST;
 			float _DetailNormalMapScale;
 			float _SubsurfaceMask;
-			float _GlossMapScale;
+			float _Smoothness;
 			float _OcclusionStrength;
 			float _BumpScale;
 			float _Thickness;
@@ -1155,7 +1155,7 @@ Shader "Reallusion/Amplify/LitSSS Tessellation"
 			float4 _DetailMask_ST;
 			float _DetailNormalMapScale;
 			float _SubsurfaceMask;
-			float _GlossMapScale;
+			float _Smoothness;
 			float _OcclusionStrength;
 			float _BumpScale;
 			float _Thickness;
@@ -1459,7 +1459,7 @@ Shader "Reallusion/Amplify/LitSSS Tessellation"
 			float4 _DetailMask_ST;
 			float _DetailNormalMapScale;
 			float _SubsurfaceMask;
-			float _GlossMapScale;
+			float _Smoothness;
 			float _OcclusionStrength;
 			float _BumpScale;
 			float _Thickness;
@@ -1759,7 +1759,7 @@ Shader "Reallusion/Amplify/LitSSS Tessellation"
 			float4 _DetailMask_ST;
 			float _DetailNormalMapScale;
 			float _SubsurfaceMask;
-			float _GlossMapScale;
+			float _Smoothness;
 			float _OcclusionStrength;
 			float _BumpScale;
 			float _Thickness;
@@ -2048,7 +2048,7 @@ Shader "Reallusion/Amplify/LitSSS Tessellation"
 			float4 _DetailMask_ST;
 			float _DetailNormalMapScale;
 			float _SubsurfaceMask;
-			float _GlossMapScale;
+			float _Smoothness;
 			float _OcclusionStrength;
 			float _BumpScale;
 			float _Thickness;
@@ -2394,7 +2394,7 @@ Shader "Reallusion/Amplify/LitSSS Tessellation"
 			float4 _DetailMask_ST;
 			float _DetailNormalMapScale;
 			float _SubsurfaceMask;
-			float _GlossMapScale;
+			float _Smoothness;
 			float _OcclusionStrength;
 			float _BumpScale;
 			float _Thickness;
@@ -2685,7 +2685,7 @@ Shader "Reallusion/Amplify/LitSSS Tessellation"
 				float3 Emission = ( tex2D( _EmissionMap, uv_EmissionMap ) * _EmissiveColor ).rgb;
 				float3 Specular = 0.5;
 				float Metallic = ( _Metallic * tex2DNode150.g );
-				float Smoothness = ( tex2DNode150.a * _GlossMapScale );
+				float Smoothness = ( tex2DNode150.a * _Smoothness );
 				float Occlusion = ( 1.0 - ( _OcclusionStrength * ( 1.0 - tex2D( _OcclusionMap, uv_OcclusionMap ).g ) ) );
 				float Alpha = tex2DNode145.a;
 				float AlphaClipThreshold = 0.5;
@@ -2792,7 +2792,6 @@ Node;AmplifyShaderEditor.CommentaryNode;177;-1270.196,114.3046;Inherit;False;622
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;156;-1574.467,-249.2465;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;171;-983.1591,1362.129;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SamplerNode;189;-1204.472,2201.485;Inherit;True;Property;_SubsurfaceMaskMap;Subsurface Mask Map;11;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.RangedFloatNode;164;-1166.395,1048.658;Inherit;False;Property;_GlossMapScale;Gloss Map Scale;4;0;Create;True;0;0;0;False;0;False;1;0;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;174;-1105.823,-811.2161;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.RangedFloatNode;165;-1174.212,736.485;Inherit;False;Property;_Metallic;Metallic;3;0;Create;True;0;0;0;False;0;False;0;0;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SamplerNode;150;-1187.398,835.5652;Inherit;True;Property;_MetallicGlossMap;Metallic Gloss Map;2;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
@@ -2833,6 +2832,7 @@ Node;AmplifyShaderEditor.ColorNode;202;-1225.289,2401.942;Inherit;False;Property
 Node;AmplifyShaderEditor.RangedFloatNode;195;-1176.749,1725.444;Inherit;False;Property;_Thickness;Transmission;14;0;Create;False;0;0;0;False;0;False;1;0;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SamplerNode;190;-1196.935,1821.459;Inherit;True;Property;_ThicknessMap;Transmission Map;13;0;Create;False;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.RangedFloatNode;194;-1187.487,2118.57;Inherit;False;Constant;_ConstTranslucencyWrap;Const Translucency Wrap;17;0;Create;True;0;0;0;False;0;False;0.5;0;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;164;-1166.395,1048.658;Inherit;False;Property;_Smoothness;Smoothness;4;0;Create;True;0;0;0;False;0;False;1;0;0;1;0;1;FLOAT;0
 WireConnection;170;0;151;2
 WireConnection;156;0;154;0
 WireConnection;156;1;147;2
@@ -2881,4 +2881,4 @@ WireConnection;1;15;199;0
 WireConnection;203;0;202;0
 WireConnection;203;1;204;0
 ASEEND*/
-//CHKSM=9300BB09BE881680573F993FD7DAC493F7ED1C83
+//CHKSM=3ABC286E459AA88E75122B4AE315BD3E45093893

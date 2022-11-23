@@ -76,9 +76,12 @@ Material:
     - _AlphaCutoff: 0.5
     - _BumpScale: 1
     - _DetailNormalMapScale: 1
-    - _GlossMapScale: 0
+    - _EnvironmentReflections: 1
     - _Metallic: 0
     - _OcclusionStrength: 1
+    - _ReceiveShadows: 1
+    - _Smoothness: 0.897
+    - _SpecularHighlights: 1
     - _SubsurfaceMask: 1
     - _Thickness: 1
     - _TransAmbient: 0.1
