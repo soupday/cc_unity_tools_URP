@@ -1,4 +1,4 @@
-// Made with Amplify Shader Editor v1.9.1
+// Made with Amplify Shader Editor v1.9.1.2
 // Available at the Unity Asset Store - http://u3d.as/y3X 
 Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 {
@@ -2701,7 +2701,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 	
 }
 /*ASEBEGIN
-Version=19100
+Version=19102
 Node;AmplifyShaderEditor.CommentaryNode;179;-1648.736,1265.129;Inherit;False;1008.577;308.7186;Comment;5;151;170;169;171;172;;1,1,1,1;0;0
 Node;AmplifyShaderEditor.CommentaryNode;176;-2020.17,-491.7789;Inherit;False;1374.699;518.4456;Comment;7;153;148;146;147;154;156;155;;1,1,1,1;0;0
 Node;AmplifyShaderEditor.CommentaryNode;175;-1540.517,-1026.539;Inherit;False;886.6949;482.6302;Comment;6;200;174;187;145;173;202;;1,1,1,1;0;0
@@ -2789,4 +2789,4 @@ WireConnection;1;6;185;0
 WireConnection;1;7;203;0
 WireConnection;1;16;204;0
 ASEEND*/
-//CHKSM=C8C30EE9077783BBE0D9E909BA07427276CD62D9
+//CHKSM=09D6854DE8BC364E28B7B0332C7700531B85A55F

@@ -1,4 +1,4 @@
-// Made with Amplify Shader Editor v1.9.1
+// Made with Amplify Shader Editor v1.9.1.2
 // Available at the Unity Asset Store - http://u3d.as/y3X 
 Shader "Reallusion/Amplify/RL_HairShader_Baked_URP_Tessellation"
 {
@@ -209,15 +209,14 @@ Shader "Reallusion/Amplify/RL_HairShader_Baked_URP_Tessellation"
 			#define ASE_NEEDS_FRAG_WORLD_POSITION
 			#define ASE_NEEDS_FRAG_SHADOWCOORDS
 			#define ASE_NEEDS_VERT_NORMAL
-			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
+			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS
+			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
 			#pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS
 			#pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
 			#pragma multi_compile_fragment _ _SHADOWS_SOFT
 			#pragma multi_compile _ DIRLIGHTMAP_COMBINED
 			#pragma multi_compile _ LIGHTMAP_ON
 			#pragma multi_compile _ _MIXED_LIGHTING_SUBTRACTIVE
-			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS
-			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
 			#pragma multi_compile _ _SHADOWS_SOFT
 			#pragma shader_feature_local _CLIPQUALITY_STANDARD _CLIPQUALITY_DITHERED
 			#pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS
@@ -1329,7 +1328,7 @@ Shader "Reallusion/Amplify/RL_HairShader_Baked_URP_Tessellation"
 	
 }
 /*ASEBEGIN
-Version=19100
+Version=19102
 Node;AmplifyShaderEditor.CommentaryNode;121;-2209.837,-395.2434;Inherit;False;1295.191;809.48;;12;610;19;518;106;105;331;107;112;113;104;380;649;Final Color Blending;0.514151,1,0.6056049,1;0;0
 Node;AmplifyShaderEditor.CommentaryNode;533;-201.2043,1361.009;Inherit;False;923.0229;624.2474;;6;532;521;528;175;162;176;Alpha;1,1,1,1;0;0
 Node;AmplifyShaderEditor.RangedFloatNode;162;-131.2039,1552.618;Inherit;False;Property;_AlphaClip2;Alpha Clip;5;0;Create;False;0;0;0;False;0;False;0.15;1;0;1;0;1;FLOAT;0
@@ -1456,4 +1455,4 @@ WireConnection;297;3;521;0
 WireConnection;297;4;528;0
 WireConnection;297;7;532;0
 ASEEND*/
-//CHKSM=05E607E803AF4C4E7F07C5A6C97434910E41E643
+//CHKSM=9A6596F837180E1727D3920B521C50289926E0D0

@@ -1,4 +1,4 @@
-// Made with Amplify Shader Editor v1.9.1
+// Made with Amplify Shader Editor v1.9.1.2
 // Available at the Unity Asset Store - http://u3d.as/y3X 
 Shader "Reallusion/Amplify/RL_CorneaShaderParallax_Baked_URP_Tessellation"
 {
@@ -2886,7 +2886,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_Baked_URP_Tessellation"
 	
 }
 /*ASEBEGIN
-Version=19100
+Version=19102
 Node;AmplifyShaderEditor.RangedFloatNode;72;-5475.112,-249.8526;Inherit;False;Property;_IrisDepth;Iris Depth;17;0;Create;True;0;0;0;False;0;False;0.3;0.2997;0.1;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;219;-5107.964,-248.4698;Inherit;False;irisDepth;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.CommentaryNode;168;-5329.34,-1188.403;Inherit;False;1999.866;565.8079;;12;73;74;70;71;220;69;83;93;91;89;88;373;Pupil Scaling;1,0.9427493,0,1;0;0
@@ -3068,4 +3068,4 @@ WireConnection;10;4;419;0
 WireConnection;10;5;417;0
 WireConnection;10;15;423;0
 ASEEND*/
-//CHKSM=AAC07639631F80C48ED1711820C29EA5D8C6E6DA
+//CHKSM=A54396DBC7A5F709B55E94BFA791F3C3B73C903E

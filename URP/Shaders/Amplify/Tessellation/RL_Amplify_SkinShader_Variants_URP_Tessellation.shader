@@ -1,4 +1,4 @@
-// Made with Amplify Shader Editor v1.9.1
+// Made with Amplify Shader Editor v1.9.1.2
 // Available at the Unity Asset Store - http://u3d.as/y3X 
 Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP_Tessellation"
 {
@@ -3307,7 +3307,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP_Tessellation"
 	
 }
 /*ASEBEGIN
-Version=19100
+Version=19102
 Node;AmplifyShaderEditor.CommentaryNode;229;-5908.021,48.08539;Inherit;False;3216.245;1858.522;;57;276;277;174;170;171;172;68;169;156;179;165;164;167;168;166;181;182;147;146;161;159;163;180;157;123;183;152;153;155;124;125;151;154;121;138;150;144;140;133;137;148;142;120;122;131;134;145;139;132;141;130;135;143;129;127;126;128;Micro-Smoothess/Scattering;0.4764151,1,0.9938402,1;0;0
 Node;AmplifyShaderEditor.TexturePropertyNode;121;-5254.381,333.1195;Inherit;True;Property;_CFULCMask;CFULCMask;41;0;Create;True;0;0;0;False;0;False;None;None;False;black;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
 Node;AmplifyShaderEditor.RangedFloatNode;142;-5202.318,1525.714;Inherit;False;Property;_UpperLipScatterScale;Upper Lip Scatter Scale;48;0;Create;True;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
@@ -3661,4 +3661,4 @@ WireConnection;20;5;273;0
 WireConnection;20;14;264;0
 WireConnection;20;15;265;0
 ASEEND*/
-//CHKSM=2CEAEF4F1D9C9D17DC1E99C749D3309EDA9A813D
+//CHKSM=261BE2821A5E1A7D5C75C260AF808C3E1174862C

@@ -1,4 +1,4 @@
-// Made with Amplify Shader Editor v1.9.1
+// Made with Amplify Shader Editor v1.9.1.2
 // Available at the Unity Asset Store - http://u3d.as/y3X 
 Shader "Reallusion/Amplify/Amplify Lit Alpha Blend DblSided URP Tessellation"
 {
@@ -2743,7 +2743,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend DblSided URP Tessellation"
 	
 }
 /*ASEBEGIN
-Version=19100
+Version=19102
 Node;AmplifyShaderEditor.CommentaryNode;179;-1648.736,1265.129;Inherit;False;1008.577;308.7186;Comment;5;151;170;169;171;172;;1,1,1,1;0;0
 Node;AmplifyShaderEditor.CommentaryNode;176;-2020.17,-491.7789;Inherit;False;1374.699;518.4456;Comment;7;153;148;146;147;154;156;155;;1,1,1,1;0;0
 Node;AmplifyShaderEditor.CommentaryNode;175;-1540.517,-1026.539;Inherit;False;886.6949;482.6302;Comment;6;200;174;187;145;173;202;;1,1,1,1;0;0
@@ -2831,4 +2831,4 @@ WireConnection;1;6;185;0
 WireConnection;1;7;203;0
 WireConnection;1;16;204;0
 ASEEND*/
-//CHKSM=01BB3A39037C0AA50A73EF052B252962C5B2FFC1
+//CHKSM=68F5290BBB29FEC6F8D9450B0063F7C68CE3C9D8

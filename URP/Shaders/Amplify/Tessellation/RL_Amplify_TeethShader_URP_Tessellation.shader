@@ -1,4 +1,4 @@
-// Made with Amplify Shader Editor v1.9.1
+// Made with Amplify Shader Editor v1.9.1.2
 // Available at the Unity Asset Store - http://u3d.as/y3X 
 Shader "Reallusion/Amplify/RL_TeethShader_URP_Tessellation"
 {
@@ -2947,7 +2947,7 @@ Shader "Reallusion/Amplify/RL_TeethShader_URP_Tessellation"
 	
 }
 /*ASEBEGIN
-Version=19100
+Version=19102
 Node;AmplifyShaderEditor.CommentaryNode;139;-4829.458,363.6766;Inherit;False;842.6992;426.936;;4;12;131;31;132;Gradient AO Map;1,1,1,1;0;0
 Node;AmplifyShaderEditor.CommentaryNode;109;-3795.151,-2528.385;Inherit;False;2612.074;1058.53;;31;44;142;45;46;138;136;40;38;39;101;23;24;137;104;36;99;98;97;37;34;100;35;33;21;94;95;96;22;32;8;145;Base Color;0,1,0.194277,1;0;0
 Node;AmplifyShaderEditor.TexturePropertyNode;12;-4779.458,413.6766;Inherit;True;Property;_GradientAOMap;Gradient AO Map;25;0;Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
@@ -3184,4 +3184,4 @@ WireConnection;1;6;90;0
 WireConnection;1;14;149;0
 WireConnection;1;15;83;0
 ASEEND*/
-//CHKSM=DA522005F60197C442142B9DF582507875541EF4
+//CHKSM=EA542C1E510853437BD99B4395BA6EC5D38D39BA
