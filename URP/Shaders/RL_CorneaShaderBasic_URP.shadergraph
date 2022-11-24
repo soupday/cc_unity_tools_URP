@@ -4694,7 +4694,7 @@
     "m_FloatType": 1,
     "m_RangeValues": {
         "x": 0.009999999776482582,
-        "y": 0.10000000149011612
+        "y": 0.20000000298023225
     }
 }
 
@@ -7029,7 +7029,7 @@
     "m_SGVersion": 0,
     "m_Type": "UnityEditor.Rendering.HighDefinition.ShaderGraph.SystemData",
     "m_ObjectId": "5e856e0c3b704d14a6c36b84bf8d78f6",
-    "m_MaterialNeedsUpdateHash": 12697,
+    "m_MaterialNeedsUpdateHash": 530,
     "m_SurfaceType": 0,
     "m_RenderingPass": 1,
     "m_BlendMode": 0,
@@ -7037,7 +7037,7 @@
     "m_ZWrite": false,
     "m_TransparentCullMode": 2,
     "m_OpaqueCullMode": 2,
-    "m_SortPriority": -4,
+    "m_SortPriority": 0,
     "m_AlphaTest": false,
     "m_TransparentDepthPrepass": false,
     "m_TransparentDepthPostpass": false,
@@ -7046,7 +7046,7 @@
     "m_DOTSInstancing": false,
     "m_Version": 0,
     "m_FirstTimeMigrationExecuted": true,
-    "inspectorFoldoutMask": 11
+    "inspectorFoldoutMask": 9
 }
 
 {
@@ -9730,10 +9730,10 @@
     "m_DistortionDepthTest": true,
     "m_AddPrecomputedVelocity": false,
     "m_TransparentWritesMotionVec": false,
-    "m_AlphaToMask": true,
+    "m_AlphaToMask": false,
     "m_DepthOffset": false,
     "m_TransparencyFog": true,
-    "m_AlphaTestShadow": true,
+    "m_AlphaTestShadow": false,
     "m_BackThenFrontRendering": false,
     "m_TransparentDepthPrepass": false,
     "m_TransparentDepthPostpass": false,
@@ -14124,7 +14124,7 @@
     "m_Type": "UnityEditor.Rendering.HighDefinition.ShaderGraph.HDLitData",
     "m_ObjectId": "df0ba3ae175741e3a29aeabdd7f3f88d",
     "m_RayTracing": false,
-    "m_MaterialType": 1,
+    "m_MaterialType": 0,
     "m_RefractionModel": 1,
     "m_SSSTransmission": true,
     "m_EnergyConservingSpecular": true,

@@ -63,9 +63,12 @@ Material:
     - _AlphaCutoff: 0.5
     - _BumpScale: 1
     - _DetailNormalMapScale: 1
-    - _GlossMapScale: 1
+    - _EnvironmentReflections: 1
     - _Metallic: 0
     - _OcclusionStrength: 1
+    - _ReceiveShadows: 1
+    - _Smoothness: 1
+    - _SpecularHighlights: 1
     - _SubsurfaceMask: 1
     - _TessEdgeLength: 16
     - _TessPhongStrength: 0.5
@@ -81,6 +84,7 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 0}
+    - _SubsurfaceFalloff: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &3773598259463374275
 MonoBehaviour:

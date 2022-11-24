@@ -76,11 +76,11 @@ Material:
     - _BumpScale: 1
     - _ClipQuality: 0
     - _FlowMapFlipGreen: 0
-    - _GlossMapScale: 1
     - _OcclusionStrength: 1
     - _RimPower: 4
     - _RimTransmissionIntensity: 10
     - _ShadowClip: 0.25
+    - _Smoothness: 1
     - _SpecularMix: 1
     - _SpecularMultiplier: 1
     - _SpecularPowerScale: 2

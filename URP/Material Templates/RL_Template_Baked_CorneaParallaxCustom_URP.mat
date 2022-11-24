@@ -110,7 +110,7 @@ Material:
     - _BumpScale: 1
     - _Detail_Normal_Map_Scale: 0.1
     - _IOR: 1.4
-    - _IrisDepth: 0.004
+    - _IrisDepth: 0.2
     - _PMod: 6.4
     - _PupilScale: 1
     m_Colors:
