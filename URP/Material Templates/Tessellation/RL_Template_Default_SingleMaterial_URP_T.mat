@@ -24,6 +24,7 @@ Material:
   m_Shader: {fileID: 4800000, guid: bbcbb60f367232545ab01c8c2aba3f83, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords:
+  - _ALPHATEST_ON
   - _METALLICSPECGLOSSMAP
   - _NORMALMAP
   - _OCCLUSIONMAP
@@ -87,7 +88,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AlphaClip: 0.25
+    - _AlphaClip: 0.667
     - _AlphaCutoff: 0.5
     - _BumpScale: 1
     - _DetailNormalMapScale: 1
@@ -98,7 +99,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _ShadowClip: 0.5
+    - _ShadowClip: 0.333
     - _SpecularHighlights: 1
     - _TessEdgeLength: 16
     - _TessPhongStrength: 0.5
