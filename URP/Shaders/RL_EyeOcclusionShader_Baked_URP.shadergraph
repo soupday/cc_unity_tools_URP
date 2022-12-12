@@ -2258,7 +2258,7 @@
         "m_Id": "3f95c67093a64a68a1c38c844c005b4c"
     },
     "m_SurfaceType": 1,
-    "m_AlphaMode": 0,
+    "m_AlphaMode": 1,
     "m_TwoSided": false,
     "m_AlphaClip": false,
     "m_CustomEditorGUI": ""
@@ -2652,8 +2652,8 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -421.0,
-            "y": 272.0,
+            "x": -423.9999694824219,
+            "y": 231.0,
             "width": 184.0,
             "height": 253.0
         }
