@@ -76,5 +76,5 @@ Material:
     - _TopMax: 1
     - _TopMin: 0.1
     m_Colors:
-    - _OcclusionColor: {r: 0.32941175, g: 0.094117604, b: 0.054901943, a: 0}
+    - _OcclusionColor: {r: 0.32941172, g: 0.094117574, b: 0.05490192, a: 1}
   m_BuildTextureStacks: []
