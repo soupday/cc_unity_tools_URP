@@ -1,4 +1,4 @@
-// Made with Amplify Shader Editor v1.9.1.2
+// Made with Amplify Shader Editor v1.9.1.3
 // Available at the Unity Asset Store - http://u3d.as/y3X 
 Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation"
 {
@@ -27,13 +27,6 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation"
 		[HideInInspector] _texcoord( "", 2D ) = "white" {}
 
 
-		[HideInInspector]_QueueOffset("_QueueOffset", Float) = 0
-        [HideInInspector]_QueueControl("_QueueControl", Float) = -1
-
-        [HideInInspector][NoScaleOffset]unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {}
-        [HideInInspector][NoScaleOffset]unity_LightmapsInd("unity_LightmapsInd", 2DArray) = "" {}
-        [HideInInspector][NoScaleOffset]unity_ShadowMasks("unity_ShadowMasks", 2DArray) = "" {}
-
 		//_TransmissionShadow( "Transmission Shadow", Range( 0, 1 ) ) = 0.5
 		//_TransStrength( "Trans Strength", Range( 0, 50 ) ) = 1
 		//_TransNormal( "Trans Normal Distortion", Range( 0, 1 ) ) = 0.5
@@ -51,6 +44,13 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation"
 		[HideInInspector][ToggleOff] _SpecularHighlights("Specular Highlights", Float) = 1.0
 		[HideInInspector][ToggleOff] _EnvironmentReflections("Environment Reflections", Float) = 1.0
 		[HideInInspector][ToggleOff] _ReceiveShadows("Receive Shadows", Float) = 1.0
+
+		[HideInInspector] _QueueOffset("_QueueOffset", Float) = 0
+        [HideInInspector] _QueueControl("_QueueControl", Float) = -1
+
+        [HideInInspector][NoScaleOffset] unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {}
+        [HideInInspector][NoScaleOffset] unity_LightmapsInd("unity_LightmapsInd", 2DArray) = "" {}
+        [HideInInspector][NoScaleOffset] unity_ShadowMasks("unity_ShadowMasks", 2DArray) = "" {}
 	}
 
 	SubShader
@@ -73,6 +73,9 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation"
 		#pragma target 4.6
 		#pragma prefer_hlslcc gles
 		// ensure rendering platforms toggle list is visible
+
+		#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
+		#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Filtering.hlsl"
 
 		#ifndef ASE_TESS_FUNCS
 		#define ASE_TESS_FUNCS
@@ -571,6 +574,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation"
 				#if defined(ASE_NEEDS_FRAG_SCREEN_POSITION)
 					float4 ScreenPos = IN.screenPos;
 				#endif
+
 				float2 NormalizedScreenSpaceUV = GetNormalizedScreenSpaceUV(IN.clipPos);
 
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
@@ -681,12 +685,12 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation"
 
 				#if defined(DEBUG_DISPLAY)
 					#if defined(DYNAMICLIGHTMAP_ON)
-						inputData.dynamicLightmapUV = input.dynamicLightmapUV.xy;
+						inputData.dynamicLightmapUV = IN.dynamicLightmapUV.xy;
 					#endif
 					#if defined(LIGHTMAP_ON)
-						inputData.staticLightmapUV = input.staticLightmapUV;
+						inputData.staticLightmapUV = IN.lightmapUVOrVertexSH.xy;
 					#else
-						inputData.vertexSH = input.sh;
+						inputData.vertexSH = SH;
 					#endif
 				#endif
 
@@ -1782,21 +1786,12 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation"
 					clip(Alpha - AlphaClipThreshold);
 				#endif
 
-				//MetaInput metaInput = (MetaInput)0;
-				//metaInput.Albedo = BaseColor;
-				//metaInput.Emission = Emission;
-				//#ifdef EDITOR_VISUALIZATION
-				//metaInput.VizUV = IN.VizUV.xy;
-				//metaInput.LightCoord = IN.LightCoord;
-				//#endif
-
 				MetaInput metaInput = (MetaInput)0;
 				metaInput.Albedo = BaseColor;
 				metaInput.Emission = Emission;
-
 				#ifdef EDITOR_VISUALIZATION
-					metaInput.VizUV = unpacked.texCoord1.xy;
-					metaInput.LightCoord = unpacked.texCoord2;
+					metaInput.VizUV = IN.VizUV.xy;
+					metaInput.LightCoord = IN.LightCoord;
 				#endif
 
 				return UnityMetaFragment(metaInput);
@@ -3041,7 +3036,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation"
 	Fallback "Hidden/InternalErrorShader"
 }
 /*ASEBEGIN
-Version=19102
+Version=19103
 Node;AmplifyShaderEditor.CommentaryNode;179;-1648.736,1265.129;Inherit;False;1008.577;308.7186;Comment;5;151;170;169;171;172;;1,1,1,1;0;0
 Node;AmplifyShaderEditor.CommentaryNode;176;-2020.17,-491.7789;Inherit;False;1374.699;518.4456;Comment;7;153;148;146;147;154;156;155;;1,1,1,1;0;0
 Node;AmplifyShaderEditor.CommentaryNode;175;-1540.517,-1026.539;Inherit;False;886.6949;482.6302;Comment;6;200;174;187;145;173;204;;1,1,1,1;0;0
@@ -3135,4 +3130,4 @@ WireConnection;1;16;206;0
 WireConnection;1;12;202;0
 WireConnection;1;13;203;0
 ASEEND*/
-//CHKSM=A8C558C43751ADDBFCD34F3A02B2944727098707
+//CHKSM=6B48B1B2C3B889EDD2D99536418DAB9667F35EB1

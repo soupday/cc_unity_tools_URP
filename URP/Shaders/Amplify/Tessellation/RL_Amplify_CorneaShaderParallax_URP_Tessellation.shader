@@ -1,4 +1,4 @@
-// Made with Amplify Shader Editor v1.9.1.2
+// Made with Amplify Shader Editor v1.9.1.3
 // Available at the Unity Asset Store - http://u3d.as/y3X 
 Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 {
@@ -51,13 +51,6 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 		[HideInInspector] _texcoord( "", 2D ) = "white" {}
 
 
-		[HideInInspector]_QueueOffset("_QueueOffset", Float) = 0
-        [HideInInspector]_QueueControl("_QueueControl", Float) = -1
-
-        [HideInInspector][NoScaleOffset]unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {}
-        [HideInInspector][NoScaleOffset]unity_LightmapsInd("unity_LightmapsInd", 2DArray) = "" {}
-        [HideInInspector][NoScaleOffset]unity_ShadowMasks("unity_ShadowMasks", 2DArray) = "" {}
-
 		//_TransmissionShadow( "Transmission Shadow", Range( 0, 1 ) ) = 0.5
 		_TransStrength( "Strength", Range( 0, 50 ) ) = 1
 		_TransNormal( "Normal Distortion", Range( 0, 1 ) ) = 0.5
@@ -75,6 +68,13 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 		[HideInInspector][ToggleOff] _SpecularHighlights("Specular Highlights", Float) = 1.0
 		[HideInInspector][ToggleOff] _EnvironmentReflections("Environment Reflections", Float) = 1.0
 		[HideInInspector][ToggleOff] _ReceiveShadows("Receive Shadows", Float) = 1.0
+
+		[HideInInspector] _QueueOffset("_QueueOffset", Float) = 0
+        [HideInInspector] _QueueControl("_QueueControl", Float) = -1
+
+        [HideInInspector][NoScaleOffset] unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {}
+        [HideInInspector][NoScaleOffset] unity_LightmapsInd("unity_LightmapsInd", 2DArray) = "" {}
+        [HideInInspector][NoScaleOffset] unity_ShadowMasks("unity_ShadowMasks", 2DArray) = "" {}
 	}
 
 	SubShader
@@ -97,6 +97,9 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 		#pragma target 4.6
 		#pragma prefer_hlslcc gles
 		// ensure rendering platforms toggle list is visible
+
+		#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
+		#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Filtering.hlsl"
 
 		#ifndef ASE_TESS_FUNCS
 		#define ASE_TESS_FUNCS
@@ -630,6 +633,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				#if defined(ASE_NEEDS_FRAG_SCREEN_POSITION)
 					float4 ScreenPos = IN.screenPos;
 				#endif
+
 				float2 NormalizedScreenSpaceUV = GetNormalizedScreenSpaceUV(IN.clipPos);
 
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
@@ -783,12 +787,12 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 
 				#if defined(DEBUG_DISPLAY)
 					#if defined(DYNAMICLIGHTMAP_ON)
-						inputData.dynamicLightmapUV = input.dynamicLightmapUV.xy;
+						inputData.dynamicLightmapUV = IN.dynamicLightmapUV.xy;
 					#endif
 					#if defined(LIGHTMAP_ON)
-						inputData.staticLightmapUV = input.staticLightmapUV;
+						inputData.staticLightmapUV = IN.lightmapUVOrVertexSH.xy;
 					#else
-						inputData.vertexSH = input.sh;
+						inputData.vertexSH = SH;
 					#endif
 				#endif
 
@@ -2003,21 +2007,12 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 					clip(Alpha - AlphaClipThreshold);
 				#endif
 
-				//MetaInput metaInput = (MetaInput)0;
-				//metaInput.Albedo = BaseColor;
-				//metaInput.Emission = Emission;
-				//#ifdef EDITOR_VISUALIZATION
-				//metaInput.VizUV = IN.VizUV.xy;
-				//metaInput.LightCoord = IN.LightCoord;
-				//#endif
-
 				MetaInput metaInput = (MetaInput)0;
 				metaInput.Albedo = BaseColor;
 				metaInput.Emission = Emission;
-
 				#ifdef EDITOR_VISUALIZATION
-					metaInput.VizUV = unpacked.texCoord1.xy;
-					metaInput.LightCoord = unpacked.texCoord2;
+					metaInput.VizUV = IN.VizUV.xy;
+					metaInput.LightCoord = IN.LightCoord;
 				#endif
 
 				return UnityMetaFragment(metaInput);
@@ -3397,7 +3392,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 	Fallback "Hidden/InternalErrorShader"
 }
 /*ASEBEGIN
-Version=19102
+Version=19103
 Node;AmplifyShaderEditor.CommentaryNode;204;-6596.911,-3587.629;Inherit;False;1134.455;323.4619;Comment;5;37;36;40;38;203;Radial Gradient;1,0,0.9132481,1;0;0
 Node;AmplifyShaderEditor.CommentaryNode;59;-6599.231,-2888.385;Inherit;False;755.1367;301.8584;;5;27;26;25;208;209;Scaled Iris Radius;1,0,0.8158517,1;0;0
 Node;AmplifyShaderEditor.TextureCoordinatesNode;36;-6546.911,-3537.629;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
@@ -3790,4 +3785,4 @@ WireConnection;10;4;307;0
 WireConnection;10;5;310;0
 WireConnection;10;15;340;0
 ASEEND*/
-//CHKSM=C78FCAE1D4DC048897C64C0DD42DFBA61628C53A
+//CHKSM=EA6CB737C00430554EFC3CDB60D38D92FE5B8B2F
