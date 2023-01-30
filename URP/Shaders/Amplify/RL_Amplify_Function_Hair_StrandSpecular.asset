@@ -35,6 +35,8 @@ MonoBehaviour:
     m_nativeDirectivesFoldout: 0
     m_directivesSaveItems: []
   m_nodeCategory: 3
+  m_headerStyle: 0
+  m_headerColor: {r: 1, g: 0.4, b: 0, a: 1}
   m_customNodeCategory: 
   m_previewPosition: 0
   m_hidden: 0
