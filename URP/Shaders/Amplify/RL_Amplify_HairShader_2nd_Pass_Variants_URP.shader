@@ -1,4 +1,4 @@
-// Made with Amplify Shader Editor v1.9.1.2
+// Made with Amplify Shader Editor v1.9.1.3
 // Available at the Unity Asset Store - http://u3d.as/y3X 
 Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Variants_URP"
 {
@@ -60,7 +60,6 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Variants_URP"
 		_HighlightBOverlapInvert("Highlight B Overlap Invert", Range( 0 , 1)) = 1
 		[HideInInspector] _texcoord( "", 2D ) = "white" {}
 
-
 		//_TessPhongStrength( "Tess Phong Strength", Range( 0, 1 ) ) = 0.5
 		//_TessValue( "Tess Max Tessellation", Range( 1, 32 ) ) = 16
 		//_TessMin( "Tess Min Distance", Float ) = 10
@@ -74,18 +73,16 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Variants_URP"
 		LOD 0
 
 		
-
 		Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Transparent" "Queue"="Transparent" }
-
+		
 		Cull Off
 		AlphaToMask Off
-
 		
-
 		HLSLINCLUDE
 		#pragma target 3.0
+
 		#pragma prefer_hlslcc gles
-		// ensure rendering platforms toggle list is visible
+		
 
 		#ifndef ASE_TESS_FUNCS
 		#define ASE_TESS_FUNCS
@@ -93,7 +90,7 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Variants_URP"
 		{
 			return tessValue;
 		}
-
+		
 		float CalcDistanceTessFactor (float4 vertex, float minDist, float maxDist, float tess, float4x4 o2w, float3 cameraPos )
 		{
 			float3 wpos = mul(o2w,vertex).xyz;
@@ -188,6 +185,7 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Variants_URP"
 			return tess;
 		}
 		#endif //ASE_TESS_FUNCS
+
 		ENDHLSL
 
 		
@@ -196,25 +194,23 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Variants_URP"
 			
 			Name "Forward"
 			Tags { "LightMode"="UniversalForward" }
-
+			
 			Blend SrcAlpha OneMinusSrcAlpha, One OneMinusSrcAlpha
 			ZWrite Off
 			ZTest Less
 			Offset 0 , 0
 			ColorMask RGBA
-
 			
 
 			HLSLPROGRAM
-
+			
 			#pragma multi_compile_instancing
-			#define _SURFACE_TYPE_TRANSPARENT 1
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
 			#define _ALPHATEST_ON 1
-			#define ASE_SRP_VERSION 101001
+			#define ASE_SRP_VERSION 100900
 
-
+			
 			#pragma vertex vert
 			#pragma fragment frag
 
@@ -223,6 +219,10 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Variants_URP"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
+
+			#if ASE_SRP_VERSION <= 70108
+			#define REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR
+			#endif
 
 			#define ASE_NEEDS_FRAG_WORLD_POSITION
 			#define ASE_NEEDS_FRAG_SHADOWCOORDS
@@ -256,13 +256,13 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Variants_URP"
 			{
 				float4 clipPos : SV_POSITION;
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-					float3 worldPos : TEXCOORD0;
+				float3 worldPos : TEXCOORD0;
 				#endif
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
-					float4 shadowCoord : TEXCOORD1;
+				float4 shadowCoord : TEXCOORD1;
 				#endif
 				#ifdef ASE_FOG
-					float fogFactor : TEXCOORD2;
+				float fogFactor : TEXCOORD2;
 				#endif
 				float4 ase_texcoord3 : TEXCOORD3;
 				float4 ase_texcoord4 : TEXCOORD4;
@@ -327,7 +327,7 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Variants_URP"
 			half _HighlightAStrength;
 			half _SpecularMultiplier;
 			half _AlphaPower;
-			#ifdef ASE_TESSELLATION
+			#ifdef TESSELLATION_ON
 				float _TessPhongStrength;
 				float _TessValue;
 				float _TessMin;
@@ -336,7 +336,6 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Variants_URP"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
-
 			sampler2D _FlowMap;
 			sampler2D _NormalMap;
 			sampler2D _IDMap;
@@ -406,7 +405,7 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Variants_URP"
 			#endif
 			}
 			
-
+			
 			VertexOutput VertexFunction ( VertexInput v  )
 			{
 				VertexOutput o = (VertexOutput)0;
@@ -433,47 +432,39 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Variants_URP"
 				o.ase_texcoord4.w = 0;
 				o.ase_texcoord5.w = 0;
 				o.ase_texcoord6.w = 0;
-
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
-
 				float3 vertexValue = defaultVertexValue;
-
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
 					v.vertex.xyz += vertexValue;
 				#endif
-
 				v.ase_normal = v.ase_normal;
 
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
 				float4 positionCS = TransformWorldToHClip( positionWS );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-					o.worldPos = positionWS;
+				o.worldPos = positionWS;
 				#endif
-
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
-					VertexPositionInputs vertexInput = (VertexPositionInputs)0;
-					vertexInput.positionWS = positionWS;
-					vertexInput.positionCS = positionCS;
-					o.shadowCoord = GetShadowCoord( vertexInput );
+				VertexPositionInputs vertexInput = (VertexPositionInputs)0;
+				vertexInput.positionWS = positionWS;
+				vertexInput.positionCS = positionCS;
+				o.shadowCoord = GetShadowCoord( vertexInput );
 				#endif
-
 				#ifdef ASE_FOG
-					o.fogFactor = ComputeFogFactor( positionCS.z );
+				o.fogFactor = ComputeFogFactor( positionCS.z );
 				#endif
-
 				o.clipPos = positionCS;
-
 				return o;
 			}
 
-			#if defined(ASE_TESSELLATION)
+			#if defined(TESSELLATION_ON)
 			struct VertexControl
 			{
 				float4 vertex : INTERNALTESSPOS;
@@ -568,9 +559,8 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Variants_URP"
 				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX( IN );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-					float3 WorldPosition = IN.worldPos;
+				float3 WorldPosition = IN.worldPos;
 				#endif
-
 				float4 ShadowCoords = float4( 0, 0, 0, 0 );
 
 				#if defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
@@ -580,7 +570,6 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Variants_URP"
 						ShadowCoords = TransformWorldToShadowCoord( WorldPosition );
 					#endif
 				#endif
-
 				float ase_lightAtten = 0;
 				Light ase_mainLight = GetMainLight( ShadowCoords );
 				ase_lightAtten = ase_mainLight.distanceAttenuation * ase_mainLight.shadowAttenuation;
@@ -725,6 +714,7 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Variants_URP"
 
 				return half4( Color, Alpha );
 			}
+
 			ENDHLSL
 		}
 
@@ -740,15 +730,14 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Variants_URP"
 			AlphaToMask Off
 
 			HLSLPROGRAM
-
+			
 			#pragma multi_compile_instancing
-			#define _SURFACE_TYPE_TRANSPARENT 1
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
 			#define _ALPHATEST_ON 1
-			#define ASE_SRP_VERSION 101001
+			#define ASE_SRP_VERSION 100900
 
-
+			
 			#pragma vertex vert
 			#pragma fragment frag
 
@@ -835,7 +824,7 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Variants_URP"
 			half _HighlightAStrength;
 			half _SpecularMultiplier;
 			half _AlphaPower;
-			#ifdef ASE_TESSELLATION
+			#ifdef TESSELLATION_ON
 				float _TessPhongStrength;
 				float _TessValue;
 				float _TessMin;
@@ -844,7 +833,6 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Variants_URP"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
-
 			sampler2D _DiffuseMap;
 
 
@@ -860,15 +848,12 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Variants_URP"
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord2.zw = 0;
-
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
-
 				float3 vertexValue = defaultVertexValue;
-
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -880,7 +865,7 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Variants_URP"
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-					o.worldPos = positionWS;
+				o.worldPos = positionWS;
 				#endif
 
 				o.clipPos = TransformWorldToHClip( positionWS );
@@ -890,11 +875,10 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Variants_URP"
 					vertexInput.positionCS = o.clipPos;
 					o.shadowCoord = GetShadowCoord( vertexInput );
 				#endif
-
 				return o;
 			}
 
-			#if defined(ASE_TESSELLATION)
+			#if defined(TESSELLATION_ON)
 			struct VertexControl
 			{
 				float4 vertex : INTERNALTESSPOS;
@@ -980,9 +964,8 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Variants_URP"
 				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX( IN );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-					float3 WorldPosition = IN.worldPos;
+				float3 WorldPosition = IN.worldPos;
 				#endif
-
 				float4 ShadowCoords = float4( 0, 0, 0, 0 );
 
 				#if defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
@@ -998,7 +981,6 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Variants_URP"
 				half saferPower23 = abs( saturate( ( tex2DNode19.a / _AlphaRemap ) ) );
 				half alpha518 = pow( saferPower23 , _AlphaPower );
 				
-
 				float Alpha = alpha518;
 				float AlphaClipThreshold = 0.05;
 
@@ -1022,7 +1004,7 @@ Shader "Reallusion/Amplify/RL_HairShader_2nd_Pass_Variants_URP"
 	
 }
 /*ASEBEGIN
-Version=19102
+Version=19103
 Node;AmplifyShaderEditor.CommentaryNode;25;-5721.536,873.5989;Inherit;False;1176.518;561.6434;;8;518;517;23;22;24;21;20;19;Diffuse & Alpha;0.5235849,1,0.631946,1;0;0
 Node;AmplifyShaderEditor.SamplerNode;19;-5671.535,923.5991;Inherit;True;Property;_DiffuseMap;Diffuse Map;0;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.RangedFloatNode;20;-5663.463,1220.562;Inherit;False;Property;_AlphaRemap;Alpha Remap;6;0;Create;True;0;0;0;False;0;False;0.5;1;0.5;1;0;1;FLOAT;0
@@ -1116,7 +1098,7 @@ Node;AmplifyShaderEditor.RangedFloatNode;380;-1198.683,328.8221;Inherit;False;Pr
 Node;AmplifyShaderEditor.GetLocalVarNode;508;-4260.21,-59.08698;Inherit;False;383;idMap;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.WireNode;632;-470.4394,288.6606;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;572;-594.7292,-351.0714;Inherit;False;331;baseColor;1;0;OBJECT;;False;1;COLOR;0
-Node;AmplifyShaderEditor.SamplerNode;177;-707.1387,433.9277;Inherit;True;Property;_FlowMap;Flow Map;17;0;Create;True;0;0;0;False;0;False;19;cc37af08370d26540b0e6725a8b8879e;cc37af08370d26540b0e6725a8b8879e;True;0;False;gray;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.SamplerNode;177;-707.1387,433.9277;Inherit;True;Property;_FlowMap;Flow Map;17;0;Create;True;0;0;0;False;0;False;19;None;None;True;0;False;gray;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.GetLocalVarNode;59;-4915.522,-589.2163;Inherit;False;58;root;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;635;-4952.412,275.6267;Inherit;False;Property;_HighlightBlend;Highlight Blend;41;0;Create;True;0;0;0;False;0;False;1;1;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;282;-1114.089,709.7084;Inherit;False;normal;-1;True;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
@@ -1235,4 +1217,4 @@ WireConnection;663;200;539;0
 WireConnection;663;207;265;0
 WireConnection;663;208;263;0
 ASEEND*/
-//CHKSM=0EC611EEA7BD1AC8D29F74CF9AFE1FFED0AB8F3D
+//CHKSM=1D1EC567435D2BE5803D891E6362FF69DA85786C

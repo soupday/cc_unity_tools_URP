@@ -77,12 +77,69 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _WrinkleDiffuseBlend1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WrinkleDiffuseBlend2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WrinkleDiffuseBlend3:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WrinkleMaskSet123:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WrinkleMaskSet1A:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WrinkleMaskSet1B:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WrinkleMaskSet2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WrinkleMaskSet3:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WrinkleNormalBlend1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WrinkleNormalBlend2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WrinkleNormalBlend3:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WrinkleRoughnessBlend1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WrinkleRoughnessBlend2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WrinkleRoughnessBlend3:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _texcoord:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - BOOLEAN_IS_HEAD: 1
+    - BOOLEAN_USE_WRINKLE: 0
     - _AOStrength: 1
     - _AScatterScale: 1
     - _ASmoothnessMod: 0
@@ -96,6 +153,7 @@ Material:
     - _ColorBlendStrength: 0.5
     - _EarScatterScale: 1
     - _EarSmoothnessMod: 0
+    - _EnvironmentReflections: 1
     - _ForeheadScatterScale: 1
     - _ForeheadSmoothnessMod: 0
     - _GScatterScale: 1
@@ -112,9 +170,11 @@ Material:
     - _NostrilCavityAO: 2.5
     - _RScatterScale: 1
     - _RSmoothnessMod: 0
+    - _ReceiveShadows: 1
     - _SmoothnessMax: 0.897
     - _SmoothnessMin: 0
     - _SmoothnessPower: 1.35
+    - _SpecularHighlights: 1
     - _SubsurfaceNormalSoften: 0.65
     - _SubsurfaceScale: 1
     - _TessEdgeLength: 16
@@ -135,7 +195,18 @@ Material:
     - _DiffuseColor: {r: 1, g: 1, b: 1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 0}
-    - _SubsurfaceFalloff: {r: 1, g: 0.36862746, b: 0.29803923, a: 1}
+    - _SubsurfaceFalloff: {r: 1, g: 0.36862743, b: 0.2980392, a: 1}
+    - _WrinkleValueSet12CL: {r: 0, g: 0, b: 0, a: 0}
+    - _WrinkleValueSet12CR: {r: 0, g: 0, b: 0, a: 0}
+    - _WrinkleValueSet1AL: {r: 0, g: 0, b: 0, a: 0}
+    - _WrinkleValueSet1AR: {r: 0, g: 0, b: 0, a: 0}
+    - _WrinkleValueSet1BL: {r: 0, g: 0, b: 0, a: 0}
+    - _WrinkleValueSet1BR: {r: 0, g: 0, b: 0, a: 0}
+    - _WrinkleValueSet2L: {r: 0, g: 0, b: 0, a: 0}
+    - _WrinkleValueSet2R: {r: 0, g: 0, b: 0, a: 0}
+    - _WrinkleValueSet3DB: {r: 0, g: 0, b: 0, a: 0}
+    - _WrinkleValueSet3L: {r: 0, g: 0, b: 0, a: 0}
+    - _WrinkleValueSet3R: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &3368893710744450478
 MonoBehaviour:
