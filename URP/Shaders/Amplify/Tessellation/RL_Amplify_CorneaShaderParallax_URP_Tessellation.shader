@@ -1,4 +1,4 @@
-// Made with Amplify Shader Editor v1.9.1.3
+// Made with Amplify Shader Editor v1.9.1.5
 // Available at the Unity Asset Store - http://u3d.as/y3X 
 Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 {
@@ -50,6 +50,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 		[ASEEnd][Toggle(BOOLEAN_ISCORNEA_ON)] BOOLEAN_ISCORNEA("IsCornea", Float) = 1
 		[HideInInspector] _texcoord( "", 2D ) = "white" {}
 
+
 		//_TransmissionShadow( "Transmission Shadow", Range( 0, 1 ) ) = 0.5
 		_TransStrength( "Strength", Range( 0, 50 ) ) = 1
 		_TransNormal( "Normal Distortion", Range( 0, 1 ) ) = 0.5
@@ -63,6 +64,10 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 		//_TessMax( "Tess Max Distance", Float ) = 25
 		_TessEdgeLength ( "Edge length", Range( 2, 50 ) ) = 16
 		//_TessMaxDisp( "Tess Max Displacement", Float ) = 25
+
+		[HideInInspector][ToggleOff] _SpecularHighlights("Specular Highlights", Float) = 1.0
+		[HideInInspector][ToggleOff] _EnvironmentReflections("Environment Reflections", Float) = 1.0
+		[HideInInspector][ToggleOff] _ReceiveShadows("Receive Shadows", Float) = 1.0
 	}
 
 	SubShader
@@ -72,14 +77,22 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 		
 
 		Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Opaque" "Queue"="Geometry" }
+
 		Cull Back
+		ZWrite On
+		ZTest LEqual
+		Offset 0 , 0
 		AlphaToMask Off
+
 		
+
 		HLSLINCLUDE
 		#pragma target 4.6
-
 		#pragma prefer_hlslcc gles
-		
+		// ensure rendering platforms toggle list is visible
+
+		#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
+		#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Filtering.hlsl"
 
 		#ifndef ASE_TESS_FUNCS
 		#define ASE_TESS_FUNCS
@@ -87,7 +100,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 		{
 			return tessValue;
 		}
-		
+
 		float CalcDistanceTessFactor (float4 vertex, float minDist, float maxDist, float tess, float4x4 o2w, float3 cameraPos )
 		{
 			float3 wpos = mul(o2w,vertex).xyz;
@@ -124,17 +137,17 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 		{
 			float4 planeTest;
 			planeTest.x = (( DistanceFromPlane(wpos0, planes[0]) > -cullEps) ? 1.0f : 0.0f ) +
-						  (( DistanceFromPlane(wpos1, planes[0]) > -cullEps) ? 1.0f : 0.0f ) +
-						  (( DistanceFromPlane(wpos2, planes[0]) > -cullEps) ? 1.0f : 0.0f );
+							(( DistanceFromPlane(wpos1, planes[0]) > -cullEps) ? 1.0f : 0.0f ) +
+							(( DistanceFromPlane(wpos2, planes[0]) > -cullEps) ? 1.0f : 0.0f );
 			planeTest.y = (( DistanceFromPlane(wpos0, planes[1]) > -cullEps) ? 1.0f : 0.0f ) +
-						  (( DistanceFromPlane(wpos1, planes[1]) > -cullEps) ? 1.0f : 0.0f ) +
-						  (( DistanceFromPlane(wpos2, planes[1]) > -cullEps) ? 1.0f : 0.0f );
+							(( DistanceFromPlane(wpos1, planes[1]) > -cullEps) ? 1.0f : 0.0f ) +
+							(( DistanceFromPlane(wpos2, planes[1]) > -cullEps) ? 1.0f : 0.0f );
 			planeTest.z = (( DistanceFromPlane(wpos0, planes[2]) > -cullEps) ? 1.0f : 0.0f ) +
-						  (( DistanceFromPlane(wpos1, planes[2]) > -cullEps) ? 1.0f : 0.0f ) +
-						  (( DistanceFromPlane(wpos2, planes[2]) > -cullEps) ? 1.0f : 0.0f );
+							(( DistanceFromPlane(wpos1, planes[2]) > -cullEps) ? 1.0f : 0.0f ) +
+							(( DistanceFromPlane(wpos2, planes[2]) > -cullEps) ? 1.0f : 0.0f );
 			planeTest.w = (( DistanceFromPlane(wpos0, planes[3]) > -cullEps) ? 1.0f : 0.0f ) +
-						  (( DistanceFromPlane(wpos1, planes[3]) > -cullEps) ? 1.0f : 0.0f ) +
-						  (( DistanceFromPlane(wpos2, planes[3]) > -cullEps) ? 1.0f : 0.0f );
+							(( DistanceFromPlane(wpos1, planes[3]) > -cullEps) ? 1.0f : 0.0f ) +
+							(( DistanceFromPlane(wpos2, planes[3]) > -cullEps) ? 1.0f : 0.0f );
 			return !all (planeTest);
 		}
 
@@ -182,7 +195,6 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			return tess;
 		}
 		#endif //ASE_TESS_FUNCS
-
 		ENDHLSL
 
 		
@@ -191,23 +203,24 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			
 			Name "Forward"
 			Tags { "LightMode"="UniversalForward" }
-			
+
 			Blend One Zero, One Zero
 			ZWrite On
 			ZTest LEqual
 			Offset 0 , 0
 			ColorMask RGBA
+
 			
 
 			HLSLPROGRAM
-			
+
 			#define _NORMAL_DROPOFF_TS 1
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
-			#define _TRANSLUCENCY_ASE 1
-			#define TESSELLATION_ON 1
+			#define ASE_TRANSLUCENCY 1
+			#define ASE_TESSELLATION 1
 			#pragma require tessellation tessHW
 			#pragma hull HullFunction
 			#pragma domain DomainFunction
@@ -215,17 +228,25 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 100900
+			#define ASE_SRP_VERSION 101001
+			#define ASE_USING_SAMPLING_MACROS 1
+
+
+			#pragma shader_feature_local _RECEIVE_SHADOWS_OFF
+			#pragma shader_feature_local_fragment _SPECULARHIGHLIGHTS_OFF
+			#pragma shader_feature_local_fragment _ENVIRONMENTREFLECTIONS_OFF
 
 			
-			#pragma multi_compile _ _SCREEN_SPACE_OCCLUSION
 			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS
 			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
-			#pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS _ADDITIONAL_OFF
-			#pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS
-			#pragma multi_compile _ _SHADOWS_SOFT
-			#pragma multi_compile _ _MIXED_LIGHTING_SUBTRACTIVE
+		
+
 			
+
+			#pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS
+			#pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
+			#pragma multi_compile_fragment _ _SHADOWS_SOFT
+			#pragma multi_compile_fragment _ _SCREEN_SPACE_OCCLUSION
 			#pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
 			#pragma multi_compile _ SHADOWS_SHADOWMASK
 
@@ -235,20 +256,16 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#define SHADERPASS_FORWARD
+			#define SHADERPASS SHADERPASS_FORWARD
 
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
-			
-			#if ASE_SRP_VERSION <= 70108
-			#define REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR
-			#endif
+			#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
 
 			#if defined(UNITY_INSTANCING_ENABLED) && defined(_TERRAIN_INSTANCED_PERPIXEL_NORMAL)
-			    #define ENABLE_TERRAIN_PERPIXEL_NORMAL
+				#define ENABLE_TERRAIN_PERPIXEL_NORMAL
 			#endif
 
 			#define ASE_NEEDS_FRAG_WORLD_TANGENT
@@ -263,8 +280,8 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				float4 vertex : POSITION;
 				float3 ase_normal : NORMAL;
 				float4 ase_tangent : TANGENT;
-				float4 texcoord1 : TEXCOORD1;
 				float4 texcoord : TEXCOORD0;
+				float4 texcoord1 : TEXCOORD1;
 				
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -275,13 +292,13 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				float4 lightmapUVOrVertexSH : TEXCOORD0;
 				half4 fogFactorAndVertexLight : TEXCOORD1;
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
-				float4 shadowCoord : TEXCOORD2;
+					float4 shadowCoord : TEXCOORD2;
 				#endif
 				float4 tSpace0 : TEXCOORD3;
 				float4 tSpace1 : TEXCOORD4;
 				float4 tSpace2 : TEXCOORD5;
 				#if defined(ASE_NEEDS_FRAG_SCREEN_POSITION)
-				float4 screenPos : TEXCOORD6;
+					float4 screenPos : TEXCOORD6;
 				#endif
 				float4 ase_texcoord7 : TEXCOORD7;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -327,10 +344,10 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			half _PupilScale;
 			half _IrisScale;
 			half _IsLeftEye;
-			#ifdef _TRANSMISSION_ASE
+			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
-			#ifdef _TRANSLUCENCY_ASE
+			#ifdef ASE_TRANSLUCENCY
 				float _TransStrength;
 				float _TransNormal;
 				float _TransScattering;
@@ -338,7 +355,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				float _TransAmbient;
 				float _TransShadow;
 			#endif
-			#ifdef TESSELLATION_ON
+			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
 				float _TessMin;
@@ -347,12 +364,30 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
-			sampler2D _ColorBlendMap;
-			sampler2D _CorneaDiffuseMap;
-			sampler2D _ScleraDiffuseMap;
-			sampler2D _ScleraNormalMap;
-			sampler2D _EmissionMap;
-			sampler2D _MaskMap;
+
+			// Property used by ScenePickingPass
+			#ifdef SCENEPICKINGPASS
+				float4 _SelectionID;
+			#endif
+
+			// Properties used by SceneSelectionPass
+			#ifdef SCENESELECTIONPASS
+				int _ObjectId;
+				int _PassValue;
+			#endif
+
+			TEXTURE2D(_ColorBlendMap);
+			SAMPLER(sampler_ColorBlendMap);
+			TEXTURE2D(_CorneaDiffuseMap);
+			SAMPLER(sampler_CorneaDiffuseMap);
+			TEXTURE2D(_ScleraDiffuseMap);
+			SAMPLER(sampler_ScleraDiffuseMap);
+			TEXTURE2D(_ScleraNormalMap);
+			SAMPLER(sampler_ScleraNormalMap);
+			TEXTURE2D(_EmissionMap);
+			SAMPLER(sampler_EmissionMap);
+			TEXTURE2D(_MaskMap);
+			SAMPLER(sampler_MaskMap);
 
 
 			half3 HSVToRGB( half3 c )
@@ -383,12 +418,15 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord7.zw = 0;
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
+
 				float3 vertexValue = defaultVertexValue;
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -406,8 +444,13 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				o.tSpace1 = float4( normalInput.tangentWS, positionWS.y);
 				o.tSpace2 = float4( normalInput.bitangentWS, positionWS.z);
 
-				OUTPUT_LIGHTMAP_UV( v.texcoord1, unity_LightmapST, o.lightmapUVOrVertexSH.xy );
-				OUTPUT_SH( normalInput.normalWS.xyz, o.lightmapUVOrVertexSH.xyz );
+				#if defined(LIGHTMAP_ON)
+					OUTPUT_LIGHTMAP_UV( v.texcoord1, unity_LightmapST, o.lightmapUVOrVertexSH.xy );
+				#endif
+
+				#if !defined(LIGHTMAP_ON)
+					OUTPUT_SH( normalInput.normalWS.xyz, o.lightmapUVOrVertexSH.xyz );
+				#endif
 
 				#if defined(ENABLE_TERRAIN_PERPIXEL_NORMAL)
 					o.lightmapUVOrVertexSH.zw = v.texcoord;
@@ -415,28 +458,32 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				#endif
 
 				half3 vertexLight = VertexLighting( positionWS, normalInput.normalWS );
+
 				#ifdef ASE_FOG
 					half fogFactor = ComputeFogFactor( positionCS.z );
 				#else
 					half fogFactor = 0;
 				#endif
+
 				o.fogFactorAndVertexLight = half4(fogFactor, vertexLight);
-				
+
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
-				VertexPositionInputs vertexInput = (VertexPositionInputs)0;
-				vertexInput.positionWS = positionWS;
-				vertexInput.positionCS = positionCS;
-				o.shadowCoord = GetShadowCoord( vertexInput );
+					VertexPositionInputs vertexInput = (VertexPositionInputs)0;
+					vertexInput.positionWS = positionWS;
+					vertexInput.positionCS = positionCS;
+					o.shadowCoord = GetShadowCoord( vertexInput );
 				#endif
-				
+
 				o.clipPos = positionCS;
+
 				#if defined(ASE_NEEDS_FRAG_SCREEN_POSITION)
-				o.screenPos = ComputeScreenPos(positionCS);
+					o.screenPos = ComputeScreenPos(positionCS);
 				#endif
+
 				return o;
 			}
-			
-			#if defined(TESSELLATION_ON)
+
+			#if defined(ASE_TESSELLATION)
 			struct VertexControl
 			{
 				float4 vertex : INTERNALTESSPOS;
@@ -494,7 +541,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			[outputcontrolpoints(3)]
 			VertexControl HullFunction(InputPatch<VertexControl, 3> patch, uint id : SV_OutputControlPointID)
 			{
-			   return patch[id];
+				return patch[id];
 			}
 
 			[domain("tri")]
@@ -525,12 +572,12 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			#endif
 
 			#if defined(ASE_EARLY_Z_DEPTH_OPTIMIZE)
-				#define ASE_SV_DEPTH SV_DepthLessEqual  
+				#define ASE_SV_DEPTH SV_DepthLessEqual
 			#else
 				#define ASE_SV_DEPTH SV_Depth
 			#endif
 
-			half4 frag ( VertexOutput IN 
+			half4 frag ( VertexOutput IN
 						#ifdef ASE_DEPTH_WRITE_ON
 						,out float outputDepth : ASE_SV_DEPTH
 						#endif
@@ -553,11 +600,13 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 					float3 WorldTangent = IN.tSpace1.xyz;
 					float3 WorldBiTangent = IN.tSpace2.xyz;
 				#endif
+
 				float3 WorldPosition = float3(IN.tSpace0.w,IN.tSpace1.w,IN.tSpace2.w);
 				float3 WorldViewDirection = _WorldSpaceCameraPos.xyz  - WorldPosition;
 				float4 ShadowCoords = float4( 0, 0, 0, 0 );
+
 				#if defined(ASE_NEEDS_FRAG_SCREEN_POSITION)
-				float4 ScreenPos = IN.screenPos;
+					float4 ScreenPos = IN.screenPos;
 				#endif
 
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
@@ -565,7 +614,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				#elif defined(MAIN_LIGHT_CALCULATE_SHADOWS)
 					ShadowCoords = TransformWorldToShadowCoord( WorldPosition );
 				#endif
-	
+
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
 				float2 uv_ColorBlendMap = IN.ase_texcoord7.xy * _ColorBlendMap_ST.xy + _ColorBlendMap_ST.zw;
@@ -591,7 +640,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				half temp_output_152_0 = ( irisScale208 * _ParallaxRadius );
 				half saferPower157 = abs( saturate( ( ( temp_output_152_0 - radial203 ) / temp_output_152_0 ) ) );
 				half2 lerpResult136 = lerp( texCoord93 , (( texCoord93 - ( (normalizeResult117).xy * _IrisDepth ) )*temp_output_122_0 + ( ( 1.0 - temp_output_122_0 ) * 0.5 )) , pow( saferPower157 , 0.25 ));
-				half3 hsvTorgb174 = RGBToHSV( ( tex2D( _CorneaDiffuseMap, lerpResult136 ) * _IrisColor ).rgb );
+				half3 hsvTorgb174 = RGBToHSV( ( SAMPLE_TEXTURE2D( _CorneaDiffuseMap, sampler_CorneaDiffuseMap, lerpResult136 ) * _IrisColor ).rgb );
 				half3 hsvTorgb184 = HSVToRGB( half3(( ( _IrisHue - 0.5 ) + hsvTorgb174.x ),( hsvTorgb174.y * _IrisSaturation ),( hsvTorgb174.z * _IrisBrightness )) );
 				half4 blendOpSrc201 = _LimbusColor;
 				half4 blendOpDest201 = ( ( _IrisCloudyColor * float4( 0.5,0.5,0.5,1 ) ) + half4( hsvTorgb184 , 0.0 ) );
@@ -602,7 +651,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				half2 temp_cast_4 = (temp_output_223_0).xx;
 				half2 temp_cast_5 = (( ( 1.0 - temp_output_223_0 ) * 0.5 )).xx;
 				half2 texCoord228 = IN.ase_texcoord7.xy * temp_cast_4 + temp_cast_5;
-				half3 hsvTorgb231 = RGBToHSV( tex2D( _ScleraDiffuseMap, texCoord228 ).rgb );
+				half3 hsvTorgb231 = RGBToHSV( SAMPLE_TEXTURE2D( _ScleraDiffuseMap, sampler_ScleraDiffuseMap, texCoord228 ).rgb );
 				half3 hsvTorgb232 = HSVToRGB( half3(( ( _ScleraHue - 0.5 ) + hsvTorgb231.x ),( hsvTorgb231.y * _ScleraSaturation ),( hsvTorgb231.z * _ScleraBrightness )) );
 				half4 blendOpSrc23 = _CornerShadowColor;
 				half4 blendOpDest23 = half4( hsvTorgb232 , 0.0 );
@@ -612,14 +661,14 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				half smoothstepResult28 = smoothstep( ( scaledIrisRadius209 - ( irisScale208 * _LimbusWidth ) ) , scaledIrisRadius209 , radial203);
 				half irisMask213 = smoothstepResult28;
 				half4 lerpResult261 = lerp( ( saturate( lerpBlendMode201 )) , ( saturate( lerpBlendMode23 )) , irisMask213);
-				half4 blendOpSrc21 = tex2D( _ColorBlendMap, uv_ColorBlendMap );
+				half4 blendOpSrc21 = SAMPLE_TEXTURE2D( _ColorBlendMap, sampler_ColorBlendMap, uv_ColorBlendMap );
 				half4 blendOpDest21 = lerpResult261;
 				half4 lerpBlendMode21 = lerp(blendOpDest21,( blendOpSrc21 * blendOpDest21 ),_ColorBlendStrength);
 				half4 baseColor369 = ( saturate( lerpBlendMode21 ));
 				
 				half2 temp_cast_9 = (_ScleraNormalTiling).xx;
 				half2 texCoord294 = IN.ase_texcoord7.xy * temp_cast_9 + float2( 0,0 );
-				half3 unpack289 = UnpackNormalScale( tex2D( _ScleraNormalMap, texCoord294 ), ( _ScleraNormalStrength * irisMask213 ) );
+				half3 unpack289 = UnpackNormalScale( SAMPLE_TEXTURE2D( _ScleraNormalMap, sampler_ScleraNormalMap, texCoord294 ), ( _ScleraNormalStrength * irisMask213 ) );
 				unpack289.z = lerp( 1, unpack289.z, saturate(( _ScleraNormalStrength * irisMask213 )) );
 				
 				float2 uv_EmissionMap = IN.ase_texcoord7.xy * _EmissionMap_ST.xy + _EmissionMap_ST.zw;
@@ -630,13 +679,14 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				
 				half lerpResult315 = lerp( _IrisSubsurfaceScale , _ScleraSubsurfaceScale , irisMask213);
 				
-				float3 Albedo = baseColor369.rgb;
+
+				float3 BaseColor = baseColor369.rgb;
 				float3 Normal = unpack289;
-				float3 Emission = ( tex2D( _EmissionMap, uv_EmissionMap ) * _EmissiveColor ).rgb;
+				float3 Emission = ( SAMPLE_TEXTURE2D( _EmissionMap, sampler_EmissionMap, uv_EmissionMap ) * _EmissiveColor ).rgb;
 				float3 Specular = 0.5;
 				float Metallic = 0;
 				float Smoothness = lerpResult271;
-				float Occlusion = ( 1.0 - ( _AOStrength * ( 1.0 - tex2D( _MaskMap, uv_MaskMap ).g ) ) );
+				float Occlusion = ( 1.0 - ( _AOStrength * ( 1.0 - SAMPLE_TEXTURE2D( _MaskMap, sampler_MaskMap, uv_MaskMap ).g ) ) );
 				float Alpha = 1;
 				float AlphaClipThreshold = 0.5;
 				float AlphaClipThresholdShadow = 0.5;
@@ -645,8 +695,9 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				float RefractionIndex = 1;
 				float3 Transmission = 1;
 				float3 Translucency = ( lerpResult315 * 0.5 * ( _SubsurfaceFalloff * baseColor369 ) ).rgb;
+
 				#ifdef ASE_DEPTH_WRITE_ON
-				float DepthValue = 0;
+					float DepthValue = 0;
 				#endif
 
 				#ifdef _ALPHATEST_ON
@@ -659,13 +710,13 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				inputData.shadowCoord = ShadowCoords;
 
 				#ifdef _NORMALMAP
-					#if _NORMAL_DROPOFF_TS
-					inputData.normalWS = TransformTangentToWorld(Normal, half3x3( WorldTangent, WorldBiTangent, WorldNormal ));
-					#elif _NORMAL_DROPOFF_OS
-					inputData.normalWS = TransformObjectToWorldNormal(Normal);
-					#elif _NORMAL_DROPOFF_WS
-					inputData.normalWS = Normal;
-					#endif
+						#if _NORMAL_DROPOFF_TS
+							inputData.normalWS = TransformTangentToWorld(Normal, half3x3(WorldTangent, WorldBiTangent, WorldNormal));
+						#elif _NORMAL_DROPOFF_OS
+							inputData.normalWS = TransformObjectToWorldNormal(Normal);
+						#elif _NORMAL_DROPOFF_WS
+							inputData.normalWS = Normal;
+						#endif
 					inputData.normalWS = NormalizeNormalPerPixel(inputData.normalWS);
 				#else
 					inputData.normalWS = WorldNormal;
@@ -674,8 +725,8 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				#ifdef ASE_FOG
 					inputData.fogCoord = IN.fogFactorAndVertexLight.x;
 				#endif
+					inputData.vertexLighting = IN.fogFactorAndVertexLight.yzw;
 
-				inputData.vertexLighting = IN.fogFactorAndVertexLight.yzw;
 				#if defined(ENABLE_TERRAIN_PERPIXEL_NORMAL)
 					float3 SH = SampleSH(inputData.normalWS.xyz);
 				#else
@@ -683,24 +734,25 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				#endif
 
 				inputData.bakedGI = SAMPLE_GI( IN.lightmapUVOrVertexSH.xy, SH, inputData.normalWS );
-				#ifdef _ASE_BAKEDGI
+
+				#ifdef ASE_BAKEDGI
 					inputData.bakedGI = BakedGI;
 				#endif
-				
+
 				inputData.normalizedScreenSpaceUV = GetNormalizedScreenSpaceUV(IN.clipPos);
 				inputData.shadowMask = SAMPLE_SHADOWMASK(IN.lightmapUVOrVertexSH.xy);
 
 				half4 color = UniversalFragmentPBR(
-					inputData, 
-					Albedo, 
-					Metallic, 
-					Specular, 
-					Smoothness, 
-					Occlusion, 
-					Emission, 
+					inputData,
+					BaseColor,
+					Metallic,
+					Specular,
+					Smoothness,
+					Occlusion,
+					Emission,
 					Alpha);
 
-				#ifdef _TRANSMISSION_ASE
+				#ifdef ASE_TRANSMISSION
 				{
 					float shadow = _TransmissionShadow;
 
@@ -708,7 +760,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 					float3 mainAtten = mainLight.color * mainLight.distanceAttenuation;
 					mainAtten = lerp( mainAtten, mainAtten * mainLight.shadowAttenuation, shadow );
 					half3 mainTransmission = max(0 , -dot(inputData.normalWS, mainLight.direction)) * mainAtten * Transmission;
-					color.rgb += Albedo * mainTransmission;
+					color.rgb += BaseColor * mainTransmission;
 
 					#ifdef _ADDITIONAL_LIGHTS
 						int transPixelLightCount = GetAdditionalLightsCount();
@@ -719,13 +771,13 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 							atten = lerp( atten, atten * light.shadowAttenuation, shadow );
 
 							half3 transmission = max(0 , -dot(inputData.normalWS, light.direction)) * atten * Transmission;
-							color.rgb += Albedo * transmission;
+							color.rgb += BaseColor * transmission;
 						}
 					#endif
 				}
 				#endif
 
-				#ifdef _TRANSLUCENCY_ASE
+				#ifdef ASE_TRANSLUCENCY
 				{
 					float shadow = _TransShadow;
 					float normal = _TransNormal;
@@ -741,7 +793,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 					half3 mainLightDir = mainLight.direction + inputData.normalWS * normal;
 					half mainVdotL = pow( saturate( dot( inputData.viewDirectionWS, -mainLightDir ) ), scattering );
 					half3 mainTranslucency = mainAtten * ( mainVdotL * direct + inputData.bakedGI * ambient ) * Translucency;
-					color.rgb += Albedo * mainTranslucency * strength;
+					color.rgb += BaseColor * mainTranslucency * strength;
 
 					#ifdef _ADDITIONAL_LIGHTS
 						int transPixelLightCount = GetAdditionalLightsCount();
@@ -754,13 +806,13 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 							half3 lightDir = light.direction + inputData.normalWS * normal;
 							half VdotL = pow( saturate( dot( inputData.viewDirectionWS, -lightDir ) ), scattering );
 							half3 translucency = atten * ( VdotL * direct + inputData.bakedGI * ambient ) * Translucency;
-							color.rgb += Albedo * translucency * strength;
+							color.rgb += BaseColor * translucency * strength;
 						}
 					#endif
 				}
 				#endif
 
-				#ifdef _REFRACTION_ASE
+				#ifdef ASE_REFRACTION
 					float4 projScreenPos = ScreenPos / ScreenPos.w;
 					float3 refractionOffset = ( RefractionIndex - 1.0 ) * mul( UNITY_MATRIX_V, float4( WorldNormal,0 ) ).xyz * ( 1.0 - dot( WorldNormal, WorldViewDirection ) );
 					projScreenPos.xy += refractionOffset.xy;
@@ -804,14 +856,14 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			ColorMask 0
 
 			HLSLPROGRAM
-			
+
 			#define _NORMAL_DROPOFF_TS 1
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
-			#define _TRANSLUCENCY_ASE 1
-			#define TESSELLATION_ON 1
+			#define ASE_TRANSLUCENCY 1
+			#define ASE_TESSELLATION 1
 			#pragma require tessellation tessHW
 			#pragma hull HullFunction
 			#pragma domain DomainFunction
@@ -819,20 +871,19 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 100900
+			#define ASE_SRP_VERSION 101001
+			#define ASE_USING_SAMPLING_MACROS 1
 
-			
+
 			#pragma vertex vert
 			#pragma fragment frag
-#if ASE_SRP_VERSION >= 110000
-			#pragma multi_compile _ _CASTING_PUNCTUAL_LIGHT_SHADOW
-#endif
-			#define SHADERPASS_SHADOWCASTER
 
+			#define SHADERPASS SHADERPASS_SHADOWCASTER
+
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 
 			#pragma shader_feature_local BOOLEAN_ISCORNEA_ON
 
@@ -849,10 +900,10 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			{
 				float4 clipPos : SV_POSITION;
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 worldPos : TEXCOORD0;
+					float3 worldPos : TEXCOORD0;
 				#endif
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
-				float4 shadowCoord : TEXCOORD1;
+					float4 shadowCoord : TEXCOORD1;
 				#endif
 				
 				UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -898,10 +949,10 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			half _PupilScale;
 			half _IrisScale;
 			half _IsLeftEye;
-			#ifdef _TRANSMISSION_ASE
+			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
-			#ifdef _TRANSLUCENCY_ASE
+			#ifdef ASE_TRANSLUCENCY
 				float _TransStrength;
 				float _TransNormal;
 				float _TransScattering;
@@ -909,7 +960,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				float _TransAmbient;
 				float _TransShadow;
 			#endif
-			#ifdef TESSELLATION_ON
+			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
 				float _TessMin;
@@ -918,13 +969,26 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
+
+			// Property used by ScenePickingPass
+			#ifdef SCENEPICKINGPASS
+				float4 _SelectionID;
+			#endif
+
+			// Properties used by SceneSelectionPass
+			#ifdef SCENESELECTIONPASS
+				int _ObjectId;
+				int _PassValue;
+			#endif
+
 			
 
 			
 			float3 _LightDirection;
-#if ASE_SRP_VERSION >= 110000 
-			float3 _LightPosition;
-#endif
+			#if ASE_SRP_VERSION >= 110000
+				float3 _LightPosition;
+			#endif
+
 			VertexOutput VertexFunction( VertexInput v )
 			{
 				VertexOutput o;
@@ -933,11 +997,13 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO( o );
 
 				
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
+
 				float3 vertexValue = defaultVertexValue;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
@@ -948,31 +1014,35 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				v.ase_normal = v.ase_normal;
 
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
+
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				o.worldPos = positionWS;
+					o.worldPos = positionWS;
 				#endif
+
 				float3 normalWS = TransformObjectToWorldDir(v.ase_normal);
 
-		#if ASE_SRP_VERSION >= 110000 
-			#if _CASTING_PUNCTUAL_LIGHT_SHADOW
-				float3 lightDirectionWS = normalize(_LightPosition - positionWS);
-			#else
-				float3 lightDirectionWS = _LightDirection;
-			#endif
-				float4 clipPos = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, lightDirectionWS));
-			#if UNITY_REVERSED_Z
-				clipPos.z = min(clipPos.z, UNITY_NEAR_CLIP_VALUE);
-			#else
-				clipPos.z = max(clipPos.z, UNITY_NEAR_CLIP_VALUE);
-			#endif
-		#else
-				float4 clipPos = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, _LightDirection));
-			#if UNITY_REVERSED_Z
-				clipPos.z = min(clipPos.z, clipPos.w * UNITY_NEAR_CLIP_VALUE);
-			#else
-				clipPos.z = max(clipPos.z, clipPos.w * UNITY_NEAR_CLIP_VALUE);
-			#endif
-		#endif
+				#if ASE_SRP_VERSION >= 110000
+					#if _CASTING_PUNCTUAL_LIGHT_SHADOW
+						float3 lightDirectionWS = normalize(_LightPosition - positionWS);
+					#else
+						float3 lightDirectionWS = _LightDirection;
+					#endif
+
+					float4 clipPos = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, lightDirectionWS));
+
+					#if UNITY_REVERSED_Z
+						clipPos.z = min(clipPos.z, UNITY_NEAR_CLIP_VALUE);
+					#else
+						clipPos.z = max(clipPos.z, UNITY_NEAR_CLIP_VALUE);
+					#endif
+				#else
+					float4 clipPos = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, _LightDirection));
+					#if UNITY_REVERSED_Z
+						clipPos.z = min(clipPos.z, clipPos.w * UNITY_NEAR_CLIP_VALUE);
+					#else
+						clipPos.z = max(clipPos.z, clipPos.w * UNITY_NEAR_CLIP_VALUE);
+					#endif
+				#endif
 
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
 					VertexPositionInputs vertexInput = (VertexPositionInputs)0;
@@ -980,11 +1050,13 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 					vertexInput.positionCS = clipPos;
 					o.shadowCoord = GetShadowCoord( vertexInput );
 				#endif
+
 				o.clipPos = clipPos;
+
 				return o;
 			}
 
-			#if defined(TESSELLATION_ON)
+			#if defined(ASE_TESSELLATION)
 			struct VertexControl
 			{
 				float4 vertex : INTERNALTESSPOS;
@@ -1036,7 +1108,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			[outputcontrolpoints(3)]
 			VertexControl HullFunction(InputPatch<VertexControl, 3> patch, uint id : SV_OutputControlPointID)
 			{
-			   return patch[id];
+				return patch[id];
 			}
 
 			[domain("tri")]
@@ -1064,12 +1136,12 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			#endif
 
 			#if defined(ASE_EARLY_Z_DEPTH_OPTIMIZE)
-				#define ASE_SV_DEPTH SV_DepthLessEqual  
+				#define ASE_SV_DEPTH SV_DepthLessEqual
 			#else
 				#define ASE_SV_DEPTH SV_Depth
 			#endif
 
-			half4 frag(	VertexOutput IN 
+			half4 frag(	VertexOutput IN
 						#ifdef ASE_DEPTH_WRITE_ON
 						,out float outputDepth : ASE_SV_DEPTH
 						#endif
@@ -1077,10 +1149,11 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			{
 				UNITY_SETUP_INSTANCE_ID( IN );
 				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX( IN );
-				
+
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 WorldPosition = IN.worldPos;
+					float3 WorldPosition = IN.worldPos;
 				#endif
+
 				float4 ShadowCoords = float4( 0, 0, 0, 0 );
 
 				#if defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
@@ -1092,11 +1165,13 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				#endif
 
 				
+
 				float Alpha = 1;
 				float AlphaClipThreshold = 0.5;
 				float AlphaClipThresholdShadow = 0.5;
+
 				#ifdef ASE_DEPTH_WRITE_ON
-				float DepthValue = 0;
+					float DepthValue = 0;
 				#endif
 
 				#ifdef _ALPHATEST_ON
@@ -1110,12 +1185,13 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				#ifdef LOD_FADE_CROSSFADE
 					LODDitheringTransition( IN.clipPos.xyz, unity_LODFade.x );
 				#endif
+
 				#ifdef ASE_DEPTH_WRITE_ON
 					outputDepth = DepthValue;
 				#endif
+
 				return 0;
 			}
-
 			ENDHLSL
 		}
 
@@ -1131,14 +1207,14 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			AlphaToMask Off
 
 			HLSLPROGRAM
-			
+
 			#define _NORMAL_DROPOFF_TS 1
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
-			#define _TRANSLUCENCY_ASE 1
-			#define TESSELLATION_ON 1
+			#define ASE_TRANSLUCENCY 1
+			#define ASE_TESSELLATION 1
 			#pragma require tessellation tessHW
 			#pragma hull HullFunction
 			#pragma domain DomainFunction
@@ -1146,18 +1222,19 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 100900
+			#define ASE_SRP_VERSION 101001
+			#define ASE_USING_SAMPLING_MACROS 1
 
-			
+
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#define SHADERPASS_DEPTHONLY
+			#define SHADERPASS SHADERPASS_DEPTHONLY
 
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 
 			#pragma shader_feature_local BOOLEAN_ISCORNEA_ON
 
@@ -1223,10 +1300,10 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			half _PupilScale;
 			half _IrisScale;
 			half _IsLeftEye;
-			#ifdef _TRANSMISSION_ASE
+			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
-			#ifdef _TRANSLUCENCY_ASE
+			#ifdef ASE_TRANSLUCENCY
 				float _TransStrength;
 				float _TransNormal;
 				float _TransScattering;
@@ -1234,7 +1311,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				float _TransAmbient;
 				float _TransShadow;
 			#endif
-			#ifdef TESSELLATION_ON
+			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
 				float _TessMin;
@@ -1243,6 +1320,18 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
+
+			// Property used by ScenePickingPass
+			#ifdef SCENEPICKINGPASS
+				float4 _SelectionID;
+			#endif
+
+			// Properties used by SceneSelectionPass
+			#ifdef SCENESELECTIONPASS
+				int _ObjectId;
+				int _PassValue;
+			#endif
+
 			
 
 			
@@ -1254,12 +1343,15 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
 				
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
+
 				float3 vertexValue = defaultVertexValue;
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -1271,7 +1363,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				float4 positionCS = TransformWorldToHClip( positionWS );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				o.worldPos = positionWS;
+					o.worldPos = positionWS;
 				#endif
 
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
@@ -1280,11 +1372,13 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 					vertexInput.positionCS = positionCS;
 					o.shadowCoord = GetShadowCoord( vertexInput );
 				#endif
+
 				o.clipPos = positionCS;
+
 				return o;
 			}
 
-			#if defined(TESSELLATION_ON)
+			#if defined(ASE_TESSELLATION)
 			struct VertexControl
 			{
 				float4 vertex : INTERNALTESSPOS;
@@ -1336,7 +1430,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			[outputcontrolpoints(3)]
 			VertexControl HullFunction(InputPatch<VertexControl, 3> patch, uint id : SV_OutputControlPointID)
 			{
-			   return patch[id];
+				return patch[id];
 			}
 
 			[domain("tri")]
@@ -1364,11 +1458,12 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			#endif
 
 			#if defined(ASE_EARLY_Z_DEPTH_OPTIMIZE)
-				#define ASE_SV_DEPTH SV_DepthLessEqual  
+				#define ASE_SV_DEPTH SV_DepthLessEqual
 			#else
 				#define ASE_SV_DEPTH SV_Depth
 			#endif
-			half4 frag(	VertexOutput IN 
+
+			half4 frag(	VertexOutput IN
 						#ifdef ASE_DEPTH_WRITE_ON
 						,out float outputDepth : ASE_SV_DEPTH
 						#endif
@@ -1380,6 +1475,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
 				float3 WorldPosition = IN.worldPos;
 				#endif
+
 				float4 ShadowCoords = float4( 0, 0, 0, 0 );
 
 				#if defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
@@ -1391,10 +1487,11 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				#endif
 
 				
+
 				float Alpha = 1;
 				float AlphaClipThreshold = 0.5;
 				#ifdef ASE_DEPTH_WRITE_ON
-				float DepthValue = 0;
+					float DepthValue = 0;
 				#endif
 
 				#ifdef _ALPHATEST_ON
@@ -1404,15 +1501,16 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				#ifdef LOD_FADE_CROSSFADE
 					LODDitheringTransition( IN.clipPos.xyz, unity_LODFade.x );
 				#endif
+
 				#ifdef ASE_DEPTH_WRITE_ON
-				outputDepth = DepthValue;
+					outputDepth = DepthValue;
 				#endif
 
 				return 0;
 			}
 			ENDHLSL
 		}
-		
+
 		
 		Pass
 		{
@@ -1423,14 +1521,14 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			Cull Off
 
 			HLSLPROGRAM
-			
+
 			#define _NORMAL_DROPOFF_TS 1
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
-			#define _TRANSLUCENCY_ASE 1
-			#define TESSELLATION_ON 1
+			#define ASE_TRANSLUCENCY 1
+			#define ASE_TESSELLATION 1
 			#pragma require tessellation tessHW
 			#pragma hull HullFunction
 			#pragma domain DomainFunction
@@ -1438,25 +1536,25 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 100900
+			#define ASE_SRP_VERSION 101001
+			#define ASE_USING_SAMPLING_MACROS 1
 
-			
+
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#define SHADERPASS_META
+			#define SHADERPASS SHADERPASS_META
 
-			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/MetaInput.hlsl"
-			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/MetaInput.hlsl"
 
 			#define ASE_NEEDS_VERT_NORMAL
 			#define ASE_NEEDS_FRAG_WORLD_POSITION
 			#pragma shader_feature_local BOOLEAN_ISCORNEA_ON
 
-
-			#pragma shader_feature _ _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
 
 			struct VertexInput
 			{
@@ -1473,10 +1571,10 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			{
 				float4 clipPos : SV_POSITION;
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 worldPos : TEXCOORD0;
+					float3 worldPos : TEXCOORD0;
 				#endif
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
-				float4 shadowCoord : TEXCOORD1;
+					float4 shadowCoord : TEXCOORD1;
 				#endif
 				float4 ase_texcoord2 : TEXCOORD2;
 				float4 ase_texcoord3 : TEXCOORD3;
@@ -1525,10 +1623,10 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			half _PupilScale;
 			half _IrisScale;
 			half _IsLeftEye;
-			#ifdef _TRANSMISSION_ASE
+			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
-			#ifdef _TRANSLUCENCY_ASE
+			#ifdef ASE_TRANSLUCENCY
 				float _TransStrength;
 				float _TransNormal;
 				float _TransScattering;
@@ -1536,7 +1634,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				float _TransAmbient;
 				float _TransShadow;
 			#endif
-			#ifdef TESSELLATION_ON
+			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
 				float _TessMin;
@@ -1545,10 +1643,26 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
-			sampler2D _ColorBlendMap;
-			sampler2D _CorneaDiffuseMap;
-			sampler2D _ScleraDiffuseMap;
-			sampler2D _EmissionMap;
+
+			// Property used by ScenePickingPass
+			#ifdef SCENEPICKINGPASS
+				float4 _SelectionID;
+			#endif
+
+			// Properties used by SceneSelectionPass
+			#ifdef SCENESELECTIONPASS
+				int _ObjectId;
+				int _PassValue;
+			#endif
+
+			TEXTURE2D(_ColorBlendMap);
+			SAMPLER(sampler_ColorBlendMap);
+			TEXTURE2D(_CorneaDiffuseMap);
+			SAMPLER(sampler_CorneaDiffuseMap);
+			TEXTURE2D(_ScleraDiffuseMap);
+			SAMPLER(sampler_ScleraDiffuseMap);
+			TEXTURE2D(_EmissionMap);
+			SAMPLER(sampler_EmissionMap);
 
 
 			half3 HSVToRGB( half3 c )
@@ -1590,13 +1704,15 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				o.ase_texcoord3.w = 0;
 				o.ase_texcoord4.w = 0;
 				o.ase_texcoord5.w = 0;
-				
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
+
 				float3 vertexValue = defaultVertexValue;
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -1606,21 +1722,24 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				v.ase_normal = v.ase_normal;
 
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
+
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				o.worldPos = positionWS;
+					o.worldPos = positionWS;
 				#endif
 
 				o.clipPos = MetaVertexPosition( v.vertex, v.texcoord1.xy, v.texcoord1.xy, unity_LightmapST, unity_DynamicLightmapST );
+
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
 					VertexPositionInputs vertexInput = (VertexPositionInputs)0;
 					vertexInput.positionWS = positionWS;
 					vertexInput.positionCS = o.clipPos;
 					o.shadowCoord = GetShadowCoord( vertexInput );
 				#endif
+
 				return o;
 			}
 
-			#if defined(TESSELLATION_ON)
+			#if defined(ASE_TESSELLATION)
 			struct VertexControl
 			{
 				float4 vertex : INTERNALTESSPOS;
@@ -1679,7 +1798,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			[outputcontrolpoints(3)]
 			VertexControl HullFunction(InputPatch<VertexControl, 3> patch, uint id : SV_OutputControlPointID)
 			{
-			   return patch[id];
+				return patch[id];
 			}
 
 			[domain("tri")]
@@ -1715,8 +1834,9 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX( IN );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 WorldPosition = IN.worldPos;
+					float3 WorldPosition = IN.worldPos;
 				#endif
+
 				float4 ShadowCoords = float4( 0, 0, 0, 0 );
 
 				#if defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
@@ -1755,7 +1875,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				half temp_output_152_0 = ( irisScale208 * _ParallaxRadius );
 				half saferPower157 = abs( saturate( ( ( temp_output_152_0 - radial203 ) / temp_output_152_0 ) ) );
 				half2 lerpResult136 = lerp( texCoord93 , (( texCoord93 - ( (normalizeResult117).xy * _IrisDepth ) )*temp_output_122_0 + ( ( 1.0 - temp_output_122_0 ) * 0.5 )) , pow( saferPower157 , 0.25 ));
-				half3 hsvTorgb174 = RGBToHSV( ( tex2D( _CorneaDiffuseMap, lerpResult136 ) * _IrisColor ).rgb );
+				half3 hsvTorgb174 = RGBToHSV( ( SAMPLE_TEXTURE2D( _CorneaDiffuseMap, sampler_CorneaDiffuseMap, lerpResult136 ) * _IrisColor ).rgb );
 				half3 hsvTorgb184 = HSVToRGB( half3(( ( _IrisHue - 0.5 ) + hsvTorgb174.x ),( hsvTorgb174.y * _IrisSaturation ),( hsvTorgb174.z * _IrisBrightness )) );
 				half4 blendOpSrc201 = _LimbusColor;
 				half4 blendOpDest201 = ( ( _IrisCloudyColor * float4( 0.5,0.5,0.5,1 ) ) + half4( hsvTorgb184 , 0.0 ) );
@@ -1766,7 +1886,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				half2 temp_cast_4 = (temp_output_223_0).xx;
 				half2 temp_cast_5 = (( ( 1.0 - temp_output_223_0 ) * 0.5 )).xx;
 				half2 texCoord228 = IN.ase_texcoord2.xy * temp_cast_4 + temp_cast_5;
-				half3 hsvTorgb231 = RGBToHSV( tex2D( _ScleraDiffuseMap, texCoord228 ).rgb );
+				half3 hsvTorgb231 = RGBToHSV( SAMPLE_TEXTURE2D( _ScleraDiffuseMap, sampler_ScleraDiffuseMap, texCoord228 ).rgb );
 				half3 hsvTorgb232 = HSVToRGB( half3(( ( _ScleraHue - 0.5 ) + hsvTorgb231.x ),( hsvTorgb231.y * _ScleraSaturation ),( hsvTorgb231.z * _ScleraBrightness )) );
 				half4 blendOpSrc23 = _CornerShadowColor;
 				half4 blendOpDest23 = half4( hsvTorgb232 , 0.0 );
@@ -1776,16 +1896,16 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				half smoothstepResult28 = smoothstep( ( scaledIrisRadius209 - ( irisScale208 * _LimbusWidth ) ) , scaledIrisRadius209 , radial203);
 				half irisMask213 = smoothstepResult28;
 				half4 lerpResult261 = lerp( ( saturate( lerpBlendMode201 )) , ( saturate( lerpBlendMode23 )) , irisMask213);
-				half4 blendOpSrc21 = tex2D( _ColorBlendMap, uv_ColorBlendMap );
+				half4 blendOpSrc21 = SAMPLE_TEXTURE2D( _ColorBlendMap, sampler_ColorBlendMap, uv_ColorBlendMap );
 				half4 blendOpDest21 = lerpResult261;
 				half4 lerpBlendMode21 = lerp(blendOpDest21,( blendOpSrc21 * blendOpDest21 ),_ColorBlendStrength);
 				half4 baseColor369 = ( saturate( lerpBlendMode21 ));
 				
 				float2 uv_EmissionMap = IN.ase_texcoord2.xy * _EmissionMap_ST.xy + _EmissionMap_ST.zw;
 				
-				
-				float3 Albedo = baseColor369.rgb;
-				float3 Emission = ( tex2D( _EmissionMap, uv_EmissionMap ) * _EmissiveColor ).rgb;
+
+				float3 BaseColor = baseColor369.rgb;
+				float3 Emission = ( SAMPLE_TEXTURE2D( _EmissionMap, sampler_EmissionMap, uv_EmissionMap ) * _EmissiveColor ).rgb;
 				float Alpha = 1;
 				float AlphaClipThreshold = 0.5;
 
@@ -1794,9 +1914,9 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				#endif
 
 				MetaInput metaInput = (MetaInput)0;
-				metaInput.Albedo = Albedo;
+				metaInput.Albedo = BaseColor;
 				metaInput.Emission = Emission;
-				
+
 				return MetaFragment(metaInput);
 			}
 			ENDHLSL
@@ -1816,14 +1936,14 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			ColorMask RGBA
 
 			HLSLPROGRAM
-			
+
 			#define _NORMAL_DROPOFF_TS 1
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
-			#define _TRANSLUCENCY_ASE 1
-			#define TESSELLATION_ON 1
+			#define ASE_TRANSLUCENCY 1
+			#define ASE_TESSELLATION 1
 			#pragma require tessellation tessHW
 			#pragma hull HullFunction
 			#pragma domain DomainFunction
@@ -1831,26 +1951,24 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 100900
+			#define ASE_SRP_VERSION 101001
+			#define ASE_USING_SAMPLING_MACROS 1
 
-			
+
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#define SHADERPASS_2D
+			#define SHADERPASS SHADERPASS_2D
 
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
-			
+
 			#define ASE_NEEDS_VERT_NORMAL
 			#define ASE_NEEDS_FRAG_WORLD_POSITION
 			#pragma shader_feature_local BOOLEAN_ISCORNEA_ON
 
-
-			#pragma shader_feature _ _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
 
 			struct VertexInput
 			{
@@ -1865,10 +1983,10 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			{
 				float4 clipPos : SV_POSITION;
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 worldPos : TEXCOORD0;
+					float3 worldPos : TEXCOORD0;
 				#endif
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
-				float4 shadowCoord : TEXCOORD1;
+					float4 shadowCoord : TEXCOORD1;
 				#endif
 				float4 ase_texcoord2 : TEXCOORD2;
 				float4 ase_texcoord3 : TEXCOORD3;
@@ -1917,10 +2035,10 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			half _PupilScale;
 			half _IrisScale;
 			half _IsLeftEye;
-			#ifdef _TRANSMISSION_ASE
+			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
-			#ifdef _TRANSLUCENCY_ASE
+			#ifdef ASE_TRANSLUCENCY
 				float _TransStrength;
 				float _TransNormal;
 				float _TransScattering;
@@ -1928,7 +2046,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				float _TransAmbient;
 				float _TransShadow;
 			#endif
-			#ifdef TESSELLATION_ON
+			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
 				float _TessMin;
@@ -1937,9 +2055,24 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
-			sampler2D _ColorBlendMap;
-			sampler2D _CorneaDiffuseMap;
-			sampler2D _ScleraDiffuseMap;
+
+			// Property used by ScenePickingPass
+			#ifdef SCENEPICKINGPASS
+				float4 _SelectionID;
+			#endif
+
+			// Properties used by SceneSelectionPass
+			#ifdef SCENESELECTIONPASS
+				int _ObjectId;
+				int _PassValue;
+			#endif
+
+			TEXTURE2D(_ColorBlendMap);
+			SAMPLER(sampler_ColorBlendMap);
+			TEXTURE2D(_CorneaDiffuseMap);
+			SAMPLER(sampler_CorneaDiffuseMap);
+			TEXTURE2D(_ScleraDiffuseMap);
+			SAMPLER(sampler_ScleraDiffuseMap);
 
 
 			half3 HSVToRGB( half3 c )
@@ -1981,13 +2114,15 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				o.ase_texcoord3.w = 0;
 				o.ase_texcoord4.w = 0;
 				o.ase_texcoord5.w = 0;
-				
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
+
 				float3 vertexValue = defaultVertexValue;
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -2000,7 +2135,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				float4 positionCS = TransformWorldToHClip( positionWS );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				o.worldPos = positionWS;
+					o.worldPos = positionWS;
 				#endif
 
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
@@ -2011,10 +2146,11 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				#endif
 
 				o.clipPos = positionCS;
+
 				return o;
 			}
 
-			#if defined(TESSELLATION_ON)
+			#if defined(ASE_TESSELLATION)
 			struct VertexControl
 			{
 				float4 vertex : INTERNALTESSPOS;
@@ -2069,7 +2205,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			[outputcontrolpoints(3)]
 			VertexControl HullFunction(InputPatch<VertexControl, 3> patch, uint id : SV_OutputControlPointID)
 			{
-			   return patch[id];
+				return patch[id];
 			}
 
 			[domain("tri")]
@@ -2103,8 +2239,9 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX( IN );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 WorldPosition = IN.worldPos;
+					float3 WorldPosition = IN.worldPos;
 				#endif
+
 				float4 ShadowCoords = float4( 0, 0, 0, 0 );
 
 				#if defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
@@ -2143,7 +2280,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				half temp_output_152_0 = ( irisScale208 * _ParallaxRadius );
 				half saferPower157 = abs( saturate( ( ( temp_output_152_0 - radial203 ) / temp_output_152_0 ) ) );
 				half2 lerpResult136 = lerp( texCoord93 , (( texCoord93 - ( (normalizeResult117).xy * _IrisDepth ) )*temp_output_122_0 + ( ( 1.0 - temp_output_122_0 ) * 0.5 )) , pow( saferPower157 , 0.25 ));
-				half3 hsvTorgb174 = RGBToHSV( ( tex2D( _CorneaDiffuseMap, lerpResult136 ) * _IrisColor ).rgb );
+				half3 hsvTorgb174 = RGBToHSV( ( SAMPLE_TEXTURE2D( _CorneaDiffuseMap, sampler_CorneaDiffuseMap, lerpResult136 ) * _IrisColor ).rgb );
 				half3 hsvTorgb184 = HSVToRGB( half3(( ( _IrisHue - 0.5 ) + hsvTorgb174.x ),( hsvTorgb174.y * _IrisSaturation ),( hsvTorgb174.z * _IrisBrightness )) );
 				half4 blendOpSrc201 = _LimbusColor;
 				half4 blendOpDest201 = ( ( _IrisCloudyColor * float4( 0.5,0.5,0.5,1 ) ) + half4( hsvTorgb184 , 0.0 ) );
@@ -2154,7 +2291,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				half2 temp_cast_4 = (temp_output_223_0).xx;
 				half2 temp_cast_5 = (( ( 1.0 - temp_output_223_0 ) * 0.5 )).xx;
 				half2 texCoord228 = IN.ase_texcoord2.xy * temp_cast_4 + temp_cast_5;
-				half3 hsvTorgb231 = RGBToHSV( tex2D( _ScleraDiffuseMap, texCoord228 ).rgb );
+				half3 hsvTorgb231 = RGBToHSV( SAMPLE_TEXTURE2D( _ScleraDiffuseMap, sampler_ScleraDiffuseMap, texCoord228 ).rgb );
 				half3 hsvTorgb232 = HSVToRGB( half3(( ( _ScleraHue - 0.5 ) + hsvTorgb231.x ),( hsvTorgb231.y * _ScleraSaturation ),( hsvTorgb231.z * _ScleraBrightness )) );
 				half4 blendOpSrc23 = _CornerShadowColor;
 				half4 blendOpDest23 = half4( hsvTorgb232 , 0.0 );
@@ -2164,17 +2301,17 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				half smoothstepResult28 = smoothstep( ( scaledIrisRadius209 - ( irisScale208 * _LimbusWidth ) ) , scaledIrisRadius209 , radial203);
 				half irisMask213 = smoothstepResult28;
 				half4 lerpResult261 = lerp( ( saturate( lerpBlendMode201 )) , ( saturate( lerpBlendMode23 )) , irisMask213);
-				half4 blendOpSrc21 = tex2D( _ColorBlendMap, uv_ColorBlendMap );
+				half4 blendOpSrc21 = SAMPLE_TEXTURE2D( _ColorBlendMap, sampler_ColorBlendMap, uv_ColorBlendMap );
 				half4 blendOpDest21 = lerpResult261;
 				half4 lerpBlendMode21 = lerp(blendOpDest21,( blendOpSrc21 * blendOpDest21 ),_ColorBlendStrength);
 				half4 baseColor369 = ( saturate( lerpBlendMode21 ));
 				
-				
-				float3 Albedo = baseColor369.rgb;
+
+				float3 BaseColor = baseColor369.rgb;
 				float Alpha = 1;
 				float AlphaClipThreshold = 0.5;
 
-				half4 color = half4( Albedo, Alpha );
+				half4 color = half4(BaseColor, Alpha );
 
 				#ifdef _ALPHATEST_ON
 					clip(Alpha - AlphaClipThreshold);
@@ -2194,18 +2331,18 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 
 			ZWrite On
 			Blend One Zero
-            ZTest LEqual
-            ZWrite On
+			ZTest LEqual
+			ZWrite On
 
 			HLSLPROGRAM
-			
+
 			#define _NORMAL_DROPOFF_TS 1
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
-			#define _TRANSLUCENCY_ASE 1
-			#define TESSELLATION_ON 1
+			#define ASE_TRANSLUCENCY 1
+			#define ASE_TESSELLATION 1
 			#pragma require tessellation tessHW
 			#pragma hull HullFunction
 			#pragma domain DomainFunction
@@ -2213,18 +2350,19 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 100900
+			#define ASE_SRP_VERSION 101001
+			#define ASE_USING_SAMPLING_MACROS 1
 
-			
+
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#define SHADERPASS_DEPTHNORMALSONLY
+			#define SHADERPASS SHADERPASS_DEPTHNORMALSONLY
 
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 
 			#pragma shader_feature_local BOOLEAN_ISCORNEA_ON
 
@@ -2241,10 +2379,10 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			{
 				float4 clipPos : SV_POSITION;
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 worldPos : TEXCOORD0;
+					float3 worldPos : TEXCOORD0;
 				#endif
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
-				float4 shadowCoord : TEXCOORD1;
+					float4 shadowCoord : TEXCOORD1;
 				#endif
 				float3 worldNormal : TEXCOORD2;
 				
@@ -2291,10 +2429,10 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			half _PupilScale;
 			half _IrisScale;
 			half _IsLeftEye;
-			#ifdef _TRANSMISSION_ASE
+			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
-			#ifdef _TRANSLUCENCY_ASE
+			#ifdef ASE_TRANSLUCENCY
 				float _TransStrength;
 				float _TransNormal;
 				float _TransScattering;
@@ -2302,7 +2440,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				float _TransAmbient;
 				float _TransShadow;
 			#endif
-			#ifdef TESSELLATION_ON
+			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
 				float _TessMin;
@@ -2311,6 +2449,18 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
+
+			// Property used by ScenePickingPass
+			#ifdef SCENEPICKINGPASS
+				float4 _SelectionID;
+			#endif
+
+			// Properties used by SceneSelectionPass
+			#ifdef SCENESELECTIONPASS
+				int _ObjectId;
+				int _PassValue;
+			#endif
+
 			
 
 			
@@ -2327,7 +2477,9 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
+
 				float3 vertexValue = defaultVertexValue;
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
@@ -2340,7 +2492,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				float4 positionCS = TransformWorldToHClip( positionWS );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				o.worldPos = positionWS;
+					o.worldPos = positionWS;
 				#endif
 
 				o.worldNormal = normalWS;
@@ -2351,11 +2503,13 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 					vertexInput.positionCS = positionCS;
 					o.shadowCoord = GetShadowCoord( vertexInput );
 				#endif
+
 				o.clipPos = positionCS;
+
 				return o;
 			}
 
-			#if defined(TESSELLATION_ON)
+			#if defined(ASE_TESSELLATION)
 			struct VertexControl
 			{
 				float4 vertex : INTERNALTESSPOS;
@@ -2407,7 +2561,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			[outputcontrolpoints(3)]
 			VertexControl HullFunction(InputPatch<VertexControl, 3> patch, uint id : SV_OutputControlPointID)
 			{
-			   return patch[id];
+				return patch[id];
 			}
 
 			[domain("tri")]
@@ -2435,11 +2589,12 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			#endif
 
 			#if defined(ASE_EARLY_Z_DEPTH_OPTIMIZE)
-				#define ASE_SV_DEPTH SV_DepthLessEqual  
+				#define ASE_SV_DEPTH SV_DepthLessEqual
 			#else
 				#define ASE_SV_DEPTH SV_Depth
 			#endif
-			half4 frag(	VertexOutput IN 
+
+			half4 frag(	VertexOutput IN
 						#ifdef ASE_DEPTH_WRITE_ON
 						,out float outputDepth : ASE_SV_DEPTH
 						#endif
@@ -2449,8 +2604,9 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX( IN );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 WorldPosition = IN.worldPos;
+					float3 WorldPosition = IN.worldPos;
 				#endif
+
 				float4 ShadowCoords = float4( 0, 0, 0, 0 );
 
 				#if defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
@@ -2462,10 +2618,11 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				#endif
 
 				
+
 				float Alpha = 1;
 				float AlphaClipThreshold = 0.5;
 				#ifdef ASE_DEPTH_WRITE_ON
-				float DepthValue = 0;
+					float DepthValue = 0;
 				#endif
 
 				#ifdef _ALPHATEST_ON
@@ -2475,12 +2632,18 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				#ifdef LOD_FADE_CROSSFADE
 					LODDitheringTransition( IN.clipPos.xyz, unity_LODFade.x );
 				#endif
-				
+
 				#ifdef ASE_DEPTH_WRITE_ON
-				outputDepth = DepthValue;
+					outputDepth = DepthValue;
 				#endif
-				
-				return float4(PackNormalOctRectEncode(TransformWorldToViewDir(IN.worldNormal, true)), 0.0, 0.0);
+
+				#if ASE_SRP_VERSION >= 110000
+					return float4(PackNormalOctRectEncode(TransformWorldToViewDir(IN.worldNormal, true)), 0.0, 0.0);
+				#elif ASE_SRP_VERSION >= 100900
+					return float4(PackNormalOctRectEncode(normalize(IN.worldNormal)), 0.0, 0.0);
+				#else
+					return float4(PackNormalOctRectEncode(TransformWorldToViewDir(IN.worldNormal, true)), 0.0, 0.0);
+				#endif
 			}
 			ENDHLSL
 		}
@@ -2491,7 +2654,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			
 			Name "GBuffer"
 			Tags { "LightMode"="UniversalGBuffer" }
-			
+
 			Blend One Zero, One Zero
 			ZWrite On
 			ZTest LEqual
@@ -2500,14 +2663,14 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			
 
 			HLSLPROGRAM
-			
+
 			#define _NORMAL_DROPOFF_TS 1
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
-			#define _TRANSLUCENCY_ASE 1
-			#define TESSELLATION_ON 1
+			#define ASE_TRANSLUCENCY 1
+			#define ASE_TESSELLATION 1
 			#pragma require tessellation tessHW
 			#pragma hull HullFunction
 			#pragma domain DomainFunction
@@ -2515,38 +2678,42 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 100900
+			#define ASE_SRP_VERSION 101001
+			#define ASE_USING_SAMPLING_MACROS 1
+
+
+			#pragma shader_feature_local _RECEIVE_SHADOWS_OFF
+			#pragma shader_feature_local_fragment _SPECULARHIGHLIGHTS_OFF
+			#pragma shader_feature_local_fragment _ENVIRONMENTREFLECTIONS_OFF
 
 			
 			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS
 			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
-			#pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS
-			#pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS
-			#pragma multi_compile _ _SHADOWS_SOFT
 			#pragma multi_compile _ _MIXED_LIGHTING_SUBTRACTIVE
-			#pragma multi_compile _ _GBUFFER_NORMALS_OCT
+		
+
 			
+
+			#pragma multi_compile_fragment _ _SHADOWS_SOFT
+
 			#pragma multi_compile _ DIRLIGHTMAP_COMBINED
 			#pragma multi_compile _ LIGHTMAP_ON
+			#pragma multi_compile_fragment _ _GBUFFER_NORMALS_OCT
 
 			#pragma vertex vert
 			#pragma fragment frag
 
 			#define SHADERPASS SHADERPASS_GBUFFER
 
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
+
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
-			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
-			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/UnityGBuffer.hlsl"
-
-			#if ASE_SRP_VERSION <= 70108
-			#define REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR
-			#endif
 
 			#if defined(UNITY_INSTANCING_ENABLED) && defined(_TERRAIN_INSTANCED_PERPIXEL_NORMAL)
-			    #define ENABLE_TERRAIN_PERPIXEL_NORMAL
+				#define ENABLE_TERRAIN_PERPIXEL_NORMAL
 			#endif
 
 			#define ASE_NEEDS_FRAG_WORLD_TANGENT
@@ -2561,8 +2728,8 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				float4 vertex : POSITION;
 				float3 ase_normal : NORMAL;
 				float4 ase_tangent : TANGENT;
-				float4 texcoord1 : TEXCOORD1;
 				float4 texcoord : TEXCOORD0;
+				float4 texcoord1 : TEXCOORD1;
 				
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -2625,10 +2792,10 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			half _PupilScale;
 			half _IrisScale;
 			half _IsLeftEye;
-			#ifdef _TRANSMISSION_ASE
+			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
-			#ifdef _TRANSLUCENCY_ASE
+			#ifdef ASE_TRANSLUCENCY
 				float _TransStrength;
 				float _TransNormal;
 				float _TransScattering;
@@ -2636,7 +2803,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				float _TransAmbient;
 				float _TransShadow;
 			#endif
-			#ifdef TESSELLATION_ON
+			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
 				float _TessMin;
@@ -2645,13 +2812,33 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
-			sampler2D _ColorBlendMap;
-			sampler2D _CorneaDiffuseMap;
-			sampler2D _ScleraDiffuseMap;
-			sampler2D _ScleraNormalMap;
-			sampler2D _EmissionMap;
-			sampler2D _MaskMap;
 
+			// Property used by ScenePickingPass
+			#ifdef SCENEPICKINGPASS
+				float4 _SelectionID;
+			#endif
+
+			// Properties used by SceneSelectionPass
+			#ifdef SCENESELECTIONPASS
+				int _ObjectId;
+				int _PassValue;
+			#endif
+
+			TEXTURE2D(_ColorBlendMap);
+			SAMPLER(sampler_ColorBlendMap);
+			TEXTURE2D(_CorneaDiffuseMap);
+			SAMPLER(sampler_CorneaDiffuseMap);
+			TEXTURE2D(_ScleraDiffuseMap);
+			SAMPLER(sampler_ScleraDiffuseMap);
+			TEXTURE2D(_ScleraNormalMap);
+			SAMPLER(sampler_ScleraNormalMap);
+			TEXTURE2D(_EmissionMap);
+			SAMPLER(sampler_EmissionMap);
+			TEXTURE2D(_MaskMap);
+			SAMPLER(sampler_MaskMap);
+
+
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/UnityGBuffer.hlsl"
 
 			half3 HSVToRGB( half3 c )
 			{
@@ -2686,12 +2873,15 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
+
 				float3 vertexValue = defaultVertexValue;
+
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
 					v.vertex.xyz += vertexValue;
 				#endif
+
 				v.ase_normal = v.ase_normal;
 
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
@@ -2705,7 +2895,10 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				o.tSpace2 = float4( normalInput.bitangentWS, positionWS.z);
 
 				OUTPUT_LIGHTMAP_UV( v.texcoord1, unity_LightmapST, o.lightmapUVOrVertexSH.xy );
-				OUTPUT_SH( normalInput.normalWS.xyz, o.lightmapUVOrVertexSH.xyz );
+
+				#if !defined(LIGHTMAP_ON)
+					OUTPUT_SH(normalInput.normalWS.xyz, o.lightmapUVOrVertexSH.xyz);
+				#endif
 
 				#if defined(ENABLE_TERRAIN_PERPIXEL_NORMAL)
 					o.lightmapUVOrVertexSH.zw = v.texcoord;
@@ -2713,28 +2906,32 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				#endif
 
 				half3 vertexLight = VertexLighting( positionWS, normalInput.normalWS );
+
 				#ifdef ASE_FOG
 					half fogFactor = ComputeFogFactor( positionCS.z );
 				#else
 					half fogFactor = 0;
 				#endif
+
 				o.fogFactorAndVertexLight = half4(fogFactor, vertexLight);
-				
+
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
-				VertexPositionInputs vertexInput = (VertexPositionInputs)0;
-				vertexInput.positionWS = positionWS;
-				vertexInput.positionCS = positionCS;
-				o.shadowCoord = GetShadowCoord( vertexInput );
+					VertexPositionInputs vertexInput = (VertexPositionInputs)0;
+					vertexInput.positionWS = positionWS;
+					vertexInput.positionCS = positionCS;
+					o.shadowCoord = GetShadowCoord( vertexInput );
 				#endif
-				
-				o.clipPos = positionCS;
+
+					o.clipPos = positionCS;
+
 				#if defined(ASE_NEEDS_FRAG_SCREEN_POSITION)
-				o.screenPos = ComputeScreenPos(positionCS);
+					o.screenPos = ComputeScreenPos(positionCS);
 				#endif
+
 				return o;
 			}
-			
-			#if defined(TESSELLATION_ON)
+
+			#if defined(ASE_TESSELLATION)
 			struct VertexControl
 			{
 				float4 vertex : INTERNALTESSPOS;
@@ -2792,7 +2989,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			[outputcontrolpoints(3)]
 			VertexControl HullFunction(InputPatch<VertexControl, 3> patch, uint id : SV_OutputControlPointID)
 			{
-			   return patch[id];
+				return patch[id];
 			}
 
 			[domain("tri")]
@@ -2823,11 +3020,12 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 			#endif
 
 			#if defined(ASE_EARLY_Z_DEPTH_OPTIMIZE)
-				#define ASE_SV_DEPTH SV_DepthLessEqual  
+				#define ASE_SV_DEPTH SV_DepthLessEqual
 			#else
 				#define ASE_SV_DEPTH SV_Depth
 			#endif
-			FragmentOutput frag ( VertexOutput IN 
+
+			FragmentOutput frag ( VertexOutput IN
 								#ifdef ASE_DEPTH_WRITE_ON
 								,out float outputDepth : ASE_SV_DEPTH
 								#endif
@@ -2850,19 +3048,23 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 					float3 WorldTangent = IN.tSpace1.xyz;
 					float3 WorldBiTangent = IN.tSpace2.xyz;
 				#endif
+
 				float3 WorldPosition = float3(IN.tSpace0.w,IN.tSpace1.w,IN.tSpace2.w);
 				float3 WorldViewDirection = _WorldSpaceCameraPos.xyz  - WorldPosition;
 				float4 ShadowCoords = float4( 0, 0, 0, 0 );
+
 				#if defined(ASE_NEEDS_FRAG_SCREEN_POSITION)
-				float4 ScreenPos = IN.screenPos;
+					float4 ScreenPos = IN.screenPos;
 				#endif
 
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
 					ShadowCoords = IN.shadowCoord;
 				#elif defined(MAIN_LIGHT_CALCULATE_SHADOWS)
 					ShadowCoords = TransformWorldToShadowCoord( WorldPosition );
+				#else
+					ShadowCoords = float4(0, 0, 0, 0);
 				#endif
-	
+
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
 				float2 uv_ColorBlendMap = IN.ase_texcoord7.xy * _ColorBlendMap_ST.xy + _ColorBlendMap_ST.zw;
@@ -2888,7 +3090,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				half temp_output_152_0 = ( irisScale208 * _ParallaxRadius );
 				half saferPower157 = abs( saturate( ( ( temp_output_152_0 - radial203 ) / temp_output_152_0 ) ) );
 				half2 lerpResult136 = lerp( texCoord93 , (( texCoord93 - ( (normalizeResult117).xy * _IrisDepth ) )*temp_output_122_0 + ( ( 1.0 - temp_output_122_0 ) * 0.5 )) , pow( saferPower157 , 0.25 ));
-				half3 hsvTorgb174 = RGBToHSV( ( tex2D( _CorneaDiffuseMap, lerpResult136 ) * _IrisColor ).rgb );
+				half3 hsvTorgb174 = RGBToHSV( ( SAMPLE_TEXTURE2D( _CorneaDiffuseMap, sampler_CorneaDiffuseMap, lerpResult136 ) * _IrisColor ).rgb );
 				half3 hsvTorgb184 = HSVToRGB( half3(( ( _IrisHue - 0.5 ) + hsvTorgb174.x ),( hsvTorgb174.y * _IrisSaturation ),( hsvTorgb174.z * _IrisBrightness )) );
 				half4 blendOpSrc201 = _LimbusColor;
 				half4 blendOpDest201 = ( ( _IrisCloudyColor * float4( 0.5,0.5,0.5,1 ) ) + half4( hsvTorgb184 , 0.0 ) );
@@ -2899,7 +3101,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				half2 temp_cast_4 = (temp_output_223_0).xx;
 				half2 temp_cast_5 = (( ( 1.0 - temp_output_223_0 ) * 0.5 )).xx;
 				half2 texCoord228 = IN.ase_texcoord7.xy * temp_cast_4 + temp_cast_5;
-				half3 hsvTorgb231 = RGBToHSV( tex2D( _ScleraDiffuseMap, texCoord228 ).rgb );
+				half3 hsvTorgb231 = RGBToHSV( SAMPLE_TEXTURE2D( _ScleraDiffuseMap, sampler_ScleraDiffuseMap, texCoord228 ).rgb );
 				half3 hsvTorgb232 = HSVToRGB( half3(( ( _ScleraHue - 0.5 ) + hsvTorgb231.x ),( hsvTorgb231.y * _ScleraSaturation ),( hsvTorgb231.z * _ScleraBrightness )) );
 				half4 blendOpSrc23 = _CornerShadowColor;
 				half4 blendOpDest23 = half4( hsvTorgb232 , 0.0 );
@@ -2909,14 +3111,14 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				half smoothstepResult28 = smoothstep( ( scaledIrisRadius209 - ( irisScale208 * _LimbusWidth ) ) , scaledIrisRadius209 , radial203);
 				half irisMask213 = smoothstepResult28;
 				half4 lerpResult261 = lerp( ( saturate( lerpBlendMode201 )) , ( saturate( lerpBlendMode23 )) , irisMask213);
-				half4 blendOpSrc21 = tex2D( _ColorBlendMap, uv_ColorBlendMap );
+				half4 blendOpSrc21 = SAMPLE_TEXTURE2D( _ColorBlendMap, sampler_ColorBlendMap, uv_ColorBlendMap );
 				half4 blendOpDest21 = lerpResult261;
 				half4 lerpBlendMode21 = lerp(blendOpDest21,( blendOpSrc21 * blendOpDest21 ),_ColorBlendStrength);
 				half4 baseColor369 = ( saturate( lerpBlendMode21 ));
 				
 				half2 temp_cast_9 = (_ScleraNormalTiling).xx;
 				half2 texCoord294 = IN.ase_texcoord7.xy * temp_cast_9 + float2( 0,0 );
-				half3 unpack289 = UnpackNormalScale( tex2D( _ScleraNormalMap, texCoord294 ), ( _ScleraNormalStrength * irisMask213 ) );
+				half3 unpack289 = UnpackNormalScale( SAMPLE_TEXTURE2D( _ScleraNormalMap, sampler_ScleraNormalMap, texCoord294 ), ( _ScleraNormalStrength * irisMask213 ) );
 				unpack289.z = lerp( 1, unpack289.z, saturate(( _ScleraNormalStrength * irisMask213 )) );
 				
 				float2 uv_EmissionMap = IN.ase_texcoord7.xy * _EmissionMap_ST.xy + _EmissionMap_ST.zw;
@@ -2927,13 +3129,14 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				
 				half lerpResult315 = lerp( _IrisSubsurfaceScale , _ScleraSubsurfaceScale , irisMask213);
 				
-				float3 Albedo = baseColor369.rgb;
+
+				float3 BaseColor = baseColor369.rgb;
 				float3 Normal = unpack289;
-				float3 Emission = ( tex2D( _EmissionMap, uv_EmissionMap ) * _EmissiveColor ).rgb;
+				float3 Emission = ( SAMPLE_TEXTURE2D( _EmissionMap, sampler_EmissionMap, uv_EmissionMap ) * _EmissiveColor ).rgb;
 				float3 Specular = 0.5;
 				float Metallic = 0;
 				float Smoothness = lerpResult271;
-				float Occlusion = ( 1.0 - ( _AOStrength * ( 1.0 - tex2D( _MaskMap, uv_MaskMap ).g ) ) );
+				float Occlusion = ( 1.0 - ( _AOStrength * ( 1.0 - SAMPLE_TEXTURE2D( _MaskMap, sampler_MaskMap, uv_MaskMap ).g ) ) );
 				float Alpha = 1;
 				float AlphaClipThreshold = 0.5;
 				float AlphaClipThresholdShadow = 0.5;
@@ -2942,8 +3145,9 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				float RefractionIndex = 1;
 				float3 Transmission = 1;
 				float3 Translucency = ( lerpResult315 * 0.5 * ( _SubsurfaceFalloff * baseColor369 ) ).rgb;
+
 				#ifdef ASE_DEPTH_WRITE_ON
-				float DepthValue = 0;
+					float DepthValue = 0;
 				#endif
 
 				#ifdef _ALPHATEST_ON
@@ -2969,7 +3173,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				#endif
 
 				#ifdef ASE_FOG
-					inputData.fogCoord = IN.fogFactorAndVertexLight.x;
+					inputData.fogCoord = 0; // we don't apply fog in the gbuffer pass
 				#endif
 
 				inputData.vertexLighting = IN.fogFactorAndVertexLight.yzw;
@@ -2980,89 +3184,21 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 				#endif
 
 				inputData.bakedGI = SAMPLE_GI( IN.lightmapUVOrVertexSH.xy, SH, inputData.normalWS );
-				#ifdef _ASE_BAKEDGI
+
+				#ifdef ASE_BAKEDGI
 					inputData.bakedGI = BakedGI;
 				#endif
 
 				BRDFData brdfData;
-				InitializeBRDFData( Albedo, Metallic, Specular, Smoothness, Alpha, brdfData);
+				InitializeBRDFData( BaseColor, Metallic, Specular, Smoothness, Alpha, brdfData);
 				half4 color;
 				color.rgb = GlobalIllumination( brdfData, inputData.bakedGI, Occlusion, inputData.normalWS, inputData.viewDirectionWS);
 				color.a = Alpha;
 
-				#ifdef _TRANSMISSION_ASE
-				{
-					float shadow = _TransmissionShadow;
-				
-					Light mainLight = GetMainLight( inputData.shadowCoord );
-					float3 mainAtten = mainLight.color * mainLight.distanceAttenuation;
-					mainAtten = lerp( mainAtten, mainAtten * mainLight.shadowAttenuation, shadow );
-					half3 mainTransmission = max(0 , -dot(inputData.normalWS, mainLight.direction)) * mainAtten * Transmission;
-					color.rgb += Albedo * mainTransmission;
-				
-					#ifdef _ADDITIONAL_LIGHTS
-						int transPixelLightCount = GetAdditionalLightsCount();
-						for (int i = 0; i < transPixelLightCount; ++i)
-						{
-							Light light = GetAdditionalLight(i, inputData.positionWS);
-							float3 atten = light.color * light.distanceAttenuation;
-							atten = lerp( atten, atten * light.shadowAttenuation, shadow );
-				
-							half3 transmission = max(0 , -dot(inputData.normalWS, light.direction)) * atten * Transmission;
-							color.rgb += Albedo * transmission;
-						}
-					#endif
-				}
-				#endif
-				
-				#ifdef _TRANSLUCENCY_ASE
-				{
-					float shadow = _TransShadow;
-					float normal = _TransNormal;
-					float scattering = _TransScattering;
-					float direct = _TransDirect;
-					float ambient = _TransAmbient;
-					float strength = _TransStrength;
-				
-					Light mainLight = GetMainLight( inputData.shadowCoord );
-					float3 mainAtten = mainLight.color * mainLight.distanceAttenuation;
-					mainAtten = lerp( mainAtten, mainAtten * mainLight.shadowAttenuation, shadow );
-				
-					half3 mainLightDir = mainLight.direction + inputData.normalWS * normal;
-					half mainVdotL = pow( saturate( dot( inputData.viewDirectionWS, -mainLightDir ) ), scattering );
-					half3 mainTranslucency = mainAtten * ( mainVdotL * direct + inputData.bakedGI * ambient ) * Translucency;
-					color.rgb += Albedo * mainTranslucency * strength;
-				
-					#ifdef _ADDITIONAL_LIGHTS
-						int transPixelLightCount = GetAdditionalLightsCount();
-						for (int i = 0; i < transPixelLightCount; ++i)
-						{
-							Light light = GetAdditionalLight(i, inputData.positionWS);
-							float3 atten = light.color * light.distanceAttenuation;
-							atten = lerp( atten, atten * light.shadowAttenuation, shadow );
-				
-							half3 lightDir = light.direction + inputData.normalWS * normal;
-							half VdotL = pow( saturate( dot( inputData.viewDirectionWS, -lightDir ) ), scattering );
-							half3 translucency = atten * ( VdotL * direct + inputData.bakedGI * ambient ) * Translucency;
-							color.rgb += Albedo * translucency * strength;
-						}
-					#endif
-				}
-				#endif
-				
-				#ifdef _REFRACTION_ASE
-					float4 projScreenPos = ScreenPos / ScreenPos.w;
-					float3 refractionOffset = ( RefractionIndex - 1.0 ) * mul( UNITY_MATRIX_V, float4( WorldNormal, 0 ) ).xyz * ( 1.0 - dot( WorldNormal, WorldViewDirection ) );
-					projScreenPos.xy += refractionOffset.xy;
-					float3 refraction = SHADERGRAPH_SAMPLE_SCENE_COLOR( projScreenPos.xy ) * RefractionColor;
-					color.rgb = lerp( refraction, color.rgb, color.a );
-					color.a = 1;
-				#endif
-				
 				#ifdef ASE_FINAL_COLOR_ALPHA_MULTIPLY
 					color.rgb *= color.a;
 				#endif
-				
+
 				#ifdef ASE_FOG
 					#ifdef TERRAIN_SPLAT_ADDPASS
 						color.rgb = MixFogColor(color.rgb, half3( 0, 0, 0 ), IN.fogFactorAndVertexLight.x );
@@ -3070,11 +3206,11 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 						color.rgb = MixFog(color.rgb, IN.fogFactorAndVertexLight.x);
 					#endif
 				#endif
-				
+
 				#ifdef ASE_DEPTH_WRITE_ON
 					outputDepth = DepthValue;
 				#endif
-				
+
 				return BRDFDataToGbuffer(brdfData, inputData, Smoothness, Emission + color.rgb);
 			}
 
@@ -3088,7 +3224,7 @@ Shader "Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation"
 	
 }
 /*ASEBEGIN
-Version=19103
+Version=19105
 Node;AmplifyShaderEditor.CommentaryNode;204;-6596.911,-3587.629;Inherit;False;1134.455;323.4619;Comment;5;37;36;40;38;203;Radial Gradient;1,0,0.9132481,1;0;0
 Node;AmplifyShaderEditor.CommentaryNode;59;-6599.231,-2888.385;Inherit;False;755.1367;301.8584;;5;27;26;25;208;209;Scaled Iris Radius;1,0,0.8158517,1;0;0
 Node;AmplifyShaderEditor.TextureCoordinatesNode;36;-6546.911,-3537.629;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
@@ -3098,7 +3234,6 @@ Node;AmplifyShaderEditor.SimpleSubtractOpNode;37;-6286.913,-3448.629;Inherit;Fal
 Node;AmplifyShaderEditor.RangedFloatNode;25;-6548.356,-2702.526;Inherit;False;Property;_IrisScale;Iris Scale;12;0;Create;True;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
 Node;AmplifyShaderEditor.LengthOpNode;38;-6118.912,-3521.629;Inherit;False;1;0;FLOAT2;0,0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;27;-6212.122,-2796.185;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode;219;-5764.856,244.6688;Inherit;False;irisDepth;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.CommentaryNode;168;-7097.884,-1391.027;Inherit;False;2236.97;563.6326;;13;83;82;89;93;88;91;73;71;74;69;70;218;220;Pupil Scaling;1,0.9427493,0,1;0;0
 Node;AmplifyShaderEditor.CommentaryNode;53;-7622.302,-616.9117;Inherit;False;1099.865;540.9683;;6;45;48;43;47;205;217;Pupil Scale Mask;0,1,0.9709253,1;0;0
 Node;AmplifyShaderEditor.RelayNode;40;-5952.937,-3518.167;Inherit;True;1;0;FLOAT;0;False;1;FLOAT;0
@@ -3109,7 +3244,6 @@ Node;AmplifyShaderEditor.SimpleAddOpNode;71;-6703.296,-1095.541;Inherit;False;2;
 Node;AmplifyShaderEditor.RegisterLocalVarNode;203;-5686.437,-3523.698;Inherit;False;radial;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;208;-6045.01,-2702.917;Inherit;False;irisScale;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;205;-7282.567,-235.5991;Inherit;False;203;radial;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;73;-6777.356,-974.6068;Inherit;False;Property;_PupilScale;Pupil Scale;22;0;Create;True;0;0;0;False;0;False;0.8;0.8;0.1;2;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleDivideOpNode;70;-6503.296,-1179.541;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;45;-7249.302,-500.9114;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.FunctionNode;47;-6926.164,-405.7781;Inherit;False;Inverse Lerp;-1;;1;09cbe79402f023141a4dc1fddd4c9511;0;3;1;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;1;FLOAT;0
@@ -3117,22 +3251,14 @@ Node;AmplifyShaderEditor.GetLocalVarNode;218;-6283.93,-1272.166;Inherit;False;20
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;74;-6333.296,-1113.541;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;82;-6091.217,-1135.869;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SaturateNode;48;-6720.438,-406.1374;Inherit;True;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.WorldNormalVector;106;-6123.872,-346.0336;Inherit;False;False;1;0;FLOAT3;0,0,1;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
 Node;AmplifyShaderEditor.LerpOp;83;-5831.006,-1156.134;Inherit;False;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.WorldToTangentMatrix;109;-6131.872,-443.0333;Inherit;False;0;1;FLOAT3x3;0
-Node;AmplifyShaderEditor.SimpleSubtractOpNode;113;-5878.872,-203.0339;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0.8;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;110;-5888.872,-410.0334;Inherit;False;2;2;0;FLOAT3x3;0,0,0,1,1,1,1,0,1;False;1;FLOAT3;0,0,0;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.CommentaryNode;160;-5909.006,856.857;Inherit;False;1488.626;389.5208;;8;157;154;155;152;207;215;151;379;Parallax Height Mask;0,1,0.9901032,1;0;0
 Node;AmplifyShaderEditor.SimpleDivideOpNode;88;-5617.896,-1237.898;Inherit;False;2;0;FLOAT;1;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;215;-5811.718,936.4778;Inherit;False;208;irisScale;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;151;-5866.006,1044.189;Inherit;False;Property;_ParallaxRadius;Parallax Radius;24;0;Create;True;0;0;0;False;0;False;0.1175;0.1175;0;0.16;0;1;FLOAT;0
 Node;AmplifyShaderEditor.ViewDirInputsCoordNode;116;-5884.988,-52.86908;Inherit;False;Tangent;False;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
-Node;AmplifyShaderEditor.RangedFloatNode;131;-5696.866,341.2151;Inherit;False;Property;_PMod;Parrallax Mod;23;0;Create;False;0;0;0;False;0;False;6.4;6.4;0;10;0;1;FLOAT;0
 Node;AmplifyShaderEditor.OneMinusNode;89;-5438.554,-1119.105;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;114;-5686.872,-306.0336;Inherit;False;2;2;0;FLOAT3;0,0,0;False;1;FLOAT;0;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;91;-5240.831,-1050.036;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0.5;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;130;-5343.229,214.3489;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;132;-5693.569,431.6167;Inherit;False;Constant;_ParallaxBase;Parallax Base;11;0;Create;True;0;0;0;False;0;False;0.91;0;0;2;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleAddOpNode;115;-5520.731,-197.0258;Inherit;False;2;2;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;152;-5538.07,987.3333;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;207;-5574.071,1125.396;Inherit;False;203;radial;1;0;OBJECT;;False;1;FLOAT;0
@@ -3152,7 +3278,6 @@ Node;AmplifyShaderEditor.OneMinusNode;123;-4758.28,377.501;Inherit;False;1;0;FLO
 Node;AmplifyShaderEditor.SimpleSubtractOpNode;120;-4730.475,15.26049;Inherit;False;2;0;FLOAT2;0,0;False;1;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.PowerNode;157;-4718.866,972.1238;Inherit;True;True;2;0;FLOAT;0;False;1;FLOAT;0.25;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;124;-4579.706,459.6981;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0.5;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;222;-4842.149,-1967.676;Inherit;False;Property;_ScleraScale;Sclera Scale;1;0;Create;True;0;0;0;False;0;False;1;1;0.25;2;0;1;FLOAT;0
 Node;AmplifyShaderEditor.CommentaryNode;185;-4048.612,-541.2673;Inherit;False;1780.96;673;Comment;17;377;376;375;374;373;184;181;182;178;174;179;183;177;172;175;171;136;Iris Base Color;0,1,0.1510973,1;0;0
 Node;AmplifyShaderEditor.ScaleAndOffsetNode;133;-4454.939,218.0967;Inherit;False;3;0;FLOAT2;0,0;False;1;FLOAT;1;False;2;FLOAT;0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.WireNode;268;-4167.973,723.1008;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
@@ -3163,24 +3288,20 @@ Node;AmplifyShaderEditor.LerpOp;136;-3998.612,-115.1973;Inherit;False;3;0;FLOAT2
 Node;AmplifyShaderEditor.CommentaryNode;259;-4192.131,-1473.21;Inherit;False;1402.463;452.699;;10;248;249;243;242;247;246;252;254;253;318;Corner Shadow  Mask;0,1,0.9703217,1;0;0
 Node;AmplifyShaderEditor.OneMinusNode;224;-4290.334,-1920.766;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.CommentaryNode;200;-3804.905,331.6779;Inherit;False;1196.184;459.7933;Comment;8;186;195;194;193;187;196;206;216;Limbus Mask;0,1,0.9804161,1;0;0
-Node;AmplifyShaderEditor.RangedFloatNode;243;-4067.687,-1193.44;Inherit;False;Property;_ShadowRadius;Shadow Radius;7;0;Create;True;0;0;0;False;0;False;0.275;0.275;0;0.5;0;1;FLOAT;0
 Node;AmplifyShaderEditor.ColorNode;373;-3656.015,-64.01612;Inherit;False;Property;_IrisColor;Iris Color;17;0;Create;True;0;0;0;False;0;False;1,1,1,0;1,1,1,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SamplerNode;172;-3745.916,-285.3767;Inherit;True;Property;_TextureSample1;Texture Sample 1;13;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;226;-4103.334,-1850.766;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0.5;False;1;FLOAT;0
 Node;AmplifyShaderEditor.WireNode;248;-4140.653,-1350.334;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.WireNode;249;-4142.133,-1326.678;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;242;-4069.911,-1423.21;Inherit;False;Property;_ShadowHardness;Shadow Hardness;8;0;Create;True;0;0;0;False;0;False;0.5;0.5;0.01;0.99;0;1;FLOAT;0
 Node;AmplifyShaderEditor.TexturePropertyNode;230;-3932.333,-2256.764;Inherit;True;Property;_ScleraDiffuseMap;Sclera Diffuse Map;0;0;Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
 Node;AmplifyShaderEditor.CommentaryNode;214;-6621.079,-2266.734;Inherit;False;1274.695;425.925;Comment;8;28;34;35;29;211;210;212;213;Iris Mask;1,0,0.909091,1;0;0
 Node;AmplifyShaderEditor.RangedFloatNode;187;-3753.622,675.4706;Inherit;False;Property;_LimbusDarkWidth;Limbus Dark Width;27;0;Create;True;0;0;0;False;0;False;0.025;0.025;0.01;0.2;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;186;-3754.905,459.1052;Inherit;False;Property;_LimbusDarkRadius;Limbus Dark Radius;26;0;Create;True;0;0;0;False;0;False;0.1;0.1;0.01;0.2;0;1;FLOAT;0
 Node;AmplifyShaderEditor.TextureCoordinatesNode;228;-3921.333,-2038.765;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.RangedFloatNode;175;-3538.651,-491.2674;Inherit;False;Property;_IrisHue;Iris Hue;13;0;Create;True;0;0;0;False;0;False;0.5;0.5;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;247;-3716.595,-1276.673;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;216;-3656.726,565.6792;Inherit;False;208;irisScale;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;376;-3430.244,-208.7466;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;246;-3715.117,-1383.124;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;29;-6571.078,-1956.81;Inherit;False;Property;_LimbusWidth;Limbus Width;25;0;Create;True;0;0;0;False;0;False;0.055;0.055;0.01;0.1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;193;-3294.721,498.8979;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleSubtractOpNode;177;-3119.651,-444.2674;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0.5;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;252;-3520.672,-1342.511;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
@@ -3189,8 +3310,6 @@ Node;AmplifyShaderEditor.GetLocalVarNode;211;-6505.249,-2082.404;Inherit;False;2
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;194;-3292.721,639.8973;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SamplerNode;229;-3605.333,-2126.765;Inherit;True;Property;_TextureSample2;Texture Sample 2;20;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.RGBToHSVNode;174;-3254.595,-235.1576;Inherit;False;1;0;FLOAT3;0,0,0;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
-Node;AmplifyShaderEditor.RangedFloatNode;179;-3365.104,-61.96037;Inherit;False;Property;_IrisSaturation;Iris Saturation;14;0;Create;True;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;183;-3369.631,34.94904;Inherit;False;Property;_IrisBrightness;Iris Brightness;15;0;Create;True;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;233;-3336.919,-2254.169;Inherit;False;Property;_ScleraHue;Sclera Hue;2;0;Create;True;0;0;0;False;0;False;0.5;0.5;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;181;-2986.816,-183.9249;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleAddOpNode;195;-3075.721,564.8978;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
@@ -3278,23 +3397,39 @@ Node;AmplifyShaderEditor.StaticSwitch;313;-2718.15,1843.617;Inherit;False;Proper
 Node;AmplifyShaderEditor.WireNode;310;-14.00925,1303.124;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;325;-2726.429,1963.902;Inherit;False;Property;_IsLeftEye;Is Left Eye;40;1;[Toggle];Create;True;0;0;0;True;0;False;0;0;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.WireNode;307;-13.56087,1183.685;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;10;509.1178,952.8544;Half;False;True;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;18;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;6;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalForward;False;False;0;Hidden/InternalErrorShader;0;0;Standard;38;Workflow;1;637781667002105518;Surface;0;637781667019125558;  Refraction Model;0;0;  Blend;0;0;Two Sided;1;0;Fragment Normal Space,InvertActionOnDeselection;0;0;Transmission;0;637781667128395846;  Transmission Shadow;0.5,False,;0;Translucency;1;637781762524256068;  Translucency Strength;1,False,;637782805023987511;  Normal Distortion;0.5,False,;637782805027308440;  Scattering;2,False,;637782805030872054;  Direct;0.9,False,;637782805034534697;  Ambient;0.1,False,;637782805037984542;  Shadow;0.5,False,;637782805041162307;Cast Shadows;1;637781667262285565;  Use Shadow Threshold;0;0;Receive Shadows;1;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;1;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;DOTS Instancing;0;0;Tessellation;1;637999709512702650;  Phong;1;637999709526191269;  Strength;0,False,;637999710628822803;  Type;2;637999720092367003;  Tess;1,False,;637999710653500728;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Write Depth;0;0;  Early Z;0;0;Vertex Position,InvertActionOnDeselection;1;0;0;8;False;True;True;True;True;True;True;True;False;;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;11;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=ShadowCaster;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;16;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;GBuffer;0;7;GBuffer;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalGBuffer;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;12;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;True;1;LightMode=DepthOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;14;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Universal2D;0;5;Universal2D;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=Universal2D;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;9;-57.16376,-137.1929;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;0;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;13;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Meta;0;4;Meta;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Meta;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;15;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthNormals;0;6;DepthNormals;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=DepthNormals;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.RangedFloatNode;72;-6116.004,121.286;Inherit;False;Property;_IrisDepth;Iris Depth;20;0;Create;True;0;0;0;False;0;False;0.3;0.2;0.1;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;69;-7045.296,-1195.541;Inherit;False;Constant;_DepthCorrection;Depth Correction;7;0;Create;True;0;0;0;False;0;False;0.333;0;0.3;0.4;0;1;FLOAT;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;10;509.1178,952.8544;Half;False;True;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;Reallusion/Amplify/RL_CorneaShaderParallax_URP_Tessellation;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;18;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;6;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalForward;False;False;0;Hidden/InternalErrorShader;0;0;Standard;38;Workflow;1;637781667002105518;Surface;0;637781667019125558;  Refraction Model;0;0;  Blend;0;0;Two Sided;1;0;Fragment Normal Space,InvertActionOnDeselection;0;0;Transmission;0;637781667128395846;  Transmission Shadow;0.5,False,;0;Translucency;1;637781762524256068;  Translucency Strength;1,False,;637782805023987511;  Normal Distortion;0.5,False,;637782805027308440;  Scattering;2,False,;637782805030872054;  Direct;0.9,False,;637782805034534697;  Ambient;0.1,False,;637782805037984542;  Shadow;0.5,False,;637782805041162307;Cast Shadows;1;637781667262285565;  Use Shadow Threshold;0;0;Receive Shadows;1;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;1;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;DOTS Instancing;0;0;Tessellation;1;637999709512702650;  Phong;1;637999709526191269;  Strength;0,False,;637999710628822803;  Type;2;637999720092367003;  Tess;1,False,;637999710653500728;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Write Depth;0;0;  Early Z;0;0;Vertex Position,InvertActionOnDeselection;1;0;0;8;False;True;True;True;True;True;True;True;False;;True;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;11;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=ShadowCaster;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;16;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;GBuffer;0;7;GBuffer;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalGBuffer;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;12;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;True;1;LightMode=DepthOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;14;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Universal2D;0;5;Universal2D;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=Universal2D;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;9;-57.16376,-137.1929;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;0;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;13;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Meta;0;4;Meta;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Meta;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;15;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthNormals;0;6;DepthNormals;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=DepthNormals;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.RangedFloatNode;43;-7572.302,-566.9115;Inherit;False;Property;_DepthRadius;Pupil Outer Radius;21;0;Create;False;0;0;0;False;0;False;0.8;0.8;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.WorldToTangentMatrix;109;-6131.872,-443.0333;Inherit;False;0;1;FLOAT3x3;0
+Node;AmplifyShaderEditor.WorldNormalVector;106;-6123.872,-346.0336;Inherit;False;False;1;0;FLOAT3;0,0,1;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;110;-5888.872,-410.0334;Inherit;False;2;2;0;FLOAT3x3;0,0,0,1,1,1,1,0,1;False;1;FLOAT3;0,0,0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;114;-5686.872,-306.0336;Inherit;False;2;2;0;FLOAT3;0,0,0;False;1;FLOAT;0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.SimpleSubtractOpNode;113;-5878.872,-203.0339;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0.8;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;130;-5343.229,214.3489;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode;219;-5764.856,244.6688;Inherit;False;irisDepth;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;112;-6203.872,-120.0343;Inherit;False;Property;_IOR;Cornea IOR;10;0;Create;False;0;0;0;False;0;False;1.4;1.4;1;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;72;-6116.004,122.286;Inherit;False;Property;_IrisDepth;Iris Depth;20;0;Create;True;0;0;0;False;0;False;0.3;0.2;0.1;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;131;-5696.866,341.2151;Inherit;False;Property;_PMod;Parrallax Mod;23;0;Create;False;0;0;0;False;0;False;6.4;6.4;0;10;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;132;-5693.569,431.6167;Inherit;False;Constant;_ParallaxBase;Parallax Base;11;0;Create;True;0;0;0;False;0;False;0.91;0;0;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;69;-7045.296,-1195.541;Inherit;False;Constant;_DepthCorrection;Depth Correction;7;0;Create;True;0;0;0;False;0;False;0.333;0;0.3;0.4;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;73;-6775.985,-974.6068;Inherit;False;Property;_PupilScale;Pupil Scale;22;0;Create;True;0;0;0;False;0;False;0.8;0.8;0.1;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;29;-6571.078,-1956.81;Inherit;False;Property;_LimbusWidth;Limbus Width;25;0;Create;True;0;0;0;False;0;False;0.055;0.055;0.01;0.1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;222;-4842.149,-1967.676;Inherit;False;Property;_ScleraScale;Sclera Scale;1;0;Create;True;0;0;0;False;0;False;1;1;0.25;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;243;-4067.687,-1193.44;Inherit;False;Property;_ShadowRadius;Shadow Radius;7;0;Create;True;0;0;0;False;0;False;0.275;0.275;0;0.5;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;242;-4069.911,-1423.21;Inherit;False;Property;_ShadowHardness;Shadow Hardness;8;0;Create;True;0;0;0;False;0;False;0.5;0.5;0.01;0.99;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;179;-3365.104,-61.96037;Inherit;False;Property;_IrisSaturation;Iris Saturation;14;0;Create;True;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;183;-3369.631,34.94904;Inherit;False;Property;_IrisBrightness;Iris Brightness;15;0;Create;True;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;175;-3538.651,-491.2674;Inherit;False;Property;_IrisHue;Iris Hue;13;0;Create;True;0;0;0;False;0;False;0.5;0.5;0;1;0;1;FLOAT;0
 WireConnection;37;0;36;0
 WireConnection;38;0;37;0
 WireConnection;27;0;26;0
 WireConnection;27;1;25;0
-WireConnection;219;0;72;0
 WireConnection;40;0;38;0
 WireConnection;209;0;27;0
 WireConnection;71;0;69;0
@@ -3315,16 +3450,9 @@ WireConnection;48;0;47;0
 WireConnection;83;0;218;0
 WireConnection;83;1;82;0
 WireConnection;83;2;48;0
-WireConnection;113;0;112;0
-WireConnection;110;0;109;0
-WireConnection;110;1;106;0
 WireConnection;88;1;83;0
 WireConnection;89;0;88;0
-WireConnection;114;0;110;0
-WireConnection;114;1;113;0
 WireConnection;91;0;89;0
-WireConnection;130;0;72;0
-WireConnection;130;1;131;0
 WireConnection;115;0;114;0
 WireConnection;115;1;116;0
 WireConnection;152;0;215;0
@@ -3478,5 +3606,13 @@ WireConnection;10;2;323;0
 WireConnection;10;4;307;0
 WireConnection;10;5;310;0
 WireConnection;10;15;340;0
+WireConnection;110;0;109;0
+WireConnection;110;1;106;0
+WireConnection;114;0;110;0
+WireConnection;114;1;113;0
+WireConnection;113;0;112;0
+WireConnection;130;0;72;0
+WireConnection;130;1;131;0
+WireConnection;219;0;72;0
 ASEEND*/
-//CHKSM=C90580E6258911E72899CD8E1CB8E1D300971216
+//CHKSM=78C1E7C3F99253CC80DA6625E9E34E18F1BF04A3
