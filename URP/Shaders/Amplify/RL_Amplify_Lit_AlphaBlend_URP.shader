@@ -1,4 +1,4 @@
-// Made with Amplify Shader Editor v1.9.1.3
+// Made with Amplify Shader Editor v1.9.1.5
 // Available at the Unity Asset Store - http://u3d.as/y3X 
 Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 {
@@ -199,6 +199,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 			#define _ALPHATEST_ON 1
 			#define _NORMALMAP 1
 			#define ASE_SRP_VERSION 101001
+			#define ASE_USING_SAMPLING_MACROS 1
 
 
 			#pragma shader_feature_local _RECEIVE_SHADOWS_OFF
@@ -270,22 +271,22 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _BaseColor;
-			float4 _BaseMap_ST;
-			float4 _BumpMap_ST;
-			float4 _DetailNormalMap_ST;
-			float4 _DetailMask_ST;
-			float4 _EmissionMap_ST;
-			float4 _EmissiveColor;
-			float4 _MetallicGlossMap_ST;
-			float4 _OcclusionMap_ST;
-			float _BumpScale;
-			float _DetailNormalMapScale;
-			float _Metallic;
-			float _GlossMapScale;
-			float _OcclusionStrength;
-			float _AlphaClip;
-			float _ShadowClip;
+			half4 _BaseColor;
+			half4 _BaseMap_ST;
+			half4 _BumpMap_ST;
+			half4 _DetailNormalMap_ST;
+			half4 _DetailMask_ST;
+			half4 _EmissionMap_ST;
+			half4 _EmissiveColor;
+			half4 _MetallicGlossMap_ST;
+			half4 _OcclusionMap_ST;
+			half _BumpScale;
+			half _DetailNormalMapScale;
+			half _Metallic;
+			half _GlossMapScale;
+			half _OcclusionStrength;
+			half _AlphaClip;
+			half _ShadowClip;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -318,13 +319,20 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 				int _PassValue;
 			#endif
 
-			sampler2D _BaseMap;
-			sampler2D _BumpMap;
-			sampler2D _DetailNormalMap;
-			sampler2D _DetailMask;
-			sampler2D _EmissionMap;
-			sampler2D _MetallicGlossMap;
-			sampler2D _OcclusionMap;
+			TEXTURE2D(_BaseMap);
+			SAMPLER(sampler_BaseMap);
+			TEXTURE2D(_BumpMap);
+			SAMPLER(sampler_BumpMap);
+			TEXTURE2D(_DetailNormalMap);
+			SAMPLER(sampler_DetailNormalMap);
+			TEXTURE2D(_DetailMask);
+			SAMPLER(sampler_DetailMask);
+			TEXTURE2D(_EmissionMap);
+			SAMPLER(sampler_EmissionMap);
+			TEXTURE2D(_MetallicGlossMap);
+			SAMPLER(sampler_MetallicGlossMap);
+			TEXTURE2D(_OcclusionMap);
+			SAMPLER(sampler_OcclusionMap);
 
 
 			
@@ -539,32 +547,32 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
 				float2 uv_BaseMap = IN.ase_texcoord7.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
-				float4 tex2DNode145 = tex2D( _BaseMap, uv_BaseMap );
-				float4 baseColor200 = ( _BaseColor * tex2DNode145 );
+				half4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
+				half4 baseColor200 = ( _BaseColor * tex2DNode145 );
 				
 				float2 uv_BumpMap = IN.ase_texcoord7.xy * _BumpMap_ST.xy + _BumpMap_ST.zw;
-				float3 unpack146 = UnpackNormalScale( tex2D( _BumpMap, uv_BumpMap ), _BumpScale );
+				half3 unpack146 = UnpackNormalScale( SAMPLE_TEXTURE2D( _BumpMap, sampler_BumpMap, uv_BumpMap ), _BumpScale );
 				unpack146.z = lerp( 1, unpack146.z, saturate(_BumpScale) );
 				float2 uv_DetailNormalMap = IN.ase_texcoord7.xy * _DetailNormalMap_ST.xy + _DetailNormalMap_ST.zw;
 				float2 uv_DetailMask = IN.ase_texcoord7.xy * _DetailMask_ST.xy + _DetailMask_ST.zw;
-				float3 unpack148 = UnpackNormalScale( tex2D( _DetailNormalMap, uv_DetailNormalMap ), ( _DetailNormalMapScale * tex2D( _DetailMask, uv_DetailMask ).g ) );
-				unpack148.z = lerp( 1, unpack148.z, saturate(( _DetailNormalMapScale * tex2D( _DetailMask, uv_DetailMask ).g )) );
+				half3 unpack148 = UnpackNormalScale( SAMPLE_TEXTURE2D( _DetailNormalMap, sampler_DetailNormalMap, uv_DetailNormalMap ), ( _DetailNormalMapScale * SAMPLE_TEXTURE2D( _DetailMask, sampler_DetailMask, uv_DetailMask ).g ) );
+				unpack148.z = lerp( 1, unpack148.z, saturate(( _DetailNormalMapScale * SAMPLE_TEXTURE2D( _DetailMask, sampler_DetailMask, uv_DetailMask ).g )) );
 				
 				float2 uv_EmissionMap = IN.ase_texcoord7.xy * _EmissionMap_ST.xy + _EmissionMap_ST.zw;
 				
 				float2 uv_MetallicGlossMap = IN.ase_texcoord7.xy * _MetallicGlossMap_ST.xy + _MetallicGlossMap_ST.zw;
-				float4 tex2DNode150 = tex2D( _MetallicGlossMap, uv_MetallicGlossMap );
+				half4 tex2DNode150 = SAMPLE_TEXTURE2D( _MetallicGlossMap, sampler_MetallicGlossMap, uv_MetallicGlossMap );
 				
 				float2 uv_OcclusionMap = IN.ase_texcoord7.xy * _OcclusionMap_ST.xy + _OcclusionMap_ST.zw;
 				
 
 				float3 BaseColor = baseColor200.rgb;
 				float3 Normal = BlendNormal( unpack146 , unpack148 );
-				float3 Emission = ( tex2D( _EmissionMap, uv_EmissionMap ) * _EmissiveColor ).rgb;
+				float3 Emission = ( SAMPLE_TEXTURE2D( _EmissionMap, sampler_EmissionMap, uv_EmissionMap ) * _EmissiveColor ).rgb;
 				float3 Specular = 0.5;
 				float Metallic = ( _Metallic * tex2DNode150.g );
 				float Smoothness = ( tex2DNode150.a * _GlossMapScale );
-				float Occlusion = ( 1.0 - ( _OcclusionStrength * ( 1.0 - tex2D( _OcclusionMap, uv_OcclusionMap ).g ) ) );
+				float Occlusion = ( 1.0 - ( _OcclusionStrength * ( 1.0 - SAMPLE_TEXTURE2D( _OcclusionMap, sampler_OcclusionMap, uv_OcclusionMap ).g ) ) );
 				float Alpha = ( _BaseColor.a * tex2DNode145.a );
 				float AlphaClipThreshold = _AlphaClip;
 				float AlphaClipThresholdShadow = _ShadowClip;
@@ -746,6 +754,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 			#define _ALPHATEST_ON 1
 			#define _NORMALMAP 1
 			#define ASE_SRP_VERSION 101001
+			#define ASE_USING_SAMPLING_MACROS 1
 
 
 			#pragma vertex vert
@@ -783,22 +792,22 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _BaseColor;
-			float4 _BaseMap_ST;
-			float4 _BumpMap_ST;
-			float4 _DetailNormalMap_ST;
-			float4 _DetailMask_ST;
-			float4 _EmissionMap_ST;
-			float4 _EmissiveColor;
-			float4 _MetallicGlossMap_ST;
-			float4 _OcclusionMap_ST;
-			float _BumpScale;
-			float _DetailNormalMapScale;
-			float _Metallic;
-			float _GlossMapScale;
-			float _OcclusionStrength;
-			float _AlphaClip;
-			float _ShadowClip;
+			half4 _BaseColor;
+			half4 _BaseMap_ST;
+			half4 _BumpMap_ST;
+			half4 _DetailNormalMap_ST;
+			half4 _DetailMask_ST;
+			half4 _EmissionMap_ST;
+			half4 _EmissiveColor;
+			half4 _MetallicGlossMap_ST;
+			half4 _OcclusionMap_ST;
+			half _BumpScale;
+			half _DetailNormalMapScale;
+			half _Metallic;
+			half _GlossMapScale;
+			half _OcclusionStrength;
+			half _AlphaClip;
+			half _ShadowClip;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -831,7 +840,8 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 				int _PassValue;
 			#endif
 
-			sampler2D _BaseMap;
+			TEXTURE2D(_BaseMap);
+			SAMPLER(sampler_BaseMap);
 
 
 			
@@ -1020,7 +1030,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 				#endif
 
 				float2 uv_BaseMap = IN.ase_texcoord2.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
-				float4 tex2DNode145 = tex2D( _BaseMap, uv_BaseMap );
+				half4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
 				
 
 				float Alpha = ( _BaseColor.a * tex2DNode145.a );
@@ -1076,6 +1086,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 			#define _ALPHATEST_ON 1
 			#define _NORMALMAP 1
 			#define ASE_SRP_VERSION 101001
+			#define ASE_USING_SAMPLING_MACROS 1
 
 
 			#pragma vertex vert
@@ -1113,22 +1124,22 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _BaseColor;
-			float4 _BaseMap_ST;
-			float4 _BumpMap_ST;
-			float4 _DetailNormalMap_ST;
-			float4 _DetailMask_ST;
-			float4 _EmissionMap_ST;
-			float4 _EmissiveColor;
-			float4 _MetallicGlossMap_ST;
-			float4 _OcclusionMap_ST;
-			float _BumpScale;
-			float _DetailNormalMapScale;
-			float _Metallic;
-			float _GlossMapScale;
-			float _OcclusionStrength;
-			float _AlphaClip;
-			float _ShadowClip;
+			half4 _BaseColor;
+			half4 _BaseMap_ST;
+			half4 _BumpMap_ST;
+			half4 _DetailNormalMap_ST;
+			half4 _DetailMask_ST;
+			half4 _EmissionMap_ST;
+			half4 _EmissiveColor;
+			half4 _MetallicGlossMap_ST;
+			half4 _OcclusionMap_ST;
+			half _BumpScale;
+			half _DetailNormalMapScale;
+			half _Metallic;
+			half _GlossMapScale;
+			half _OcclusionStrength;
+			half _AlphaClip;
+			half _ShadowClip;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -1161,7 +1172,8 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 				int _PassValue;
 			#endif
 
-			sampler2D _BaseMap;
+			TEXTURE2D(_BaseMap);
+			SAMPLER(sampler_BaseMap);
 
 
 			
@@ -1321,7 +1333,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 				#endif
 
 				float2 uv_BaseMap = IN.ase_texcoord2.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
-				float4 tex2DNode145 = tex2D( _BaseMap, uv_BaseMap );
+				half4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
 				
 
 				float Alpha = ( _BaseColor.a * tex2DNode145.a );
@@ -1369,6 +1381,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 			#define _ALPHATEST_ON 1
 			#define _NORMALMAP 1
 			#define ASE_SRP_VERSION 101001
+			#define ASE_USING_SAMPLING_MACROS 1
 
 
 			#pragma vertex vert
@@ -1409,22 +1422,22 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _BaseColor;
-			float4 _BaseMap_ST;
-			float4 _BumpMap_ST;
-			float4 _DetailNormalMap_ST;
-			float4 _DetailMask_ST;
-			float4 _EmissionMap_ST;
-			float4 _EmissiveColor;
-			float4 _MetallicGlossMap_ST;
-			float4 _OcclusionMap_ST;
-			float _BumpScale;
-			float _DetailNormalMapScale;
-			float _Metallic;
-			float _GlossMapScale;
-			float _OcclusionStrength;
-			float _AlphaClip;
-			float _ShadowClip;
+			half4 _BaseColor;
+			half4 _BaseMap_ST;
+			half4 _BumpMap_ST;
+			half4 _DetailNormalMap_ST;
+			half4 _DetailMask_ST;
+			half4 _EmissionMap_ST;
+			half4 _EmissiveColor;
+			half4 _MetallicGlossMap_ST;
+			half4 _OcclusionMap_ST;
+			half _BumpScale;
+			half _DetailNormalMapScale;
+			half _Metallic;
+			half _GlossMapScale;
+			half _OcclusionStrength;
+			half _AlphaClip;
+			half _ShadowClip;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -1457,8 +1470,10 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 				int _PassValue;
 			#endif
 
-			sampler2D _BaseMap;
-			sampler2D _EmissionMap;
+			TEXTURE2D(_BaseMap);
+			SAMPLER(sampler_BaseMap);
+			TEXTURE2D(_EmissionMap);
+			SAMPLER(sampler_EmissionMap);
 
 
 			
@@ -1614,14 +1629,14 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 				#endif
 
 				float2 uv_BaseMap = IN.ase_texcoord2.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
-				float4 tex2DNode145 = tex2D( _BaseMap, uv_BaseMap );
-				float4 baseColor200 = ( _BaseColor * tex2DNode145 );
+				half4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
+				half4 baseColor200 = ( _BaseColor * tex2DNode145 );
 				
 				float2 uv_EmissionMap = IN.ase_texcoord2.xy * _EmissionMap_ST.xy + _EmissionMap_ST.zw;
 				
 
 				float3 BaseColor = baseColor200.rgb;
-				float3 Emission = ( tex2D( _EmissionMap, uv_EmissionMap ) * _EmissiveColor ).rgb;
+				float3 Emission = ( SAMPLE_TEXTURE2D( _EmissionMap, sampler_EmissionMap, uv_EmissionMap ) * _EmissiveColor ).rgb;
 				float Alpha = ( _BaseColor.a * tex2DNode145.a );
 				float AlphaClipThreshold = _AlphaClip;
 
@@ -1664,6 +1679,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 			#define _ALPHATEST_ON 1
 			#define _NORMALMAP 1
 			#define ASE_SRP_VERSION 101001
+			#define ASE_USING_SAMPLING_MACROS 1
 
 
 			#pragma vertex vert
@@ -1701,22 +1717,22 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _BaseColor;
-			float4 _BaseMap_ST;
-			float4 _BumpMap_ST;
-			float4 _DetailNormalMap_ST;
-			float4 _DetailMask_ST;
-			float4 _EmissionMap_ST;
-			float4 _EmissiveColor;
-			float4 _MetallicGlossMap_ST;
-			float4 _OcclusionMap_ST;
-			float _BumpScale;
-			float _DetailNormalMapScale;
-			float _Metallic;
-			float _GlossMapScale;
-			float _OcclusionStrength;
-			float _AlphaClip;
-			float _ShadowClip;
+			half4 _BaseColor;
+			half4 _BaseMap_ST;
+			half4 _BumpMap_ST;
+			half4 _DetailNormalMap_ST;
+			half4 _DetailMask_ST;
+			half4 _EmissionMap_ST;
+			half4 _EmissiveColor;
+			half4 _MetallicGlossMap_ST;
+			half4 _OcclusionMap_ST;
+			half _BumpScale;
+			half _DetailNormalMapScale;
+			half _Metallic;
+			half _GlossMapScale;
+			half _OcclusionStrength;
+			half _AlphaClip;
+			half _ShadowClip;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -1749,7 +1765,8 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 				int _PassValue;
 			#endif
 
-			sampler2D _BaseMap;
+			TEXTURE2D(_BaseMap);
+			SAMPLER(sampler_BaseMap);
 
 
 			
@@ -1900,8 +1917,8 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 				#endif
 
 				float2 uv_BaseMap = IN.ase_texcoord2.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
-				float4 tex2DNode145 = tex2D( _BaseMap, uv_BaseMap );
-				float4 baseColor200 = ( _BaseColor * tex2DNode145 );
+				half4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
+				half4 baseColor200 = ( _BaseColor * tex2DNode145 );
 				
 
 				float3 BaseColor = baseColor200.rgb;
@@ -1944,6 +1961,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 			#define _ALPHATEST_ON 1
 			#define _NORMALMAP 1
 			#define ASE_SRP_VERSION 101001
+			#define ASE_USING_SAMPLING_MACROS 1
 
 
 			#pragma vertex vert
@@ -1982,22 +2000,22 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _BaseColor;
-			float4 _BaseMap_ST;
-			float4 _BumpMap_ST;
-			float4 _DetailNormalMap_ST;
-			float4 _DetailMask_ST;
-			float4 _EmissionMap_ST;
-			float4 _EmissiveColor;
-			float4 _MetallicGlossMap_ST;
-			float4 _OcclusionMap_ST;
-			float _BumpScale;
-			float _DetailNormalMapScale;
-			float _Metallic;
-			float _GlossMapScale;
-			float _OcclusionStrength;
-			float _AlphaClip;
-			float _ShadowClip;
+			half4 _BaseColor;
+			half4 _BaseMap_ST;
+			half4 _BumpMap_ST;
+			half4 _DetailNormalMap_ST;
+			half4 _DetailMask_ST;
+			half4 _EmissionMap_ST;
+			half4 _EmissiveColor;
+			half4 _MetallicGlossMap_ST;
+			half4 _OcclusionMap_ST;
+			half _BumpScale;
+			half _DetailNormalMapScale;
+			half _Metallic;
+			half _GlossMapScale;
+			half _OcclusionStrength;
+			half _AlphaClip;
+			half _ShadowClip;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -2030,7 +2048,8 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 				int _PassValue;
 			#endif
 
-			sampler2D _BaseMap;
+			TEXTURE2D(_BaseMap);
+			SAMPLER(sampler_BaseMap);
 
 
 			
@@ -2192,7 +2211,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 				#endif
 
 				float2 uv_BaseMap = IN.ase_texcoord3.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
-				float4 tex2DNode145 = tex2D( _BaseMap, uv_BaseMap );
+				half4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
 				
 
 				float Alpha = ( _BaseColor.a * tex2DNode145.a );
@@ -2251,6 +2270,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 			#define _ALPHATEST_ON 1
 			#define _NORMALMAP 1
 			#define ASE_SRP_VERSION 101001
+			#define ASE_USING_SAMPLING_MACROS 1
 
 
 			#pragma shader_feature_local _RECEIVE_SHADOWS_OFF
@@ -2320,22 +2340,22 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _BaseColor;
-			float4 _BaseMap_ST;
-			float4 _BumpMap_ST;
-			float4 _DetailNormalMap_ST;
-			float4 _DetailMask_ST;
-			float4 _EmissionMap_ST;
-			float4 _EmissiveColor;
-			float4 _MetallicGlossMap_ST;
-			float4 _OcclusionMap_ST;
-			float _BumpScale;
-			float _DetailNormalMapScale;
-			float _Metallic;
-			float _GlossMapScale;
-			float _OcclusionStrength;
-			float _AlphaClip;
-			float _ShadowClip;
+			half4 _BaseColor;
+			half4 _BaseMap_ST;
+			half4 _BumpMap_ST;
+			half4 _DetailNormalMap_ST;
+			half4 _DetailMask_ST;
+			half4 _EmissionMap_ST;
+			half4 _EmissiveColor;
+			half4 _MetallicGlossMap_ST;
+			half4 _OcclusionMap_ST;
+			half _BumpScale;
+			half _DetailNormalMapScale;
+			half _Metallic;
+			half _GlossMapScale;
+			half _OcclusionStrength;
+			half _AlphaClip;
+			half _ShadowClip;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -2368,13 +2388,20 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 				int _PassValue;
 			#endif
 
-			sampler2D _BaseMap;
-			sampler2D _BumpMap;
-			sampler2D _DetailNormalMap;
-			sampler2D _DetailMask;
-			sampler2D _EmissionMap;
-			sampler2D _MetallicGlossMap;
-			sampler2D _OcclusionMap;
+			TEXTURE2D(_BaseMap);
+			SAMPLER(sampler_BaseMap);
+			TEXTURE2D(_BumpMap);
+			SAMPLER(sampler_BumpMap);
+			TEXTURE2D(_DetailNormalMap);
+			SAMPLER(sampler_DetailNormalMap);
+			TEXTURE2D(_DetailMask);
+			SAMPLER(sampler_DetailMask);
+			TEXTURE2D(_EmissionMap);
+			SAMPLER(sampler_EmissionMap);
+			TEXTURE2D(_MetallicGlossMap);
+			SAMPLER(sampler_MetallicGlossMap);
+			TEXTURE2D(_OcclusionMap);
+			SAMPLER(sampler_OcclusionMap);
 
 
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/UnityGBuffer.hlsl"
@@ -2591,32 +2618,32 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
 				float2 uv_BaseMap = IN.ase_texcoord7.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
-				float4 tex2DNode145 = tex2D( _BaseMap, uv_BaseMap );
-				float4 baseColor200 = ( _BaseColor * tex2DNode145 );
+				half4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
+				half4 baseColor200 = ( _BaseColor * tex2DNode145 );
 				
 				float2 uv_BumpMap = IN.ase_texcoord7.xy * _BumpMap_ST.xy + _BumpMap_ST.zw;
-				float3 unpack146 = UnpackNormalScale( tex2D( _BumpMap, uv_BumpMap ), _BumpScale );
+				half3 unpack146 = UnpackNormalScale( SAMPLE_TEXTURE2D( _BumpMap, sampler_BumpMap, uv_BumpMap ), _BumpScale );
 				unpack146.z = lerp( 1, unpack146.z, saturate(_BumpScale) );
 				float2 uv_DetailNormalMap = IN.ase_texcoord7.xy * _DetailNormalMap_ST.xy + _DetailNormalMap_ST.zw;
 				float2 uv_DetailMask = IN.ase_texcoord7.xy * _DetailMask_ST.xy + _DetailMask_ST.zw;
-				float3 unpack148 = UnpackNormalScale( tex2D( _DetailNormalMap, uv_DetailNormalMap ), ( _DetailNormalMapScale * tex2D( _DetailMask, uv_DetailMask ).g ) );
-				unpack148.z = lerp( 1, unpack148.z, saturate(( _DetailNormalMapScale * tex2D( _DetailMask, uv_DetailMask ).g )) );
+				half3 unpack148 = UnpackNormalScale( SAMPLE_TEXTURE2D( _DetailNormalMap, sampler_DetailNormalMap, uv_DetailNormalMap ), ( _DetailNormalMapScale * SAMPLE_TEXTURE2D( _DetailMask, sampler_DetailMask, uv_DetailMask ).g ) );
+				unpack148.z = lerp( 1, unpack148.z, saturate(( _DetailNormalMapScale * SAMPLE_TEXTURE2D( _DetailMask, sampler_DetailMask, uv_DetailMask ).g )) );
 				
 				float2 uv_EmissionMap = IN.ase_texcoord7.xy * _EmissionMap_ST.xy + _EmissionMap_ST.zw;
 				
 				float2 uv_MetallicGlossMap = IN.ase_texcoord7.xy * _MetallicGlossMap_ST.xy + _MetallicGlossMap_ST.zw;
-				float4 tex2DNode150 = tex2D( _MetallicGlossMap, uv_MetallicGlossMap );
+				half4 tex2DNode150 = SAMPLE_TEXTURE2D( _MetallicGlossMap, sampler_MetallicGlossMap, uv_MetallicGlossMap );
 				
 				float2 uv_OcclusionMap = IN.ase_texcoord7.xy * _OcclusionMap_ST.xy + _OcclusionMap_ST.zw;
 				
 
 				float3 BaseColor = baseColor200.rgb;
 				float3 Normal = BlendNormal( unpack146 , unpack148 );
-				float3 Emission = ( tex2D( _EmissionMap, uv_EmissionMap ) * _EmissiveColor ).rgb;
+				float3 Emission = ( SAMPLE_TEXTURE2D( _EmissionMap, sampler_EmissionMap, uv_EmissionMap ) * _EmissiveColor ).rgb;
 				float3 Specular = 0.5;
 				float Metallic = ( _Metallic * tex2DNode150.g );
 				float Smoothness = ( tex2DNode150.a * _GlossMapScale );
-				float Occlusion = ( 1.0 - ( _OcclusionStrength * ( 1.0 - tex2D( _OcclusionMap, uv_OcclusionMap ).g ) ) );
+				float Occlusion = ( 1.0 - ( _OcclusionStrength * ( 1.0 - SAMPLE_TEXTURE2D( _OcclusionMap, sampler_OcclusionMap, uv_OcclusionMap ).g ) ) );
 				float Alpha = ( _BaseColor.a * tex2DNode145.a );
 				float AlphaClipThreshold = _AlphaClip;
 				float AlphaClipThresholdShadow = _ShadowClip;
@@ -2704,7 +2731,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend URP"
 	
 }
 /*ASEBEGIN
-Version=19103
+Version=19105
 Node;AmplifyShaderEditor.CommentaryNode;179;-1648.736,1265.129;Inherit;False;1008.577;308.7186;Comment;5;151;170;169;171;172;;1,1,1,1;0;0
 Node;AmplifyShaderEditor.CommentaryNode;176;-2020.17,-491.7789;Inherit;False;1374.699;518.4456;Comment;7;153;148;146;147;154;156;155;;1,1,1,1;0;0
 Node;AmplifyShaderEditor.CommentaryNode;175;-1540.517,-1026.539;Inherit;False;886.6949;482.6302;Comment;6;200;174;187;145;173;202;;1,1,1,1;0;0
@@ -2746,7 +2773,7 @@ Node;AmplifyShaderEditor.WireNode;181;-146.0122,762.5016;Inherit;False;1;0;FLOAT
 Node;AmplifyShaderEditor.WireNode;182;-148.0122,694.8321;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.WireNode;184;-151.3843,503.1793;Inherit;False;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;3;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;2;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;True;1;LightMode=DepthOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;1;299.4972,596.494;Float;False;True;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;Reallusion/Amplify/Amplify Lit Alpha Blend URP;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;18;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;True;True;2;False;;True;3;False;;True;False;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Transparent=RenderType;Queue=Transparent=Queue=0;True;2;True;12;all;0;True;True;2;5;False;;10;False;;2;5;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;True;True;2;False;;True;3;False;;True;False;0;False;;0;False;;True;1;LightMode=UniversalForward;False;False;0;Hidden/InternalErrorShader;0;0;Standard;38;Workflow;1;0;Surface;1;637999731696434202;  Refraction Model;0;637999738955304029;  Blend;0;637999731759553735;Two Sided;1;0;Fragment Normal Space,InvertActionOnDeselection;0;0;Transmission;0;637999731806321607;  Transmission Shadow;0.5,False,;637782841107493989;Translucency;0;637999731813262088;  Translucency Strength;1.5,False,;0;  Normal Distortion;0.95,False,;0;  Scattering;2,False,;0;  Direct;0.9,False,;0;  Ambient;0.1,False,;0;  Shadow;0.5,False,;0;Cast Shadows;1;0;  Use Shadow Threshold;1;637999742734602120;Receive Shadows;1;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;1;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;DOTS Instancing;0;0;Tessellation;0;638000382108798795;  Phong;1;637999711401171755;  Strength;0,False,;637999728514891957;  Type;2;637999719710400882;  Tess;1,False,;0;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Write Depth;0;0;  Early Z;0;0;Vertex Position,InvertActionOnDeselection;1;0;0;8;False;True;True;True;True;True;True;True;False;;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;1;299.4972,596.494;Half;False;True;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;Reallusion/Amplify/Amplify Lit Alpha Blend URP;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;18;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;True;True;2;False;;True;3;False;;True;False;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Transparent=RenderType;Queue=Transparent=Queue=0;True;2;True;12;all;0;True;True;2;5;False;;10;False;;2;5;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;True;True;2;False;;True;3;False;;True;False;0;False;;0;False;;True;1;LightMode=UniversalForward;False;False;0;Hidden/InternalErrorShader;0;0;Standard;38;Workflow;1;0;Surface;1;637999731696434202;  Refraction Model;0;637999738955304029;  Blend;0;637999731759553735;Two Sided;1;0;Fragment Normal Space,InvertActionOnDeselection;0;0;Transmission;0;637999731806321607;  Transmission Shadow;0.5,False,;637782841107493989;Translucency;0;637999731813262088;  Translucency Strength;1.5,False,;0;  Normal Distortion;0.95,False,;0;  Scattering;2,False,;0;  Direct;0.9,False,;0;  Ambient;0.1,False,;0;  Shadow;0.5,False,;0;Cast Shadows;1;0;  Use Shadow Threshold;1;637999742734602120;Receive Shadows;1;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;1;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;DOTS Instancing;0;0;Tessellation;0;638000382108798795;  Phong;1;637999711401171755;  Strength;0,False,;637999728514891957;  Type;2;637999719710400882;  Tess;1,False,;0;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Write Depth;0;0;  Early Z;0;0;Vertex Position,InvertActionOnDeselection;1;0;0;8;False;True;True;True;True;True;True;True;False;;True;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;7;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;2;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;GBuffer;0;7;GBuffer;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;5;True;12;all;0;False;True;2;5;False;;10;False;;2;5;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;2;False;;True;3;False;;True;False;0;False;;0;False;;True;1;LightMode=UniversalGBuffer;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;4;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;2;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Meta;0;4;Meta;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Meta;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;0;-3.854388,393.1342;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;2;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;5;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;0;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
@@ -2792,4 +2819,4 @@ WireConnection;1;6;185;0
 WireConnection;1;7;203;0
 WireConnection;1;16;204;0
 ASEEND*/
-//CHKSM=D2700D943F8E0B24FD70E541F75B42A1369141B2
+//CHKSM=93F7A2DA87C271A3C0A58CB777570A7D2BC10AA0
