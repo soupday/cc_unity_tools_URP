@@ -248,8 +248,8 @@ Shader "Reallusion/Amplify/RL_HairShader_Baked_URP"
 				float4 vertex : POSITION;
 				float3 ase_normal : NORMAL;
 				float4 ase_texcoord : TEXCOORD0;
-				float4 ase_tangent : TANGENT;
-				float4 ase_color : COLOR;
+				half4 ase_tangent : TANGENT;
+				half4 ase_color : COLOR;
 				float4 texcoord1 : TEXCOORD1;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -279,33 +279,33 @@ Shader "Reallusion/Amplify/RL_HairShader_Baked_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _FlowMap_ST;
-			float4 _EmissiveColor;
-			float4 _EmissionMap_ST;
-			float4 _VertexBaseColor;
-			float4 _BaseMap_ST;
-			float4 _SpecularTint;
-			float4 _OcclusionMap_ST;
-			float4 _BaseColor;
-			float4 _IDMap_ST;
-			float4 _BumpMap_ST;
-			float4 _MetallicGlossMap_ST;
-			float _Smoothness;
-			float _FlowMapFlipGreen;
-			float _AOOccludeAll;
-			float _OcclusionStrength;
-			float _RimTransmissionIntensity;
-			float _RimPower;
-			float _Translucency;
-			float _SpecularMix;
-			float _BumpScale;
-			float _SpecularShiftMin;
-			float _AlphaClip2;
-			float _SpecularShiftMax;
-			float _SpecularMultiplier;
-			float _SpecularPowerScale;
-			float _VertexColorStrength;
-			float _ShadowClip;
+			half4 _FlowMap_ST;
+			half4 _EmissiveColor;
+			half4 _EmissionMap_ST;
+			half4 _VertexBaseColor;
+			half4 _BaseMap_ST;
+			half4 _SpecularTint;
+			half4 _OcclusionMap_ST;
+			half4 _BaseColor;
+			half4 _IDMap_ST;
+			half4 _BumpMap_ST;
+			half4 _MetallicGlossMap_ST;
+			half _Smoothness;
+			half _FlowMapFlipGreen;
+			half _AOOccludeAll;
+			half _OcclusionStrength;
+			half _RimTransmissionIntensity;
+			half _RimPower;
+			half _Translucency;
+			half _SpecularMix;
+			half _BumpScale;
+			half _SpecularShiftMin;
+			half _AlphaClip2;
+			half _SpecularShiftMax;
+			half _SpecularMultiplier;
+			half _SpecularPowerScale;
+			half _VertexColorStrength;
+			half _ShadowClip;
 			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
@@ -330,14 +330,14 @@ Shader "Reallusion/Amplify/RL_HairShader_Baked_URP"
 			SAMPLER(sampler_EmissionMap);
 
 
-			float3 TangentToWorld13_g857( float3 NormalTS, float3x3 TBN )
+			half3 TangentToWorld13_g857( half3 NormalTS, half3x3 TBN )
 			{
 				float3 NormalWS = TransformTangentToWorld(NormalTS, TBN);
 				NormalWS = NormalizeNormalPerPixel(NormalWS);
 				return NormalWS;
 			}
 			
-			float3 RL_Amplify_Expression_HairLighting_Additional126_g854( float3 Color, float3 TangentWorld, float3 ViewDir, float3 NormalWorld, float3 SpecularColor, float SpecularTint, float SpecularPower, float SpecularMultiplier, float3 PositionWorld, float Translucency, float RimTransmission, float RimPower )
+			half3 RL_Amplify_Expression_HairLighting_Additional126_g854( half3 Color, half3 TangentWorld, half3 ViewDir, half3 NormalWorld, half3 SpecularColor, half SpecularTint, half SpecularPower, half SpecularMultiplier, half3 PositionWorld, half Translucency, half RimTransmission, half RimPower )
 			{
 				half3 addColor = 0;
 				half4 shadowMask = 1;
@@ -381,7 +381,7 @@ Shader "Reallusion/Amplify/RL_HairShader_Baked_URP"
 			#endif
 			}
 			
-			float UnityHDRPDither175( float In, float2 ScreenPosition )
+			half UnityHDRPDither175( half In, half2 ScreenPosition )
 			{
 				half2 uv = ScreenPosition.xy * _ScreenParams.xy;
 				half DITHER_THRESHOLDS[16] =
@@ -403,11 +403,11 @@ Shader "Reallusion/Amplify/RL_HairShader_Baked_URP"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
-				float3 ase_worldTangent = TransformObjectToWorldDir(v.ase_tangent.xyz);
+				half3 ase_worldTangent = TransformObjectToWorldDir(v.ase_tangent.xyz);
 				o.ase_texcoord4.xyz = ase_worldTangent;
-				float3 ase_worldNormal = TransformObjectToWorldNormal(v.ase_normal);
+				half3 ase_worldNormal = TransformObjectToWorldNormal(v.ase_normal);
 				o.ase_texcoord5.xyz = ase_worldNormal;
-				float ase_vertexTangentSign = v.ase_tangent.w * ( unity_WorldTransformParams.w >= 0.0 ? 1.0 : -1.0 );
+				half ase_vertexTangentSign = v.ase_tangent.w * ( unity_WorldTransformParams.w >= 0.0 ? 1.0 : -1.0 );
 				float3 ase_worldBitangent = cross( ase_worldNormal, ase_worldTangent ) * ase_vertexTangentSign;
 				o.ase_texcoord6.xyz = ase_worldBitangent;
 				OUTPUT_LIGHTMAP_UV( v.texcoord1, unity_LightmapST, o.lightmapUVOrVertexSH.xy );
@@ -472,8 +472,8 @@ Shader "Reallusion/Amplify/RL_HairShader_Baked_URP"
 				float4 vertex : INTERNALTESSPOS;
 				float3 ase_normal : NORMAL;
 				float4 ase_texcoord : TEXCOORD0;
-				float4 ase_tangent : TANGENT;
-				float4 ase_color : COLOR;
+				half4 ase_tangent : TANGENT;
+				half4 ase_color : COLOR;
 				float4 texcoord1 : TEXCOORD1;
 
 				UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -578,108 +578,108 @@ Shader "Reallusion/Amplify/RL_HairShader_Baked_URP"
 				Light ase_mainLight = GetMainLight( ShadowCoords );
 				ase_lightAtten = ase_mainLight.distanceAttenuation * ase_mainLight.shadowAttenuation;
 				float2 uv_FlowMap = IN.ase_texcoord3.xy * _FlowMap_ST.xy + _FlowMap_ST.zw;
-				float4 break109_g854 = SAMPLE_TEXTURE2D( _FlowMap, sampler_BaseMap, uv_FlowMap );
-				float lerpResult123_g854 = lerp( break109_g854.g , ( 1.0 - break109_g854.g ) , _FlowMapFlipGreen);
-				float3 appendResult98_g854 = (float3(break109_g854.r , lerpResult123_g854 , break109_g854.b));
-				float3 NormalTS13_g857 = ( ( appendResult98_g854 * float3( 2,2,2 ) ) - float3( 1,1,1 ) );
-				float3 ase_worldTangent = IN.ase_texcoord4.xyz;
-				float3 ase_worldNormal = IN.ase_texcoord5.xyz;
-				float3 Binormal5_g857 = ( ( IN.ase_tangent.w > 0.0 ? 1.0 : -1.0 ) * cross( ase_worldNormal , ase_worldTangent ) );
-				float3x3 TBN1_g857 = float3x3(ase_worldTangent, Binormal5_g857, ase_worldNormal);
-				float3x3 TBN13_g857 = TBN1_g857;
-				float3 localTangentToWorld13_g857 = TangentToWorld13_g857( NormalTS13_g857 , TBN13_g857 );
-				float3 flowTangent107_g854 = localTangentToWorld13_g857;
+				half4 break109_g854 = SAMPLE_TEXTURE2D( _FlowMap, sampler_BaseMap, uv_FlowMap );
+				half lerpResult123_g854 = lerp( break109_g854.g , ( 1.0 - break109_g854.g ) , _FlowMapFlipGreen);
+				half3 appendResult98_g854 = (half3(break109_g854.r , lerpResult123_g854 , break109_g854.b));
+				half3 NormalTS13_g857 = ( ( appendResult98_g854 * float3( 2,2,2 ) ) - float3( 1,1,1 ) );
+				half3 ase_worldTangent = IN.ase_texcoord4.xyz;
+				half3 ase_worldNormal = IN.ase_texcoord5.xyz;
+				half3 Binormal5_g857 = ( ( IN.ase_tangent.w > 0.0 ? 1.0 : -1.0 ) * cross( ase_worldNormal , ase_worldTangent ) );
+				half3x3 TBN1_g857 = float3x3(ase_worldTangent, Binormal5_g857, ase_worldNormal);
+				half3x3 TBN13_g857 = TBN1_g857;
+				half3 localTangentToWorld13_g857 = TangentToWorld13_g857( NormalTS13_g857 , TBN13_g857 );
+				half3 flowTangent107_g854 = localTangentToWorld13_g857;
 				float2 uv_BumpMap = IN.ase_texcoord3.xy * _BumpMap_ST.xy + _BumpMap_ST.zw;
-				float3 unpack629 = UnpackNormalScale( SAMPLE_TEXTURE2D( _BumpMap, sampler_BumpMap, uv_BumpMap ), _BumpScale );
+				half3 unpack629 = UnpackNormalScale( SAMPLE_TEXTURE2D( _BumpMap, sampler_BumpMap, uv_BumpMap ), _BumpScale );
 				unpack629.z = lerp( 1, unpack629.z, saturate(_BumpScale) );
-				float3 normal282 = unpack629;
+				half3 normal282 = unpack629;
 				float3 ase_worldBitangent = IN.ase_texcoord6.xyz;
-				float3 tanToWorld0 = float3( ase_worldTangent.x, ase_worldBitangent.x, ase_worldNormal.x );
-				float3 tanToWorld1 = float3( ase_worldTangent.y, ase_worldBitangent.y, ase_worldNormal.y );
-				float3 tanToWorld2 = float3( ase_worldTangent.z, ase_worldBitangent.z, ase_worldNormal.z );
+				half3 tanToWorld0 = float3( ase_worldTangent.x, ase_worldBitangent.x, ase_worldNormal.x );
+				half3 tanToWorld1 = float3( ase_worldTangent.y, ase_worldBitangent.y, ase_worldNormal.y );
+				half3 tanToWorld2 = float3( ase_worldTangent.z, ase_worldBitangent.z, ase_worldNormal.z );
 				float3 tanNormal85_g854 = normal282;
-				float3 worldNormal85_g854 = normalize( float3(dot(tanToWorld0,tanNormal85_g854), dot(tanToWorld1,tanNormal85_g854), dot(tanToWorld2,tanNormal85_g854)) );
-				float3 worldNormal86_g854 = worldNormal85_g854;
+				half3 worldNormal85_g854 = normalize( float3(dot(tanToWorld0,tanNormal85_g854), dot(tanToWorld1,tanNormal85_g854), dot(tanToWorld2,tanNormal85_g854)) );
+				half3 worldNormal86_g854 = worldNormal85_g854;
 				float2 uv_IDMap = IN.ase_texcoord3.xy * _IDMap_ST.xy + _IDMap_ST.zw;
-				float idMap383 = SAMPLE_TEXTURE2D( _IDMap, sampler_BaseMap, uv_IDMap ).r;
-				float lerpResult81_g854 = lerp( _SpecularShiftMin , _SpecularShiftMax , idMap383);
-				float3 normalizeResult10_g858 = normalize( ( flowTangent107_g854 + ( worldNormal86_g854 * lerpResult81_g854 ) ) );
-				float3 shiftedTangent119_g854 = normalizeResult10_g858;
+				half idMap383 = SAMPLE_TEXTURE2D( _IDMap, sampler_BaseMap, uv_IDMap ).r;
+				half lerpResult81_g854 = lerp( _SpecularShiftMin , _SpecularShiftMax , idMap383);
+				half3 normalizeResult10_g858 = normalize( ( flowTangent107_g854 + ( worldNormal86_g854 * lerpResult81_g854 ) ) );
+				half3 shiftedTangent119_g854 = normalizeResult10_g858;
 				float3 ase_worldViewDir = ( _WorldSpaceCameraPos.xyz - WorldPosition );
 				ase_worldViewDir = SafeNormalize( ase_worldViewDir );
-				float3 viewDIr52_g855 = ase_worldViewDir;
-				float3 worldLight248_g854 = SafeNormalize(_MainLightPosition.xyz);
-				float3 lightDir55_g855 = worldLight248_g854;
-				float3 normalizeResult14_g856 = normalize( ( viewDIr52_g855 + lightDir55_g855 ) );
-				float dotResult16_g856 = dot( shiftedTangent119_g854 , normalizeResult14_g856 );
-				float smoothstepResult22_g856 = smoothstep( -1.0 , 0.0 , dotResult16_g856);
+				half3 viewDIr52_g855 = ase_worldViewDir;
+				half3 worldLight248_g854 = SafeNormalize(_MainLightPosition.xyz);
+				half3 lightDir55_g855 = worldLight248_g854;
+				half3 normalizeResult14_g856 = normalize( ( viewDIr52_g855 + lightDir55_g855 ) );
+				half dotResult16_g856 = dot( shiftedTangent119_g854 , normalizeResult14_g856 );
+				half smoothstepResult22_g856 = smoothstep( -1.0 , 0.0 , dotResult16_g856);
 				float2 uv_MetallicGlossMap = IN.ase_texcoord3.xy * _MetallicGlossMap_ST.xy + _MetallicGlossMap_ST.zw;
-				float smoothness643 = ( SAMPLE_TEXTURE2D( _MetallicGlossMap, sampler_MetallicGlossMap, uv_MetallicGlossMap ).a * _Smoothness );
-				float temp_output_233_0_g854 = max( ( 1.0 - smoothness643 ) , 0.001 );
-				float specularPower237_g854 = ( max( ( ( 2.0 / ( temp_output_233_0_g854 * temp_output_233_0_g854 ) ) - 2.0 ) , 0.001 ) * _SpecularPowerScale );
+				half smoothness643 = ( SAMPLE_TEXTURE2D( _MetallicGlossMap, sampler_MetallicGlossMap, uv_MetallicGlossMap ).a * _Smoothness );
+				half temp_output_233_0_g854 = max( ( 1.0 - smoothness643 ) , 0.001 );
+				half specularPower237_g854 = ( max( ( ( 2.0 / ( temp_output_233_0_g854 * temp_output_233_0_g854 ) ) - 2.0 ) , 0.001 ) * _SpecularPowerScale );
 				float2 uv_OcclusionMap = IN.ase_texcoord3.xy * _OcclusionMap_ST.xy + _OcclusionMap_ST.zw;
-				float4 tex2DNode617 = SAMPLE_TEXTURE2D( _OcclusionMap, sampler_OcclusionMap, uv_OcclusionMap );
-				float specularMask644 = tex2DNode617.a;
-				float temp_output_132_0_g854 = ( specularMask644 * _SpecularMultiplier );
-				float4 temp_output_131_0_g854 = _SpecularTint;
-				float4 temp_output_13_0_g855 = ( ( smoothstepResult22_g856 * pow( saturate( ( 1.0 - ( dotResult16_g856 * dotResult16_g856 ) ) ) , specularPower237_g854 ) ) * temp_output_132_0_g854 * temp_output_131_0_g854 );
+				half4 tex2DNode617 = SAMPLE_TEXTURE2D( _OcclusionMap, sampler_OcclusionMap, uv_OcclusionMap );
+				half specularMask644 = tex2DNode617.a;
+				half temp_output_132_0_g854 = ( specularMask644 * _SpecularMultiplier );
+				half4 temp_output_131_0_g854 = _SpecularTint;
+				half4 temp_output_13_0_g855 = ( ( smoothstepResult22_g856 * pow( saturate( ( 1.0 - ( dotResult16_g856 * dotResult16_g856 ) ) ) , specularPower237_g854 ) ) * temp_output_132_0_g854 * temp_output_131_0_g854 );
 				float2 uv_BaseMap = IN.ase_texcoord3.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
-				float4 tex2DNode19 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
-				float4 lerpResult112 = lerp( tex2DNode19 , _VertexBaseColor , ( ( 1.0 - IN.ase_color.r ) * _VertexColorStrength ));
-				float4 baseColor331 = ( _BaseColor * lerpResult112 );
-				float4 temp_output_42_0_g854 = baseColor331;
-				float4 temp_output_32_0_g855 = temp_output_42_0_g854;
-				float temp_output_172_0_g854 = _SpecularMix;
-				float4 lerpResult36_g855 = lerp( temp_output_13_0_g855 , ( temp_output_13_0_g855 * temp_output_32_0_g855 ) , temp_output_172_0_g854);
-				float3 temp_output_24_0_g855 = worldNormal86_g854;
-				float dotResult15_g855 = dot( lightDir55_g855 , temp_output_24_0_g855 );
-				float temp_output_200_0_g854 = _Translucency;
-				float temp_output_40_0_g855 = temp_output_200_0_g854;
-				float dotResult54_g855 = dot( temp_output_24_0_g855 , viewDIr52_g855 );
-				float dotResult57_g855 = dot( viewDIr52_g855 , lightDir55_g855 );
-				float temp_output_208_0_g854 = _RimPower;
-				float temp_output_207_0_g854 = _RimTransmissionIntensity;
-				float3 Color126_g854 = temp_output_42_0_g854.rgb;
-				float3 TangentWorld126_g854 = shiftedTangent119_g854;
-				float3 ViewDir126_g854 = ase_worldViewDir;
-				float3 NormalWorld126_g854 = worldNormal86_g854;
-				float3 SpecularColor126_g854 = temp_output_131_0_g854.rgb;
-				float SpecularTint126_g854 = temp_output_172_0_g854;
-				float SpecularPower126_g854 = specularPower237_g854;
-				float SpecularMultiplier126_g854 = temp_output_132_0_g854;
-				float3 worldPosition129_g854 = WorldPosition;
-				float3 PositionWorld126_g854 = worldPosition129_g854;
-				float Translucency126_g854 = temp_output_200_0_g854;
-				float RimTransmission126_g854 = temp_output_207_0_g854;
-				float RimPower126_g854 = temp_output_208_0_g854;
-				float3 localRL_Amplify_Expression_HairLighting_Additional126_g854 = RL_Amplify_Expression_HairLighting_Additional126_g854( Color126_g854 , TangentWorld126_g854 , ViewDir126_g854 , NormalWorld126_g854 , SpecularColor126_g854 , SpecularTint126_g854 , SpecularPower126_g854 , SpecularMultiplier126_g854 , PositionWorld126_g854 , Translucency126_g854 , RimTransmission126_g854 , RimPower126_g854 );
-				float lerpResult651 = lerp( 1.0 , tex2DNode617.g , _OcclusionStrength);
-				float ambientOcclusion570 = lerpResult651;
-				float temp_output_161_0_g854 = ambientOcclusion570;
-				float lerpResult280_g854 = lerp( 1.0 , temp_output_161_0_g854 , _AOOccludeAll);
-				float3 bakedGI53_g854 = ASEIndirectDiffuse( IN.lightmapUVOrVertexSH.xy, worldNormal86_g854);
+				half4 tex2DNode19 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
+				half4 lerpResult112 = lerp( tex2DNode19 , _VertexBaseColor , ( ( 1.0 - IN.ase_color.r ) * _VertexColorStrength ));
+				half4 baseColor331 = ( _BaseColor * lerpResult112 );
+				half4 temp_output_42_0_g854 = baseColor331;
+				half4 temp_output_32_0_g855 = temp_output_42_0_g854;
+				half temp_output_172_0_g854 = _SpecularMix;
+				half4 lerpResult36_g855 = lerp( temp_output_13_0_g855 , ( temp_output_13_0_g855 * temp_output_32_0_g855 ) , temp_output_172_0_g854);
+				half3 temp_output_24_0_g855 = worldNormal86_g854;
+				half dotResult15_g855 = dot( lightDir55_g855 , temp_output_24_0_g855 );
+				half temp_output_200_0_g854 = _Translucency;
+				half temp_output_40_0_g855 = temp_output_200_0_g854;
+				half dotResult54_g855 = dot( temp_output_24_0_g855 , viewDIr52_g855 );
+				half dotResult57_g855 = dot( viewDIr52_g855 , lightDir55_g855 );
+				half temp_output_208_0_g854 = _RimPower;
+				half temp_output_207_0_g854 = _RimTransmissionIntensity;
+				half3 Color126_g854 = temp_output_42_0_g854.rgb;
+				half3 TangentWorld126_g854 = shiftedTangent119_g854;
+				half3 ViewDir126_g854 = ase_worldViewDir;
+				half3 NormalWorld126_g854 = worldNormal86_g854;
+				half3 SpecularColor126_g854 = temp_output_131_0_g854.rgb;
+				half SpecularTint126_g854 = temp_output_172_0_g854;
+				half SpecularPower126_g854 = specularPower237_g854;
+				half SpecularMultiplier126_g854 = temp_output_132_0_g854;
+				half3 worldPosition129_g854 = WorldPosition;
+				half3 PositionWorld126_g854 = worldPosition129_g854;
+				half Translucency126_g854 = temp_output_200_0_g854;
+				half RimTransmission126_g854 = temp_output_207_0_g854;
+				half RimPower126_g854 = temp_output_208_0_g854;
+				half3 localRL_Amplify_Expression_HairLighting_Additional126_g854 = RL_Amplify_Expression_HairLighting_Additional126_g854( Color126_g854 , TangentWorld126_g854 , ViewDir126_g854 , NormalWorld126_g854 , SpecularColor126_g854 , SpecularTint126_g854 , SpecularPower126_g854 , SpecularMultiplier126_g854 , PositionWorld126_g854 , Translucency126_g854 , RimTransmission126_g854 , RimPower126_g854 );
+				half lerpResult651 = lerp( 1.0 , tex2DNode617.g , _OcclusionStrength);
+				half ambientOcclusion570 = lerpResult651;
+				half temp_output_161_0_g854 = ambientOcclusion570;
+				half lerpResult280_g854 = lerp( 1.0 , temp_output_161_0_g854 , _AOOccludeAll);
+				half3 bakedGI53_g854 = ASEIndirectDiffuse( IN.lightmapUVOrVertexSH.xy, worldNormal86_g854);
 				MixRealtimeAndBakedGI(ase_mainLight, worldNormal86_g854, bakedGI53_g854, half4(0,0,0,0));
 				float2 uv_EmissionMap = IN.ase_texcoord3.xy * _EmissionMap_ST.xy + _EmissionMap_ST.zw;
 				
-				float alpha518 = tex2DNode19.a;
+				half alpha518 = tex2DNode19.a;
 				
-				float In175 = _AlphaClip2;
+				half In175 = _AlphaClip2;
 				float4 screenPos = IN.ase_texcoord8;
 				float4 ase_screenPosNorm = screenPos / screenPos.w;
 				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float2 ScreenPosition175 = ase_screenPosNorm.xy;
-				float localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
+				half2 ScreenPosition175 = ase_screenPosNorm.xy;
+				half localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
 				#if defined(_CLIPQUALITY_STANDARD)
-				float staticSwitch528 = _AlphaClip2;
+				half staticSwitch528 = _AlphaClip2;
 				#elif defined(_CLIPQUALITY_DITHERED)
-				float staticSwitch528 = localUnityHDRPDither175;
+				half staticSwitch528 = localUnityHDRPDither175;
 				#else
-				float staticSwitch528 = localUnityHDRPDither175;
+				half staticSwitch528 = localUnityHDRPDither175;
 				#endif
 				
 				float3 BakedAlbedo = 0;
 				float3 BakedEmission = 0;
-				float3 Color = ( ( ( ( ( ase_lightAtten * ( ( lerpResult36_g855 + ( ( saturate( ( ( dotResult15_g855 * ( 1.0 - temp_output_40_0_g855 ) ) + temp_output_40_0_g855 ) ) + ( pow( ( max( ( 1.0 - abs( dotResult54_g855 ) ) , 0.0 ) * max( ( 0.0 - dotResult57_g855 ) , 0.0 ) ) , temp_output_208_0_g854 ) * temp_output_207_0_g854 ) ) * temp_output_32_0_g855 ) ) * _MainLightColor ) ) + float4( localRL_Amplify_Expression_HairLighting_Additional126_g854 , 0.0 ) ) * lerpResult280_g854 ) + ( float4( bakedGI53_g854 , 0.0 ) * temp_output_42_0_g854 * temp_output_161_0_g854 ) ) + ( SAMPLE_TEXTURE2D( _EmissionMap, sampler_EmissionMap, uv_EmissionMap ) * _EmissiveColor ) ).rgb;
+				float3 Color = ( ( ( ( ( ase_lightAtten * ( ( lerpResult36_g855 + ( ( saturate( ( ( dotResult15_g855 * ( 1.0 - temp_output_40_0_g855 ) ) + temp_output_40_0_g855 ) ) + ( pow( ( max( ( 1.0 - abs( dotResult54_g855 ) ) , 0.0 ) * max( ( 0.0 - dotResult57_g855 ) , 0.0 ) ) , temp_output_208_0_g854 ) * temp_output_207_0_g854 ) ) * temp_output_32_0_g855 ) ) * _MainLightColor ) ) + half4( localRL_Amplify_Expression_HairLighting_Additional126_g854 , 0.0 ) ) * lerpResult280_g854 ) + ( half4( bakedGI53_g854 , 0.0 ) * temp_output_42_0_g854 * temp_output_161_0_g854 ) ) + ( SAMPLE_TEXTURE2D( _EmissionMap, sampler_EmissionMap, uv_EmissionMap ) * _EmissiveColor ) ).rgb;
 				float Alpha = alpha518;
 				float AlphaClipThreshold = staticSwitch528;
 				float AlphaClipThresholdShadow = _ShadowClip;
@@ -773,33 +773,33 @@ Shader "Reallusion/Amplify/RL_HairShader_Baked_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _FlowMap_ST;
-			float4 _EmissiveColor;
-			float4 _EmissionMap_ST;
-			float4 _VertexBaseColor;
-			float4 _BaseMap_ST;
-			float4 _SpecularTint;
-			float4 _OcclusionMap_ST;
-			float4 _BaseColor;
-			float4 _IDMap_ST;
-			float4 _BumpMap_ST;
-			float4 _MetallicGlossMap_ST;
-			float _Smoothness;
-			float _FlowMapFlipGreen;
-			float _AOOccludeAll;
-			float _OcclusionStrength;
-			float _RimTransmissionIntensity;
-			float _RimPower;
-			float _Translucency;
-			float _SpecularMix;
-			float _BumpScale;
-			float _SpecularShiftMin;
-			float _AlphaClip2;
-			float _SpecularShiftMax;
-			float _SpecularMultiplier;
-			float _SpecularPowerScale;
-			float _VertexColorStrength;
-			float _ShadowClip;
+			half4 _FlowMap_ST;
+			half4 _EmissiveColor;
+			half4 _EmissionMap_ST;
+			half4 _VertexBaseColor;
+			half4 _BaseMap_ST;
+			half4 _SpecularTint;
+			half4 _OcclusionMap_ST;
+			half4 _BaseColor;
+			half4 _IDMap_ST;
+			half4 _BumpMap_ST;
+			half4 _MetallicGlossMap_ST;
+			half _Smoothness;
+			half _FlowMapFlipGreen;
+			half _AOOccludeAll;
+			half _OcclusionStrength;
+			half _RimTransmissionIntensity;
+			half _RimPower;
+			half _Translucency;
+			half _SpecularMix;
+			half _BumpScale;
+			half _SpecularShiftMin;
+			half _AlphaClip2;
+			half _SpecularShiftMax;
+			half _SpecularMultiplier;
+			half _SpecularPowerScale;
+			half _VertexColorStrength;
+			half _ShadowClip;
 			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
@@ -814,7 +814,7 @@ Shader "Reallusion/Amplify/RL_HairShader_Baked_URP"
 			SAMPLER(sampler_BaseMap);
 
 
-			float UnityHDRPDither175( float In, float2 ScreenPosition )
+			half UnityHDRPDither175( half In, half2 ScreenPosition )
 			{
 				half2 uv = ScreenPosition.xy * _ScreenParams.xy;
 				half DITHER_THRESHOLDS[16] =
@@ -998,21 +998,21 @@ Shader "Reallusion/Amplify/RL_HairShader_Baked_URP"
 				#endif
 
 				float2 uv_BaseMap = IN.ase_texcoord2.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
-				float4 tex2DNode19 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
-				float alpha518 = tex2DNode19.a;
+				half4 tex2DNode19 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
+				half alpha518 = tex2DNode19.a;
 				
-				float In175 = _AlphaClip2;
+				half In175 = _AlphaClip2;
 				float4 screenPos = IN.ase_texcoord3;
 				float4 ase_screenPosNorm = screenPos / screenPos.w;
 				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float2 ScreenPosition175 = ase_screenPosNorm.xy;
-				float localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
+				half2 ScreenPosition175 = ase_screenPosNorm.xy;
+				half localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
 				#if defined(_CLIPQUALITY_STANDARD)
-				float staticSwitch528 = _AlphaClip2;
+				half staticSwitch528 = _AlphaClip2;
 				#elif defined(_CLIPQUALITY_DITHERED)
-				float staticSwitch528 = localUnityHDRPDither175;
+				half staticSwitch528 = localUnityHDRPDither175;
 				#else
-				float staticSwitch528 = localUnityHDRPDither175;
+				half staticSwitch528 = localUnityHDRPDither175;
 				#endif
 				
 
@@ -1095,33 +1095,33 @@ Shader "Reallusion/Amplify/RL_HairShader_Baked_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _FlowMap_ST;
-			float4 _EmissiveColor;
-			float4 _EmissionMap_ST;
-			float4 _VertexBaseColor;
-			float4 _BaseMap_ST;
-			float4 _SpecularTint;
-			float4 _OcclusionMap_ST;
-			float4 _BaseColor;
-			float4 _IDMap_ST;
-			float4 _BumpMap_ST;
-			float4 _MetallicGlossMap_ST;
-			float _Smoothness;
-			float _FlowMapFlipGreen;
-			float _AOOccludeAll;
-			float _OcclusionStrength;
-			float _RimTransmissionIntensity;
-			float _RimPower;
-			float _Translucency;
-			float _SpecularMix;
-			float _BumpScale;
-			float _SpecularShiftMin;
-			float _AlphaClip2;
-			float _SpecularShiftMax;
-			float _SpecularMultiplier;
-			float _SpecularPowerScale;
-			float _VertexColorStrength;
-			float _ShadowClip;
+			half4 _FlowMap_ST;
+			half4 _EmissiveColor;
+			half4 _EmissionMap_ST;
+			half4 _VertexBaseColor;
+			half4 _BaseMap_ST;
+			half4 _SpecularTint;
+			half4 _OcclusionMap_ST;
+			half4 _BaseColor;
+			half4 _IDMap_ST;
+			half4 _BumpMap_ST;
+			half4 _MetallicGlossMap_ST;
+			half _Smoothness;
+			half _FlowMapFlipGreen;
+			half _AOOccludeAll;
+			half _OcclusionStrength;
+			half _RimTransmissionIntensity;
+			half _RimPower;
+			half _Translucency;
+			half _SpecularMix;
+			half _BumpScale;
+			half _SpecularShiftMin;
+			half _AlphaClip2;
+			half _SpecularShiftMax;
+			half _SpecularMultiplier;
+			half _SpecularPowerScale;
+			half _VertexColorStrength;
+			half _ShadowClip;
 			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
@@ -1136,7 +1136,7 @@ Shader "Reallusion/Amplify/RL_HairShader_Baked_URP"
 			SAMPLER(sampler_BaseMap);
 
 
-			float UnityHDRPDither175( float In, float2 ScreenPosition )
+			half UnityHDRPDither175( half In, half2 ScreenPosition )
 			{
 				half2 uv = ScreenPosition.xy * _ScreenParams.xy;
 				half DITHER_THRESHOLDS[16] =
@@ -1300,21 +1300,21 @@ Shader "Reallusion/Amplify/RL_HairShader_Baked_URP"
 				#endif
 
 				float2 uv_BaseMap = IN.ase_texcoord2.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
-				float4 tex2DNode19 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
-				float alpha518 = tex2DNode19.a;
+				half4 tex2DNode19 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
+				half alpha518 = tex2DNode19.a;
 				
-				float In175 = _AlphaClip2;
+				half In175 = _AlphaClip2;
 				float4 screenPos = IN.ase_texcoord3;
 				float4 ase_screenPosNorm = screenPos / screenPos.w;
 				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float2 ScreenPosition175 = ase_screenPosNorm.xy;
-				float localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
+				half2 ScreenPosition175 = ase_screenPosNorm.xy;
+				half localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
 				#if defined(_CLIPQUALITY_STANDARD)
-				float staticSwitch528 = _AlphaClip2;
+				half staticSwitch528 = _AlphaClip2;
 				#elif defined(_CLIPQUALITY_DITHERED)
-				float staticSwitch528 = localUnityHDRPDither175;
+				half staticSwitch528 = localUnityHDRPDither175;
 				#else
-				float staticSwitch528 = localUnityHDRPDither175;
+				half staticSwitch528 = localUnityHDRPDither175;
 				#endif
 				
 
@@ -1391,33 +1391,33 @@ Shader "Reallusion/Amplify/RL_HairShader_Baked_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _FlowMap_ST;
-			float4 _EmissiveColor;
-			float4 _EmissionMap_ST;
-			float4 _VertexBaseColor;
-			float4 _BaseMap_ST;
-			float4 _SpecularTint;
-			float4 _OcclusionMap_ST;
-			float4 _BaseColor;
-			float4 _IDMap_ST;
-			float4 _BumpMap_ST;
-			float4 _MetallicGlossMap_ST;
-			float _Smoothness;
-			float _FlowMapFlipGreen;
-			float _AOOccludeAll;
-			float _OcclusionStrength;
-			float _RimTransmissionIntensity;
-			float _RimPower;
-			float _Translucency;
-			float _SpecularMix;
-			float _BumpScale;
-			float _SpecularShiftMin;
-			float _AlphaClip2;
-			float _SpecularShiftMax;
-			float _SpecularMultiplier;
-			float _SpecularPowerScale;
-			float _VertexColorStrength;
-			float _ShadowClip;
+			half4 _FlowMap_ST;
+			half4 _EmissiveColor;
+			half4 _EmissionMap_ST;
+			half4 _VertexBaseColor;
+			half4 _BaseMap_ST;
+			half4 _SpecularTint;
+			half4 _OcclusionMap_ST;
+			half4 _BaseColor;
+			half4 _IDMap_ST;
+			half4 _BumpMap_ST;
+			half4 _MetallicGlossMap_ST;
+			half _Smoothness;
+			half _FlowMapFlipGreen;
+			half _AOOccludeAll;
+			half _OcclusionStrength;
+			half _RimTransmissionIntensity;
+			half _RimPower;
+			half _Translucency;
+			half _SpecularMix;
+			half _BumpScale;
+			half _SpecularShiftMin;
+			half _AlphaClip2;
+			half _SpecularShiftMax;
+			half _SpecularMultiplier;
+			half _SpecularPowerScale;
+			half _VertexColorStrength;
+			half _ShadowClip;
 			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
@@ -1432,7 +1432,7 @@ Shader "Reallusion/Amplify/RL_HairShader_Baked_URP"
 			SAMPLER(sampler_BaseMap);
 
 
-			float UnityHDRPDither175( float In, float2 ScreenPosition )
+			half UnityHDRPDither175( half In, half2 ScreenPosition )
 			{
 				half2 uv = ScreenPosition.xy * _ScreenParams.xy;
 				half DITHER_THRESHOLDS[16] =
@@ -1581,21 +1581,21 @@ Shader "Reallusion/Amplify/RL_HairShader_Baked_URP"
 				SurfaceDescription surfaceDescription = (SurfaceDescription)0;
 
 				float2 uv_BaseMap = IN.ase_texcoord.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
-				float4 tex2DNode19 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
-				float alpha518 = tex2DNode19.a;
+				half4 tex2DNode19 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
+				half alpha518 = tex2DNode19.a;
 				
-				float In175 = _AlphaClip2;
+				half In175 = _AlphaClip2;
 				float4 screenPos = IN.ase_texcoord1;
 				float4 ase_screenPosNorm = screenPos / screenPos.w;
 				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float2 ScreenPosition175 = ase_screenPosNorm.xy;
-				float localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
+				half2 ScreenPosition175 = ase_screenPosNorm.xy;
+				half localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
 				#if defined(_CLIPQUALITY_STANDARD)
-				float staticSwitch528 = _AlphaClip2;
+				half staticSwitch528 = _AlphaClip2;
 				#elif defined(_CLIPQUALITY_DITHERED)
-				float staticSwitch528 = localUnityHDRPDither175;
+				half staticSwitch528 = localUnityHDRPDither175;
 				#else
-				float staticSwitch528 = localUnityHDRPDither175;
+				half staticSwitch528 = localUnityHDRPDither175;
 				#endif
 				
 
@@ -1672,33 +1672,33 @@ Shader "Reallusion/Amplify/RL_HairShader_Baked_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _FlowMap_ST;
-			float4 _EmissiveColor;
-			float4 _EmissionMap_ST;
-			float4 _VertexBaseColor;
-			float4 _BaseMap_ST;
-			float4 _SpecularTint;
-			float4 _OcclusionMap_ST;
-			float4 _BaseColor;
-			float4 _IDMap_ST;
-			float4 _BumpMap_ST;
-			float4 _MetallicGlossMap_ST;
-			float _Smoothness;
-			float _FlowMapFlipGreen;
-			float _AOOccludeAll;
-			float _OcclusionStrength;
-			float _RimTransmissionIntensity;
-			float _RimPower;
-			float _Translucency;
-			float _SpecularMix;
-			float _BumpScale;
-			float _SpecularShiftMin;
-			float _AlphaClip2;
-			float _SpecularShiftMax;
-			float _SpecularMultiplier;
-			float _SpecularPowerScale;
-			float _VertexColorStrength;
-			float _ShadowClip;
+			half4 _FlowMap_ST;
+			half4 _EmissiveColor;
+			half4 _EmissionMap_ST;
+			half4 _VertexBaseColor;
+			half4 _BaseMap_ST;
+			half4 _SpecularTint;
+			half4 _OcclusionMap_ST;
+			half4 _BaseColor;
+			half4 _IDMap_ST;
+			half4 _BumpMap_ST;
+			half4 _MetallicGlossMap_ST;
+			half _Smoothness;
+			half _FlowMapFlipGreen;
+			half _AOOccludeAll;
+			half _OcclusionStrength;
+			half _RimTransmissionIntensity;
+			half _RimPower;
+			half _Translucency;
+			half _SpecularMix;
+			half _BumpScale;
+			half _SpecularShiftMin;
+			half _AlphaClip2;
+			half _SpecularShiftMax;
+			half _SpecularMultiplier;
+			half _SpecularPowerScale;
+			half _VertexColorStrength;
+			half _ShadowClip;
 			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
@@ -1713,7 +1713,7 @@ Shader "Reallusion/Amplify/RL_HairShader_Baked_URP"
 			SAMPLER(sampler_BaseMap);
 
 
-			float UnityHDRPDither175( float In, float2 ScreenPosition )
+			half UnityHDRPDither175( half In, half2 ScreenPosition )
 			{
 				half2 uv = ScreenPosition.xy * _ScreenParams.xy;
 				half DITHER_THRESHOLDS[16] =
@@ -1857,21 +1857,21 @@ Shader "Reallusion/Amplify/RL_HairShader_Baked_URP"
 				SurfaceDescription surfaceDescription = (SurfaceDescription)0;
 
 				float2 uv_BaseMap = IN.ase_texcoord.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
-				float4 tex2DNode19 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
-				float alpha518 = tex2DNode19.a;
+				half4 tex2DNode19 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
+				half alpha518 = tex2DNode19.a;
 				
-				float In175 = _AlphaClip2;
+				half In175 = _AlphaClip2;
 				float4 screenPos = IN.ase_texcoord1;
 				float4 ase_screenPosNorm = screenPos / screenPos.w;
 				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float2 ScreenPosition175 = ase_screenPosNorm.xy;
-				float localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
+				half2 ScreenPosition175 = ase_screenPosNorm.xy;
+				half localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
 				#if defined(_CLIPQUALITY_STANDARD)
-				float staticSwitch528 = _AlphaClip2;
+				half staticSwitch528 = _AlphaClip2;
 				#elif defined(_CLIPQUALITY_DITHERED)
-				float staticSwitch528 = localUnityHDRPDither175;
+				half staticSwitch528 = localUnityHDRPDither175;
 				#else
-				float staticSwitch528 = localUnityHDRPDither175;
+				half staticSwitch528 = localUnityHDRPDither175;
 				#endif
 				
 
@@ -1958,33 +1958,33 @@ Shader "Reallusion/Amplify/RL_HairShader_Baked_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _FlowMap_ST;
-			float4 _EmissiveColor;
-			float4 _EmissionMap_ST;
-			float4 _VertexBaseColor;
-			float4 _BaseMap_ST;
-			float4 _SpecularTint;
-			float4 _OcclusionMap_ST;
-			float4 _BaseColor;
-			float4 _IDMap_ST;
-			float4 _BumpMap_ST;
-			float4 _MetallicGlossMap_ST;
-			float _Smoothness;
-			float _FlowMapFlipGreen;
-			float _AOOccludeAll;
-			float _OcclusionStrength;
-			float _RimTransmissionIntensity;
-			float _RimPower;
-			float _Translucency;
-			float _SpecularMix;
-			float _BumpScale;
-			float _SpecularShiftMin;
-			float _AlphaClip2;
-			float _SpecularShiftMax;
-			float _SpecularMultiplier;
-			float _SpecularPowerScale;
-			float _VertexColorStrength;
-			float _ShadowClip;
+			half4 _FlowMap_ST;
+			half4 _EmissiveColor;
+			half4 _EmissionMap_ST;
+			half4 _VertexBaseColor;
+			half4 _BaseMap_ST;
+			half4 _SpecularTint;
+			half4 _OcclusionMap_ST;
+			half4 _BaseColor;
+			half4 _IDMap_ST;
+			half4 _BumpMap_ST;
+			half4 _MetallicGlossMap_ST;
+			half _Smoothness;
+			half _FlowMapFlipGreen;
+			half _AOOccludeAll;
+			half _OcclusionStrength;
+			half _RimTransmissionIntensity;
+			half _RimPower;
+			half _Translucency;
+			half _SpecularMix;
+			half _BumpScale;
+			half _SpecularShiftMin;
+			half _AlphaClip2;
+			half _SpecularShiftMax;
+			half _SpecularMultiplier;
+			half _SpecularPowerScale;
+			half _VertexColorStrength;
+			half _ShadowClip;
 			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
@@ -1999,7 +1999,7 @@ Shader "Reallusion/Amplify/RL_HairShader_Baked_URP"
 			SAMPLER(sampler_BaseMap);
 
 
-			float UnityHDRPDither175( float In, float2 ScreenPosition )
+			half UnityHDRPDither175( half In, half2 ScreenPosition )
 			{
 				half2 uv = ScreenPosition.xy * _ScreenParams.xy;
 				half DITHER_THRESHOLDS[16] =
@@ -2147,21 +2147,21 @@ Shader "Reallusion/Amplify/RL_HairShader_Baked_URP"
 				SurfaceDescription surfaceDescription = (SurfaceDescription)0;
 
 				float2 uv_BaseMap = IN.ase_texcoord1.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
-				float4 tex2DNode19 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
-				float alpha518 = tex2DNode19.a;
+				half4 tex2DNode19 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
+				half alpha518 = tex2DNode19.a;
 				
-				float In175 = _AlphaClip2;
+				half In175 = _AlphaClip2;
 				float4 screenPos = IN.ase_texcoord2;
 				float4 ase_screenPosNorm = screenPos / screenPos.w;
 				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float2 ScreenPosition175 = ase_screenPosNorm.xy;
-				float localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
+				half2 ScreenPosition175 = ase_screenPosNorm.xy;
+				half localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
 				#if defined(_CLIPQUALITY_STANDARD)
-				float staticSwitch528 = _AlphaClip2;
+				half staticSwitch528 = _AlphaClip2;
 				#elif defined(_CLIPQUALITY_DITHERED)
-				float staticSwitch528 = localUnityHDRPDither175;
+				half staticSwitch528 = localUnityHDRPDither175;
 				#else
-				float staticSwitch528 = localUnityHDRPDither175;
+				half staticSwitch528 = localUnityHDRPDither175;
 				#endif
 				
 
@@ -2249,33 +2249,33 @@ Shader "Reallusion/Amplify/RL_HairShader_Baked_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _FlowMap_ST;
-			float4 _EmissiveColor;
-			float4 _EmissionMap_ST;
-			float4 _VertexBaseColor;
-			float4 _BaseMap_ST;
-			float4 _SpecularTint;
-			float4 _OcclusionMap_ST;
-			float4 _BaseColor;
-			float4 _IDMap_ST;
-			float4 _BumpMap_ST;
-			float4 _MetallicGlossMap_ST;
-			float _Smoothness;
-			float _FlowMapFlipGreen;
-			float _AOOccludeAll;
-			float _OcclusionStrength;
-			float _RimTransmissionIntensity;
-			float _RimPower;
-			float _Translucency;
-			float _SpecularMix;
-			float _BumpScale;
-			float _SpecularShiftMin;
-			float _AlphaClip2;
-			float _SpecularShiftMax;
-			float _SpecularMultiplier;
-			float _SpecularPowerScale;
-			float _VertexColorStrength;
-			float _ShadowClip;
+			half4 _FlowMap_ST;
+			half4 _EmissiveColor;
+			half4 _EmissionMap_ST;
+			half4 _VertexBaseColor;
+			half4 _BaseMap_ST;
+			half4 _SpecularTint;
+			half4 _OcclusionMap_ST;
+			half4 _BaseColor;
+			half4 _IDMap_ST;
+			half4 _BumpMap_ST;
+			half4 _MetallicGlossMap_ST;
+			half _Smoothness;
+			half _FlowMapFlipGreen;
+			half _AOOccludeAll;
+			half _OcclusionStrength;
+			half _RimTransmissionIntensity;
+			half _RimPower;
+			half _Translucency;
+			half _SpecularMix;
+			half _BumpScale;
+			half _SpecularShiftMin;
+			half _AlphaClip2;
+			half _SpecularShiftMax;
+			half _SpecularMultiplier;
+			half _SpecularPowerScale;
+			half _VertexColorStrength;
+			half _ShadowClip;
 			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
@@ -2289,7 +2289,7 @@ Shader "Reallusion/Amplify/RL_HairShader_Baked_URP"
 			SAMPLER(sampler_BaseMap);
 
 
-			float UnityHDRPDither175( float In, float2 ScreenPosition )
+			half UnityHDRPDither175( half In, half2 ScreenPosition )
 			{
 				half2 uv = ScreenPosition.xy * _ScreenParams.xy;
 				half DITHER_THRESHOLDS[16] =
@@ -2437,21 +2437,21 @@ Shader "Reallusion/Amplify/RL_HairShader_Baked_URP"
 				SurfaceDescription surfaceDescription = (SurfaceDescription)0;
 
 				float2 uv_BaseMap = IN.ase_texcoord1.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
-				float4 tex2DNode19 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
-				float alpha518 = tex2DNode19.a;
+				half4 tex2DNode19 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
+				half alpha518 = tex2DNode19.a;
 				
-				float In175 = _AlphaClip2;
+				half In175 = _AlphaClip2;
 				float4 screenPos = IN.ase_texcoord2;
 				float4 ase_screenPosNorm = screenPos / screenPos.w;
 				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float2 ScreenPosition175 = ase_screenPosNorm.xy;
-				float localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
+				half2 ScreenPosition175 = ase_screenPosNorm.xy;
+				half localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
 				#if defined(_CLIPQUALITY_STANDARD)
-				float staticSwitch528 = _AlphaClip2;
+				half staticSwitch528 = _AlphaClip2;
 				#elif defined(_CLIPQUALITY_DITHERED)
-				float staticSwitch528 = localUnityHDRPDither175;
+				half staticSwitch528 = localUnityHDRPDither175;
 				#else
-				float staticSwitch528 = localUnityHDRPDither175;
+				half staticSwitch528 = localUnityHDRPDither175;
 				#endif
 				
 
@@ -2550,7 +2550,7 @@ Node;AmplifyShaderEditor.GetLocalVarNode;645;-1130.393,238.0957;Inherit;False;64
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;296;601.0043,1008.494;Float;False;False;-1;2;UnityEditor.ShaderGraphUnlitGUI;0;3;New Amplify Shader;2992e84f91cbeb14eab234972e07ea9d;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Unlit;True;5;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;0;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;298;601.0043,1008.494;Float;False;False;-1;2;UnityEditor.ShaderGraphUnlitGUI;0;3;New Amplify Shader;2992e84f91cbeb14eab234972e07ea9d;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Unlit;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=ShadowCaster;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;299;601.0043,1008.494;Float;False;False;-1;2;UnityEditor.ShaderGraphUnlitGUI;0;3;New Amplify Shader;2992e84f91cbeb14eab234972e07ea9d;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Unlit;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;True;1;LightMode=DepthOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;297;867.6932,1172.645;Float;False;True;-1;2;Reallusion.Import.CustomHairShaderGUI;0;13;Reallusion/Amplify/RL_HairShader_Baked_URP;2992e84f91cbeb14eab234972e07ea9d;True;Forward;0;1;Forward;8;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;2;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Unlit;True;2;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalForwardOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;23;Surface;0;0;  Blend;0;0;Two Sided;0;637786971353641789;Forward Only;1;638127538514851113;Cast Shadows;1;0;  Use Shadow Threshold;1;637787018088018178;Receive Shadows;1;0;GPU Instancing;1;0;LOD CrossFade;0;0;Built-in Fog;1;637787992251365997;DOTS Instancing;0;0;Meta Pass;0;638047160060733936;Extra Pre Pass;0;0;Tessellation;0;0;  Phong;0;0;  Strength;0.5,False,;0;  Type;0;0;  Tess;16,False,;0;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Vertex Position,InvertActionOnDeselection;1;0;0;10;False;True;True;True;False;False;True;True;True;True;False;;True;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;297;867.6932,1172.645;Half;False;True;-1;2;Reallusion.Import.CustomHairShaderGUI;0;13;Reallusion/Amplify/RL_HairShader_Baked_URP;2992e84f91cbeb14eab234972e07ea9d;True;Forward;0;1;Forward;8;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;2;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Unlit;True;2;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalForwardOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;23;Surface;0;0;  Blend;0;0;Two Sided;0;637786971353641789;Forward Only;1;638127538514851113;Cast Shadows;1;0;  Use Shadow Threshold;1;637787018088018178;Receive Shadows;1;0;GPU Instancing;1;0;LOD CrossFade;0;0;Built-in Fog;1;637787992251365997;DOTS Instancing;0;0;Meta Pass;0;638047160060733936;Extra Pre Pass;0;0;Tessellation;0;0;  Phong;0;0;  Strength;0.5,False,;0;  Type;0;0;  Tess;16,False,;0;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Vertex Position,InvertActionOnDeselection;1;0;0;10;False;True;True;True;False;False;True;True;True;True;False;;True;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;300;601.0043,1008.494;Float;False;False;-1;2;UnityEditor.ShaderGraphUnlitGUI;0;3;New Amplify Shader;2992e84f91cbeb14eab234972e07ea9d;True;Meta;0;4;Meta;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Unlit;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Meta;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.FunctionNode;650;-110.9783,9.531306;Inherit;False;RL_Amplify_Function_Hair_AnisotropicLighting;-1;;854;1c2ce0d33e6d0364e94912a58b37cdd2;1,88,0;18;42;COLOR;1,1,1,0;False;161;FLOAT;1;False;178;FLOAT;1;False;84;FLOAT3;0,0,1;False;26;FLOAT3;0,0,1;False;131;COLOR;1,1,1,0;False;7;FLOAT;50;False;172;FLOAT;0;False;132;FLOAT;1;False;245;FLOAT;2;False;108;COLOR;0,0,0,0;False;112;FLOAT;0;False;71;FLOAT;0.5;False;75;FLOAT;-0.1;False;80;FLOAT;0.1;False;200;FLOAT;0;False;207;FLOAT;0;False;208;FLOAT;0;False;1;COLOR;0
 Node;AmplifyShaderEditor.RangedFloatNode;630;-1636.989,2023.247;Inherit;False;Property;_Smoothness;Smoothness;8;0;Create;True;0;0;0;False;0;False;1;1;0;1;0;1;FLOAT;0
@@ -2614,4 +2614,4 @@ WireConnection;650;200;539;0
 WireConnection;650;207;265;0
 WireConnection;650;208;263;0
 ASEEND*/
-//CHKSM=3BF7BC4E768C87C191B3147D7A6D7A122E66E7F3
+//CHKSM=EC4A2A1BE566E4A0BF9D97F83D4E4AA64953CA4B

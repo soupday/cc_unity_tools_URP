@@ -300,24 +300,24 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _BaseColor;
-			float4 _OcclusionMap_ST;
-			float4 _MetallicGlossMap_ST;
-			float4 _RefractionColor;
-			float4 _EmissionMap_ST;
-			float4 _DetailMask_ST;
-			float4 _EmissiveColor;
-			float4 _DetailNormalMap_ST;
-			float4 _BumpMap_ST;
-			float4 _BaseMap_ST;
-			float _BumpScale;
-			float _Metallic;
-			float _GlossMapScale;
-			float _OcclusionStrength;
-			float _AlphaClip;
-			float _ShadowClip;
-			float _DetailNormalMapScale;
-			float _RefractiveIndex;
+			half4 _BaseColor;
+			half4 _OcclusionMap_ST;
+			half4 _MetallicGlossMap_ST;
+			half4 _RefractionColor;
+			half4 _EmissionMap_ST;
+			half4 _DetailMask_ST;
+			half4 _EmissiveColor;
+			half4 _DetailNormalMap_ST;
+			half4 _BumpMap_ST;
+			half4 _BaseMap_ST;
+			half _BumpScale;
+			half _Metallic;
+			half _GlossMapScale;
+			half _OcclusionStrength;
+			half _AlphaClip;
+			half _ShadowClip;
+			half _DetailNormalMapScale;
+			half _RefractiveIndex;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -594,21 +594,21 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation"
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
 				float2 uv_BaseMap = IN.ase_texcoord8.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
-				float4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
-				float4 baseColor200 = ( _BaseColor * tex2DNode145 );
+				half4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
+				half4 baseColor200 = ( _BaseColor * tex2DNode145 );
 				
 				float2 uv_BumpMap = IN.ase_texcoord8.xy * _BumpMap_ST.xy + _BumpMap_ST.zw;
-				float3 unpack146 = UnpackNormalScale( SAMPLE_TEXTURE2D( _BumpMap, sampler_BumpMap, uv_BumpMap ), _BumpScale );
+				half3 unpack146 = UnpackNormalScale( SAMPLE_TEXTURE2D( _BumpMap, sampler_BumpMap, uv_BumpMap ), _BumpScale );
 				unpack146.z = lerp( 1, unpack146.z, saturate(_BumpScale) );
 				float2 uv_DetailNormalMap = IN.ase_texcoord8.xy * _DetailNormalMap_ST.xy + _DetailNormalMap_ST.zw;
 				float2 uv_DetailMask = IN.ase_texcoord8.xy * _DetailMask_ST.xy + _DetailMask_ST.zw;
-				float3 unpack148 = UnpackNormalScale( SAMPLE_TEXTURE2D( _DetailNormalMap, sampler_DetailNormalMap, uv_DetailNormalMap ), ( _DetailNormalMapScale * SAMPLE_TEXTURE2D( _DetailMask, sampler_DetailMask, uv_DetailMask ).g ) );
+				half3 unpack148 = UnpackNormalScale( SAMPLE_TEXTURE2D( _DetailNormalMap, sampler_DetailNormalMap, uv_DetailNormalMap ), ( _DetailNormalMapScale * SAMPLE_TEXTURE2D( _DetailMask, sampler_DetailMask, uv_DetailMask ).g ) );
 				unpack148.z = lerp( 1, unpack148.z, saturate(( _DetailNormalMapScale * SAMPLE_TEXTURE2D( _DetailMask, sampler_DetailMask, uv_DetailMask ).g )) );
 				
 				float2 uv_EmissionMap = IN.ase_texcoord8.xy * _EmissionMap_ST.xy + _EmissionMap_ST.zw;
 				
 				float2 uv_MetallicGlossMap = IN.ase_texcoord8.xy * _MetallicGlossMap_ST.xy + _MetallicGlossMap_ST.zw;
-				float4 tex2DNode150 = SAMPLE_TEXTURE2D( _MetallicGlossMap, sampler_MetallicGlossMap, uv_MetallicGlossMap );
+				half4 tex2DNode150 = SAMPLE_TEXTURE2D( _MetallicGlossMap, sampler_MetallicGlossMap, uv_MetallicGlossMap );
 				
 				float2 uv_OcclusionMap = IN.ase_texcoord8.xy * _OcclusionMap_ST.xy + _OcclusionMap_ST.zw;
 				
@@ -893,24 +893,24 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _BaseColor;
-			float4 _OcclusionMap_ST;
-			float4 _MetallicGlossMap_ST;
-			float4 _RefractionColor;
-			float4 _EmissionMap_ST;
-			float4 _DetailMask_ST;
-			float4 _EmissiveColor;
-			float4 _DetailNormalMap_ST;
-			float4 _BumpMap_ST;
-			float4 _BaseMap_ST;
-			float _BumpScale;
-			float _Metallic;
-			float _GlossMapScale;
-			float _OcclusionStrength;
-			float _AlphaClip;
-			float _ShadowClip;
-			float _DetailNormalMapScale;
-			float _RefractiveIndex;
+			half4 _BaseColor;
+			half4 _OcclusionMap_ST;
+			half4 _MetallicGlossMap_ST;
+			half4 _RefractionColor;
+			half4 _EmissionMap_ST;
+			half4 _DetailMask_ST;
+			half4 _EmissiveColor;
+			half4 _DetailNormalMap_ST;
+			half4 _BumpMap_ST;
+			half4 _BaseMap_ST;
+			half _BumpScale;
+			half _Metallic;
+			half _GlossMapScale;
+			half _OcclusionStrength;
+			half _AlphaClip;
+			half _ShadowClip;
+			half _DetailNormalMapScale;
+			half _RefractiveIndex;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -1129,7 +1129,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation"
 				#endif
 
 				float2 uv_BaseMap = IN.ase_texcoord2.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
-				float4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
+				half4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
 				
 
 				float Alpha = ( _BaseColor.a * tex2DNode145.a );
@@ -1235,24 +1235,24 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _BaseColor;
-			float4 _OcclusionMap_ST;
-			float4 _MetallicGlossMap_ST;
-			float4 _RefractionColor;
-			float4 _EmissionMap_ST;
-			float4 _DetailMask_ST;
-			float4 _EmissiveColor;
-			float4 _DetailNormalMap_ST;
-			float4 _BumpMap_ST;
-			float4 _BaseMap_ST;
-			float _BumpScale;
-			float _Metallic;
-			float _GlossMapScale;
-			float _OcclusionStrength;
-			float _AlphaClip;
-			float _ShadowClip;
-			float _DetailNormalMapScale;
-			float _RefractiveIndex;
+			half4 _BaseColor;
+			half4 _OcclusionMap_ST;
+			half4 _MetallicGlossMap_ST;
+			half4 _RefractionColor;
+			half4 _EmissionMap_ST;
+			half4 _DetailMask_ST;
+			half4 _EmissiveColor;
+			half4 _DetailNormalMap_ST;
+			half4 _BumpMap_ST;
+			half4 _BaseMap_ST;
+			half _BumpScale;
+			half _Metallic;
+			half _GlossMapScale;
+			half _OcclusionStrength;
+			half _AlphaClip;
+			half _ShadowClip;
+			half _DetailNormalMapScale;
+			half _RefractiveIndex;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -1453,7 +1453,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation"
 				#endif
 
 				float2 uv_BaseMap = IN.ase_texcoord2.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
-				float4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
+				half4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
 				
 
 				float Alpha = ( _BaseColor.a * tex2DNode145.a );
@@ -1559,24 +1559,24 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _BaseColor;
-			float4 _OcclusionMap_ST;
-			float4 _MetallicGlossMap_ST;
-			float4 _RefractionColor;
-			float4 _EmissionMap_ST;
-			float4 _DetailMask_ST;
-			float4 _EmissiveColor;
-			float4 _DetailNormalMap_ST;
-			float4 _BumpMap_ST;
-			float4 _BaseMap_ST;
-			float _BumpScale;
-			float _Metallic;
-			float _GlossMapScale;
-			float _OcclusionStrength;
-			float _AlphaClip;
-			float _ShadowClip;
-			float _DetailNormalMapScale;
-			float _RefractiveIndex;
+			half4 _BaseColor;
+			half4 _OcclusionMap_ST;
+			half4 _MetallicGlossMap_ST;
+			half4 _RefractionColor;
+			half4 _EmissionMap_ST;
+			half4 _DetailMask_ST;
+			half4 _EmissiveColor;
+			half4 _DetailNormalMap_ST;
+			half4 _BumpMap_ST;
+			half4 _BaseMap_ST;
+			half _BumpScale;
+			half _Metallic;
+			half _GlossMapScale;
+			half _OcclusionStrength;
+			half _AlphaClip;
+			half _ShadowClip;
+			half _DetailNormalMapScale;
+			half _RefractiveIndex;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -1785,8 +1785,8 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation"
 				#endif
 
 				float2 uv_BaseMap = IN.ase_texcoord4.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
-				float4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
-				float4 baseColor200 = ( _BaseColor * tex2DNode145 );
+				half4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
+				half4 baseColor200 = ( _BaseColor * tex2DNode145 );
 				
 				float2 uv_EmissionMap = IN.ase_texcoord4.xy * _EmissionMap_ST.xy + _EmissionMap_ST.zw;
 				
@@ -1887,24 +1887,24 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _BaseColor;
-			float4 _OcclusionMap_ST;
-			float4 _MetallicGlossMap_ST;
-			float4 _RefractionColor;
-			float4 _EmissionMap_ST;
-			float4 _DetailMask_ST;
-			float4 _EmissiveColor;
-			float4 _DetailNormalMap_ST;
-			float4 _BumpMap_ST;
-			float4 _BaseMap_ST;
-			float _BumpScale;
-			float _Metallic;
-			float _GlossMapScale;
-			float _OcclusionStrength;
-			float _AlphaClip;
-			float _ShadowClip;
-			float _DetailNormalMapScale;
-			float _RefractiveIndex;
+			half4 _BaseColor;
+			half4 _OcclusionMap_ST;
+			half4 _MetallicGlossMap_ST;
+			half4 _RefractionColor;
+			half4 _EmissionMap_ST;
+			half4 _DetailMask_ST;
+			half4 _EmissiveColor;
+			half4 _DetailNormalMap_ST;
+			half4 _BumpMap_ST;
+			half4 _BaseMap_ST;
+			half _BumpScale;
+			half _Metallic;
+			half _GlossMapScale;
+			half _OcclusionStrength;
+			half _AlphaClip;
+			half _ShadowClip;
+			half _DetailNormalMapScale;
+			half _RefractiveIndex;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -2096,8 +2096,8 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation"
 				#endif
 
 				float2 uv_BaseMap = IN.ase_texcoord2.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
-				float4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
-				float4 baseColor200 = ( _BaseColor * tex2DNode145 );
+				half4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
+				half4 baseColor200 = ( _BaseColor * tex2DNode145 );
 				
 
 				float3 BaseColor = baseColor200.rgb;
@@ -2193,24 +2193,24 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _BaseColor;
-			float4 _OcclusionMap_ST;
-			float4 _MetallicGlossMap_ST;
-			float4 _RefractionColor;
-			float4 _EmissionMap_ST;
-			float4 _DetailMask_ST;
-			float4 _EmissiveColor;
-			float4 _DetailNormalMap_ST;
-			float4 _BumpMap_ST;
-			float4 _BaseMap_ST;
-			float _BumpScale;
-			float _Metallic;
-			float _GlossMapScale;
-			float _OcclusionStrength;
-			float _AlphaClip;
-			float _ShadowClip;
-			float _DetailNormalMapScale;
-			float _RefractiveIndex;
+			half4 _BaseColor;
+			half4 _OcclusionMap_ST;
+			half4 _MetallicGlossMap_ST;
+			half4 _RefractionColor;
+			half4 _EmissionMap_ST;
+			half4 _DetailMask_ST;
+			half4 _EmissiveColor;
+			half4 _DetailNormalMap_ST;
+			half4 _BumpMap_ST;
+			half4 _BaseMap_ST;
+			half _BumpScale;
+			half _Metallic;
+			half _GlossMapScale;
+			half _OcclusionStrength;
+			half _AlphaClip;
+			half _ShadowClip;
+			half _DetailNormalMapScale;
+			half _RefractiveIndex;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -2426,15 +2426,15 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation"
 				#endif
 
 				float2 uv_BumpMap = IN.ase_texcoord4.xy * _BumpMap_ST.xy + _BumpMap_ST.zw;
-				float3 unpack146 = UnpackNormalScale( SAMPLE_TEXTURE2D( _BumpMap, sampler_BumpMap, uv_BumpMap ), _BumpScale );
+				half3 unpack146 = UnpackNormalScale( SAMPLE_TEXTURE2D( _BumpMap, sampler_BumpMap, uv_BumpMap ), _BumpScale );
 				unpack146.z = lerp( 1, unpack146.z, saturate(_BumpScale) );
 				float2 uv_DetailNormalMap = IN.ase_texcoord4.xy * _DetailNormalMap_ST.xy + _DetailNormalMap_ST.zw;
 				float2 uv_DetailMask = IN.ase_texcoord4.xy * _DetailMask_ST.xy + _DetailMask_ST.zw;
-				float3 unpack148 = UnpackNormalScale( SAMPLE_TEXTURE2D( _DetailNormalMap, sampler_DetailNormalMap, uv_DetailNormalMap ), ( _DetailNormalMapScale * SAMPLE_TEXTURE2D( _DetailMask, sampler_DetailMask, uv_DetailMask ).g ) );
+				half3 unpack148 = UnpackNormalScale( SAMPLE_TEXTURE2D( _DetailNormalMap, sampler_DetailNormalMap, uv_DetailNormalMap ), ( _DetailNormalMapScale * SAMPLE_TEXTURE2D( _DetailMask, sampler_DetailMask, uv_DetailMask ).g ) );
 				unpack148.z = lerp( 1, unpack148.z, saturate(( _DetailNormalMapScale * SAMPLE_TEXTURE2D( _DetailMask, sampler_DetailMask, uv_DetailMask ).g )) );
 				
 				float2 uv_BaseMap = IN.ase_texcoord4.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
-				float4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
+				half4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
 				
 
 				float3 Normal = BlendNormal( unpack146 , unpack148 );
@@ -2596,24 +2596,24 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _BaseColor;
-			float4 _OcclusionMap_ST;
-			float4 _MetallicGlossMap_ST;
-			float4 _RefractionColor;
-			float4 _EmissionMap_ST;
-			float4 _DetailMask_ST;
-			float4 _EmissiveColor;
-			float4 _DetailNormalMap_ST;
-			float4 _BumpMap_ST;
-			float4 _BaseMap_ST;
-			float _BumpScale;
-			float _Metallic;
-			float _GlossMapScale;
-			float _OcclusionStrength;
-			float _AlphaClip;
-			float _ShadowClip;
-			float _DetailNormalMapScale;
-			float _RefractiveIndex;
+			half4 _BaseColor;
+			half4 _OcclusionMap_ST;
+			half4 _MetallicGlossMap_ST;
+			half4 _RefractionColor;
+			half4 _EmissionMap_ST;
+			half4 _DetailMask_ST;
+			half4 _EmissiveColor;
+			half4 _DetailNormalMap_ST;
+			half4 _BumpMap_ST;
+			half4 _BaseMap_ST;
+			half _BumpScale;
+			half _Metallic;
+			half _GlossMapScale;
+			half _OcclusionStrength;
+			half _AlphaClip;
+			half _ShadowClip;
+			half _DetailNormalMapScale;
+			half _RefractiveIndex;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -2883,21 +2883,21 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation"
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
 				float2 uv_BaseMap = IN.ase_texcoord8.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
-				float4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
-				float4 baseColor200 = ( _BaseColor * tex2DNode145 );
+				half4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
+				half4 baseColor200 = ( _BaseColor * tex2DNode145 );
 				
 				float2 uv_BumpMap = IN.ase_texcoord8.xy * _BumpMap_ST.xy + _BumpMap_ST.zw;
-				float3 unpack146 = UnpackNormalScale( SAMPLE_TEXTURE2D( _BumpMap, sampler_BumpMap, uv_BumpMap ), _BumpScale );
+				half3 unpack146 = UnpackNormalScale( SAMPLE_TEXTURE2D( _BumpMap, sampler_BumpMap, uv_BumpMap ), _BumpScale );
 				unpack146.z = lerp( 1, unpack146.z, saturate(_BumpScale) );
 				float2 uv_DetailNormalMap = IN.ase_texcoord8.xy * _DetailNormalMap_ST.xy + _DetailNormalMap_ST.zw;
 				float2 uv_DetailMask = IN.ase_texcoord8.xy * _DetailMask_ST.xy + _DetailMask_ST.zw;
-				float3 unpack148 = UnpackNormalScale( SAMPLE_TEXTURE2D( _DetailNormalMap, sampler_DetailNormalMap, uv_DetailNormalMap ), ( _DetailNormalMapScale * SAMPLE_TEXTURE2D( _DetailMask, sampler_DetailMask, uv_DetailMask ).g ) );
+				half3 unpack148 = UnpackNormalScale( SAMPLE_TEXTURE2D( _DetailNormalMap, sampler_DetailNormalMap, uv_DetailNormalMap ), ( _DetailNormalMapScale * SAMPLE_TEXTURE2D( _DetailMask, sampler_DetailMask, uv_DetailMask ).g ) );
 				unpack148.z = lerp( 1, unpack148.z, saturate(( _DetailNormalMapScale * SAMPLE_TEXTURE2D( _DetailMask, sampler_DetailMask, uv_DetailMask ).g )) );
 				
 				float2 uv_EmissionMap = IN.ase_texcoord8.xy * _EmissionMap_ST.xy + _EmissionMap_ST.zw;
 				
 				float2 uv_MetallicGlossMap = IN.ase_texcoord8.xy * _MetallicGlossMap_ST.xy + _MetallicGlossMap_ST.zw;
-				float4 tex2DNode150 = SAMPLE_TEXTURE2D( _MetallicGlossMap, sampler_MetallicGlossMap, uv_MetallicGlossMap );
+				half4 tex2DNode150 = SAMPLE_TEXTURE2D( _MetallicGlossMap, sampler_MetallicGlossMap, uv_MetallicGlossMap );
 				
 				float2 uv_OcclusionMap = IN.ase_texcoord8.xy * _OcclusionMap_ST.xy + _OcclusionMap_ST.zw;
 				
@@ -3080,24 +3080,24 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _BaseColor;
-			float4 _OcclusionMap_ST;
-			float4 _MetallicGlossMap_ST;
-			float4 _RefractionColor;
-			float4 _EmissionMap_ST;
-			float4 _DetailMask_ST;
-			float4 _EmissiveColor;
-			float4 _DetailNormalMap_ST;
-			float4 _BumpMap_ST;
-			float4 _BaseMap_ST;
-			float _BumpScale;
-			float _Metallic;
-			float _GlossMapScale;
-			float _OcclusionStrength;
-			float _AlphaClip;
-			float _ShadowClip;
-			float _DetailNormalMapScale;
-			float _RefractiveIndex;
+			half4 _BaseColor;
+			half4 _OcclusionMap_ST;
+			half4 _MetallicGlossMap_ST;
+			half4 _RefractionColor;
+			half4 _EmissionMap_ST;
+			half4 _DetailMask_ST;
+			half4 _EmissiveColor;
+			half4 _DetailNormalMap_ST;
+			half4 _BumpMap_ST;
+			half4 _BaseMap_ST;
+			half _BumpScale;
+			half _Metallic;
+			half _GlossMapScale;
+			half _OcclusionStrength;
+			half _AlphaClip;
+			half _ShadowClip;
+			half _DetailNormalMapScale;
+			half _RefractiveIndex;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -3270,7 +3270,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation"
 				SurfaceDescription surfaceDescription = (SurfaceDescription)0;
 
 				float2 uv_BaseMap = IN.ase_texcoord.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
-				float4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
+				half4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
 				
 
 				surfaceDescription.Alpha = ( _BaseColor.a * tex2DNode145.a );
@@ -3364,24 +3364,24 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _BaseColor;
-			float4 _OcclusionMap_ST;
-			float4 _MetallicGlossMap_ST;
-			float4 _RefractionColor;
-			float4 _EmissionMap_ST;
-			float4 _DetailMask_ST;
-			float4 _EmissiveColor;
-			float4 _DetailNormalMap_ST;
-			float4 _BumpMap_ST;
-			float4 _BaseMap_ST;
-			float _BumpScale;
-			float _Metallic;
-			float _GlossMapScale;
-			float _OcclusionStrength;
-			float _AlphaClip;
-			float _ShadowClip;
-			float _DetailNormalMapScale;
-			float _RefractiveIndex;
+			half4 _BaseColor;
+			half4 _OcclusionMap_ST;
+			half4 _MetallicGlossMap_ST;
+			half4 _RefractionColor;
+			half4 _EmissionMap_ST;
+			half4 _DetailMask_ST;
+			half4 _EmissiveColor;
+			half4 _DetailNormalMap_ST;
+			half4 _BumpMap_ST;
+			half4 _BaseMap_ST;
+			half _BumpScale;
+			half _Metallic;
+			half _GlossMapScale;
+			half _OcclusionStrength;
+			half _AlphaClip;
+			half _ShadowClip;
+			half _DetailNormalMapScale;
+			half _RefractiveIndex;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -3553,7 +3553,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation"
 				SurfaceDescription surfaceDescription = (SurfaceDescription)0;
 
 				float2 uv_BaseMap = IN.ase_texcoord.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
-				float4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
+				half4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
 				
 
 				surfaceDescription.Alpha = ( _BaseColor.a * tex2DNode145.a );
@@ -3632,7 +3632,7 @@ Node;AmplifyShaderEditor.WireNode;201;-146.3643,431.4894;Inherit;False;1;0;COLOR
 Node;AmplifyShaderEditor.WireNode;181;-146.0122,762.5016;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.WireNode;184;-151.3843,503.1793;Inherit;False;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.RangedFloatNode;205;-185.5093,860.9061;Inherit;False;Property;_AlphaClip;Alpha Clip;3;0;Create;True;0;0;0;False;0;False;0;0;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;1;299.4972,596.494;Float;False;True;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;19;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;True;True;2;False;;True;3;False;;True;False;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Transparent=RenderType;Queue=Transparent=Queue=0;UniversalMaterialType=Lit;True;6;True;12;all;0;False;True;2;5;False;;10;False;;1;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;True;True;2;False;;True;3;False;;True;False;0;False;;0;False;;True;1;LightMode=UniversalForwardOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;41;Workflow;1;0;Surface;1;637999731696434202;  Refraction Model;1;637999742081123270;  Blend;0;637999742120691603;Two Sided;1;0;Fragment Normal Space,InvertActionOnDeselection;0;0;Forward Only;1;638048888164627149;Transmission;0;637999731806321607;  Transmission Shadow;0.5,False,;637782841107493989;Translucency;0;637999731813262088;  Translucency Strength;1,False,;0;  Normal Distortion;0.5,False,;0;  Scattering;2,False,;0;  Direct;0.9,False,;0;  Ambient;0.1,False,;0;  Shadow;0.5,False,;0;Cast Shadows;1;0;  Use Shadow Threshold;1;637999743490721054;Receive Shadows;1;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;1;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;DOTS Instancing;0;0;Tessellation;1;637999711387511624;  Phong;1;637999711401171755;  Strength;0,False,;637999728514891957;  Type;2;637999719710400882;  Tess;1,False,;0;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Write Depth;0;0;  Early Z;0;0;Vertex Position,InvertActionOnDeselection;1;0;Debug Display;0;0;Clear Coat;0;0;0;10;False;True;True;True;True;True;True;True;True;True;False;;True;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;1;299.4972,596.494;Half;False;True;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP Tessellation;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;19;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;True;True;2;False;;True;3;False;;True;False;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Transparent=RenderType;Queue=Transparent=Queue=0;UniversalMaterialType=Lit;True;6;True;12;all;0;False;True;2;5;False;;10;False;;1;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;True;True;2;False;;True;3;False;;True;False;0;False;;0;False;;True;1;LightMode=UniversalForwardOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;41;Workflow;1;0;Surface;1;637999731696434202;  Refraction Model;1;637999742081123270;  Blend;0;637999742120691603;Two Sided;1;0;Fragment Normal Space,InvertActionOnDeselection;0;0;Forward Only;1;638048888164627149;Transmission;0;637999731806321607;  Transmission Shadow;0.5,False,;637782841107493989;Translucency;0;637999731813262088;  Translucency Strength;1,False,;0;  Normal Distortion;0.5,False,;0;  Scattering;2,False,;0;  Direct;0.9,False,;0;  Ambient;0.1,False,;0;  Shadow;0.5,False,;0;Cast Shadows;1;0;  Use Shadow Threshold;1;637999743490721054;Receive Shadows;1;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;1;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;DOTS Instancing;0;0;Tessellation;1;637999711387511624;  Phong;1;637999711401171755;  Strength;0,False,;637999728514891957;  Type;2;637999719710400882;  Tess;1,False,;0;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Write Depth;0;0;  Early Z;0;0;Vertex Position,InvertActionOnDeselection;1;0;Debug Display;0;0;Clear Coat;0;0;0;10;False;True;True;True;True;True;True;True;True;True;False;;True;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;5;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;2;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Universal2D;0;5;Universal2D;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;12;all;0;False;True;2;5;False;;10;False;;1;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;False;False;True;2;False;;True;3;False;;True;False;0;False;;0;False;;True;1;LightMode=Universal2D;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;3;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;2;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;True;1;LightMode=DepthOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;2;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;2;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=ShadowCaster;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
@@ -3683,4 +3683,4 @@ WireConnection;1;16;206;0
 WireConnection;1;12;202;0
 WireConnection;1;13;203;0
 ASEEND*/
-//CHKSM=4718A51358C682C36C622E3DDD6B4CEA91AB8365
+//CHKSM=72C59922FD072381ABFE20319ACC2DDC31943869

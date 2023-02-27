@@ -276,8 +276,8 @@ Shader "Reallusion/Amplify/RL_HairShader_Variants_URP"
 				float4 vertex : POSITION;
 				float3 ase_normal : NORMAL;
 				float4 ase_texcoord : TEXCOORD0;
-				float4 ase_tangent : TANGENT;
-				float4 ase_color : COLOR;
+				half4 ase_tangent : TANGENT;
+				half4 ase_color : COLOR;
 				float4 texcoord1 : TEXCOORD1;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -307,59 +307,59 @@ Shader "Reallusion/Amplify/RL_HairShader_Variants_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _FlowMap_ST;
-			float4 _HighlightAColor;
-			float4 _VertexBaseColor;
-			float4 _RootMap_ST;
-			float4 _EndColor;
-			float4 _RootColor;
-			float4 _DiffuseMap_ST;
-			float4 _BlendMap_ST;
-			float4 _SpecularTint;
-			float4 _SpecularMap_ST;
-			float4 _DiffuseColor;
-			float4 _EmissiveColor;
-			float4 _NormalMap_ST;
-			float4 _EmissionMap_ST;
-			float4 _IDMap_ST;
-			float4 _HighlightBColor;
-			float4 _MaskMap_ST;
-			float3 _HighlightADistribution;
-			float3 _HighlightBDistribution;
-			float _AOOccludeAll;
-			float _SpecularMix;
-			float _AOStrength;
-			float _VertexColorStrength;
-			float _Translucency;
-			float _RimTransmissionIntensity;
-			float _AlphaRemap;
-			float _BlendStrength;
-			float _HighlightBOverlapInvert;
-			float _HighlightBOverlapEnd;
-			float _AlphaPower;
-			float _HighlightBStrength;
-			float _RimPower;
-			float _GlobalStrength;
-			float _HighlightAOverlapInvert;
-			float _FlowMapFlipGreen;
-			float _NormalStrength;
-			float _SpecularShiftMin;
-			float _SpecularShiftMax;
-			float _SmoothnessMin;
-			float _SmoothnessMax;
-			float _SmoothnessPower;
-			float _SpecularPowerScale;
-			float _SpecularMultiplier;
-			float _DiffuseStrength;
-			float _BaseColorStrength;
-			float _InvertRootMap;
-			float _RootColorStrength;
-			float _EndColorStrength;
-			float _AlphaClip2;
-			float _HighlightAStrength;
-			float _HighlightAOverlapEnd;
-			float _HighlightBlend;
-			float _ShadowClip;
+			half4 _FlowMap_ST;
+			half4 _HighlightAColor;
+			half4 _VertexBaseColor;
+			half4 _RootMap_ST;
+			half4 _EndColor;
+			half4 _RootColor;
+			half4 _DiffuseMap_ST;
+			half4 _BlendMap_ST;
+			half4 _SpecularTint;
+			half4 _SpecularMap_ST;
+			half4 _DiffuseColor;
+			half4 _EmissiveColor;
+			half4 _NormalMap_ST;
+			half4 _EmissionMap_ST;
+			half4 _IDMap_ST;
+			half4 _HighlightBColor;
+			half4 _MaskMap_ST;
+			half3 _HighlightADistribution;
+			half3 _HighlightBDistribution;
+			half _AOOccludeAll;
+			half _SpecularMix;
+			half _AOStrength;
+			half _VertexColorStrength;
+			half _Translucency;
+			half _RimTransmissionIntensity;
+			half _AlphaRemap;
+			half _BlendStrength;
+			half _HighlightBOverlapInvert;
+			half _HighlightBOverlapEnd;
+			half _AlphaPower;
+			half _HighlightBStrength;
+			half _RimPower;
+			half _GlobalStrength;
+			half _HighlightAOverlapInvert;
+			half _FlowMapFlipGreen;
+			half _NormalStrength;
+			half _SpecularShiftMin;
+			half _SpecularShiftMax;
+			half _SmoothnessMin;
+			half _SmoothnessMax;
+			half _SmoothnessPower;
+			half _SpecularPowerScale;
+			half _SpecularMultiplier;
+			half _DiffuseStrength;
+			half _BaseColorStrength;
+			half _InvertRootMap;
+			half _RootColorStrength;
+			half _EndColorStrength;
+			half _AlphaClip2;
+			half _HighlightAStrength;
+			half _HighlightAOverlapEnd;
+			half _HighlightBlend;
+			half _ShadowClip;
 			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
@@ -383,21 +383,21 @@ Shader "Reallusion/Amplify/RL_HairShader_Variants_URP"
 			SAMPLER(sampler_EmissionMap);
 
 
-			float3 TangentToWorld13_g999( float3 NormalTS, float3x3 TBN )
+			half3 TangentToWorld13_g999( half3 NormalTS, half3x3 TBN )
 			{
 				float3 NormalWS = TransformTangentToWorld(NormalTS, TBN);
 				NormalWS = NormalizeNormalPerPixel(NormalWS);
 				return NormalWS;
 			}
 			
-			float ThreePointDistribution( float3 From, float ID, float Fac )
+			half ThreePointDistribution( half3 From, half ID, half Fac )
 			{
 				float lower = smoothstep(From.x, From.y, ID);
 				float upper = 1.0 - smoothstep(From.y, From.z, ID);
 				return Fac * lerp(lower, upper, step(From.y, ID));
 			}
 			
-			float3 RL_Amplify_Expression_HairLighting_Additional126_g996( float3 Color, float3 TangentWorld, float3 ViewDir, float3 NormalWorld, float3 SpecularColor, float SpecularTint, float SpecularPower, float SpecularMultiplier, float3 PositionWorld, float Translucency, float RimTransmission, float RimPower )
+			half3 RL_Amplify_Expression_HairLighting_Additional126_g996( half3 Color, half3 TangentWorld, half3 ViewDir, half3 NormalWorld, half3 SpecularColor, half SpecularTint, half SpecularPower, half SpecularMultiplier, half3 PositionWorld, half Translucency, half RimTransmission, half RimPower )
 			{
 				half3 addColor = 0;
 				half4 shadowMask = 1;
@@ -441,7 +441,7 @@ Shader "Reallusion/Amplify/RL_HairShader_Variants_URP"
 			#endif
 			}
 			
-			float UnityHDRPDither175( float In, float2 ScreenPosition )
+			half UnityHDRPDither175( half In, half2 ScreenPosition )
 			{
 				half2 uv = ScreenPosition.xy * _ScreenParams.xy;
 				half DITHER_THRESHOLDS[16] =
@@ -463,11 +463,11 @@ Shader "Reallusion/Amplify/RL_HairShader_Variants_URP"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
-				float3 ase_worldTangent = TransformObjectToWorldDir(v.ase_tangent.xyz);
+				half3 ase_worldTangent = TransformObjectToWorldDir(v.ase_tangent.xyz);
 				o.ase_texcoord4.xyz = ase_worldTangent;
-				float3 ase_worldNormal = TransformObjectToWorldNormal(v.ase_normal);
+				half3 ase_worldNormal = TransformObjectToWorldNormal(v.ase_normal);
 				o.ase_texcoord5.xyz = ase_worldNormal;
-				float ase_vertexTangentSign = v.ase_tangent.w * ( unity_WorldTransformParams.w >= 0.0 ? 1.0 : -1.0 );
+				half ase_vertexTangentSign = v.ase_tangent.w * ( unity_WorldTransformParams.w >= 0.0 ? 1.0 : -1.0 );
 				float3 ase_worldBitangent = cross( ase_worldNormal, ase_worldTangent ) * ase_vertexTangentSign;
 				o.ase_texcoord6.xyz = ase_worldBitangent;
 				OUTPUT_LIGHTMAP_UV( v.texcoord1, unity_LightmapST, o.lightmapUVOrVertexSH.xy );
@@ -532,8 +532,8 @@ Shader "Reallusion/Amplify/RL_HairShader_Variants_URP"
 				float4 vertex : INTERNALTESSPOS;
 				float3 ase_normal : NORMAL;
 				float4 ase_texcoord : TEXCOORD0;
-				float4 ase_tangent : TANGENT;
-				float4 ase_color : COLOR;
+				half4 ase_tangent : TANGENT;
+				half4 ase_color : COLOR;
 				float4 texcoord1 : TEXCOORD1;
 
 				UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -638,142 +638,142 @@ Shader "Reallusion/Amplify/RL_HairShader_Variants_URP"
 				Light ase_mainLight = GetMainLight( ShadowCoords );
 				ase_lightAtten = ase_mainLight.distanceAttenuation * ase_mainLight.shadowAttenuation;
 				float2 uv_FlowMap = IN.ase_texcoord3.xy * _FlowMap_ST.xy + _FlowMap_ST.zw;
-				float4 break109_g996 = SAMPLE_TEXTURE2D( _FlowMap, sampler_DiffuseMap, uv_FlowMap );
-				float lerpResult123_g996 = lerp( break109_g996.g , ( 1.0 - break109_g996.g ) , _FlowMapFlipGreen);
-				float3 appendResult98_g996 = (float3(break109_g996.r , lerpResult123_g996 , break109_g996.b));
-				float3 NormalTS13_g999 = ( ( appendResult98_g996 * float3( 2,2,2 ) ) - float3( 1,1,1 ) );
-				float3 ase_worldTangent = IN.ase_texcoord4.xyz;
-				float3 ase_worldNormal = IN.ase_texcoord5.xyz;
-				float3 Binormal5_g999 = ( ( IN.ase_tangent.w > 0.0 ? 1.0 : -1.0 ) * cross( ase_worldNormal , ase_worldTangent ) );
-				float3x3 TBN1_g999 = float3x3(ase_worldTangent, Binormal5_g999, ase_worldNormal);
-				float3x3 TBN13_g999 = TBN1_g999;
-				float3 localTangentToWorld13_g999 = TangentToWorld13_g999( NormalTS13_g999 , TBN13_g999 );
-				float3 flowTangent107_g996 = localTangentToWorld13_g999;
+				half4 break109_g996 = SAMPLE_TEXTURE2D( _FlowMap, sampler_DiffuseMap, uv_FlowMap );
+				half lerpResult123_g996 = lerp( break109_g996.g , ( 1.0 - break109_g996.g ) , _FlowMapFlipGreen);
+				half3 appendResult98_g996 = (half3(break109_g996.r , lerpResult123_g996 , break109_g996.b));
+				half3 NormalTS13_g999 = ( ( appendResult98_g996 * float3( 2,2,2 ) ) - float3( 1,1,1 ) );
+				half3 ase_worldTangent = IN.ase_texcoord4.xyz;
+				half3 ase_worldNormal = IN.ase_texcoord5.xyz;
+				half3 Binormal5_g999 = ( ( IN.ase_tangent.w > 0.0 ? 1.0 : -1.0 ) * cross( ase_worldNormal , ase_worldTangent ) );
+				half3x3 TBN1_g999 = float3x3(ase_worldTangent, Binormal5_g999, ase_worldNormal);
+				half3x3 TBN13_g999 = TBN1_g999;
+				half3 localTangentToWorld13_g999 = TangentToWorld13_g999( NormalTS13_g999 , TBN13_g999 );
+				half3 flowTangent107_g996 = localTangentToWorld13_g999;
 				float2 uv_NormalMap = IN.ase_texcoord3.xy * _NormalMap_ST.xy + _NormalMap_ST.zw;
-				float3 unpack139 = UnpackNormalScale( SAMPLE_TEXTURE2D( _NormalMap, sampler_DiffuseMap, uv_NormalMap ), _NormalStrength );
+				half3 unpack139 = UnpackNormalScale( SAMPLE_TEXTURE2D( _NormalMap, sampler_DiffuseMap, uv_NormalMap ), _NormalStrength );
 				unpack139.z = lerp( 1, unpack139.z, saturate(_NormalStrength) );
-				float3 normal282 = unpack139;
+				half3 normal282 = unpack139;
 				float3 ase_worldBitangent = IN.ase_texcoord6.xyz;
-				float3 tanToWorld0 = float3( ase_worldTangent.x, ase_worldBitangent.x, ase_worldNormal.x );
-				float3 tanToWorld1 = float3( ase_worldTangent.y, ase_worldBitangent.y, ase_worldNormal.y );
-				float3 tanToWorld2 = float3( ase_worldTangent.z, ase_worldBitangent.z, ase_worldNormal.z );
+				half3 tanToWorld0 = float3( ase_worldTangent.x, ase_worldBitangent.x, ase_worldNormal.x );
+				half3 tanToWorld1 = float3( ase_worldTangent.y, ase_worldBitangent.y, ase_worldNormal.y );
+				half3 tanToWorld2 = float3( ase_worldTangent.z, ase_worldBitangent.z, ase_worldNormal.z );
 				float3 tanNormal85_g996 = normal282;
-				float3 worldNormal85_g996 = normalize( float3(dot(tanToWorld0,tanNormal85_g996), dot(tanToWorld1,tanNormal85_g996), dot(tanToWorld2,tanNormal85_g996)) );
-				float3 worldNormal86_g996 = worldNormal85_g996;
+				half3 worldNormal85_g996 = normalize( float3(dot(tanToWorld0,tanNormal85_g996), dot(tanToWorld1,tanNormal85_g996), dot(tanToWorld2,tanNormal85_g996)) );
+				half3 worldNormal86_g996 = worldNormal85_g996;
 				float2 uv_IDMap = IN.ase_texcoord3.xy * _IDMap_ST.xy + _IDMap_ST.zw;
-				float idMap383 = SAMPLE_TEXTURE2D( _IDMap, sampler_DiffuseMap, uv_IDMap ).r;
-				float lerpResult81_g996 = lerp( _SpecularShiftMin , _SpecularShiftMax , idMap383);
-				float3 normalizeResult10_g1000 = normalize( ( flowTangent107_g996 + ( worldNormal86_g996 * lerpResult81_g996 ) ) );
-				float3 shiftedTangent119_g996 = normalizeResult10_g1000;
+				half idMap383 = SAMPLE_TEXTURE2D( _IDMap, sampler_DiffuseMap, uv_IDMap ).r;
+				half lerpResult81_g996 = lerp( _SpecularShiftMin , _SpecularShiftMax , idMap383);
+				half3 normalizeResult10_g1000 = normalize( ( flowTangent107_g996 + ( worldNormal86_g996 * lerpResult81_g996 ) ) );
+				half3 shiftedTangent119_g996 = normalizeResult10_g1000;
 				float3 ase_worldViewDir = ( _WorldSpaceCameraPos.xyz - WorldPosition );
 				ase_worldViewDir = SafeNormalize( ase_worldViewDir );
-				float3 viewDIr52_g997 = ase_worldViewDir;
-				float3 worldLight248_g996 = SafeNormalize(_MainLightPosition.xyz);
-				float3 lightDir55_g997 = worldLight248_g996;
-				float3 normalizeResult14_g998 = normalize( ( viewDIr52_g997 + lightDir55_g997 ) );
-				float dotResult16_g998 = dot( shiftedTangent119_g996 , normalizeResult14_g998 );
-				float smoothstepResult22_g998 = smoothstep( -1.0 , 0.0 , dotResult16_g998);
+				half3 viewDIr52_g997 = ase_worldViewDir;
+				half3 worldLight248_g996 = SafeNormalize(_MainLightPosition.xyz);
+				half3 lightDir55_g997 = worldLight248_g996;
+				half3 normalizeResult14_g998 = normalize( ( viewDIr52_g997 + lightDir55_g997 ) );
+				half dotResult16_g998 = dot( shiftedTangent119_g996 , normalizeResult14_g998 );
+				half smoothstepResult22_g998 = smoothstep( -1.0 , 0.0 , dotResult16_g998);
 				float2 uv_MaskMap = IN.ase_texcoord3.xy * _MaskMap_ST.xy + _MaskMap_ST.zw;
-				float4 tex2DNode115 = SAMPLE_TEXTURE2D( _MaskMap, sampler_DiffuseMap, uv_MaskMap );
-				float saferPower126 = abs( tex2DNode115.a );
-				float lerpResult128 = lerp( _SmoothnessMin , _SmoothnessMax , pow( saferPower126 , _SmoothnessPower ));
-				float smoothness594 = lerpResult128;
-				float temp_output_233_0_g996 = max( ( 1.0 - smoothness594 ) , 0.001 );
-				float specularPower237_g996 = ( max( ( ( 2.0 / ( temp_output_233_0_g996 * temp_output_233_0_g996 ) ) - 2.0 ) , 0.001 ) * _SpecularPowerScale );
+				half4 tex2DNode115 = SAMPLE_TEXTURE2D( _MaskMap, sampler_DiffuseMap, uv_MaskMap );
+				half saferPower126 = abs( tex2DNode115.a );
+				half lerpResult128 = lerp( _SmoothnessMin , _SmoothnessMax , pow( saferPower126 , _SmoothnessPower ));
+				half smoothness594 = lerpResult128;
+				half temp_output_233_0_g996 = max( ( 1.0 - smoothness594 ) , 0.001 );
+				half specularPower237_g996 = ( max( ( ( 2.0 / ( temp_output_233_0_g996 * temp_output_233_0_g996 ) ) - 2.0 ) , 0.001 ) * _SpecularPowerScale );
 				float2 uv_SpecularMap = IN.ase_texcoord3.xy * _SpecularMap_ST.xy + _SpecularMap_ST.zw;
-				float temp_output_132_0_g996 = ( SAMPLE_TEXTURE2D( _SpecularMap, sampler_DiffuseMap, uv_SpecularMap ).g * _SpecularMultiplier );
-				float4 temp_output_131_0_g996 = _SpecularTint;
-				float4 temp_output_13_0_g997 = ( ( smoothstepResult22_g998 * pow( saturate( ( 1.0 - ( dotResult16_g998 * dotResult16_g998 ) ) ) , specularPower237_g996 ) ) * temp_output_132_0_g996 * temp_output_131_0_g996 );
+				half temp_output_132_0_g996 = ( SAMPLE_TEXTURE2D( _SpecularMap, sampler_DiffuseMap, uv_SpecularMap ).g * _SpecularMultiplier );
+				half4 temp_output_131_0_g996 = _SpecularTint;
+				half4 temp_output_13_0_g997 = ( ( smoothstepResult22_g998 * pow( saturate( ( 1.0 - ( dotResult16_g998 * dotResult16_g998 ) ) ) , specularPower237_g996 ) ) * temp_output_132_0_g996 * temp_output_131_0_g996 );
 				float2 uv_BlendMap = IN.ase_texcoord3.xy * _BlendMap_ST.xy + _BlendMap_ST.zw;
 				float2 uv_DiffuseMap = IN.ase_texcoord3.xy * _DiffuseMap_ST.xy + _DiffuseMap_ST.zw;
-				float4 tex2DNode19 = SAMPLE_TEXTURE2D( _DiffuseMap, sampler_DiffuseMap, uv_DiffuseMap );
-				float4 diffuseMap517 = tex2DNode19;
-				float4 lerpResult18_g983 = lerp( float4( 1,1,1,0 ) , diffuseMap517 , _BaseColorStrength);
+				half4 tex2DNode19 = SAMPLE_TEXTURE2D( _DiffuseMap, sampler_DiffuseMap, uv_DiffuseMap );
+				half4 diffuseMap517 = tex2DNode19;
+				half4 lerpResult18_g983 = lerp( float4( 1,1,1,0 ) , diffuseMap517 , _BaseColorStrength);
 				float2 uv_RootMap = IN.ase_texcoord3.xy * _RootMap_ST.xy + _RootMap_ST.zw;
-				float root58 = SAMPLE_TEXTURE2D( _RootMap, sampler_DiffuseMap, uv_RootMap ).r;
-				float temp_output_27_0_g983 = root58;
-				float lerpResult23_g983 = lerp( temp_output_27_0_g983 , ( 1.0 - temp_output_27_0_g983 ) , _InvertRootMap);
-				float4 lerpResult3_g983 = lerp( _RootColor , _EndColor , lerpResult23_g983);
-				float lerpResult40_g983 = lerp( _RootColorStrength , _EndColorStrength , lerpResult23_g983);
-				float4 lerpResult6_g983 = lerp( lerpResult18_g983 , lerpResult3_g983 , ( lerpResult40_g983 * _GlobalStrength ));
-				float3 From8_g984 = _HighlightADistribution;
-				float ID8_g984 = idMap383;
-				float Fac8_g984 = _HighlightAStrength;
-				float localThreePointDistribution8_g984 = ThreePointDistribution( From8_g984 , ID8_g984 , Fac8_g984 );
-				float temp_output_24_0_g984 = root58;
-				float lerpResult16_g984 = lerp( temp_output_24_0_g984 , ( 1.0 - temp_output_24_0_g984 ) , _HighlightAOverlapInvert);
-				float4 lerpResult18_g984 = lerp( lerpResult6_g983 , _HighlightAColor , saturate( ( localThreePointDistribution8_g984 * ( 1.0 - ( _HighlightAOverlapEnd * lerpResult16_g984 ) ) * _HighlightBlend ) ));
-				float3 From8_g990 = _HighlightBDistribution;
-				float ID8_g990 = idMap383;
-				float Fac8_g990 = _HighlightBStrength;
-				float localThreePointDistribution8_g990 = ThreePointDistribution( From8_g990 , ID8_g990 , Fac8_g990 );
-				float temp_output_24_0_g990 = root58;
-				float lerpResult16_g990 = lerp( temp_output_24_0_g990 , ( 1.0 - temp_output_24_0_g990 ) , _HighlightBOverlapInvert);
-				float4 lerpResult18_g990 = lerp( lerpResult18_g984 , _HighlightBColor , saturate( ( localThreePointDistribution8_g990 * ( 1.0 - ( _HighlightBOverlapEnd * lerpResult16_g990 ) ) * _HighlightBlend ) ));
+				half root58 = SAMPLE_TEXTURE2D( _RootMap, sampler_DiffuseMap, uv_RootMap ).r;
+				half temp_output_27_0_g983 = root58;
+				half lerpResult23_g983 = lerp( temp_output_27_0_g983 , ( 1.0 - temp_output_27_0_g983 ) , _InvertRootMap);
+				half4 lerpResult3_g983 = lerp( _RootColor , _EndColor , lerpResult23_g983);
+				half lerpResult40_g983 = lerp( _RootColorStrength , _EndColorStrength , lerpResult23_g983);
+				half4 lerpResult6_g983 = lerp( lerpResult18_g983 , lerpResult3_g983 , ( lerpResult40_g983 * _GlobalStrength ));
+				half3 From8_g984 = _HighlightADistribution;
+				half ID8_g984 = idMap383;
+				half Fac8_g984 = _HighlightAStrength;
+				half localThreePointDistribution8_g984 = ThreePointDistribution( From8_g984 , ID8_g984 , Fac8_g984 );
+				half temp_output_24_0_g984 = root58;
+				half lerpResult16_g984 = lerp( temp_output_24_0_g984 , ( 1.0 - temp_output_24_0_g984 ) , _HighlightAOverlapInvert);
+				half4 lerpResult18_g984 = lerp( lerpResult6_g983 , _HighlightAColor , saturate( ( localThreePointDistribution8_g984 * ( 1.0 - ( _HighlightAOverlapEnd * lerpResult16_g984 ) ) * _HighlightBlend ) ));
+				half3 From8_g990 = _HighlightBDistribution;
+				half ID8_g990 = idMap383;
+				half Fac8_g990 = _HighlightBStrength;
+				half localThreePointDistribution8_g990 = ThreePointDistribution( From8_g990 , ID8_g990 , Fac8_g990 );
+				half temp_output_24_0_g990 = root58;
+				half lerpResult16_g990 = lerp( temp_output_24_0_g990 , ( 1.0 - temp_output_24_0_g990 ) , _HighlightBOverlapInvert);
+				half4 lerpResult18_g990 = lerp( lerpResult18_g984 , _HighlightBColor , saturate( ( localThreePointDistribution8_g990 * ( 1.0 - ( _HighlightBOverlapEnd * lerpResult16_g990 ) ) * _HighlightBlend ) ));
 				#ifdef BOOLEAN_ENABLECOLOR_ON
-				float4 staticSwitch95 = lerpResult18_g990;
+				half4 staticSwitch95 = lerpResult18_g990;
 				#else
-				float4 staticSwitch95 = diffuseMap517;
+				half4 staticSwitch95 = diffuseMap517;
 				#endif
-				float4 blendOpSrc101 = SAMPLE_TEXTURE2D( _BlendMap, sampler_DiffuseMap, uv_BlendMap );
-				float4 blendOpDest101 = ( _DiffuseStrength * staticSwitch95 );
-				float4 lerpBlendMode101 = lerp(blendOpDest101,( blendOpSrc101 * blendOpDest101 ),_BlendStrength);
-				float4 lerpResult112 = lerp( ( saturate( lerpBlendMode101 )) , _VertexBaseColor , ( ( 1.0 - IN.ase_color.r ) * _VertexColorStrength ));
-				float4 baseColor331 = ( _DiffuseColor * lerpResult112 );
-				float4 temp_output_42_0_g996 = baseColor331;
-				float4 temp_output_32_0_g997 = temp_output_42_0_g996;
-				float temp_output_172_0_g996 = _SpecularMix;
-				float4 lerpResult36_g997 = lerp( temp_output_13_0_g997 , ( temp_output_13_0_g997 * temp_output_32_0_g997 ) , temp_output_172_0_g996);
-				float3 temp_output_24_0_g997 = worldNormal86_g996;
-				float dotResult15_g997 = dot( lightDir55_g997 , temp_output_24_0_g997 );
-				float temp_output_200_0_g996 = _Translucency;
-				float temp_output_40_0_g997 = temp_output_200_0_g996;
-				float dotResult54_g997 = dot( temp_output_24_0_g997 , viewDIr52_g997 );
-				float dotResult57_g997 = dot( viewDIr52_g997 , lightDir55_g997 );
-				float temp_output_208_0_g996 = _RimPower;
-				float temp_output_207_0_g996 = _RimTransmissionIntensity;
-				float3 Color126_g996 = temp_output_42_0_g996.rgb;
-				float3 TangentWorld126_g996 = shiftedTangent119_g996;
-				float3 ViewDir126_g996 = ase_worldViewDir;
-				float3 NormalWorld126_g996 = worldNormal86_g996;
-				float3 SpecularColor126_g996 = temp_output_131_0_g996.rgb;
-				float SpecularTint126_g996 = temp_output_172_0_g996;
-				float SpecularPower126_g996 = specularPower237_g996;
-				float SpecularMultiplier126_g996 = temp_output_132_0_g996;
-				float3 worldPosition129_g996 = WorldPosition;
-				float3 PositionWorld126_g996 = worldPosition129_g996;
-				float Translucency126_g996 = temp_output_200_0_g996;
-				float RimTransmission126_g996 = temp_output_207_0_g996;
-				float RimPower126_g996 = temp_output_208_0_g996;
-				float3 localRL_Amplify_Expression_HairLighting_Additional126_g996 = RL_Amplify_Expression_HairLighting_Additional126_g996( Color126_g996 , TangentWorld126_g996 , ViewDir126_g996 , NormalWorld126_g996 , SpecularColor126_g996 , SpecularTint126_g996 , SpecularPower126_g996 , SpecularMultiplier126_g996 , PositionWorld126_g996 , Translucency126_g996 , RimTransmission126_g996 , RimPower126_g996 );
-				float lerpResult627 = lerp( 1.0 , tex2DNode115.g , _AOStrength);
-				float ambientOcclusion570 = lerpResult627;
-				float temp_output_161_0_g996 = ambientOcclusion570;
-				float lerpResult280_g996 = lerp( 1.0 , temp_output_161_0_g996 , _AOOccludeAll);
-				float3 bakedGI53_g996 = ASEIndirectDiffuse( IN.lightmapUVOrVertexSH.xy, worldNormal86_g996);
+				half4 blendOpSrc101 = SAMPLE_TEXTURE2D( _BlendMap, sampler_DiffuseMap, uv_BlendMap );
+				half4 blendOpDest101 = ( _DiffuseStrength * staticSwitch95 );
+				half4 lerpBlendMode101 = lerp(blendOpDest101,( blendOpSrc101 * blendOpDest101 ),_BlendStrength);
+				half4 lerpResult112 = lerp( ( saturate( lerpBlendMode101 )) , _VertexBaseColor , ( ( 1.0 - IN.ase_color.r ) * _VertexColorStrength ));
+				half4 baseColor331 = ( _DiffuseColor * lerpResult112 );
+				half4 temp_output_42_0_g996 = baseColor331;
+				half4 temp_output_32_0_g997 = temp_output_42_0_g996;
+				half temp_output_172_0_g996 = _SpecularMix;
+				half4 lerpResult36_g997 = lerp( temp_output_13_0_g997 , ( temp_output_13_0_g997 * temp_output_32_0_g997 ) , temp_output_172_0_g996);
+				half3 temp_output_24_0_g997 = worldNormal86_g996;
+				half dotResult15_g997 = dot( lightDir55_g997 , temp_output_24_0_g997 );
+				half temp_output_200_0_g996 = _Translucency;
+				half temp_output_40_0_g997 = temp_output_200_0_g996;
+				half dotResult54_g997 = dot( temp_output_24_0_g997 , viewDIr52_g997 );
+				half dotResult57_g997 = dot( viewDIr52_g997 , lightDir55_g997 );
+				half temp_output_208_0_g996 = _RimPower;
+				half temp_output_207_0_g996 = _RimTransmissionIntensity;
+				half3 Color126_g996 = temp_output_42_0_g996.rgb;
+				half3 TangentWorld126_g996 = shiftedTangent119_g996;
+				half3 ViewDir126_g996 = ase_worldViewDir;
+				half3 NormalWorld126_g996 = worldNormal86_g996;
+				half3 SpecularColor126_g996 = temp_output_131_0_g996.rgb;
+				half SpecularTint126_g996 = temp_output_172_0_g996;
+				half SpecularPower126_g996 = specularPower237_g996;
+				half SpecularMultiplier126_g996 = temp_output_132_0_g996;
+				half3 worldPosition129_g996 = WorldPosition;
+				half3 PositionWorld126_g996 = worldPosition129_g996;
+				half Translucency126_g996 = temp_output_200_0_g996;
+				half RimTransmission126_g996 = temp_output_207_0_g996;
+				half RimPower126_g996 = temp_output_208_0_g996;
+				half3 localRL_Amplify_Expression_HairLighting_Additional126_g996 = RL_Amplify_Expression_HairLighting_Additional126_g996( Color126_g996 , TangentWorld126_g996 , ViewDir126_g996 , NormalWorld126_g996 , SpecularColor126_g996 , SpecularTint126_g996 , SpecularPower126_g996 , SpecularMultiplier126_g996 , PositionWorld126_g996 , Translucency126_g996 , RimTransmission126_g996 , RimPower126_g996 );
+				half lerpResult627 = lerp( 1.0 , tex2DNode115.g , _AOStrength);
+				half ambientOcclusion570 = lerpResult627;
+				half temp_output_161_0_g996 = ambientOcclusion570;
+				half lerpResult280_g996 = lerp( 1.0 , temp_output_161_0_g996 , _AOOccludeAll);
+				half3 bakedGI53_g996 = ASEIndirectDiffuse( IN.lightmapUVOrVertexSH.xy, worldNormal86_g996);
 				MixRealtimeAndBakedGI(ase_mainLight, worldNormal86_g996, bakedGI53_g996, half4(0,0,0,0));
 				float2 uv_EmissionMap = IN.ase_texcoord3.xy * _EmissionMap_ST.xy + _EmissionMap_ST.zw;
 				
-				float saferPower23 = abs( saturate( ( tex2DNode19.a / _AlphaRemap ) ) );
-				float alpha518 = pow( saferPower23 , _AlphaPower );
+				half saferPower23 = abs( saturate( ( tex2DNode19.a / _AlphaRemap ) ) );
+				half alpha518 = pow( saferPower23 , _AlphaPower );
 				
-				float In175 = _AlphaClip2;
+				half In175 = _AlphaClip2;
 				float4 screenPos = IN.ase_texcoord8;
 				float4 ase_screenPosNorm = screenPos / screenPos.w;
 				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float2 ScreenPosition175 = ase_screenPosNorm.xy;
-				float localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
+				half2 ScreenPosition175 = ase_screenPosNorm.xy;
+				half localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
 				#if defined(_CLIPQUALITY_STANDARD)
-				float staticSwitch528 = _AlphaClip2;
+				half staticSwitch528 = _AlphaClip2;
 				#elif defined(_CLIPQUALITY_DITHERED)
-				float staticSwitch528 = localUnityHDRPDither175;
+				half staticSwitch528 = localUnityHDRPDither175;
 				#else
-				float staticSwitch528 = _AlphaClip2;
+				half staticSwitch528 = _AlphaClip2;
 				#endif
 				
 				float3 BakedAlbedo = 0;
 				float3 BakedEmission = 0;
-				float3 Color = ( ( ( ( ( ase_lightAtten * ( ( lerpResult36_g997 + ( ( saturate( ( ( dotResult15_g997 * ( 1.0 - temp_output_40_0_g997 ) ) + temp_output_40_0_g997 ) ) + ( pow( ( max( ( 1.0 - abs( dotResult54_g997 ) ) , 0.0 ) * max( ( 0.0 - dotResult57_g997 ) , 0.0 ) ) , temp_output_208_0_g996 ) * temp_output_207_0_g996 ) ) * temp_output_32_0_g997 ) ) * _MainLightColor ) ) + float4( localRL_Amplify_Expression_HairLighting_Additional126_g996 , 0.0 ) ) * lerpResult280_g996 ) + ( float4( bakedGI53_g996 , 0.0 ) * temp_output_42_0_g996 * temp_output_161_0_g996 ) ) + ( SAMPLE_TEXTURE2D( _EmissionMap, sampler_EmissionMap, uv_EmissionMap ) * _EmissiveColor ) ).rgb;
+				float3 Color = ( ( ( ( ( ase_lightAtten * ( ( lerpResult36_g997 + ( ( saturate( ( ( dotResult15_g997 * ( 1.0 - temp_output_40_0_g997 ) ) + temp_output_40_0_g997 ) ) + ( pow( ( max( ( 1.0 - abs( dotResult54_g997 ) ) , 0.0 ) * max( ( 0.0 - dotResult57_g997 ) , 0.0 ) ) , temp_output_208_0_g996 ) * temp_output_207_0_g996 ) ) * temp_output_32_0_g997 ) ) * _MainLightColor ) ) + half4( localRL_Amplify_Expression_HairLighting_Additional126_g996 , 0.0 ) ) * lerpResult280_g996 ) + ( half4( bakedGI53_g996 , 0.0 ) * temp_output_42_0_g996 * temp_output_161_0_g996 ) ) + ( SAMPLE_TEXTURE2D( _EmissionMap, sampler_EmissionMap, uv_EmissionMap ) * _EmissiveColor ) ).rgb;
 				float Alpha = alpha518;
 				float AlphaClipThreshold = staticSwitch528;
 				float AlphaClipThresholdShadow = _ShadowClip;
@@ -867,59 +867,59 @@ Shader "Reallusion/Amplify/RL_HairShader_Variants_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _FlowMap_ST;
-			float4 _HighlightAColor;
-			float4 _VertexBaseColor;
-			float4 _RootMap_ST;
-			float4 _EndColor;
-			float4 _RootColor;
-			float4 _DiffuseMap_ST;
-			float4 _BlendMap_ST;
-			float4 _SpecularTint;
-			float4 _SpecularMap_ST;
-			float4 _DiffuseColor;
-			float4 _EmissiveColor;
-			float4 _NormalMap_ST;
-			float4 _EmissionMap_ST;
-			float4 _IDMap_ST;
-			float4 _HighlightBColor;
-			float4 _MaskMap_ST;
-			float3 _HighlightADistribution;
-			float3 _HighlightBDistribution;
-			float _AOOccludeAll;
-			float _SpecularMix;
-			float _AOStrength;
-			float _VertexColorStrength;
-			float _Translucency;
-			float _RimTransmissionIntensity;
-			float _AlphaRemap;
-			float _BlendStrength;
-			float _HighlightBOverlapInvert;
-			float _HighlightBOverlapEnd;
-			float _AlphaPower;
-			float _HighlightBStrength;
-			float _RimPower;
-			float _GlobalStrength;
-			float _HighlightAOverlapInvert;
-			float _FlowMapFlipGreen;
-			float _NormalStrength;
-			float _SpecularShiftMin;
-			float _SpecularShiftMax;
-			float _SmoothnessMin;
-			float _SmoothnessMax;
-			float _SmoothnessPower;
-			float _SpecularPowerScale;
-			float _SpecularMultiplier;
-			float _DiffuseStrength;
-			float _BaseColorStrength;
-			float _InvertRootMap;
-			float _RootColorStrength;
-			float _EndColorStrength;
-			float _AlphaClip2;
-			float _HighlightAStrength;
-			float _HighlightAOverlapEnd;
-			float _HighlightBlend;
-			float _ShadowClip;
+			half4 _FlowMap_ST;
+			half4 _HighlightAColor;
+			half4 _VertexBaseColor;
+			half4 _RootMap_ST;
+			half4 _EndColor;
+			half4 _RootColor;
+			half4 _DiffuseMap_ST;
+			half4 _BlendMap_ST;
+			half4 _SpecularTint;
+			half4 _SpecularMap_ST;
+			half4 _DiffuseColor;
+			half4 _EmissiveColor;
+			half4 _NormalMap_ST;
+			half4 _EmissionMap_ST;
+			half4 _IDMap_ST;
+			half4 _HighlightBColor;
+			half4 _MaskMap_ST;
+			half3 _HighlightADistribution;
+			half3 _HighlightBDistribution;
+			half _AOOccludeAll;
+			half _SpecularMix;
+			half _AOStrength;
+			half _VertexColorStrength;
+			half _Translucency;
+			half _RimTransmissionIntensity;
+			half _AlphaRemap;
+			half _BlendStrength;
+			half _HighlightBOverlapInvert;
+			half _HighlightBOverlapEnd;
+			half _AlphaPower;
+			half _HighlightBStrength;
+			half _RimPower;
+			half _GlobalStrength;
+			half _HighlightAOverlapInvert;
+			half _FlowMapFlipGreen;
+			half _NormalStrength;
+			half _SpecularShiftMin;
+			half _SpecularShiftMax;
+			half _SmoothnessMin;
+			half _SmoothnessMax;
+			half _SmoothnessPower;
+			half _SpecularPowerScale;
+			half _SpecularMultiplier;
+			half _DiffuseStrength;
+			half _BaseColorStrength;
+			half _InvertRootMap;
+			half _RootColorStrength;
+			half _EndColorStrength;
+			half _AlphaClip2;
+			half _HighlightAStrength;
+			half _HighlightAOverlapEnd;
+			half _HighlightBlend;
+			half _ShadowClip;
 			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
@@ -934,7 +934,7 @@ Shader "Reallusion/Amplify/RL_HairShader_Variants_URP"
 			SAMPLER(sampler_DiffuseMap);
 
 
-			float UnityHDRPDither175( float In, float2 ScreenPosition )
+			half UnityHDRPDither175( half In, half2 ScreenPosition )
 			{
 				half2 uv = ScreenPosition.xy * _ScreenParams.xy;
 				half DITHER_THRESHOLDS[16] =
@@ -1118,22 +1118,22 @@ Shader "Reallusion/Amplify/RL_HairShader_Variants_URP"
 				#endif
 
 				float2 uv_DiffuseMap = IN.ase_texcoord2.xy * _DiffuseMap_ST.xy + _DiffuseMap_ST.zw;
-				float4 tex2DNode19 = SAMPLE_TEXTURE2D( _DiffuseMap, sampler_DiffuseMap, uv_DiffuseMap );
-				float saferPower23 = abs( saturate( ( tex2DNode19.a / _AlphaRemap ) ) );
-				float alpha518 = pow( saferPower23 , _AlphaPower );
+				half4 tex2DNode19 = SAMPLE_TEXTURE2D( _DiffuseMap, sampler_DiffuseMap, uv_DiffuseMap );
+				half saferPower23 = abs( saturate( ( tex2DNode19.a / _AlphaRemap ) ) );
+				half alpha518 = pow( saferPower23 , _AlphaPower );
 				
-				float In175 = _AlphaClip2;
+				half In175 = _AlphaClip2;
 				float4 screenPos = IN.ase_texcoord3;
 				float4 ase_screenPosNorm = screenPos / screenPos.w;
 				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float2 ScreenPosition175 = ase_screenPosNorm.xy;
-				float localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
+				half2 ScreenPosition175 = ase_screenPosNorm.xy;
+				half localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
 				#if defined(_CLIPQUALITY_STANDARD)
-				float staticSwitch528 = _AlphaClip2;
+				half staticSwitch528 = _AlphaClip2;
 				#elif defined(_CLIPQUALITY_DITHERED)
-				float staticSwitch528 = localUnityHDRPDither175;
+				half staticSwitch528 = localUnityHDRPDither175;
 				#else
-				float staticSwitch528 = _AlphaClip2;
+				half staticSwitch528 = _AlphaClip2;
 				#endif
 				
 
@@ -1216,59 +1216,59 @@ Shader "Reallusion/Amplify/RL_HairShader_Variants_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _FlowMap_ST;
-			float4 _HighlightAColor;
-			float4 _VertexBaseColor;
-			float4 _RootMap_ST;
-			float4 _EndColor;
-			float4 _RootColor;
-			float4 _DiffuseMap_ST;
-			float4 _BlendMap_ST;
-			float4 _SpecularTint;
-			float4 _SpecularMap_ST;
-			float4 _DiffuseColor;
-			float4 _EmissiveColor;
-			float4 _NormalMap_ST;
-			float4 _EmissionMap_ST;
-			float4 _IDMap_ST;
-			float4 _HighlightBColor;
-			float4 _MaskMap_ST;
-			float3 _HighlightADistribution;
-			float3 _HighlightBDistribution;
-			float _AOOccludeAll;
-			float _SpecularMix;
-			float _AOStrength;
-			float _VertexColorStrength;
-			float _Translucency;
-			float _RimTransmissionIntensity;
-			float _AlphaRemap;
-			float _BlendStrength;
-			float _HighlightBOverlapInvert;
-			float _HighlightBOverlapEnd;
-			float _AlphaPower;
-			float _HighlightBStrength;
-			float _RimPower;
-			float _GlobalStrength;
-			float _HighlightAOverlapInvert;
-			float _FlowMapFlipGreen;
-			float _NormalStrength;
-			float _SpecularShiftMin;
-			float _SpecularShiftMax;
-			float _SmoothnessMin;
-			float _SmoothnessMax;
-			float _SmoothnessPower;
-			float _SpecularPowerScale;
-			float _SpecularMultiplier;
-			float _DiffuseStrength;
-			float _BaseColorStrength;
-			float _InvertRootMap;
-			float _RootColorStrength;
-			float _EndColorStrength;
-			float _AlphaClip2;
-			float _HighlightAStrength;
-			float _HighlightAOverlapEnd;
-			float _HighlightBlend;
-			float _ShadowClip;
+			half4 _FlowMap_ST;
+			half4 _HighlightAColor;
+			half4 _VertexBaseColor;
+			half4 _RootMap_ST;
+			half4 _EndColor;
+			half4 _RootColor;
+			half4 _DiffuseMap_ST;
+			half4 _BlendMap_ST;
+			half4 _SpecularTint;
+			half4 _SpecularMap_ST;
+			half4 _DiffuseColor;
+			half4 _EmissiveColor;
+			half4 _NormalMap_ST;
+			half4 _EmissionMap_ST;
+			half4 _IDMap_ST;
+			half4 _HighlightBColor;
+			half4 _MaskMap_ST;
+			half3 _HighlightADistribution;
+			half3 _HighlightBDistribution;
+			half _AOOccludeAll;
+			half _SpecularMix;
+			half _AOStrength;
+			half _VertexColorStrength;
+			half _Translucency;
+			half _RimTransmissionIntensity;
+			half _AlphaRemap;
+			half _BlendStrength;
+			half _HighlightBOverlapInvert;
+			half _HighlightBOverlapEnd;
+			half _AlphaPower;
+			half _HighlightBStrength;
+			half _RimPower;
+			half _GlobalStrength;
+			half _HighlightAOverlapInvert;
+			half _FlowMapFlipGreen;
+			half _NormalStrength;
+			half _SpecularShiftMin;
+			half _SpecularShiftMax;
+			half _SmoothnessMin;
+			half _SmoothnessMax;
+			half _SmoothnessPower;
+			half _SpecularPowerScale;
+			half _SpecularMultiplier;
+			half _DiffuseStrength;
+			half _BaseColorStrength;
+			half _InvertRootMap;
+			half _RootColorStrength;
+			half _EndColorStrength;
+			half _AlphaClip2;
+			half _HighlightAStrength;
+			half _HighlightAOverlapEnd;
+			half _HighlightBlend;
+			half _ShadowClip;
 			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
@@ -1283,7 +1283,7 @@ Shader "Reallusion/Amplify/RL_HairShader_Variants_URP"
 			SAMPLER(sampler_DiffuseMap);
 
 
-			float UnityHDRPDither175( float In, float2 ScreenPosition )
+			half UnityHDRPDither175( half In, half2 ScreenPosition )
 			{
 				half2 uv = ScreenPosition.xy * _ScreenParams.xy;
 				half DITHER_THRESHOLDS[16] =
@@ -1447,22 +1447,22 @@ Shader "Reallusion/Amplify/RL_HairShader_Variants_URP"
 				#endif
 
 				float2 uv_DiffuseMap = IN.ase_texcoord2.xy * _DiffuseMap_ST.xy + _DiffuseMap_ST.zw;
-				float4 tex2DNode19 = SAMPLE_TEXTURE2D( _DiffuseMap, sampler_DiffuseMap, uv_DiffuseMap );
-				float saferPower23 = abs( saturate( ( tex2DNode19.a / _AlphaRemap ) ) );
-				float alpha518 = pow( saferPower23 , _AlphaPower );
+				half4 tex2DNode19 = SAMPLE_TEXTURE2D( _DiffuseMap, sampler_DiffuseMap, uv_DiffuseMap );
+				half saferPower23 = abs( saturate( ( tex2DNode19.a / _AlphaRemap ) ) );
+				half alpha518 = pow( saferPower23 , _AlphaPower );
 				
-				float In175 = _AlphaClip2;
+				half In175 = _AlphaClip2;
 				float4 screenPos = IN.ase_texcoord3;
 				float4 ase_screenPosNorm = screenPos / screenPos.w;
 				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float2 ScreenPosition175 = ase_screenPosNorm.xy;
-				float localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
+				half2 ScreenPosition175 = ase_screenPosNorm.xy;
+				half localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
 				#if defined(_CLIPQUALITY_STANDARD)
-				float staticSwitch528 = _AlphaClip2;
+				half staticSwitch528 = _AlphaClip2;
 				#elif defined(_CLIPQUALITY_DITHERED)
-				float staticSwitch528 = localUnityHDRPDither175;
+				half staticSwitch528 = localUnityHDRPDither175;
 				#else
-				float staticSwitch528 = _AlphaClip2;
+				half staticSwitch528 = _AlphaClip2;
 				#endif
 				
 
@@ -1539,59 +1539,59 @@ Shader "Reallusion/Amplify/RL_HairShader_Variants_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _FlowMap_ST;
-			float4 _HighlightAColor;
-			float4 _VertexBaseColor;
-			float4 _RootMap_ST;
-			float4 _EndColor;
-			float4 _RootColor;
-			float4 _DiffuseMap_ST;
-			float4 _BlendMap_ST;
-			float4 _SpecularTint;
-			float4 _SpecularMap_ST;
-			float4 _DiffuseColor;
-			float4 _EmissiveColor;
-			float4 _NormalMap_ST;
-			float4 _EmissionMap_ST;
-			float4 _IDMap_ST;
-			float4 _HighlightBColor;
-			float4 _MaskMap_ST;
-			float3 _HighlightADistribution;
-			float3 _HighlightBDistribution;
-			float _AOOccludeAll;
-			float _SpecularMix;
-			float _AOStrength;
-			float _VertexColorStrength;
-			float _Translucency;
-			float _RimTransmissionIntensity;
-			float _AlphaRemap;
-			float _BlendStrength;
-			float _HighlightBOverlapInvert;
-			float _HighlightBOverlapEnd;
-			float _AlphaPower;
-			float _HighlightBStrength;
-			float _RimPower;
-			float _GlobalStrength;
-			float _HighlightAOverlapInvert;
-			float _FlowMapFlipGreen;
-			float _NormalStrength;
-			float _SpecularShiftMin;
-			float _SpecularShiftMax;
-			float _SmoothnessMin;
-			float _SmoothnessMax;
-			float _SmoothnessPower;
-			float _SpecularPowerScale;
-			float _SpecularMultiplier;
-			float _DiffuseStrength;
-			float _BaseColorStrength;
-			float _InvertRootMap;
-			float _RootColorStrength;
-			float _EndColorStrength;
-			float _AlphaClip2;
-			float _HighlightAStrength;
-			float _HighlightAOverlapEnd;
-			float _HighlightBlend;
-			float _ShadowClip;
+			half4 _FlowMap_ST;
+			half4 _HighlightAColor;
+			half4 _VertexBaseColor;
+			half4 _RootMap_ST;
+			half4 _EndColor;
+			half4 _RootColor;
+			half4 _DiffuseMap_ST;
+			half4 _BlendMap_ST;
+			half4 _SpecularTint;
+			half4 _SpecularMap_ST;
+			half4 _DiffuseColor;
+			half4 _EmissiveColor;
+			half4 _NormalMap_ST;
+			half4 _EmissionMap_ST;
+			half4 _IDMap_ST;
+			half4 _HighlightBColor;
+			half4 _MaskMap_ST;
+			half3 _HighlightADistribution;
+			half3 _HighlightBDistribution;
+			half _AOOccludeAll;
+			half _SpecularMix;
+			half _AOStrength;
+			half _VertexColorStrength;
+			half _Translucency;
+			half _RimTransmissionIntensity;
+			half _AlphaRemap;
+			half _BlendStrength;
+			half _HighlightBOverlapInvert;
+			half _HighlightBOverlapEnd;
+			half _AlphaPower;
+			half _HighlightBStrength;
+			half _RimPower;
+			half _GlobalStrength;
+			half _HighlightAOverlapInvert;
+			half _FlowMapFlipGreen;
+			half _NormalStrength;
+			half _SpecularShiftMin;
+			half _SpecularShiftMax;
+			half _SmoothnessMin;
+			half _SmoothnessMax;
+			half _SmoothnessPower;
+			half _SpecularPowerScale;
+			half _SpecularMultiplier;
+			half _DiffuseStrength;
+			half _BaseColorStrength;
+			half _InvertRootMap;
+			half _RootColorStrength;
+			half _EndColorStrength;
+			half _AlphaClip2;
+			half _HighlightAStrength;
+			half _HighlightAOverlapEnd;
+			half _HighlightBlend;
+			half _ShadowClip;
 			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
@@ -1606,7 +1606,7 @@ Shader "Reallusion/Amplify/RL_HairShader_Variants_URP"
 			SAMPLER(sampler_DiffuseMap);
 
 
-			float UnityHDRPDither175( float In, float2 ScreenPosition )
+			half UnityHDRPDither175( half In, half2 ScreenPosition )
 			{
 				half2 uv = ScreenPosition.xy * _ScreenParams.xy;
 				half DITHER_THRESHOLDS[16] =
@@ -1755,22 +1755,22 @@ Shader "Reallusion/Amplify/RL_HairShader_Variants_URP"
 				SurfaceDescription surfaceDescription = (SurfaceDescription)0;
 
 				float2 uv_DiffuseMap = IN.ase_texcoord.xy * _DiffuseMap_ST.xy + _DiffuseMap_ST.zw;
-				float4 tex2DNode19 = SAMPLE_TEXTURE2D( _DiffuseMap, sampler_DiffuseMap, uv_DiffuseMap );
-				float saferPower23 = abs( saturate( ( tex2DNode19.a / _AlphaRemap ) ) );
-				float alpha518 = pow( saferPower23 , _AlphaPower );
+				half4 tex2DNode19 = SAMPLE_TEXTURE2D( _DiffuseMap, sampler_DiffuseMap, uv_DiffuseMap );
+				half saferPower23 = abs( saturate( ( tex2DNode19.a / _AlphaRemap ) ) );
+				half alpha518 = pow( saferPower23 , _AlphaPower );
 				
-				float In175 = _AlphaClip2;
+				half In175 = _AlphaClip2;
 				float4 screenPos = IN.ase_texcoord1;
 				float4 ase_screenPosNorm = screenPos / screenPos.w;
 				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float2 ScreenPosition175 = ase_screenPosNorm.xy;
-				float localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
+				half2 ScreenPosition175 = ase_screenPosNorm.xy;
+				half localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
 				#if defined(_CLIPQUALITY_STANDARD)
-				float staticSwitch528 = _AlphaClip2;
+				half staticSwitch528 = _AlphaClip2;
 				#elif defined(_CLIPQUALITY_DITHERED)
-				float staticSwitch528 = localUnityHDRPDither175;
+				half staticSwitch528 = localUnityHDRPDither175;
 				#else
-				float staticSwitch528 = _AlphaClip2;
+				half staticSwitch528 = _AlphaClip2;
 				#endif
 				
 
@@ -1847,59 +1847,59 @@ Shader "Reallusion/Amplify/RL_HairShader_Variants_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _FlowMap_ST;
-			float4 _HighlightAColor;
-			float4 _VertexBaseColor;
-			float4 _RootMap_ST;
-			float4 _EndColor;
-			float4 _RootColor;
-			float4 _DiffuseMap_ST;
-			float4 _BlendMap_ST;
-			float4 _SpecularTint;
-			float4 _SpecularMap_ST;
-			float4 _DiffuseColor;
-			float4 _EmissiveColor;
-			float4 _NormalMap_ST;
-			float4 _EmissionMap_ST;
-			float4 _IDMap_ST;
-			float4 _HighlightBColor;
-			float4 _MaskMap_ST;
-			float3 _HighlightADistribution;
-			float3 _HighlightBDistribution;
-			float _AOOccludeAll;
-			float _SpecularMix;
-			float _AOStrength;
-			float _VertexColorStrength;
-			float _Translucency;
-			float _RimTransmissionIntensity;
-			float _AlphaRemap;
-			float _BlendStrength;
-			float _HighlightBOverlapInvert;
-			float _HighlightBOverlapEnd;
-			float _AlphaPower;
-			float _HighlightBStrength;
-			float _RimPower;
-			float _GlobalStrength;
-			float _HighlightAOverlapInvert;
-			float _FlowMapFlipGreen;
-			float _NormalStrength;
-			float _SpecularShiftMin;
-			float _SpecularShiftMax;
-			float _SmoothnessMin;
-			float _SmoothnessMax;
-			float _SmoothnessPower;
-			float _SpecularPowerScale;
-			float _SpecularMultiplier;
-			float _DiffuseStrength;
-			float _BaseColorStrength;
-			float _InvertRootMap;
-			float _RootColorStrength;
-			float _EndColorStrength;
-			float _AlphaClip2;
-			float _HighlightAStrength;
-			float _HighlightAOverlapEnd;
-			float _HighlightBlend;
-			float _ShadowClip;
+			half4 _FlowMap_ST;
+			half4 _HighlightAColor;
+			half4 _VertexBaseColor;
+			half4 _RootMap_ST;
+			half4 _EndColor;
+			half4 _RootColor;
+			half4 _DiffuseMap_ST;
+			half4 _BlendMap_ST;
+			half4 _SpecularTint;
+			half4 _SpecularMap_ST;
+			half4 _DiffuseColor;
+			half4 _EmissiveColor;
+			half4 _NormalMap_ST;
+			half4 _EmissionMap_ST;
+			half4 _IDMap_ST;
+			half4 _HighlightBColor;
+			half4 _MaskMap_ST;
+			half3 _HighlightADistribution;
+			half3 _HighlightBDistribution;
+			half _AOOccludeAll;
+			half _SpecularMix;
+			half _AOStrength;
+			half _VertexColorStrength;
+			half _Translucency;
+			half _RimTransmissionIntensity;
+			half _AlphaRemap;
+			half _BlendStrength;
+			half _HighlightBOverlapInvert;
+			half _HighlightBOverlapEnd;
+			half _AlphaPower;
+			half _HighlightBStrength;
+			half _RimPower;
+			half _GlobalStrength;
+			half _HighlightAOverlapInvert;
+			half _FlowMapFlipGreen;
+			half _NormalStrength;
+			half _SpecularShiftMin;
+			half _SpecularShiftMax;
+			half _SmoothnessMin;
+			half _SmoothnessMax;
+			half _SmoothnessPower;
+			half _SpecularPowerScale;
+			half _SpecularMultiplier;
+			half _DiffuseStrength;
+			half _BaseColorStrength;
+			half _InvertRootMap;
+			half _RootColorStrength;
+			half _EndColorStrength;
+			half _AlphaClip2;
+			half _HighlightAStrength;
+			half _HighlightAOverlapEnd;
+			half _HighlightBlend;
+			half _ShadowClip;
 			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
@@ -1914,7 +1914,7 @@ Shader "Reallusion/Amplify/RL_HairShader_Variants_URP"
 			SAMPLER(sampler_DiffuseMap);
 
 
-			float UnityHDRPDither175( float In, float2 ScreenPosition )
+			half UnityHDRPDither175( half In, half2 ScreenPosition )
 			{
 				half2 uv = ScreenPosition.xy * _ScreenParams.xy;
 				half DITHER_THRESHOLDS[16] =
@@ -2058,22 +2058,22 @@ Shader "Reallusion/Amplify/RL_HairShader_Variants_URP"
 				SurfaceDescription surfaceDescription = (SurfaceDescription)0;
 
 				float2 uv_DiffuseMap = IN.ase_texcoord.xy * _DiffuseMap_ST.xy + _DiffuseMap_ST.zw;
-				float4 tex2DNode19 = SAMPLE_TEXTURE2D( _DiffuseMap, sampler_DiffuseMap, uv_DiffuseMap );
-				float saferPower23 = abs( saturate( ( tex2DNode19.a / _AlphaRemap ) ) );
-				float alpha518 = pow( saferPower23 , _AlphaPower );
+				half4 tex2DNode19 = SAMPLE_TEXTURE2D( _DiffuseMap, sampler_DiffuseMap, uv_DiffuseMap );
+				half saferPower23 = abs( saturate( ( tex2DNode19.a / _AlphaRemap ) ) );
+				half alpha518 = pow( saferPower23 , _AlphaPower );
 				
-				float In175 = _AlphaClip2;
+				half In175 = _AlphaClip2;
 				float4 screenPos = IN.ase_texcoord1;
 				float4 ase_screenPosNorm = screenPos / screenPos.w;
 				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float2 ScreenPosition175 = ase_screenPosNorm.xy;
-				float localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
+				half2 ScreenPosition175 = ase_screenPosNorm.xy;
+				half localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
 				#if defined(_CLIPQUALITY_STANDARD)
-				float staticSwitch528 = _AlphaClip2;
+				half staticSwitch528 = _AlphaClip2;
 				#elif defined(_CLIPQUALITY_DITHERED)
-				float staticSwitch528 = localUnityHDRPDither175;
+				half staticSwitch528 = localUnityHDRPDither175;
 				#else
-				float staticSwitch528 = _AlphaClip2;
+				half staticSwitch528 = _AlphaClip2;
 				#endif
 				
 
@@ -2160,59 +2160,59 @@ Shader "Reallusion/Amplify/RL_HairShader_Variants_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _FlowMap_ST;
-			float4 _HighlightAColor;
-			float4 _VertexBaseColor;
-			float4 _RootMap_ST;
-			float4 _EndColor;
-			float4 _RootColor;
-			float4 _DiffuseMap_ST;
-			float4 _BlendMap_ST;
-			float4 _SpecularTint;
-			float4 _SpecularMap_ST;
-			float4 _DiffuseColor;
-			float4 _EmissiveColor;
-			float4 _NormalMap_ST;
-			float4 _EmissionMap_ST;
-			float4 _IDMap_ST;
-			float4 _HighlightBColor;
-			float4 _MaskMap_ST;
-			float3 _HighlightADistribution;
-			float3 _HighlightBDistribution;
-			float _AOOccludeAll;
-			float _SpecularMix;
-			float _AOStrength;
-			float _VertexColorStrength;
-			float _Translucency;
-			float _RimTransmissionIntensity;
-			float _AlphaRemap;
-			float _BlendStrength;
-			float _HighlightBOverlapInvert;
-			float _HighlightBOverlapEnd;
-			float _AlphaPower;
-			float _HighlightBStrength;
-			float _RimPower;
-			float _GlobalStrength;
-			float _HighlightAOverlapInvert;
-			float _FlowMapFlipGreen;
-			float _NormalStrength;
-			float _SpecularShiftMin;
-			float _SpecularShiftMax;
-			float _SmoothnessMin;
-			float _SmoothnessMax;
-			float _SmoothnessPower;
-			float _SpecularPowerScale;
-			float _SpecularMultiplier;
-			float _DiffuseStrength;
-			float _BaseColorStrength;
-			float _InvertRootMap;
-			float _RootColorStrength;
-			float _EndColorStrength;
-			float _AlphaClip2;
-			float _HighlightAStrength;
-			float _HighlightAOverlapEnd;
-			float _HighlightBlend;
-			float _ShadowClip;
+			half4 _FlowMap_ST;
+			half4 _HighlightAColor;
+			half4 _VertexBaseColor;
+			half4 _RootMap_ST;
+			half4 _EndColor;
+			half4 _RootColor;
+			half4 _DiffuseMap_ST;
+			half4 _BlendMap_ST;
+			half4 _SpecularTint;
+			half4 _SpecularMap_ST;
+			half4 _DiffuseColor;
+			half4 _EmissiveColor;
+			half4 _NormalMap_ST;
+			half4 _EmissionMap_ST;
+			half4 _IDMap_ST;
+			half4 _HighlightBColor;
+			half4 _MaskMap_ST;
+			half3 _HighlightADistribution;
+			half3 _HighlightBDistribution;
+			half _AOOccludeAll;
+			half _SpecularMix;
+			half _AOStrength;
+			half _VertexColorStrength;
+			half _Translucency;
+			half _RimTransmissionIntensity;
+			half _AlphaRemap;
+			half _BlendStrength;
+			half _HighlightBOverlapInvert;
+			half _HighlightBOverlapEnd;
+			half _AlphaPower;
+			half _HighlightBStrength;
+			half _RimPower;
+			half _GlobalStrength;
+			half _HighlightAOverlapInvert;
+			half _FlowMapFlipGreen;
+			half _NormalStrength;
+			half _SpecularShiftMin;
+			half _SpecularShiftMax;
+			half _SmoothnessMin;
+			half _SmoothnessMax;
+			half _SmoothnessPower;
+			half _SpecularPowerScale;
+			half _SpecularMultiplier;
+			half _DiffuseStrength;
+			half _BaseColorStrength;
+			half _InvertRootMap;
+			half _RootColorStrength;
+			half _EndColorStrength;
+			half _AlphaClip2;
+			half _HighlightAStrength;
+			half _HighlightAOverlapEnd;
+			half _HighlightBlend;
+			half _ShadowClip;
 			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
@@ -2227,7 +2227,7 @@ Shader "Reallusion/Amplify/RL_HairShader_Variants_URP"
 			SAMPLER(sampler_DiffuseMap);
 
 
-			float UnityHDRPDither175( float In, float2 ScreenPosition )
+			half UnityHDRPDither175( half In, half2 ScreenPosition )
 			{
 				half2 uv = ScreenPosition.xy * _ScreenParams.xy;
 				half DITHER_THRESHOLDS[16] =
@@ -2375,22 +2375,22 @@ Shader "Reallusion/Amplify/RL_HairShader_Variants_URP"
 				SurfaceDescription surfaceDescription = (SurfaceDescription)0;
 
 				float2 uv_DiffuseMap = IN.ase_texcoord1.xy * _DiffuseMap_ST.xy + _DiffuseMap_ST.zw;
-				float4 tex2DNode19 = SAMPLE_TEXTURE2D( _DiffuseMap, sampler_DiffuseMap, uv_DiffuseMap );
-				float saferPower23 = abs( saturate( ( tex2DNode19.a / _AlphaRemap ) ) );
-				float alpha518 = pow( saferPower23 , _AlphaPower );
+				half4 tex2DNode19 = SAMPLE_TEXTURE2D( _DiffuseMap, sampler_DiffuseMap, uv_DiffuseMap );
+				half saferPower23 = abs( saturate( ( tex2DNode19.a / _AlphaRemap ) ) );
+				half alpha518 = pow( saferPower23 , _AlphaPower );
 				
-				float In175 = _AlphaClip2;
+				half In175 = _AlphaClip2;
 				float4 screenPos = IN.ase_texcoord2;
 				float4 ase_screenPosNorm = screenPos / screenPos.w;
 				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float2 ScreenPosition175 = ase_screenPosNorm.xy;
-				float localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
+				half2 ScreenPosition175 = ase_screenPosNorm.xy;
+				half localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
 				#if defined(_CLIPQUALITY_STANDARD)
-				float staticSwitch528 = _AlphaClip2;
+				half staticSwitch528 = _AlphaClip2;
 				#elif defined(_CLIPQUALITY_DITHERED)
-				float staticSwitch528 = localUnityHDRPDither175;
+				half staticSwitch528 = localUnityHDRPDither175;
 				#else
-				float staticSwitch528 = _AlphaClip2;
+				half staticSwitch528 = _AlphaClip2;
 				#endif
 				
 
@@ -2478,59 +2478,59 @@ Shader "Reallusion/Amplify/RL_HairShader_Variants_URP"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _FlowMap_ST;
-			float4 _HighlightAColor;
-			float4 _VertexBaseColor;
-			float4 _RootMap_ST;
-			float4 _EndColor;
-			float4 _RootColor;
-			float4 _DiffuseMap_ST;
-			float4 _BlendMap_ST;
-			float4 _SpecularTint;
-			float4 _SpecularMap_ST;
-			float4 _DiffuseColor;
-			float4 _EmissiveColor;
-			float4 _NormalMap_ST;
-			float4 _EmissionMap_ST;
-			float4 _IDMap_ST;
-			float4 _HighlightBColor;
-			float4 _MaskMap_ST;
-			float3 _HighlightADistribution;
-			float3 _HighlightBDistribution;
-			float _AOOccludeAll;
-			float _SpecularMix;
-			float _AOStrength;
-			float _VertexColorStrength;
-			float _Translucency;
-			float _RimTransmissionIntensity;
-			float _AlphaRemap;
-			float _BlendStrength;
-			float _HighlightBOverlapInvert;
-			float _HighlightBOverlapEnd;
-			float _AlphaPower;
-			float _HighlightBStrength;
-			float _RimPower;
-			float _GlobalStrength;
-			float _HighlightAOverlapInvert;
-			float _FlowMapFlipGreen;
-			float _NormalStrength;
-			float _SpecularShiftMin;
-			float _SpecularShiftMax;
-			float _SmoothnessMin;
-			float _SmoothnessMax;
-			float _SmoothnessPower;
-			float _SpecularPowerScale;
-			float _SpecularMultiplier;
-			float _DiffuseStrength;
-			float _BaseColorStrength;
-			float _InvertRootMap;
-			float _RootColorStrength;
-			float _EndColorStrength;
-			float _AlphaClip2;
-			float _HighlightAStrength;
-			float _HighlightAOverlapEnd;
-			float _HighlightBlend;
-			float _ShadowClip;
+			half4 _FlowMap_ST;
+			half4 _HighlightAColor;
+			half4 _VertexBaseColor;
+			half4 _RootMap_ST;
+			half4 _EndColor;
+			half4 _RootColor;
+			half4 _DiffuseMap_ST;
+			half4 _BlendMap_ST;
+			half4 _SpecularTint;
+			half4 _SpecularMap_ST;
+			half4 _DiffuseColor;
+			half4 _EmissiveColor;
+			half4 _NormalMap_ST;
+			half4 _EmissionMap_ST;
+			half4 _IDMap_ST;
+			half4 _HighlightBColor;
+			half4 _MaskMap_ST;
+			half3 _HighlightADistribution;
+			half3 _HighlightBDistribution;
+			half _AOOccludeAll;
+			half _SpecularMix;
+			half _AOStrength;
+			half _VertexColorStrength;
+			half _Translucency;
+			half _RimTransmissionIntensity;
+			half _AlphaRemap;
+			half _BlendStrength;
+			half _HighlightBOverlapInvert;
+			half _HighlightBOverlapEnd;
+			half _AlphaPower;
+			half _HighlightBStrength;
+			half _RimPower;
+			half _GlobalStrength;
+			half _HighlightAOverlapInvert;
+			half _FlowMapFlipGreen;
+			half _NormalStrength;
+			half _SpecularShiftMin;
+			half _SpecularShiftMax;
+			half _SmoothnessMin;
+			half _SmoothnessMax;
+			half _SmoothnessPower;
+			half _SpecularPowerScale;
+			half _SpecularMultiplier;
+			half _DiffuseStrength;
+			half _BaseColorStrength;
+			half _InvertRootMap;
+			half _RootColorStrength;
+			half _EndColorStrength;
+			half _AlphaClip2;
+			half _HighlightAStrength;
+			half _HighlightAOverlapEnd;
+			half _HighlightBlend;
+			half _ShadowClip;
 			#ifdef ASE_TESSELLATION
 				float _TessPhongStrength;
 				float _TessValue;
@@ -2544,7 +2544,7 @@ Shader "Reallusion/Amplify/RL_HairShader_Variants_URP"
 			SAMPLER(sampler_DiffuseMap);
 
 
-			float UnityHDRPDither175( float In, float2 ScreenPosition )
+			half UnityHDRPDither175( half In, half2 ScreenPosition )
 			{
 				half2 uv = ScreenPosition.xy * _ScreenParams.xy;
 				half DITHER_THRESHOLDS[16] =
@@ -2692,22 +2692,22 @@ Shader "Reallusion/Amplify/RL_HairShader_Variants_URP"
 				SurfaceDescription surfaceDescription = (SurfaceDescription)0;
 
 				float2 uv_DiffuseMap = IN.ase_texcoord1.xy * _DiffuseMap_ST.xy + _DiffuseMap_ST.zw;
-				float4 tex2DNode19 = SAMPLE_TEXTURE2D( _DiffuseMap, sampler_DiffuseMap, uv_DiffuseMap );
-				float saferPower23 = abs( saturate( ( tex2DNode19.a / _AlphaRemap ) ) );
-				float alpha518 = pow( saferPower23 , _AlphaPower );
+				half4 tex2DNode19 = SAMPLE_TEXTURE2D( _DiffuseMap, sampler_DiffuseMap, uv_DiffuseMap );
+				half saferPower23 = abs( saturate( ( tex2DNode19.a / _AlphaRemap ) ) );
+				half alpha518 = pow( saferPower23 , _AlphaPower );
 				
-				float In175 = _AlphaClip2;
+				half In175 = _AlphaClip2;
 				float4 screenPos = IN.ase_texcoord2;
 				float4 ase_screenPosNorm = screenPos / screenPos.w;
 				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float2 ScreenPosition175 = ase_screenPosNorm.xy;
-				float localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
+				half2 ScreenPosition175 = ase_screenPosNorm.xy;
+				half localUnityHDRPDither175 = UnityHDRPDither175( In175 , ScreenPosition175 );
 				#if defined(_CLIPQUALITY_STANDARD)
-				float staticSwitch528 = _AlphaClip2;
+				half staticSwitch528 = _AlphaClip2;
 				#elif defined(_CLIPQUALITY_DITHERED)
-				float staticSwitch528 = localUnityHDRPDither175;
+				half staticSwitch528 = localUnityHDRPDither175;
 				#else
-				float staticSwitch528 = _AlphaClip2;
+				half staticSwitch528 = _AlphaClip2;
 				#endif
 				
 
@@ -2854,7 +2854,7 @@ Node;AmplifyShaderEditor.RangedFloatNode;106;-1993.944,254.6407;Inherit;False;Pr
 Node;AmplifyShaderEditor.ColorNode;113;-1710.789,-13.35724;Inherit;False;Property;_VertexBaseColor;Vertex Base Color;3;0;Create;True;0;0;0;False;0;False;0,0,0,0;0,0,0,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;299;601.0043,1008.494;Float;False;False;-1;2;UnityEditor.ShaderGraphUnlitGUI;0;3;New Amplify Shader;2992e84f91cbeb14eab234972e07ea9d;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Unlit;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;True;1;LightMode=DepthOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;298;601.0043,1008.494;Float;False;False;-1;2;UnityEditor.ShaderGraphUnlitGUI;0;3;New Amplify Shader;2992e84f91cbeb14eab234972e07ea9d;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Unlit;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=ShadowCaster;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;297;867.6932,1172.645;Float;False;True;-1;2;Reallusion.Import.CustomHairShaderGUI;0;13;Reallusion/Amplify/RL_HairShader_Variants_URP;2992e84f91cbeb14eab234972e07ea9d;True;Forward;0;1;Forward;8;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;2;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Unlit;True;2;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalForwardOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;23;Surface;0;0;  Blend;0;0;Two Sided;0;637786971353641789;Forward Only;1;638127532819965059;Cast Shadows;1;0;  Use Shadow Threshold;1;637787018088018178;Receive Shadows;1;0;GPU Instancing;1;0;LOD CrossFade;0;0;Built-in Fog;1;637787992251365997;DOTS Instancing;0;0;Meta Pass;0;638047171872173986;Extra Pre Pass;0;0;Tessellation;0;0;  Phong;0;0;  Strength;0.5,False,;0;  Type;0;0;  Tess;16,False,;0;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Vertex Position,InvertActionOnDeselection;1;0;0;10;False;True;True;True;False;False;True;True;True;True;False;;True;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;297;867.6932,1172.645;Half;False;True;-1;2;Reallusion.Import.CustomHairShaderGUI;0;13;Reallusion/Amplify/RL_HairShader_Variants_URP;2992e84f91cbeb14eab234972e07ea9d;True;Forward;0;1;Forward;8;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;2;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Unlit;True;2;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalForwardOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;23;Surface;0;0;  Blend;0;0;Two Sided;0;637786971353641789;Forward Only;1;638127532819965059;Cast Shadows;1;0;  Use Shadow Threshold;1;637787018088018178;Receive Shadows;1;0;GPU Instancing;1;0;LOD CrossFade;0;0;Built-in Fog;1;637787992251365997;DOTS Instancing;0;0;Meta Pass;0;638047171872173986;Extra Pre Pass;0;0;Tessellation;0;0;  Phong;0;0;  Strength;0.5,False,;0;  Type;0;0;  Tess;16,False,;0;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Vertex Position,InvertActionOnDeselection;1;0;0;10;False;True;True;True;False;False;True;True;True;True;False;;True;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;296;601.0043,1008.494;Float;False;False;-1;2;UnityEditor.ShaderGraphUnlitGUI;0;3;New Amplify Shader;2992e84f91cbeb14eab234972e07ea9d;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Unlit;True;5;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;0;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;300;601.0043,1008.494;Float;False;False;-1;2;UnityEditor.ShaderGraphUnlitGUI;0;3;New Amplify Shader;2992e84f91cbeb14eab234972e07ea9d;True;Meta;0;4;Meta;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Unlit;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Meta;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.RangedFloatNode;33;-5674.055,-876.1475;Inherit;False;Property;_BaseColorStrength;Base Color Strength;36;0;Create;True;0;0;0;False;0;False;1;1;0;1;0;1;FLOAT;0
@@ -2971,4 +2971,4 @@ WireConnection;635;200;539;0
 WireConnection;635;207;265;0
 WireConnection;635;208;263;0
 ASEEND*/
-//CHKSM=2F5D47F4F774B9A6A2D23C5E3F8F5120B50FEBAD
+//CHKSM=4996ED9FC38010C364FC88D2724DD8EACF1E844B
