@@ -91,7 +91,7 @@ Material:
     - _ReceiveShadows: 1
     - _SmoothnessFront: 0.498
     - _SmoothnessMax: 0.897
-    - _SmoothnessPower: 0.5
+    - _SmoothnessPower: 0.75
     - _SmoothnessRear: 0
     - _SpecularHighlights: 1
     - _TeethBrightness: 0.7
