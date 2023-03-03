@@ -49,7 +49,8 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 		_WrinkleValueSet2R("Wrinkle Value Set 2 Right", Vector) = (0,0,0,0)
 		_WrinkleValueSet3R("Wrinkle Value Set 3 Right", Vector) = (0,0,0,0)
 		_WrinkleValueSet12CR("Wrinkle Value Set 12C Right", Vector) = (0,0,0,0)
-		[ASEEnd]_WrinkleValueSet3DB("Wrinkle Value Set 3D Both", Vector) = (0,0,0,0)
+		_WrinkleValueSet3DB("Wrinkle Value Set 3D Both", Vector) = (0,0,0,0)
+		[ASEEnd]_WrinkleValueSetBCCB("Wrinkle Value Set BCC Both", Vector) = (0,0,0,0)
 		[HideInInspector] _texcoord( "", 2D ) = "white" {}
 
 
@@ -318,48 +319,49 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 
 			CBUFFER_START(UnityPerMaterial)
 			half4 _BaseColor;
-			half4 _WrinkleMaskSet3_ST;
+			half4 _WrinkleValueSet3L;
+			half4 _WrinkleValueSet3R;
 			half4 _BumpMap_ST;
 			half4 _WrinkleNormalBlend1_ST;
 			half4 _WrinkleNormalBlend2_ST;
 			half4 _WrinkleNormalBlend3_ST;
 			half4 _DetailNormalMap_ST;
-			half4 _WrinkleValueSet3L;
 			half4 _DetailMask_ST;
+			half4 _EmissionMap_ST;
 			half4 _EmissiveColor;
 			half4 _MetallicGlossMap_ST;
 			half4 _WrinkleSmoothnessPack_ST;
 			half4 _OcclusionMap_ST;
 			half4 _ThicknessMap_ST;
 			half4 _SubsurfaceFalloff;
-			half4 _EmissionMap_ST;
 			half4 _WrinkleValueSet3DB;
-			half4 _WrinkleValueSet3R;
+			half4 _WrinkleValueSetBCCB;
+			half4 _WrinkleMaskSet3_ST;
 			half4 _WrinkleValueSet2R;
 			half4 _BaseMap_ST;
 			half4 _WrinkleDiffuseBlend1_ST;
+			half4 _WrinkleFlowPack_ST;
 			half4 _WrinkleValueSet12CL;
 			half4 _WrinkleMaskSet123_ST;
 			half4 _WrinkleValueSet1AL;
-			half4 _WrinkleMaskSet1A_ST;
 			half4 _WrinkleDiffuseBlend3_ST;
-			half4 _WrinkleMaskSet1B_ST;
 			half4 _WrinkleValueSet1BL;
+			half4 _WrinkleMaskSet1A_ST;
+			half4 _WrinkleValueSet1AR;
 			half4 _WrinkleValueSet1BR;
 			half4 _WrinkleValueSet12CR;
-			half4 _WrinkleFlowPack_ST;
 			half4 _WrinkleDiffuseBlend2_ST;
 			half4 _WrinkleValueSet2L;
 			half4 _WrinkleMaskSet2_ST;
-			half4 _WrinkleValueSet1AR;
+			half4 _WrinkleMaskSet1B_ST;
 			half4 _SubsurfaceMaskMap_ST;
 			half _DetailNormalMapScale;
 			half _Metallic;
 			half _BumpScale;
 			half _Smoothness;
 			half _OcclusionStrength;
-			half _SubsurfaceMask;
 			half _Thickness;
+			half _SubsurfaceMask;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -396,10 +398,10 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			SAMPLER(sampler_BaseMap);
 			TEXTURE2D(_WrinkleDiffuseBlend1);
 			SAMPLER(sampler_Linear_Repeat);
+			TEXTURE2D(_WrinkleFlowPack);
 			TEXTURE2D(_WrinkleMaskSet123);
 			TEXTURE2D(_WrinkleMaskSet1A);
 			TEXTURE2D(_WrinkleMaskSet1B);
-			TEXTURE2D(_WrinkleFlowPack);
 			TEXTURE2D(_WrinkleDiffuseBlend2);
 			TEXTURE2D(_WrinkleMaskSet2);
 			TEXTURE2D(_WrinkleDiffuseBlend3);
@@ -433,7 +435,22 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			//#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/VisualEffectVertex.hlsl"
 			//#endif
 
+			half4 MinMaxDeltaBlend4181_g35( half4 In, half4 In1, half4 In2, half4 In3 )
+			{
+				return max(max(In1, In2), In3) + min(min(In1, In2), In3) + In;
+			}
 			
+			half3 MinMaxDeltaBlend3183_g35( half3 In, half3 In1, half3 In2, half3 In3 )
+			{
+				return max(max(In1, In2), In3) + min(min(In1, In2), In3) + In;
+			}
+			
+			half MinMaxDeltaBlend1182_g35( half In, half In1, half In2, half In3 )
+			{
+				return max(max(In1, In2), In3) + min(min(In1, In2), In3) + In;
+			}
+			
+
 			VertexOutput VertexFunction( VertexInput v  )
 			{
 				VertexOutput o = (VertexOutput)0;
@@ -656,7 +673,11 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				float2 uv_BaseMap = IN.ase_texcoord8.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
 				half4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
 				half4 diffuseMap205 = tex2DNode145;
+				half4 diffuse184_g35 = diffuseMap205;
+				half4 In181_g35 = diffuse184_g35;
 				float2 uv_WrinkleDiffuseBlend1 = IN.ase_texcoord8.xy * _WrinkleDiffuseBlend1_ST.xy + _WrinkleDiffuseBlend1_ST.zw;
+				float2 uv_WrinkleFlowPack = IN.ase_texcoord8.xy * _WrinkleFlowPack_ST.xy + _WrinkleFlowPack_ST.zw;
+				half4 tex2DNode258 = SAMPLE_TEXTURE2D( _WrinkleFlowPack, sampler_Linear_Repeat, uv_WrinkleFlowPack );
 				half2 texCoord10_g35 = IN.ase_texcoord8.xy * float2( 1,1 ) + float2( 0,0 );
 				half temp_output_1_0_g37 = 0.49;
 				half leftMask27_g35 = saturate( ( ( texCoord10_g35.x - temp_output_1_0_g37 ) / ( 0.51 - temp_output_1_0_g37 ) ) );
@@ -668,12 +689,12 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				half dotResult121_g35 = dot( appendResult112_g35 , appendResult115_g35 );
 				half value1CLeft135_g35 = dotResult121_g35;
 				float2 uv_WrinkleMaskSet1A = IN.ase_texcoord8.xy * _WrinkleMaskSet1A_ST.xy + _WrinkleMaskSet1A_ST.zw;
-				half4 temp_output_15_0_g35 = SAMPLE_TEXTURE2D( _WrinkleMaskSet1A, sampler_Linear_Repeat, uv_WrinkleMaskSet1A );
-				half dotResult29_g35 = dot( _WrinkleValueSet1AL , temp_output_15_0_g35 );
+				half4 maskSet1A214_g35 = SAMPLE_TEXTURE2D( _WrinkleMaskSet1A, sampler_Linear_Repeat, uv_WrinkleMaskSet1A );
+				half dotResult29_g35 = dot( _WrinkleValueSet1AL , maskSet1A214_g35 );
 				float2 uv_WrinkleMaskSet1B = IN.ase_texcoord8.xy * _WrinkleMaskSet1B_ST.xy + _WrinkleMaskSet1B_ST.zw;
 				half4 temp_output_16_0_g35 = SAMPLE_TEXTURE2D( _WrinkleMaskSet1B, sampler_Linear_Repeat, uv_WrinkleMaskSet1B );
 				half dotResult35_g35 = dot( _WrinkleValueSet1BL , temp_output_16_0_g35 );
-				half dotResult30_g35 = dot( temp_output_15_0_g35 , _WrinkleValueSet1AR );
+				half dotResult30_g35 = dot( maskSet1A214_g35 , _WrinkleValueSet1AR );
 				half dotResult36_g35 = dot( temp_output_16_0_g35 , _WrinkleValueSet1BR );
 				half4 break108_g35 = _WrinkleValueSet12CR;
 				half2 appendResult117_g35 = (half2(break108_g35.x , break108_g35.y));
@@ -681,12 +702,9 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				half value1CRight136_g35 = dotResult122_g35;
 				half temp_output_1_0_g36 = 0.51;
 				half rightMask28_g35 = saturate( ( ( texCoord10_g35.x - temp_output_1_0_g36 ) / ( 0.49 - temp_output_1_0_g36 ) ) );
-				half temp_output_16_0_g63 = ( ( leftMask27_g35 * ( value1CLeft135_g35 + dotResult29_g35 + dotResult35_g35 ) ) + ( ( dotResult30_g35 + dotResult36_g35 + value1CRight136_g35 ) * rightMask28_g35 ) );
-				half temp_output_1_0_g64 = 0.0;
-				float2 uv_WrinkleFlowPack = IN.ase_texcoord8.xy * _WrinkleFlowPack_ST.xy + _WrinkleFlowPack_ST.zw;
-				half4 tex2DNode258 = SAMPLE_TEXTURE2D( _WrinkleFlowPack, sampler_Linear_Repeat, uv_WrinkleFlowPack );
-				half temp_output_23_0_g63 = ( saturate( ( ( temp_output_16_0_g63 - temp_output_1_0_g64 ) / ( tex2DNode258.r - temp_output_1_0_g64 ) ) ) * temp_output_16_0_g63 );
-				half4 lerpResult17_g63 = lerp( diffuseMap205 , SAMPLE_TEXTURE2D( _WrinkleDiffuseBlend1, sampler_Linear_Repeat, uv_WrinkleDiffuseBlend1 ) , temp_output_23_0_g63);
+				half temp_output_16_0_g67 = ( ( leftMask27_g35 * ( value1CLeft135_g35 + dotResult29_g35 + dotResult35_g35 ) ) + ( ( dotResult30_g35 + dotResult36_g35 + value1CRight136_g35 ) * rightMask28_g35 ) );
+				half temp_output_23_0_g67 = ( saturate( ( tex2DNode258.r + temp_output_16_0_g67 ) ) * temp_output_16_0_g67 );
+				half4 In1181_g35 = ( ( SAMPLE_TEXTURE2D( _WrinkleDiffuseBlend1, sampler_Linear_Repeat, uv_WrinkleDiffuseBlend1 ) - diffuse184_g35 ) * temp_output_23_0_g67 );
 				float2 uv_WrinkleDiffuseBlend2 = IN.ase_texcoord8.xy * _WrinkleDiffuseBlend2_ST.xy + _WrinkleDiffuseBlend2_ST.zw;
 				half2 appendResult113_g35 = (half2(break107_g35.z , break107_g35.w));
 				half2 appendResult114_g35 = (half2(break109_g35.z , break109_g35.w));
@@ -699,11 +717,12 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				half2 appendResult116_g35 = (half2(break108_g35.z , break108_g35.w));
 				half dotResult124_g35 = dot( appendResult114_g35 , appendResult116_g35 );
 				half value2CRight138_g35 = dotResult124_g35;
-				half temp_output_16_0_g59 = ( ( leftMask27_g35 * ( value2CLeft137_g35 + dotResult41_g35 ) ) + ( ( dotResult42_g35 + value2CRight138_g35 ) * rightMask28_g35 ) );
-				half temp_output_1_0_g60 = 0.0;
-				half temp_output_23_0_g59 = ( saturate( ( ( temp_output_16_0_g59 - temp_output_1_0_g60 ) / ( tex2DNode258.g - temp_output_1_0_g60 ) ) ) * temp_output_16_0_g59 );
-				half4 lerpResult17_g59 = lerp( lerpResult17_g63 , SAMPLE_TEXTURE2D( _WrinkleDiffuseBlend2, sampler_Linear_Repeat, uv_WrinkleDiffuseBlend2 ) , temp_output_23_0_g59);
+				half temp_output_16_0_g68 = ( ( leftMask27_g35 * ( value2CLeft137_g35 + dotResult41_g35 ) ) + ( ( dotResult42_g35 + value2CRight138_g35 ) * rightMask28_g35 ) );
+				half temp_output_23_0_g68 = ( saturate( ( tex2DNode258.g + temp_output_16_0_g68 ) ) * temp_output_16_0_g68 );
+				half4 In2181_g35 = ( ( SAMPLE_TEXTURE2D( _WrinkleDiffuseBlend2, sampler_Linear_Repeat, uv_WrinkleDiffuseBlend2 ) - diffuse184_g35 ) * temp_output_23_0_g68 );
 				float2 uv_WrinkleDiffuseBlend3 = IN.ase_texcoord8.xy * _WrinkleDiffuseBlend3_ST.xy + _WrinkleDiffuseBlend3_ST.zw;
+				half4 break211_g35 = _WrinkleValueSetBCCB;
+				half valueBCCLeft217_g35 = ( break211_g35.x * maskSet1A214_g35.y );
 				half4 break118_g35 = _WrinkleValueSet3DB;
 				half2 appendResult120_g35 = (half2(break118_g35.x , break118_g35.y));
 				half dotResult127_g35 = dot( appendResult120_g35 , appendResult115_g35 );
@@ -715,11 +734,12 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				half2 appendResult119_g35 = (half2(break118_g35.z , break118_g35.w));
 				half dotResult128_g35 = dot( appendResult115_g35 , appendResult119_g35 );
 				half value3DRight130_g35 = dotResult128_g35;
-				half temp_output_16_0_g61 = ( ( leftMask27_g35 * ( value3DLeft129_g35 + dotResult47_g35 ) ) + ( ( dotResult48_g35 + value3DRight130_g35 ) * rightMask28_g35 ) );
-				half temp_output_1_0_g62 = 0.0;
-				half temp_output_23_0_g61 = ( saturate( ( ( temp_output_16_0_g61 - temp_output_1_0_g62 ) / ( tex2DNode258.b - temp_output_1_0_g62 ) ) ) * temp_output_16_0_g61 );
-				half4 lerpResult17_g61 = lerp( lerpResult17_g59 , SAMPLE_TEXTURE2D( _WrinkleDiffuseBlend3, sampler_Linear_Repeat, uv_WrinkleDiffuseBlend3 ) , temp_output_23_0_g61);
-				half4 diffuseWrinkle215 = lerpResult17_g61;
+				half valueBCCRight219_g35 = ( maskSet1A214_g35.y * break211_g35.y );
+				half temp_output_16_0_g66 = ( ( leftMask27_g35 * ( valueBCCLeft217_g35 + value3DLeft129_g35 + dotResult47_g35 ) ) + ( ( dotResult48_g35 + value3DRight130_g35 + valueBCCRight219_g35 ) * rightMask28_g35 ) );
+				half temp_output_23_0_g66 = ( saturate( ( tex2DNode258.b + temp_output_16_0_g66 ) ) * temp_output_16_0_g66 );
+				half4 In3181_g35 = ( ( SAMPLE_TEXTURE2D( _WrinkleDiffuseBlend3, sampler_Linear_Repeat, uv_WrinkleDiffuseBlend3 ) - diffuse184_g35 ) * temp_output_23_0_g66 );
+				half4 localMinMaxDeltaBlend4181_g35 = MinMaxDeltaBlend4181_g35( In181_g35 , In1181_g35 , In2181_g35 , In3181_g35 );
+				half4 diffuseWrinkle215 = localMinMaxDeltaBlend4181_g35;
 				#ifdef BOOLEAN_USE_WRINKLE_ON
 				half4 staticSwitch242 = diffuseWrinkle215;
 				#else
@@ -732,19 +752,22 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				half3 unpack146 = UnpackNormalScale( SAMPLE_TEXTURE2D( _BumpMap, sampler_BumpMap, uv_BumpMap ), normalMapScale260 );
 				unpack146.z = lerp( 1, unpack146.z, saturate(normalMapScale260) );
 				half3 normalMap206 = unpack146;
+				half3 normal186_g35 = normalMap206;
+				half3 In183_g35 = normal186_g35;
 				float2 uv_WrinkleNormalBlend1 = IN.ase_texcoord8.xy * _WrinkleNormalBlend1_ST.xy + _WrinkleNormalBlend1_ST.zw;
 				half3 unpack239 = UnpackNormalScale( SAMPLE_TEXTURE2D( _WrinkleNormalBlend1, sampler_Linear_Repeat, uv_WrinkleNormalBlend1 ), normalMapScale260 );
 				unpack239.z = lerp( 1, unpack239.z, saturate(normalMapScale260) );
-				half3 lerpResult19_g63 = lerp( normalMap206 , unpack239 , temp_output_23_0_g63);
+				half3 In1183_g35 = ( ( unpack239 - normal186_g35 ) * temp_output_23_0_g67 );
 				float2 uv_WrinkleNormalBlend2 = IN.ase_texcoord8.xy * _WrinkleNormalBlend2_ST.xy + _WrinkleNormalBlend2_ST.zw;
 				half3 unpack240 = UnpackNormalScale( SAMPLE_TEXTURE2D( _WrinkleNormalBlend2, sampler_Linear_Repeat, uv_WrinkleNormalBlend2 ), normalMapScale260 );
 				unpack240.z = lerp( 1, unpack240.z, saturate(normalMapScale260) );
-				half3 lerpResult19_g59 = lerp( lerpResult19_g63 , unpack240 , temp_output_23_0_g59);
+				half3 In2183_g35 = ( ( unpack240 - normal186_g35 ) * temp_output_23_0_g68 );
 				float2 uv_WrinkleNormalBlend3 = IN.ase_texcoord8.xy * _WrinkleNormalBlend3_ST.xy + _WrinkleNormalBlend3_ST.zw;
 				half3 unpack241 = UnpackNormalScale( SAMPLE_TEXTURE2D( _WrinkleNormalBlend3, sampler_Linear_Repeat, uv_WrinkleNormalBlend3 ), normalMapScale260 );
 				unpack241.z = lerp( 1, unpack241.z, saturate(normalMapScale260) );
-				half3 lerpResult19_g61 = lerp( lerpResult19_g59 , unpack241 , temp_output_23_0_g61);
-				half3 normalWrinkle217 = lerpResult19_g61;
+				half3 In3183_g35 = ( ( unpack241 - normal186_g35 ) * temp_output_23_0_g66 );
+				half3 localMinMaxDeltaBlend3183_g35 = MinMaxDeltaBlend3183_g35( In183_g35 , In1183_g35 , In2183_g35 , In3183_g35 );
+				half3 normalWrinkle217 = localMinMaxDeltaBlend3183_g35;
 				#ifdef BOOLEAN_USE_WRINKLE_ON
 				half3 staticSwitch246 = normalWrinkle217;
 				#else
@@ -761,12 +784,15 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				half4 tex2DNode150 = SAMPLE_TEXTURE2D( _MetallicGlossMap, sampler_MetallicGlossMap, uv_MetallicGlossMap );
 				
 				half smoothnessMap207 = tex2DNode150.a;
+				half smoothness185_g35 = smoothnessMap207;
+				half In182_g35 = smoothness185_g35;
 				float2 uv_WrinkleSmoothnessPack = IN.ase_texcoord8.xy * _WrinkleSmoothnessPack_ST.xy + _WrinkleSmoothnessPack_ST.zw;
 				half4 tex2DNode235 = SAMPLE_TEXTURE2D( _WrinkleSmoothnessPack, sampler_Linear_Repeat, uv_WrinkleSmoothnessPack );
-				half lerpResult18_g63 = lerp( smoothnessMap207 , tex2DNode235.r , temp_output_23_0_g63);
-				half lerpResult18_g59 = lerp( lerpResult18_g63 , tex2DNode235.g , temp_output_23_0_g59);
-				half lerpResult18_g61 = lerp( lerpResult18_g59 , tex2DNode235.b , temp_output_23_0_g61);
-				half smoothnessWrinkle216 = lerpResult18_g61;
+				half In1182_g35 = ( ( tex2DNode235.r - smoothness185_g35 ) * temp_output_23_0_g67 );
+				half In2182_g35 = ( ( tex2DNode235.g - smoothness185_g35 ) * temp_output_23_0_g68 );
+				half In3182_g35 = ( ( tex2DNode235.b - smoothness185_g35 ) * temp_output_23_0_g66 );
+				half localMinMaxDeltaBlend1182_g35 = MinMaxDeltaBlend1182_g35( In182_g35 , In1182_g35 , In2182_g35 , In3182_g35 );
+				half smoothnessWrinkle216 = localMinMaxDeltaBlend1182_g35;
 				#ifdef BOOLEAN_USE_WRINKLE_ON
 				half staticSwitch249 = smoothnessWrinkle216;
 				#else
@@ -1052,48 +1078,49 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 
 			CBUFFER_START(UnityPerMaterial)
 			half4 _BaseColor;
-			half4 _WrinkleMaskSet3_ST;
+			half4 _WrinkleValueSet3L;
+			half4 _WrinkleValueSet3R;
 			half4 _BumpMap_ST;
 			half4 _WrinkleNormalBlend1_ST;
 			half4 _WrinkleNormalBlend2_ST;
 			half4 _WrinkleNormalBlend3_ST;
 			half4 _DetailNormalMap_ST;
-			half4 _WrinkleValueSet3L;
 			half4 _DetailMask_ST;
+			half4 _EmissionMap_ST;
 			half4 _EmissiveColor;
 			half4 _MetallicGlossMap_ST;
 			half4 _WrinkleSmoothnessPack_ST;
 			half4 _OcclusionMap_ST;
 			half4 _ThicknessMap_ST;
 			half4 _SubsurfaceFalloff;
-			half4 _EmissionMap_ST;
 			half4 _WrinkleValueSet3DB;
-			half4 _WrinkleValueSet3R;
+			half4 _WrinkleValueSetBCCB;
+			half4 _WrinkleMaskSet3_ST;
 			half4 _WrinkleValueSet2R;
 			half4 _BaseMap_ST;
 			half4 _WrinkleDiffuseBlend1_ST;
+			half4 _WrinkleFlowPack_ST;
 			half4 _WrinkleValueSet12CL;
 			half4 _WrinkleMaskSet123_ST;
 			half4 _WrinkleValueSet1AL;
-			half4 _WrinkleMaskSet1A_ST;
 			half4 _WrinkleDiffuseBlend3_ST;
-			half4 _WrinkleMaskSet1B_ST;
 			half4 _WrinkleValueSet1BL;
+			half4 _WrinkleMaskSet1A_ST;
+			half4 _WrinkleValueSet1AR;
 			half4 _WrinkleValueSet1BR;
 			half4 _WrinkleValueSet12CR;
-			half4 _WrinkleFlowPack_ST;
 			half4 _WrinkleDiffuseBlend2_ST;
 			half4 _WrinkleValueSet2L;
 			half4 _WrinkleMaskSet2_ST;
-			half4 _WrinkleValueSet1AR;
+			half4 _WrinkleMaskSet1B_ST;
 			half4 _SubsurfaceMaskMap_ST;
 			half _DetailNormalMapScale;
 			half _Metallic;
 			half _BumpScale;
 			half _Smoothness;
 			half _OcclusionStrength;
-			half _SubsurfaceMask;
 			half _Thickness;
+			half _SubsurfaceMask;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -1409,48 +1436,49 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 
 			CBUFFER_START(UnityPerMaterial)
 			half4 _BaseColor;
-			half4 _WrinkleMaskSet3_ST;
+			half4 _WrinkleValueSet3L;
+			half4 _WrinkleValueSet3R;
 			half4 _BumpMap_ST;
 			half4 _WrinkleNormalBlend1_ST;
 			half4 _WrinkleNormalBlend2_ST;
 			half4 _WrinkleNormalBlend3_ST;
 			half4 _DetailNormalMap_ST;
-			half4 _WrinkleValueSet3L;
 			half4 _DetailMask_ST;
+			half4 _EmissionMap_ST;
 			half4 _EmissiveColor;
 			half4 _MetallicGlossMap_ST;
 			half4 _WrinkleSmoothnessPack_ST;
 			half4 _OcclusionMap_ST;
 			half4 _ThicknessMap_ST;
 			half4 _SubsurfaceFalloff;
-			half4 _EmissionMap_ST;
 			half4 _WrinkleValueSet3DB;
-			half4 _WrinkleValueSet3R;
+			half4 _WrinkleValueSetBCCB;
+			half4 _WrinkleMaskSet3_ST;
 			half4 _WrinkleValueSet2R;
 			half4 _BaseMap_ST;
 			half4 _WrinkleDiffuseBlend1_ST;
+			half4 _WrinkleFlowPack_ST;
 			half4 _WrinkleValueSet12CL;
 			half4 _WrinkleMaskSet123_ST;
 			half4 _WrinkleValueSet1AL;
-			half4 _WrinkleMaskSet1A_ST;
 			half4 _WrinkleDiffuseBlend3_ST;
-			half4 _WrinkleMaskSet1B_ST;
 			half4 _WrinkleValueSet1BL;
+			half4 _WrinkleMaskSet1A_ST;
+			half4 _WrinkleValueSet1AR;
 			half4 _WrinkleValueSet1BR;
 			half4 _WrinkleValueSet12CR;
-			half4 _WrinkleFlowPack_ST;
 			half4 _WrinkleDiffuseBlend2_ST;
 			half4 _WrinkleValueSet2L;
 			half4 _WrinkleMaskSet2_ST;
-			half4 _WrinkleValueSet1AR;
+			half4 _WrinkleMaskSet1B_ST;
 			half4 _SubsurfaceMaskMap_ST;
 			half _DetailNormalMapScale;
 			half _Metallic;
 			half _BumpScale;
 			half _Smoothness;
 			half _OcclusionStrength;
-			half _SubsurfaceMask;
 			half _Thickness;
+			half _SubsurfaceMask;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -1749,48 +1777,49 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 
 			CBUFFER_START(UnityPerMaterial)
 			half4 _BaseColor;
-			half4 _WrinkleMaskSet3_ST;
+			half4 _WrinkleValueSet3L;
+			half4 _WrinkleValueSet3R;
 			half4 _BumpMap_ST;
 			half4 _WrinkleNormalBlend1_ST;
 			half4 _WrinkleNormalBlend2_ST;
 			half4 _WrinkleNormalBlend3_ST;
 			half4 _DetailNormalMap_ST;
-			half4 _WrinkleValueSet3L;
 			half4 _DetailMask_ST;
+			half4 _EmissionMap_ST;
 			half4 _EmissiveColor;
 			half4 _MetallicGlossMap_ST;
 			half4 _WrinkleSmoothnessPack_ST;
 			half4 _OcclusionMap_ST;
 			half4 _ThicknessMap_ST;
 			half4 _SubsurfaceFalloff;
-			half4 _EmissionMap_ST;
 			half4 _WrinkleValueSet3DB;
-			half4 _WrinkleValueSet3R;
+			half4 _WrinkleValueSetBCCB;
+			half4 _WrinkleMaskSet3_ST;
 			half4 _WrinkleValueSet2R;
 			half4 _BaseMap_ST;
 			half4 _WrinkleDiffuseBlend1_ST;
+			half4 _WrinkleFlowPack_ST;
 			half4 _WrinkleValueSet12CL;
 			half4 _WrinkleMaskSet123_ST;
 			half4 _WrinkleValueSet1AL;
-			half4 _WrinkleMaskSet1A_ST;
 			half4 _WrinkleDiffuseBlend3_ST;
-			half4 _WrinkleMaskSet1B_ST;
 			half4 _WrinkleValueSet1BL;
+			half4 _WrinkleMaskSet1A_ST;
+			half4 _WrinkleValueSet1AR;
 			half4 _WrinkleValueSet1BR;
 			half4 _WrinkleValueSet12CR;
-			half4 _WrinkleFlowPack_ST;
 			half4 _WrinkleDiffuseBlend2_ST;
 			half4 _WrinkleValueSet2L;
 			half4 _WrinkleMaskSet2_ST;
-			half4 _WrinkleValueSet1AR;
+			half4 _WrinkleMaskSet1B_ST;
 			half4 _SubsurfaceMaskMap_ST;
 			half _DetailNormalMapScale;
 			half _Metallic;
 			half _BumpScale;
 			half _Smoothness;
 			half _OcclusionStrength;
-			half _SubsurfaceMask;
 			half _Thickness;
+			half _SubsurfaceMask;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -1827,10 +1856,10 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			SAMPLER(sampler_BaseMap);
 			TEXTURE2D(_WrinkleDiffuseBlend1);
 			SAMPLER(sampler_Linear_Repeat);
+			TEXTURE2D(_WrinkleFlowPack);
 			TEXTURE2D(_WrinkleMaskSet123);
 			TEXTURE2D(_WrinkleMaskSet1A);
 			TEXTURE2D(_WrinkleMaskSet1B);
-			TEXTURE2D(_WrinkleFlowPack);
 			TEXTURE2D(_WrinkleDiffuseBlend2);
 			TEXTURE2D(_WrinkleMaskSet2);
 			TEXTURE2D(_WrinkleDiffuseBlend3);
@@ -1846,7 +1875,12 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			//#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/VisualEffectVertex.hlsl"
 			//#endif
 
+			half4 MinMaxDeltaBlend4181_g35( half4 In, half4 In1, half4 In2, half4 In3 )
+			{
+				return max(max(In1, In2), In3) + min(min(In1, In2), In3) + In;
+			}
 			
+
 			VertexOutput VertexFunction( VertexInput v  )
 			{
 				VertexOutput o = (VertexOutput)0;
@@ -2011,7 +2045,11 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				float2 uv_BaseMap = IN.ase_texcoord4.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
 				half4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
 				half4 diffuseMap205 = tex2DNode145;
+				half4 diffuse184_g35 = diffuseMap205;
+				half4 In181_g35 = diffuse184_g35;
 				float2 uv_WrinkleDiffuseBlend1 = IN.ase_texcoord4.xy * _WrinkleDiffuseBlend1_ST.xy + _WrinkleDiffuseBlend1_ST.zw;
+				float2 uv_WrinkleFlowPack = IN.ase_texcoord4.xy * _WrinkleFlowPack_ST.xy + _WrinkleFlowPack_ST.zw;
+				half4 tex2DNode258 = SAMPLE_TEXTURE2D( _WrinkleFlowPack, sampler_Linear_Repeat, uv_WrinkleFlowPack );
 				half2 texCoord10_g35 = IN.ase_texcoord4.xy * float2( 1,1 ) + float2( 0,0 );
 				half temp_output_1_0_g37 = 0.49;
 				half leftMask27_g35 = saturate( ( ( texCoord10_g35.x - temp_output_1_0_g37 ) / ( 0.51 - temp_output_1_0_g37 ) ) );
@@ -2023,12 +2061,12 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				half dotResult121_g35 = dot( appendResult112_g35 , appendResult115_g35 );
 				half value1CLeft135_g35 = dotResult121_g35;
 				float2 uv_WrinkleMaskSet1A = IN.ase_texcoord4.xy * _WrinkleMaskSet1A_ST.xy + _WrinkleMaskSet1A_ST.zw;
-				half4 temp_output_15_0_g35 = SAMPLE_TEXTURE2D( _WrinkleMaskSet1A, sampler_Linear_Repeat, uv_WrinkleMaskSet1A );
-				half dotResult29_g35 = dot( _WrinkleValueSet1AL , temp_output_15_0_g35 );
+				half4 maskSet1A214_g35 = SAMPLE_TEXTURE2D( _WrinkleMaskSet1A, sampler_Linear_Repeat, uv_WrinkleMaskSet1A );
+				half dotResult29_g35 = dot( _WrinkleValueSet1AL , maskSet1A214_g35 );
 				float2 uv_WrinkleMaskSet1B = IN.ase_texcoord4.xy * _WrinkleMaskSet1B_ST.xy + _WrinkleMaskSet1B_ST.zw;
 				half4 temp_output_16_0_g35 = SAMPLE_TEXTURE2D( _WrinkleMaskSet1B, sampler_Linear_Repeat, uv_WrinkleMaskSet1B );
 				half dotResult35_g35 = dot( _WrinkleValueSet1BL , temp_output_16_0_g35 );
-				half dotResult30_g35 = dot( temp_output_15_0_g35 , _WrinkleValueSet1AR );
+				half dotResult30_g35 = dot( maskSet1A214_g35 , _WrinkleValueSet1AR );
 				half dotResult36_g35 = dot( temp_output_16_0_g35 , _WrinkleValueSet1BR );
 				half4 break108_g35 = _WrinkleValueSet12CR;
 				half2 appendResult117_g35 = (half2(break108_g35.x , break108_g35.y));
@@ -2036,12 +2074,9 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				half value1CRight136_g35 = dotResult122_g35;
 				half temp_output_1_0_g36 = 0.51;
 				half rightMask28_g35 = saturate( ( ( texCoord10_g35.x - temp_output_1_0_g36 ) / ( 0.49 - temp_output_1_0_g36 ) ) );
-				half temp_output_16_0_g63 = ( ( leftMask27_g35 * ( value1CLeft135_g35 + dotResult29_g35 + dotResult35_g35 ) ) + ( ( dotResult30_g35 + dotResult36_g35 + value1CRight136_g35 ) * rightMask28_g35 ) );
-				half temp_output_1_0_g64 = 0.0;
-				float2 uv_WrinkleFlowPack = IN.ase_texcoord4.xy * _WrinkleFlowPack_ST.xy + _WrinkleFlowPack_ST.zw;
-				half4 tex2DNode258 = SAMPLE_TEXTURE2D( _WrinkleFlowPack, sampler_Linear_Repeat, uv_WrinkleFlowPack );
-				half temp_output_23_0_g63 = ( saturate( ( ( temp_output_16_0_g63 - temp_output_1_0_g64 ) / ( tex2DNode258.r - temp_output_1_0_g64 ) ) ) * temp_output_16_0_g63 );
-				half4 lerpResult17_g63 = lerp( diffuseMap205 , SAMPLE_TEXTURE2D( _WrinkleDiffuseBlend1, sampler_Linear_Repeat, uv_WrinkleDiffuseBlend1 ) , temp_output_23_0_g63);
+				half temp_output_16_0_g67 = ( ( leftMask27_g35 * ( value1CLeft135_g35 + dotResult29_g35 + dotResult35_g35 ) ) + ( ( dotResult30_g35 + dotResult36_g35 + value1CRight136_g35 ) * rightMask28_g35 ) );
+				half temp_output_23_0_g67 = ( saturate( ( tex2DNode258.r + temp_output_16_0_g67 ) ) * temp_output_16_0_g67 );
+				half4 In1181_g35 = ( ( SAMPLE_TEXTURE2D( _WrinkleDiffuseBlend1, sampler_Linear_Repeat, uv_WrinkleDiffuseBlend1 ) - diffuse184_g35 ) * temp_output_23_0_g67 );
 				float2 uv_WrinkleDiffuseBlend2 = IN.ase_texcoord4.xy * _WrinkleDiffuseBlend2_ST.xy + _WrinkleDiffuseBlend2_ST.zw;
 				half2 appendResult113_g35 = (half2(break107_g35.z , break107_g35.w));
 				half2 appendResult114_g35 = (half2(break109_g35.z , break109_g35.w));
@@ -2054,11 +2089,12 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				half2 appendResult116_g35 = (half2(break108_g35.z , break108_g35.w));
 				half dotResult124_g35 = dot( appendResult114_g35 , appendResult116_g35 );
 				half value2CRight138_g35 = dotResult124_g35;
-				half temp_output_16_0_g59 = ( ( leftMask27_g35 * ( value2CLeft137_g35 + dotResult41_g35 ) ) + ( ( dotResult42_g35 + value2CRight138_g35 ) * rightMask28_g35 ) );
-				half temp_output_1_0_g60 = 0.0;
-				half temp_output_23_0_g59 = ( saturate( ( ( temp_output_16_0_g59 - temp_output_1_0_g60 ) / ( tex2DNode258.g - temp_output_1_0_g60 ) ) ) * temp_output_16_0_g59 );
-				half4 lerpResult17_g59 = lerp( lerpResult17_g63 , SAMPLE_TEXTURE2D( _WrinkleDiffuseBlend2, sampler_Linear_Repeat, uv_WrinkleDiffuseBlend2 ) , temp_output_23_0_g59);
+				half temp_output_16_0_g68 = ( ( leftMask27_g35 * ( value2CLeft137_g35 + dotResult41_g35 ) ) + ( ( dotResult42_g35 + value2CRight138_g35 ) * rightMask28_g35 ) );
+				half temp_output_23_0_g68 = ( saturate( ( tex2DNode258.g + temp_output_16_0_g68 ) ) * temp_output_16_0_g68 );
+				half4 In2181_g35 = ( ( SAMPLE_TEXTURE2D( _WrinkleDiffuseBlend2, sampler_Linear_Repeat, uv_WrinkleDiffuseBlend2 ) - diffuse184_g35 ) * temp_output_23_0_g68 );
 				float2 uv_WrinkleDiffuseBlend3 = IN.ase_texcoord4.xy * _WrinkleDiffuseBlend3_ST.xy + _WrinkleDiffuseBlend3_ST.zw;
+				half4 break211_g35 = _WrinkleValueSetBCCB;
+				half valueBCCLeft217_g35 = ( break211_g35.x * maskSet1A214_g35.y );
 				half4 break118_g35 = _WrinkleValueSet3DB;
 				half2 appendResult120_g35 = (half2(break118_g35.x , break118_g35.y));
 				half dotResult127_g35 = dot( appendResult120_g35 , appendResult115_g35 );
@@ -2070,11 +2106,12 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				half2 appendResult119_g35 = (half2(break118_g35.z , break118_g35.w));
 				half dotResult128_g35 = dot( appendResult115_g35 , appendResult119_g35 );
 				half value3DRight130_g35 = dotResult128_g35;
-				half temp_output_16_0_g61 = ( ( leftMask27_g35 * ( value3DLeft129_g35 + dotResult47_g35 ) ) + ( ( dotResult48_g35 + value3DRight130_g35 ) * rightMask28_g35 ) );
-				half temp_output_1_0_g62 = 0.0;
-				half temp_output_23_0_g61 = ( saturate( ( ( temp_output_16_0_g61 - temp_output_1_0_g62 ) / ( tex2DNode258.b - temp_output_1_0_g62 ) ) ) * temp_output_16_0_g61 );
-				half4 lerpResult17_g61 = lerp( lerpResult17_g59 , SAMPLE_TEXTURE2D( _WrinkleDiffuseBlend3, sampler_Linear_Repeat, uv_WrinkleDiffuseBlend3 ) , temp_output_23_0_g61);
-				half4 diffuseWrinkle215 = lerpResult17_g61;
+				half valueBCCRight219_g35 = ( maskSet1A214_g35.y * break211_g35.y );
+				half temp_output_16_0_g66 = ( ( leftMask27_g35 * ( valueBCCLeft217_g35 + value3DLeft129_g35 + dotResult47_g35 ) ) + ( ( dotResult48_g35 + value3DRight130_g35 + valueBCCRight219_g35 ) * rightMask28_g35 ) );
+				half temp_output_23_0_g66 = ( saturate( ( tex2DNode258.b + temp_output_16_0_g66 ) ) * temp_output_16_0_g66 );
+				half4 In3181_g35 = ( ( SAMPLE_TEXTURE2D( _WrinkleDiffuseBlend3, sampler_Linear_Repeat, uv_WrinkleDiffuseBlend3 ) - diffuse184_g35 ) * temp_output_23_0_g66 );
+				half4 localMinMaxDeltaBlend4181_g35 = MinMaxDeltaBlend4181_g35( In181_g35 , In1181_g35 , In2181_g35 , In3181_g35 );
+				half4 diffuseWrinkle215 = localMinMaxDeltaBlend4181_g35;
 				#ifdef BOOLEAN_USE_WRINKLE_ON
 				half4 staticSwitch242 = diffuseWrinkle215;
 				#else
@@ -2173,48 +2210,49 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 
 			CBUFFER_START(UnityPerMaterial)
 			half4 _BaseColor;
-			half4 _WrinkleMaskSet3_ST;
+			half4 _WrinkleValueSet3L;
+			half4 _WrinkleValueSet3R;
 			half4 _BumpMap_ST;
 			half4 _WrinkleNormalBlend1_ST;
 			half4 _WrinkleNormalBlend2_ST;
 			half4 _WrinkleNormalBlend3_ST;
 			half4 _DetailNormalMap_ST;
-			half4 _WrinkleValueSet3L;
 			half4 _DetailMask_ST;
+			half4 _EmissionMap_ST;
 			half4 _EmissiveColor;
 			half4 _MetallicGlossMap_ST;
 			half4 _WrinkleSmoothnessPack_ST;
 			half4 _OcclusionMap_ST;
 			half4 _ThicknessMap_ST;
 			half4 _SubsurfaceFalloff;
-			half4 _EmissionMap_ST;
 			half4 _WrinkleValueSet3DB;
-			half4 _WrinkleValueSet3R;
+			half4 _WrinkleValueSetBCCB;
+			half4 _WrinkleMaskSet3_ST;
 			half4 _WrinkleValueSet2R;
 			half4 _BaseMap_ST;
 			half4 _WrinkleDiffuseBlend1_ST;
+			half4 _WrinkleFlowPack_ST;
 			half4 _WrinkleValueSet12CL;
 			half4 _WrinkleMaskSet123_ST;
 			half4 _WrinkleValueSet1AL;
-			half4 _WrinkleMaskSet1A_ST;
 			half4 _WrinkleDiffuseBlend3_ST;
-			half4 _WrinkleMaskSet1B_ST;
 			half4 _WrinkleValueSet1BL;
+			half4 _WrinkleMaskSet1A_ST;
+			half4 _WrinkleValueSet1AR;
 			half4 _WrinkleValueSet1BR;
 			half4 _WrinkleValueSet12CR;
-			half4 _WrinkleFlowPack_ST;
 			half4 _WrinkleDiffuseBlend2_ST;
 			half4 _WrinkleValueSet2L;
 			half4 _WrinkleMaskSet2_ST;
-			half4 _WrinkleValueSet1AR;
+			half4 _WrinkleMaskSet1B_ST;
 			half4 _SubsurfaceMaskMap_ST;
 			half _DetailNormalMapScale;
 			half _Metallic;
 			half _BumpScale;
 			half _Smoothness;
 			half _OcclusionStrength;
-			half _SubsurfaceMask;
 			half _Thickness;
+			half _SubsurfaceMask;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -2251,10 +2289,10 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			SAMPLER(sampler_BaseMap);
 			TEXTURE2D(_WrinkleDiffuseBlend1);
 			SAMPLER(sampler_Linear_Repeat);
+			TEXTURE2D(_WrinkleFlowPack);
 			TEXTURE2D(_WrinkleMaskSet123);
 			TEXTURE2D(_WrinkleMaskSet1A);
 			TEXTURE2D(_WrinkleMaskSet1B);
-			TEXTURE2D(_WrinkleFlowPack);
 			TEXTURE2D(_WrinkleDiffuseBlend2);
 			TEXTURE2D(_WrinkleMaskSet2);
 			TEXTURE2D(_WrinkleDiffuseBlend3);
@@ -2268,7 +2306,12 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			//#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/VisualEffectVertex.hlsl"
 			//#endif
 
+			half4 MinMaxDeltaBlend4181_g35( half4 In, half4 In1, half4 In2, half4 In3 )
+			{
+				return max(max(In1, In2), In3) + min(min(In1, In2), In3) + In;
+			}
 			
+
 			VertexOutput VertexFunction( VertexInput v  )
 			{
 				VertexOutput o = (VertexOutput)0;
@@ -2418,7 +2461,11 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				float2 uv_BaseMap = IN.ase_texcoord2.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
 				half4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
 				half4 diffuseMap205 = tex2DNode145;
+				half4 diffuse184_g35 = diffuseMap205;
+				half4 In181_g35 = diffuse184_g35;
 				float2 uv_WrinkleDiffuseBlend1 = IN.ase_texcoord2.xy * _WrinkleDiffuseBlend1_ST.xy + _WrinkleDiffuseBlend1_ST.zw;
+				float2 uv_WrinkleFlowPack = IN.ase_texcoord2.xy * _WrinkleFlowPack_ST.xy + _WrinkleFlowPack_ST.zw;
+				half4 tex2DNode258 = SAMPLE_TEXTURE2D( _WrinkleFlowPack, sampler_Linear_Repeat, uv_WrinkleFlowPack );
 				half2 texCoord10_g35 = IN.ase_texcoord2.xy * float2( 1,1 ) + float2( 0,0 );
 				half temp_output_1_0_g37 = 0.49;
 				half leftMask27_g35 = saturate( ( ( texCoord10_g35.x - temp_output_1_0_g37 ) / ( 0.51 - temp_output_1_0_g37 ) ) );
@@ -2430,12 +2477,12 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				half dotResult121_g35 = dot( appendResult112_g35 , appendResult115_g35 );
 				half value1CLeft135_g35 = dotResult121_g35;
 				float2 uv_WrinkleMaskSet1A = IN.ase_texcoord2.xy * _WrinkleMaskSet1A_ST.xy + _WrinkleMaskSet1A_ST.zw;
-				half4 temp_output_15_0_g35 = SAMPLE_TEXTURE2D( _WrinkleMaskSet1A, sampler_Linear_Repeat, uv_WrinkleMaskSet1A );
-				half dotResult29_g35 = dot( _WrinkleValueSet1AL , temp_output_15_0_g35 );
+				half4 maskSet1A214_g35 = SAMPLE_TEXTURE2D( _WrinkleMaskSet1A, sampler_Linear_Repeat, uv_WrinkleMaskSet1A );
+				half dotResult29_g35 = dot( _WrinkleValueSet1AL , maskSet1A214_g35 );
 				float2 uv_WrinkleMaskSet1B = IN.ase_texcoord2.xy * _WrinkleMaskSet1B_ST.xy + _WrinkleMaskSet1B_ST.zw;
 				half4 temp_output_16_0_g35 = SAMPLE_TEXTURE2D( _WrinkleMaskSet1B, sampler_Linear_Repeat, uv_WrinkleMaskSet1B );
 				half dotResult35_g35 = dot( _WrinkleValueSet1BL , temp_output_16_0_g35 );
-				half dotResult30_g35 = dot( temp_output_15_0_g35 , _WrinkleValueSet1AR );
+				half dotResult30_g35 = dot( maskSet1A214_g35 , _WrinkleValueSet1AR );
 				half dotResult36_g35 = dot( temp_output_16_0_g35 , _WrinkleValueSet1BR );
 				half4 break108_g35 = _WrinkleValueSet12CR;
 				half2 appendResult117_g35 = (half2(break108_g35.x , break108_g35.y));
@@ -2443,12 +2490,9 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				half value1CRight136_g35 = dotResult122_g35;
 				half temp_output_1_0_g36 = 0.51;
 				half rightMask28_g35 = saturate( ( ( texCoord10_g35.x - temp_output_1_0_g36 ) / ( 0.49 - temp_output_1_0_g36 ) ) );
-				half temp_output_16_0_g63 = ( ( leftMask27_g35 * ( value1CLeft135_g35 + dotResult29_g35 + dotResult35_g35 ) ) + ( ( dotResult30_g35 + dotResult36_g35 + value1CRight136_g35 ) * rightMask28_g35 ) );
-				half temp_output_1_0_g64 = 0.0;
-				float2 uv_WrinkleFlowPack = IN.ase_texcoord2.xy * _WrinkleFlowPack_ST.xy + _WrinkleFlowPack_ST.zw;
-				half4 tex2DNode258 = SAMPLE_TEXTURE2D( _WrinkleFlowPack, sampler_Linear_Repeat, uv_WrinkleFlowPack );
-				half temp_output_23_0_g63 = ( saturate( ( ( temp_output_16_0_g63 - temp_output_1_0_g64 ) / ( tex2DNode258.r - temp_output_1_0_g64 ) ) ) * temp_output_16_0_g63 );
-				half4 lerpResult17_g63 = lerp( diffuseMap205 , SAMPLE_TEXTURE2D( _WrinkleDiffuseBlend1, sampler_Linear_Repeat, uv_WrinkleDiffuseBlend1 ) , temp_output_23_0_g63);
+				half temp_output_16_0_g67 = ( ( leftMask27_g35 * ( value1CLeft135_g35 + dotResult29_g35 + dotResult35_g35 ) ) + ( ( dotResult30_g35 + dotResult36_g35 + value1CRight136_g35 ) * rightMask28_g35 ) );
+				half temp_output_23_0_g67 = ( saturate( ( tex2DNode258.r + temp_output_16_0_g67 ) ) * temp_output_16_0_g67 );
+				half4 In1181_g35 = ( ( SAMPLE_TEXTURE2D( _WrinkleDiffuseBlend1, sampler_Linear_Repeat, uv_WrinkleDiffuseBlend1 ) - diffuse184_g35 ) * temp_output_23_0_g67 );
 				float2 uv_WrinkleDiffuseBlend2 = IN.ase_texcoord2.xy * _WrinkleDiffuseBlend2_ST.xy + _WrinkleDiffuseBlend2_ST.zw;
 				half2 appendResult113_g35 = (half2(break107_g35.z , break107_g35.w));
 				half2 appendResult114_g35 = (half2(break109_g35.z , break109_g35.w));
@@ -2461,11 +2505,12 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				half2 appendResult116_g35 = (half2(break108_g35.z , break108_g35.w));
 				half dotResult124_g35 = dot( appendResult114_g35 , appendResult116_g35 );
 				half value2CRight138_g35 = dotResult124_g35;
-				half temp_output_16_0_g59 = ( ( leftMask27_g35 * ( value2CLeft137_g35 + dotResult41_g35 ) ) + ( ( dotResult42_g35 + value2CRight138_g35 ) * rightMask28_g35 ) );
-				half temp_output_1_0_g60 = 0.0;
-				half temp_output_23_0_g59 = ( saturate( ( ( temp_output_16_0_g59 - temp_output_1_0_g60 ) / ( tex2DNode258.g - temp_output_1_0_g60 ) ) ) * temp_output_16_0_g59 );
-				half4 lerpResult17_g59 = lerp( lerpResult17_g63 , SAMPLE_TEXTURE2D( _WrinkleDiffuseBlend2, sampler_Linear_Repeat, uv_WrinkleDiffuseBlend2 ) , temp_output_23_0_g59);
+				half temp_output_16_0_g68 = ( ( leftMask27_g35 * ( value2CLeft137_g35 + dotResult41_g35 ) ) + ( ( dotResult42_g35 + value2CRight138_g35 ) * rightMask28_g35 ) );
+				half temp_output_23_0_g68 = ( saturate( ( tex2DNode258.g + temp_output_16_0_g68 ) ) * temp_output_16_0_g68 );
+				half4 In2181_g35 = ( ( SAMPLE_TEXTURE2D( _WrinkleDiffuseBlend2, sampler_Linear_Repeat, uv_WrinkleDiffuseBlend2 ) - diffuse184_g35 ) * temp_output_23_0_g68 );
 				float2 uv_WrinkleDiffuseBlend3 = IN.ase_texcoord2.xy * _WrinkleDiffuseBlend3_ST.xy + _WrinkleDiffuseBlend3_ST.zw;
+				half4 break211_g35 = _WrinkleValueSetBCCB;
+				half valueBCCLeft217_g35 = ( break211_g35.x * maskSet1A214_g35.y );
 				half4 break118_g35 = _WrinkleValueSet3DB;
 				half2 appendResult120_g35 = (half2(break118_g35.x , break118_g35.y));
 				half dotResult127_g35 = dot( appendResult120_g35 , appendResult115_g35 );
@@ -2477,11 +2522,12 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				half2 appendResult119_g35 = (half2(break118_g35.z , break118_g35.w));
 				half dotResult128_g35 = dot( appendResult115_g35 , appendResult119_g35 );
 				half value3DRight130_g35 = dotResult128_g35;
-				half temp_output_16_0_g61 = ( ( leftMask27_g35 * ( value3DLeft129_g35 + dotResult47_g35 ) ) + ( ( dotResult48_g35 + value3DRight130_g35 ) * rightMask28_g35 ) );
-				half temp_output_1_0_g62 = 0.0;
-				half temp_output_23_0_g61 = ( saturate( ( ( temp_output_16_0_g61 - temp_output_1_0_g62 ) / ( tex2DNode258.b - temp_output_1_0_g62 ) ) ) * temp_output_16_0_g61 );
-				half4 lerpResult17_g61 = lerp( lerpResult17_g59 , SAMPLE_TEXTURE2D( _WrinkleDiffuseBlend3, sampler_Linear_Repeat, uv_WrinkleDiffuseBlend3 ) , temp_output_23_0_g61);
-				half4 diffuseWrinkle215 = lerpResult17_g61;
+				half valueBCCRight219_g35 = ( maskSet1A214_g35.y * break211_g35.y );
+				half temp_output_16_0_g66 = ( ( leftMask27_g35 * ( valueBCCLeft217_g35 + value3DLeft129_g35 + dotResult47_g35 ) ) + ( ( dotResult48_g35 + value3DRight130_g35 + valueBCCRight219_g35 ) * rightMask28_g35 ) );
+				half temp_output_23_0_g66 = ( saturate( ( tex2DNode258.b + temp_output_16_0_g66 ) ) * temp_output_16_0_g66 );
+				half4 In3181_g35 = ( ( SAMPLE_TEXTURE2D( _WrinkleDiffuseBlend3, sampler_Linear_Repeat, uv_WrinkleDiffuseBlend3 ) - diffuse184_g35 ) * temp_output_23_0_g66 );
+				half4 localMinMaxDeltaBlend4181_g35 = MinMaxDeltaBlend4181_g35( In181_g35 , In1181_g35 , In2181_g35 , In3181_g35 );
+				half4 diffuseWrinkle215 = localMinMaxDeltaBlend4181_g35;
 				#ifdef BOOLEAN_USE_WRINKLE_ON
 				half4 staticSwitch242 = diffuseWrinkle215;
 				#else
@@ -2575,48 +2621,49 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 
 			CBUFFER_START(UnityPerMaterial)
 			half4 _BaseColor;
-			half4 _WrinkleMaskSet3_ST;
+			half4 _WrinkleValueSet3L;
+			half4 _WrinkleValueSet3R;
 			half4 _BumpMap_ST;
 			half4 _WrinkleNormalBlend1_ST;
 			half4 _WrinkleNormalBlend2_ST;
 			half4 _WrinkleNormalBlend3_ST;
 			half4 _DetailNormalMap_ST;
-			half4 _WrinkleValueSet3L;
 			half4 _DetailMask_ST;
+			half4 _EmissionMap_ST;
 			half4 _EmissiveColor;
 			half4 _MetallicGlossMap_ST;
 			half4 _WrinkleSmoothnessPack_ST;
 			half4 _OcclusionMap_ST;
 			half4 _ThicknessMap_ST;
 			half4 _SubsurfaceFalloff;
-			half4 _EmissionMap_ST;
 			half4 _WrinkleValueSet3DB;
-			half4 _WrinkleValueSet3R;
+			half4 _WrinkleValueSetBCCB;
+			half4 _WrinkleMaskSet3_ST;
 			half4 _WrinkleValueSet2R;
 			half4 _BaseMap_ST;
 			half4 _WrinkleDiffuseBlend1_ST;
+			half4 _WrinkleFlowPack_ST;
 			half4 _WrinkleValueSet12CL;
 			half4 _WrinkleMaskSet123_ST;
 			half4 _WrinkleValueSet1AL;
-			half4 _WrinkleMaskSet1A_ST;
 			half4 _WrinkleDiffuseBlend3_ST;
-			half4 _WrinkleMaskSet1B_ST;
 			half4 _WrinkleValueSet1BL;
+			half4 _WrinkleMaskSet1A_ST;
+			half4 _WrinkleValueSet1AR;
 			half4 _WrinkleValueSet1BR;
 			half4 _WrinkleValueSet12CR;
-			half4 _WrinkleFlowPack_ST;
 			half4 _WrinkleDiffuseBlend2_ST;
 			half4 _WrinkleValueSet2L;
 			half4 _WrinkleMaskSet2_ST;
-			half4 _WrinkleValueSet1AR;
+			half4 _WrinkleMaskSet1B_ST;
 			half4 _SubsurfaceMaskMap_ST;
 			half _DetailNormalMapScale;
 			half _Metallic;
 			half _BumpScale;
 			half _Smoothness;
 			half _OcclusionStrength;
-			half _SubsurfaceMask;
 			half _Thickness;
+			half _SubsurfaceMask;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -2653,10 +2700,10 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			SAMPLER(sampler_BumpMap);
 			TEXTURE2D(_WrinkleNormalBlend1);
 			SAMPLER(sampler_Linear_Repeat);
+			TEXTURE2D(_WrinkleFlowPack);
 			TEXTURE2D(_WrinkleMaskSet123);
 			TEXTURE2D(_WrinkleMaskSet1A);
 			TEXTURE2D(_WrinkleMaskSet1B);
-			TEXTURE2D(_WrinkleFlowPack);
 			TEXTURE2D(_WrinkleNormalBlend2);
 			TEXTURE2D(_WrinkleMaskSet2);
 			TEXTURE2D(_WrinkleNormalBlend3);
@@ -2676,7 +2723,12 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			//#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/VisualEffectVertex.hlsl"
 			//#endif
 
+			half3 MinMaxDeltaBlend3183_g35( half3 In, half3 In1, half3 In2, half3 In3 )
+			{
+				return max(max(In1, In2), In3) + min(min(In1, In2), In3) + In;
+			}
 			
+
 			VertexOutput VertexFunction( VertexInput v  )
 			{
 				VertexOutput o = (VertexOutput)0;
@@ -2846,9 +2898,13 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				half3 unpack146 = UnpackNormalScale( SAMPLE_TEXTURE2D( _BumpMap, sampler_BumpMap, uv_BumpMap ), normalMapScale260 );
 				unpack146.z = lerp( 1, unpack146.z, saturate(normalMapScale260) );
 				half3 normalMap206 = unpack146;
+				half3 normal186_g35 = normalMap206;
+				half3 In183_g35 = normal186_g35;
 				float2 uv_WrinkleNormalBlend1 = IN.ase_texcoord4.xy * _WrinkleNormalBlend1_ST.xy + _WrinkleNormalBlend1_ST.zw;
 				half3 unpack239 = UnpackNormalScale( SAMPLE_TEXTURE2D( _WrinkleNormalBlend1, sampler_Linear_Repeat, uv_WrinkleNormalBlend1 ), normalMapScale260 );
 				unpack239.z = lerp( 1, unpack239.z, saturate(normalMapScale260) );
+				float2 uv_WrinkleFlowPack = IN.ase_texcoord4.xy * _WrinkleFlowPack_ST.xy + _WrinkleFlowPack_ST.zw;
+				half4 tex2DNode258 = SAMPLE_TEXTURE2D( _WrinkleFlowPack, sampler_Linear_Repeat, uv_WrinkleFlowPack );
 				half2 texCoord10_g35 = IN.ase_texcoord4.xy * float2( 1,1 ) + float2( 0,0 );
 				half temp_output_1_0_g37 = 0.49;
 				half leftMask27_g35 = saturate( ( ( texCoord10_g35.x - temp_output_1_0_g37 ) / ( 0.51 - temp_output_1_0_g37 ) ) );
@@ -2860,12 +2916,12 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				half dotResult121_g35 = dot( appendResult112_g35 , appendResult115_g35 );
 				half value1CLeft135_g35 = dotResult121_g35;
 				float2 uv_WrinkleMaskSet1A = IN.ase_texcoord4.xy * _WrinkleMaskSet1A_ST.xy + _WrinkleMaskSet1A_ST.zw;
-				half4 temp_output_15_0_g35 = SAMPLE_TEXTURE2D( _WrinkleMaskSet1A, sampler_Linear_Repeat, uv_WrinkleMaskSet1A );
-				half dotResult29_g35 = dot( _WrinkleValueSet1AL , temp_output_15_0_g35 );
+				half4 maskSet1A214_g35 = SAMPLE_TEXTURE2D( _WrinkleMaskSet1A, sampler_Linear_Repeat, uv_WrinkleMaskSet1A );
+				half dotResult29_g35 = dot( _WrinkleValueSet1AL , maskSet1A214_g35 );
 				float2 uv_WrinkleMaskSet1B = IN.ase_texcoord4.xy * _WrinkleMaskSet1B_ST.xy + _WrinkleMaskSet1B_ST.zw;
 				half4 temp_output_16_0_g35 = SAMPLE_TEXTURE2D( _WrinkleMaskSet1B, sampler_Linear_Repeat, uv_WrinkleMaskSet1B );
 				half dotResult35_g35 = dot( _WrinkleValueSet1BL , temp_output_16_0_g35 );
-				half dotResult30_g35 = dot( temp_output_15_0_g35 , _WrinkleValueSet1AR );
+				half dotResult30_g35 = dot( maskSet1A214_g35 , _WrinkleValueSet1AR );
 				half dotResult36_g35 = dot( temp_output_16_0_g35 , _WrinkleValueSet1BR );
 				half4 break108_g35 = _WrinkleValueSet12CR;
 				half2 appendResult117_g35 = (half2(break108_g35.x , break108_g35.y));
@@ -2873,12 +2929,9 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				half value1CRight136_g35 = dotResult122_g35;
 				half temp_output_1_0_g36 = 0.51;
 				half rightMask28_g35 = saturate( ( ( texCoord10_g35.x - temp_output_1_0_g36 ) / ( 0.49 - temp_output_1_0_g36 ) ) );
-				half temp_output_16_0_g63 = ( ( leftMask27_g35 * ( value1CLeft135_g35 + dotResult29_g35 + dotResult35_g35 ) ) + ( ( dotResult30_g35 + dotResult36_g35 + value1CRight136_g35 ) * rightMask28_g35 ) );
-				half temp_output_1_0_g64 = 0.0;
-				float2 uv_WrinkleFlowPack = IN.ase_texcoord4.xy * _WrinkleFlowPack_ST.xy + _WrinkleFlowPack_ST.zw;
-				half4 tex2DNode258 = SAMPLE_TEXTURE2D( _WrinkleFlowPack, sampler_Linear_Repeat, uv_WrinkleFlowPack );
-				half temp_output_23_0_g63 = ( saturate( ( ( temp_output_16_0_g63 - temp_output_1_0_g64 ) / ( tex2DNode258.r - temp_output_1_0_g64 ) ) ) * temp_output_16_0_g63 );
-				half3 lerpResult19_g63 = lerp( normalMap206 , unpack239 , temp_output_23_0_g63);
+				half temp_output_16_0_g67 = ( ( leftMask27_g35 * ( value1CLeft135_g35 + dotResult29_g35 + dotResult35_g35 ) ) + ( ( dotResult30_g35 + dotResult36_g35 + value1CRight136_g35 ) * rightMask28_g35 ) );
+				half temp_output_23_0_g67 = ( saturate( ( tex2DNode258.r + temp_output_16_0_g67 ) ) * temp_output_16_0_g67 );
+				half3 In1183_g35 = ( ( unpack239 - normal186_g35 ) * temp_output_23_0_g67 );
 				float2 uv_WrinkleNormalBlend2 = IN.ase_texcoord4.xy * _WrinkleNormalBlend2_ST.xy + _WrinkleNormalBlend2_ST.zw;
 				half3 unpack240 = UnpackNormalScale( SAMPLE_TEXTURE2D( _WrinkleNormalBlend2, sampler_Linear_Repeat, uv_WrinkleNormalBlend2 ), normalMapScale260 );
 				unpack240.z = lerp( 1, unpack240.z, saturate(normalMapScale260) );
@@ -2893,13 +2946,14 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				half2 appendResult116_g35 = (half2(break108_g35.z , break108_g35.w));
 				half dotResult124_g35 = dot( appendResult114_g35 , appendResult116_g35 );
 				half value2CRight138_g35 = dotResult124_g35;
-				half temp_output_16_0_g59 = ( ( leftMask27_g35 * ( value2CLeft137_g35 + dotResult41_g35 ) ) + ( ( dotResult42_g35 + value2CRight138_g35 ) * rightMask28_g35 ) );
-				half temp_output_1_0_g60 = 0.0;
-				half temp_output_23_0_g59 = ( saturate( ( ( temp_output_16_0_g59 - temp_output_1_0_g60 ) / ( tex2DNode258.g - temp_output_1_0_g60 ) ) ) * temp_output_16_0_g59 );
-				half3 lerpResult19_g59 = lerp( lerpResult19_g63 , unpack240 , temp_output_23_0_g59);
+				half temp_output_16_0_g68 = ( ( leftMask27_g35 * ( value2CLeft137_g35 + dotResult41_g35 ) ) + ( ( dotResult42_g35 + value2CRight138_g35 ) * rightMask28_g35 ) );
+				half temp_output_23_0_g68 = ( saturate( ( tex2DNode258.g + temp_output_16_0_g68 ) ) * temp_output_16_0_g68 );
+				half3 In2183_g35 = ( ( unpack240 - normal186_g35 ) * temp_output_23_0_g68 );
 				float2 uv_WrinkleNormalBlend3 = IN.ase_texcoord4.xy * _WrinkleNormalBlend3_ST.xy + _WrinkleNormalBlend3_ST.zw;
 				half3 unpack241 = UnpackNormalScale( SAMPLE_TEXTURE2D( _WrinkleNormalBlend3, sampler_Linear_Repeat, uv_WrinkleNormalBlend3 ), normalMapScale260 );
 				unpack241.z = lerp( 1, unpack241.z, saturate(normalMapScale260) );
+				half4 break211_g35 = _WrinkleValueSetBCCB;
+				half valueBCCLeft217_g35 = ( break211_g35.x * maskSet1A214_g35.y );
 				half4 break118_g35 = _WrinkleValueSet3DB;
 				half2 appendResult120_g35 = (half2(break118_g35.x , break118_g35.y));
 				half dotResult127_g35 = dot( appendResult120_g35 , appendResult115_g35 );
@@ -2911,11 +2965,12 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				half2 appendResult119_g35 = (half2(break118_g35.z , break118_g35.w));
 				half dotResult128_g35 = dot( appendResult115_g35 , appendResult119_g35 );
 				half value3DRight130_g35 = dotResult128_g35;
-				half temp_output_16_0_g61 = ( ( leftMask27_g35 * ( value3DLeft129_g35 + dotResult47_g35 ) ) + ( ( dotResult48_g35 + value3DRight130_g35 ) * rightMask28_g35 ) );
-				half temp_output_1_0_g62 = 0.0;
-				half temp_output_23_0_g61 = ( saturate( ( ( temp_output_16_0_g61 - temp_output_1_0_g62 ) / ( tex2DNode258.b - temp_output_1_0_g62 ) ) ) * temp_output_16_0_g61 );
-				half3 lerpResult19_g61 = lerp( lerpResult19_g59 , unpack241 , temp_output_23_0_g61);
-				half3 normalWrinkle217 = lerpResult19_g61;
+				half valueBCCRight219_g35 = ( maskSet1A214_g35.y * break211_g35.y );
+				half temp_output_16_0_g66 = ( ( leftMask27_g35 * ( valueBCCLeft217_g35 + value3DLeft129_g35 + dotResult47_g35 ) ) + ( ( dotResult48_g35 + value3DRight130_g35 + valueBCCRight219_g35 ) * rightMask28_g35 ) );
+				half temp_output_23_0_g66 = ( saturate( ( tex2DNode258.b + temp_output_16_0_g66 ) ) * temp_output_16_0_g66 );
+				half3 In3183_g35 = ( ( unpack241 - normal186_g35 ) * temp_output_23_0_g66 );
+				half3 localMinMaxDeltaBlend3183_g35 = MinMaxDeltaBlend3183_g35( In183_g35 , In1183_g35 , In2183_g35 , In3183_g35 );
+				half3 normalWrinkle217 = localMinMaxDeltaBlend3183_g35;
 				#ifdef BOOLEAN_USE_WRINKLE_ON
 				half3 staticSwitch246 = normalWrinkle217;
 				#else
@@ -3081,48 +3136,49 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 
 			CBUFFER_START(UnityPerMaterial)
 			half4 _BaseColor;
-			half4 _WrinkleMaskSet3_ST;
+			half4 _WrinkleValueSet3L;
+			half4 _WrinkleValueSet3R;
 			half4 _BumpMap_ST;
 			half4 _WrinkleNormalBlend1_ST;
 			half4 _WrinkleNormalBlend2_ST;
 			half4 _WrinkleNormalBlend3_ST;
 			half4 _DetailNormalMap_ST;
-			half4 _WrinkleValueSet3L;
 			half4 _DetailMask_ST;
+			half4 _EmissionMap_ST;
 			half4 _EmissiveColor;
 			half4 _MetallicGlossMap_ST;
 			half4 _WrinkleSmoothnessPack_ST;
 			half4 _OcclusionMap_ST;
 			half4 _ThicknessMap_ST;
 			half4 _SubsurfaceFalloff;
-			half4 _EmissionMap_ST;
 			half4 _WrinkleValueSet3DB;
-			half4 _WrinkleValueSet3R;
+			half4 _WrinkleValueSetBCCB;
+			half4 _WrinkleMaskSet3_ST;
 			half4 _WrinkleValueSet2R;
 			half4 _BaseMap_ST;
 			half4 _WrinkleDiffuseBlend1_ST;
+			half4 _WrinkleFlowPack_ST;
 			half4 _WrinkleValueSet12CL;
 			half4 _WrinkleMaskSet123_ST;
 			half4 _WrinkleValueSet1AL;
-			half4 _WrinkleMaskSet1A_ST;
 			half4 _WrinkleDiffuseBlend3_ST;
-			half4 _WrinkleMaskSet1B_ST;
 			half4 _WrinkleValueSet1BL;
+			half4 _WrinkleMaskSet1A_ST;
+			half4 _WrinkleValueSet1AR;
 			half4 _WrinkleValueSet1BR;
 			half4 _WrinkleValueSet12CR;
-			half4 _WrinkleFlowPack_ST;
 			half4 _WrinkleDiffuseBlend2_ST;
 			half4 _WrinkleValueSet2L;
 			half4 _WrinkleMaskSet2_ST;
-			half4 _WrinkleValueSet1AR;
+			half4 _WrinkleMaskSet1B_ST;
 			half4 _SubsurfaceMaskMap_ST;
 			half _DetailNormalMapScale;
 			half _Metallic;
 			half _BumpScale;
 			half _Smoothness;
 			half _OcclusionStrength;
-			half _SubsurfaceMask;
 			half _Thickness;
+			half _SubsurfaceMask;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -3159,10 +3215,10 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			SAMPLER(sampler_BaseMap);
 			TEXTURE2D(_WrinkleDiffuseBlend1);
 			SAMPLER(sampler_Linear_Repeat);
+			TEXTURE2D(_WrinkleFlowPack);
 			TEXTURE2D(_WrinkleMaskSet123);
 			TEXTURE2D(_WrinkleMaskSet1A);
 			TEXTURE2D(_WrinkleMaskSet1B);
-			TEXTURE2D(_WrinkleFlowPack);
 			TEXTURE2D(_WrinkleDiffuseBlend2);
 			TEXTURE2D(_WrinkleMaskSet2);
 			TEXTURE2D(_WrinkleDiffuseBlend3);
@@ -3193,7 +3249,22 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/UnityGBuffer.hlsl"
 			//#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/PBRGBufferPass.hlsl"
 
+			half4 MinMaxDeltaBlend4181_g35( half4 In, half4 In1, half4 In2, half4 In3 )
+			{
+				return max(max(In1, In2), In3) + min(min(In1, In2), In3) + In;
+			}
 			
+			half3 MinMaxDeltaBlend3183_g35( half3 In, half3 In1, half3 In2, half3 In3 )
+			{
+				return max(max(In1, In2), In3) + min(min(In1, In2), In3) + In;
+			}
+			
+			half MinMaxDeltaBlend1182_g35( half In, half In1, half In2, half In3 )
+			{
+				return max(max(In1, In2), In3) + min(min(In1, In2), In3) + In;
+			}
+			
+
 			VertexOutput VertexFunction( VertexInput v  )
 			{
 				VertexOutput o = (VertexOutput)0;
@@ -3412,7 +3483,11 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				float2 uv_BaseMap = IN.ase_texcoord8.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
 				half4 tex2DNode145 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
 				half4 diffuseMap205 = tex2DNode145;
+				half4 diffuse184_g35 = diffuseMap205;
+				half4 In181_g35 = diffuse184_g35;
 				float2 uv_WrinkleDiffuseBlend1 = IN.ase_texcoord8.xy * _WrinkleDiffuseBlend1_ST.xy + _WrinkleDiffuseBlend1_ST.zw;
+				float2 uv_WrinkleFlowPack = IN.ase_texcoord8.xy * _WrinkleFlowPack_ST.xy + _WrinkleFlowPack_ST.zw;
+				half4 tex2DNode258 = SAMPLE_TEXTURE2D( _WrinkleFlowPack, sampler_Linear_Repeat, uv_WrinkleFlowPack );
 				half2 texCoord10_g35 = IN.ase_texcoord8.xy * float2( 1,1 ) + float2( 0,0 );
 				half temp_output_1_0_g37 = 0.49;
 				half leftMask27_g35 = saturate( ( ( texCoord10_g35.x - temp_output_1_0_g37 ) / ( 0.51 - temp_output_1_0_g37 ) ) );
@@ -3424,12 +3499,12 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				half dotResult121_g35 = dot( appendResult112_g35 , appendResult115_g35 );
 				half value1CLeft135_g35 = dotResult121_g35;
 				float2 uv_WrinkleMaskSet1A = IN.ase_texcoord8.xy * _WrinkleMaskSet1A_ST.xy + _WrinkleMaskSet1A_ST.zw;
-				half4 temp_output_15_0_g35 = SAMPLE_TEXTURE2D( _WrinkleMaskSet1A, sampler_Linear_Repeat, uv_WrinkleMaskSet1A );
-				half dotResult29_g35 = dot( _WrinkleValueSet1AL , temp_output_15_0_g35 );
+				half4 maskSet1A214_g35 = SAMPLE_TEXTURE2D( _WrinkleMaskSet1A, sampler_Linear_Repeat, uv_WrinkleMaskSet1A );
+				half dotResult29_g35 = dot( _WrinkleValueSet1AL , maskSet1A214_g35 );
 				float2 uv_WrinkleMaskSet1B = IN.ase_texcoord8.xy * _WrinkleMaskSet1B_ST.xy + _WrinkleMaskSet1B_ST.zw;
 				half4 temp_output_16_0_g35 = SAMPLE_TEXTURE2D( _WrinkleMaskSet1B, sampler_Linear_Repeat, uv_WrinkleMaskSet1B );
 				half dotResult35_g35 = dot( _WrinkleValueSet1BL , temp_output_16_0_g35 );
-				half dotResult30_g35 = dot( temp_output_15_0_g35 , _WrinkleValueSet1AR );
+				half dotResult30_g35 = dot( maskSet1A214_g35 , _WrinkleValueSet1AR );
 				half dotResult36_g35 = dot( temp_output_16_0_g35 , _WrinkleValueSet1BR );
 				half4 break108_g35 = _WrinkleValueSet12CR;
 				half2 appendResult117_g35 = (half2(break108_g35.x , break108_g35.y));
@@ -3437,12 +3512,9 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				half value1CRight136_g35 = dotResult122_g35;
 				half temp_output_1_0_g36 = 0.51;
 				half rightMask28_g35 = saturate( ( ( texCoord10_g35.x - temp_output_1_0_g36 ) / ( 0.49 - temp_output_1_0_g36 ) ) );
-				half temp_output_16_0_g63 = ( ( leftMask27_g35 * ( value1CLeft135_g35 + dotResult29_g35 + dotResult35_g35 ) ) + ( ( dotResult30_g35 + dotResult36_g35 + value1CRight136_g35 ) * rightMask28_g35 ) );
-				half temp_output_1_0_g64 = 0.0;
-				float2 uv_WrinkleFlowPack = IN.ase_texcoord8.xy * _WrinkleFlowPack_ST.xy + _WrinkleFlowPack_ST.zw;
-				half4 tex2DNode258 = SAMPLE_TEXTURE2D( _WrinkleFlowPack, sampler_Linear_Repeat, uv_WrinkleFlowPack );
-				half temp_output_23_0_g63 = ( saturate( ( ( temp_output_16_0_g63 - temp_output_1_0_g64 ) / ( tex2DNode258.r - temp_output_1_0_g64 ) ) ) * temp_output_16_0_g63 );
-				half4 lerpResult17_g63 = lerp( diffuseMap205 , SAMPLE_TEXTURE2D( _WrinkleDiffuseBlend1, sampler_Linear_Repeat, uv_WrinkleDiffuseBlend1 ) , temp_output_23_0_g63);
+				half temp_output_16_0_g67 = ( ( leftMask27_g35 * ( value1CLeft135_g35 + dotResult29_g35 + dotResult35_g35 ) ) + ( ( dotResult30_g35 + dotResult36_g35 + value1CRight136_g35 ) * rightMask28_g35 ) );
+				half temp_output_23_0_g67 = ( saturate( ( tex2DNode258.r + temp_output_16_0_g67 ) ) * temp_output_16_0_g67 );
+				half4 In1181_g35 = ( ( SAMPLE_TEXTURE2D( _WrinkleDiffuseBlend1, sampler_Linear_Repeat, uv_WrinkleDiffuseBlend1 ) - diffuse184_g35 ) * temp_output_23_0_g67 );
 				float2 uv_WrinkleDiffuseBlend2 = IN.ase_texcoord8.xy * _WrinkleDiffuseBlend2_ST.xy + _WrinkleDiffuseBlend2_ST.zw;
 				half2 appendResult113_g35 = (half2(break107_g35.z , break107_g35.w));
 				half2 appendResult114_g35 = (half2(break109_g35.z , break109_g35.w));
@@ -3455,11 +3527,12 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				half2 appendResult116_g35 = (half2(break108_g35.z , break108_g35.w));
 				half dotResult124_g35 = dot( appendResult114_g35 , appendResult116_g35 );
 				half value2CRight138_g35 = dotResult124_g35;
-				half temp_output_16_0_g59 = ( ( leftMask27_g35 * ( value2CLeft137_g35 + dotResult41_g35 ) ) + ( ( dotResult42_g35 + value2CRight138_g35 ) * rightMask28_g35 ) );
-				half temp_output_1_0_g60 = 0.0;
-				half temp_output_23_0_g59 = ( saturate( ( ( temp_output_16_0_g59 - temp_output_1_0_g60 ) / ( tex2DNode258.g - temp_output_1_0_g60 ) ) ) * temp_output_16_0_g59 );
-				half4 lerpResult17_g59 = lerp( lerpResult17_g63 , SAMPLE_TEXTURE2D( _WrinkleDiffuseBlend2, sampler_Linear_Repeat, uv_WrinkleDiffuseBlend2 ) , temp_output_23_0_g59);
+				half temp_output_16_0_g68 = ( ( leftMask27_g35 * ( value2CLeft137_g35 + dotResult41_g35 ) ) + ( ( dotResult42_g35 + value2CRight138_g35 ) * rightMask28_g35 ) );
+				half temp_output_23_0_g68 = ( saturate( ( tex2DNode258.g + temp_output_16_0_g68 ) ) * temp_output_16_0_g68 );
+				half4 In2181_g35 = ( ( SAMPLE_TEXTURE2D( _WrinkleDiffuseBlend2, sampler_Linear_Repeat, uv_WrinkleDiffuseBlend2 ) - diffuse184_g35 ) * temp_output_23_0_g68 );
 				float2 uv_WrinkleDiffuseBlend3 = IN.ase_texcoord8.xy * _WrinkleDiffuseBlend3_ST.xy + _WrinkleDiffuseBlend3_ST.zw;
+				half4 break211_g35 = _WrinkleValueSetBCCB;
+				half valueBCCLeft217_g35 = ( break211_g35.x * maskSet1A214_g35.y );
 				half4 break118_g35 = _WrinkleValueSet3DB;
 				half2 appendResult120_g35 = (half2(break118_g35.x , break118_g35.y));
 				half dotResult127_g35 = dot( appendResult120_g35 , appendResult115_g35 );
@@ -3471,11 +3544,12 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				half2 appendResult119_g35 = (half2(break118_g35.z , break118_g35.w));
 				half dotResult128_g35 = dot( appendResult115_g35 , appendResult119_g35 );
 				half value3DRight130_g35 = dotResult128_g35;
-				half temp_output_16_0_g61 = ( ( leftMask27_g35 * ( value3DLeft129_g35 + dotResult47_g35 ) ) + ( ( dotResult48_g35 + value3DRight130_g35 ) * rightMask28_g35 ) );
-				half temp_output_1_0_g62 = 0.0;
-				half temp_output_23_0_g61 = ( saturate( ( ( temp_output_16_0_g61 - temp_output_1_0_g62 ) / ( tex2DNode258.b - temp_output_1_0_g62 ) ) ) * temp_output_16_0_g61 );
-				half4 lerpResult17_g61 = lerp( lerpResult17_g59 , SAMPLE_TEXTURE2D( _WrinkleDiffuseBlend3, sampler_Linear_Repeat, uv_WrinkleDiffuseBlend3 ) , temp_output_23_0_g61);
-				half4 diffuseWrinkle215 = lerpResult17_g61;
+				half valueBCCRight219_g35 = ( maskSet1A214_g35.y * break211_g35.y );
+				half temp_output_16_0_g66 = ( ( leftMask27_g35 * ( valueBCCLeft217_g35 + value3DLeft129_g35 + dotResult47_g35 ) ) + ( ( dotResult48_g35 + value3DRight130_g35 + valueBCCRight219_g35 ) * rightMask28_g35 ) );
+				half temp_output_23_0_g66 = ( saturate( ( tex2DNode258.b + temp_output_16_0_g66 ) ) * temp_output_16_0_g66 );
+				half4 In3181_g35 = ( ( SAMPLE_TEXTURE2D( _WrinkleDiffuseBlend3, sampler_Linear_Repeat, uv_WrinkleDiffuseBlend3 ) - diffuse184_g35 ) * temp_output_23_0_g66 );
+				half4 localMinMaxDeltaBlend4181_g35 = MinMaxDeltaBlend4181_g35( In181_g35 , In1181_g35 , In2181_g35 , In3181_g35 );
+				half4 diffuseWrinkle215 = localMinMaxDeltaBlend4181_g35;
 				#ifdef BOOLEAN_USE_WRINKLE_ON
 				half4 staticSwitch242 = diffuseWrinkle215;
 				#else
@@ -3488,19 +3562,22 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				half3 unpack146 = UnpackNormalScale( SAMPLE_TEXTURE2D( _BumpMap, sampler_BumpMap, uv_BumpMap ), normalMapScale260 );
 				unpack146.z = lerp( 1, unpack146.z, saturate(normalMapScale260) );
 				half3 normalMap206 = unpack146;
+				half3 normal186_g35 = normalMap206;
+				half3 In183_g35 = normal186_g35;
 				float2 uv_WrinkleNormalBlend1 = IN.ase_texcoord8.xy * _WrinkleNormalBlend1_ST.xy + _WrinkleNormalBlend1_ST.zw;
 				half3 unpack239 = UnpackNormalScale( SAMPLE_TEXTURE2D( _WrinkleNormalBlend1, sampler_Linear_Repeat, uv_WrinkleNormalBlend1 ), normalMapScale260 );
 				unpack239.z = lerp( 1, unpack239.z, saturate(normalMapScale260) );
-				half3 lerpResult19_g63 = lerp( normalMap206 , unpack239 , temp_output_23_0_g63);
+				half3 In1183_g35 = ( ( unpack239 - normal186_g35 ) * temp_output_23_0_g67 );
 				float2 uv_WrinkleNormalBlend2 = IN.ase_texcoord8.xy * _WrinkleNormalBlend2_ST.xy + _WrinkleNormalBlend2_ST.zw;
 				half3 unpack240 = UnpackNormalScale( SAMPLE_TEXTURE2D( _WrinkleNormalBlend2, sampler_Linear_Repeat, uv_WrinkleNormalBlend2 ), normalMapScale260 );
 				unpack240.z = lerp( 1, unpack240.z, saturate(normalMapScale260) );
-				half3 lerpResult19_g59 = lerp( lerpResult19_g63 , unpack240 , temp_output_23_0_g59);
+				half3 In2183_g35 = ( ( unpack240 - normal186_g35 ) * temp_output_23_0_g68 );
 				float2 uv_WrinkleNormalBlend3 = IN.ase_texcoord8.xy * _WrinkleNormalBlend3_ST.xy + _WrinkleNormalBlend3_ST.zw;
 				half3 unpack241 = UnpackNormalScale( SAMPLE_TEXTURE2D( _WrinkleNormalBlend3, sampler_Linear_Repeat, uv_WrinkleNormalBlend3 ), normalMapScale260 );
 				unpack241.z = lerp( 1, unpack241.z, saturate(normalMapScale260) );
-				half3 lerpResult19_g61 = lerp( lerpResult19_g59 , unpack241 , temp_output_23_0_g61);
-				half3 normalWrinkle217 = lerpResult19_g61;
+				half3 In3183_g35 = ( ( unpack241 - normal186_g35 ) * temp_output_23_0_g66 );
+				half3 localMinMaxDeltaBlend3183_g35 = MinMaxDeltaBlend3183_g35( In183_g35 , In1183_g35 , In2183_g35 , In3183_g35 );
+				half3 normalWrinkle217 = localMinMaxDeltaBlend3183_g35;
 				#ifdef BOOLEAN_USE_WRINKLE_ON
 				half3 staticSwitch246 = normalWrinkle217;
 				#else
@@ -3517,12 +3594,15 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				half4 tex2DNode150 = SAMPLE_TEXTURE2D( _MetallicGlossMap, sampler_MetallicGlossMap, uv_MetallicGlossMap );
 				
 				half smoothnessMap207 = tex2DNode150.a;
+				half smoothness185_g35 = smoothnessMap207;
+				half In182_g35 = smoothness185_g35;
 				float2 uv_WrinkleSmoothnessPack = IN.ase_texcoord8.xy * _WrinkleSmoothnessPack_ST.xy + _WrinkleSmoothnessPack_ST.zw;
 				half4 tex2DNode235 = SAMPLE_TEXTURE2D( _WrinkleSmoothnessPack, sampler_Linear_Repeat, uv_WrinkleSmoothnessPack );
-				half lerpResult18_g63 = lerp( smoothnessMap207 , tex2DNode235.r , temp_output_23_0_g63);
-				half lerpResult18_g59 = lerp( lerpResult18_g63 , tex2DNode235.g , temp_output_23_0_g59);
-				half lerpResult18_g61 = lerp( lerpResult18_g59 , tex2DNode235.b , temp_output_23_0_g61);
-				half smoothnessWrinkle216 = lerpResult18_g61;
+				half In1182_g35 = ( ( tex2DNode235.r - smoothness185_g35 ) * temp_output_23_0_g67 );
+				half In2182_g35 = ( ( tex2DNode235.g - smoothness185_g35 ) * temp_output_23_0_g68 );
+				half In3182_g35 = ( ( tex2DNode235.b - smoothness185_g35 ) * temp_output_23_0_g66 );
+				half localMinMaxDeltaBlend1182_g35 = MinMaxDeltaBlend1182_g35( In182_g35 , In1182_g35 , In2182_g35 , In3182_g35 );
+				half smoothnessWrinkle216 = localMinMaxDeltaBlend1182_g35;
 				#ifdef BOOLEAN_USE_WRINKLE_ON
 				half staticSwitch249 = smoothnessWrinkle216;
 				#else
@@ -3706,48 +3786,49 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 
 			CBUFFER_START(UnityPerMaterial)
 			half4 _BaseColor;
-			half4 _WrinkleMaskSet3_ST;
+			half4 _WrinkleValueSet3L;
+			half4 _WrinkleValueSet3R;
 			half4 _BumpMap_ST;
 			half4 _WrinkleNormalBlend1_ST;
 			half4 _WrinkleNormalBlend2_ST;
 			half4 _WrinkleNormalBlend3_ST;
 			half4 _DetailNormalMap_ST;
-			half4 _WrinkleValueSet3L;
 			half4 _DetailMask_ST;
+			half4 _EmissionMap_ST;
 			half4 _EmissiveColor;
 			half4 _MetallicGlossMap_ST;
 			half4 _WrinkleSmoothnessPack_ST;
 			half4 _OcclusionMap_ST;
 			half4 _ThicknessMap_ST;
 			half4 _SubsurfaceFalloff;
-			half4 _EmissionMap_ST;
 			half4 _WrinkleValueSet3DB;
-			half4 _WrinkleValueSet3R;
+			half4 _WrinkleValueSetBCCB;
+			half4 _WrinkleMaskSet3_ST;
 			half4 _WrinkleValueSet2R;
 			half4 _BaseMap_ST;
 			half4 _WrinkleDiffuseBlend1_ST;
+			half4 _WrinkleFlowPack_ST;
 			half4 _WrinkleValueSet12CL;
 			half4 _WrinkleMaskSet123_ST;
 			half4 _WrinkleValueSet1AL;
-			half4 _WrinkleMaskSet1A_ST;
 			half4 _WrinkleDiffuseBlend3_ST;
-			half4 _WrinkleMaskSet1B_ST;
 			half4 _WrinkleValueSet1BL;
+			half4 _WrinkleMaskSet1A_ST;
+			half4 _WrinkleValueSet1AR;
 			half4 _WrinkleValueSet1BR;
 			half4 _WrinkleValueSet12CR;
-			half4 _WrinkleFlowPack_ST;
 			half4 _WrinkleDiffuseBlend2_ST;
 			half4 _WrinkleValueSet2L;
 			half4 _WrinkleMaskSet2_ST;
-			half4 _WrinkleValueSet1AR;
+			half4 _WrinkleMaskSet1B_ST;
 			half4 _SubsurfaceMaskMap_ST;
 			half _DetailNormalMapScale;
 			half _Metallic;
 			half _BumpScale;
 			half _Smoothness;
 			half _OcclusionStrength;
-			half _SubsurfaceMask;
 			half _Thickness;
+			half _SubsurfaceMask;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -4005,48 +4086,49 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 
 			CBUFFER_START(UnityPerMaterial)
 			half4 _BaseColor;
-			half4 _WrinkleMaskSet3_ST;
+			half4 _WrinkleValueSet3L;
+			half4 _WrinkleValueSet3R;
 			half4 _BumpMap_ST;
 			half4 _WrinkleNormalBlend1_ST;
 			half4 _WrinkleNormalBlend2_ST;
 			half4 _WrinkleNormalBlend3_ST;
 			half4 _DetailNormalMap_ST;
-			half4 _WrinkleValueSet3L;
 			half4 _DetailMask_ST;
+			half4 _EmissionMap_ST;
 			half4 _EmissiveColor;
 			half4 _MetallicGlossMap_ST;
 			half4 _WrinkleSmoothnessPack_ST;
 			half4 _OcclusionMap_ST;
 			half4 _ThicknessMap_ST;
 			half4 _SubsurfaceFalloff;
-			half4 _EmissionMap_ST;
 			half4 _WrinkleValueSet3DB;
-			half4 _WrinkleValueSet3R;
+			half4 _WrinkleValueSetBCCB;
+			half4 _WrinkleMaskSet3_ST;
 			half4 _WrinkleValueSet2R;
 			half4 _BaseMap_ST;
 			half4 _WrinkleDiffuseBlend1_ST;
+			half4 _WrinkleFlowPack_ST;
 			half4 _WrinkleValueSet12CL;
 			half4 _WrinkleMaskSet123_ST;
 			half4 _WrinkleValueSet1AL;
-			half4 _WrinkleMaskSet1A_ST;
 			half4 _WrinkleDiffuseBlend3_ST;
-			half4 _WrinkleMaskSet1B_ST;
 			half4 _WrinkleValueSet1BL;
+			half4 _WrinkleMaskSet1A_ST;
+			half4 _WrinkleValueSet1AR;
 			half4 _WrinkleValueSet1BR;
 			half4 _WrinkleValueSet12CR;
-			half4 _WrinkleFlowPack_ST;
 			half4 _WrinkleDiffuseBlend2_ST;
 			half4 _WrinkleValueSet2L;
 			half4 _WrinkleMaskSet2_ST;
-			half4 _WrinkleValueSet1AR;
+			half4 _WrinkleMaskSet1B_ST;
 			half4 _SubsurfaceMaskMap_ST;
 			half _DetailNormalMapScale;
 			half _Metallic;
 			half _BumpScale;
 			half _Smoothness;
 			half _OcclusionStrength;
-			half _SubsurfaceMask;
 			half _Thickness;
+			half _SubsurfaceMask;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -4307,17 +4389,17 @@ Node;AmplifyShaderEditor.SamplerNode;147;-1989.301,-140.3999;Inherit;True;Proper
 Node;AmplifyShaderEditor.RangedFloatNode;154;-1962.876,-245.0943;Inherit;False;Property;_DetailNormalMapScale;Detail Normal Map Scale;17;0;Create;True;0;0;0;False;0;False;1;1;0;2;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;156;-1593.598,-186.3131;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SamplerNode;148;-1323.51,-163.5224;Inherit;True;Property;_DetailNormalMap;Detail Normal Map;16;1;[Normal];Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;bump;Auto;True;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.CommentaryNode;208;-5148.247,-362.0735;Inherit;False;2613.49;2063.022;;32;230;228;235;209;241;240;239;234;233;232;231;229;226;225;224;223;222;221;220;219;218;217;216;215;214;213;212;254;255;256;257;258;Wrinkle System;1,0.5137255,0.7779443,1;0;0
+Node;AmplifyShaderEditor.CommentaryNode;208;-5148.247,-362.0735;Inherit;False;2613.49;2063.022;;33;230;228;235;209;241;240;239;234;233;232;231;229;226;225;224;223;222;221;220;219;218;217;216;215;214;213;212;254;255;256;257;258;263;Wrinkle System;1,0.5137255,0.7779443,1;0;0
 Node;AmplifyShaderEditor.GetLocalVarNode;212;-3633.453,-272.6874;Inherit;False;205;diffuseMap;1;0;OBJECT;;False;1;COLOR;0
 Node;AmplifyShaderEditor.GetLocalVarNode;213;-3664.157,-188.369;Inherit;False;207;smoothnessMap;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode;215;-2820.068,-0.1314611;Inherit;False;diffuseWrinkle;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode;215;-2820.068,-0.1314611;Inherit;False;diffuseWrinkle;-1;True;1;0;FLOAT4;0,0,0,0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;216;-2840.068,113.8685;Inherit;False;smoothnessWrinkle;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.ColorNode;173;-1455.191,-1117.993;Inherit;False;Property;_BaseColor;Base Color;1;0;Create;True;0;0;0;False;0;False;1,1,1,0;1,1,1,1;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SamplerNode;145;-2028.117,-910.952;Inherit;True;Property;_BaseMap;Base Map;0;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.WireNode;187;-708.5606,-749.1402;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.WireNode;245;-1146.164,-730.2344;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.WireNode;244;-1702.164,-727.2344;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.GetLocalVarNode;243;-1710.626,-821.3831;Inherit;False;215;diffuseWrinkle;1;0;OBJECT;;False;1;COLOR;0
+Node;AmplifyShaderEditor.GetLocalVarNode;243;-1710.626,-821.3831;Inherit;False;215;diffuseWrinkle;1;0;OBJECT;;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;205;-1710.419,-910.1047;Inherit;False;diffuseMap;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.SamplerNode;146;-1900.112,-573.6259;Inherit;True;Property;_BumpMap;Bump Map;5;1;[Normal];Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;bump;Auto;True;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.RegisterLocalVarNode;206;-1557.472,-575.9247;Inherit;False;normalMap;-1;True;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
@@ -4350,7 +4432,7 @@ Node;AmplifyShaderEditor.Vector4Node;255;-3838.751,1349.152;Inherit;False;Proper
 Node;AmplifyShaderEditor.Vector4Node;257;-3557.133,1236.652;Inherit;False;Property;_WrinkleValueSet3DB;Wrinkle Value Set 3D Both;43;0;Create;False;0;0;0;False;0;False;0,0,0,0;0,0,0,0;0;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SamplerNode;258;-4164.708,548.8409;Inherit;True;Property;_WrinkleFlowPack;Wrinkle Flow Pack;29;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SamplerNode;235;-4478.629,464.2409;Inherit;True;Property;_WrinkleSmoothnessPack;Wrinkle Smoothness Pack;28;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;gray;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.FunctionNode;259;-3310.532,69.12341;Inherit;False;RL_Amplify_WrinkleMapSystem;-1;;35;d27d6ddfed52eb04ba4585a9fc285421;0;31;7;COLOR;0,0,0,0;False;8;FLOAT;0;False;9;FLOAT3;0,0,0;False;15;FLOAT4;0,0,0,0;False;16;FLOAT4;0,0,0,0;False;17;FLOAT4;0,0,0,0;False;18;FLOAT4;0,0,0,0;False;105;FLOAT4;0,0,0,0;False;67;COLOR;0,0,0,0;False;71;COLOR;0,0,0,0;False;76;COLOR;0,0,0,0;False;68;FLOAT;0;False;72;FLOAT;0;False;77;FLOAT;0;False;69;FLOAT3;0,0,0;False;73;FLOAT3;0,0,0;False;78;FLOAT3;0,0,0;False;151;FLOAT;0;False;155;FLOAT;0;False;156;FLOAT;0;False;19;FLOAT4;0,0,0,0;False;20;FLOAT4;0,0,0,0;False;23;FLOAT4;0,0,0,0;False;24;FLOAT4;0,0,0,0;False;103;FLOAT4;0,0,0,0;False;21;FLOAT4;0,0,0,0;False;22;FLOAT4;0,0,0,0;False;25;FLOAT4;0,0,0,0;False;26;FLOAT4;0,0,0,0;False;104;FLOAT4;0,0,0,0;False;106;FLOAT4;0,0,0,0;False;3;COLOR;0;FLOAT;1;FLOAT3;6
+Node;AmplifyShaderEditor.FunctionNode;259;-3310.532,69.12341;Inherit;False;RL_Amplify_WrinkleMapSystem;-1;;35;d27d6ddfed52eb04ba4585a9fc285421;0;32;7;COLOR;0,0,0,0;False;8;FLOAT;0;False;9;FLOAT3;0,0,0;False;15;FLOAT4;0,0,0,0;False;16;FLOAT4;0,0,0,0;False;17;FLOAT4;0,0,0,0;False;18;FLOAT4;0,0,0,0;False;105;FLOAT4;0,0,0,0;False;67;COLOR;0,0,0,0;False;71;COLOR;0,0,0,0;False;76;COLOR;0,0,0,0;False;68;FLOAT;0;False;72;FLOAT;0;False;77;FLOAT;0;False;69;FLOAT3;0,0,0;False;73;FLOAT3;0,0,0;False;78;FLOAT3;0,0,0;False;151;FLOAT;0;False;155;FLOAT;0;False;156;FLOAT;0;False;19;FLOAT4;0,0,0,0;False;20;FLOAT4;0,0,0,0;False;23;FLOAT4;0,0,0,0;False;24;FLOAT4;0,0,0,0;False;103;FLOAT4;0,0,0,0;False;21;FLOAT4;0,0,0,0;False;22;FLOAT4;0,0,0,0;False;25;FLOAT4;0,0,0,0;False;26;FLOAT4;0,0,0,0;False;104;FLOAT4;0,0,0,0;False;106;FLOAT4;0,0,0,0;False;210;FLOAT4;0,0,0,0;False;3;FLOAT4;0;FLOAT;1;FLOAT3;6
 Node;AmplifyShaderEditor.GetLocalVarNode;214;-3637.157,-105.3685;Inherit;False;206;normalMap;1;0;OBJECT;;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;217;-2825.068,223.8686;Inherit;False;normalWrinkle;-1;True;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.GetLocalVarNode;247;-1555.165,-460.3913;Inherit;False;217;normalWrinkle;1;0;OBJECT;;False;1;FLOAT3;0
@@ -4362,6 +4444,7 @@ Node;AmplifyShaderEditor.RegisterLocalVarNode;260;-2093.159,-351.9651;Inherit;Fa
 Node;AmplifyShaderEditor.RangedFloatNode;153;-2322.05,-561.0424;Inherit;False;Property;_BumpScale;Bump Scale;6;0;Create;True;0;0;0;False;0;False;2;1;0;2;0;1;FLOAT;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;261;299.4972,676.494;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;SceneSelectionPass;0;8;SceneSelectionPass;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;3;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=SceneSelectionPass;False;False;0;;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;262;299.4972,676.494;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ScenePickingPass;0;9;ScenePickingPass;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;3;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Picking;False;False;0;;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.Vector4Node;263;-3499.443,1436.349;Inherit;False;Property;_WrinkleValueSetBCCB;Wrinkle Value Set BCC Both;44;0;Create;False;0;0;0;False;0;False;0,0,0,0;0,0,0,0;0;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 WireConnection;170;0;151;2
 WireConnection;171;0;169;0
 WireConnection;171;1;170;0
@@ -4464,6 +4547,7 @@ WireConnection;259;25;221;0
 WireConnection;259;26;222;0
 WireConnection;259;104;255;0
 WireConnection;259;106;257;0
+WireConnection;259;210;263;0
 WireConnection;217;0;259;6
 WireConnection;239;5;218;0
 WireConnection;239;7;209;0
@@ -4473,4 +4557,4 @@ WireConnection;241;5;218;0
 WireConnection;241;7;209;0
 WireConnection;260;0;153;0
 ASEEND*/
-//CHKSM=E13BEB426E3064FC01700A023EB84A7CB24382EC
+//CHKSM=AF3AF60C8C53CE6A797715731C7A6718985A7CDD

@@ -2,16 +2,23 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: RL_Template_HQ_Hair_Coverage_URP
   m_Shader: {fileID: 4800000, guid: 16f2b7583e367844c8199e778982ce94, type: 3}
-  m_ShaderKeywords: _ALPHATEST_ON _ALPHATOMASK_ON _DISABLE_SSR_TRANSPARENT _DOUBLESIDED_ON
-    _ENABLE_FOG_ON_TRANSPARENT _ENUMCLIPQUALITY_ON_DITHER _SURFACE_TYPE_TRANSPARENT
-    _TRANSPARENT_WRITES_MOTION_VEC
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _ALPHATEST_ON
+  - _ALPHATOMASK_ON
+  - _DISABLE_SSR_TRANSPARENT
+  - _DOUBLESIDED_ON
+  - _ENABLE_FOG_ON_TRANSPARENT
+  - _ENUMCLIPQUALITY_ON_DITHER
+  - _SURFACE_TYPE_TRANSPARENT
+  - _TRANSPARENT_WRITES_MOTION_VEC
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 1
@@ -64,13 +71,26 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - BOOLEAN_ENABLECOLOR: 0
     - _AOOccludeAll: 0
     - _AOStrength: 1
     - _AlphaCutoff: 0.5
-    - _AlphaPower: 0.5
-    - _AlphaRemap: 1
+    - _AlphaPower: 1
+    - _AlphaRemap: 0.75
     - _BaseColorStrength: 1
     - _BlendStrength: 1
     - _DiffuseStrength: 1
@@ -83,8 +103,11 @@ Material:
     - _HighlightBOverlapEnd: 1
     - _HighlightBOverlapInvert: 1
     - _HighlightBStrength: 0
+    - _HighlightBlend: 1
     - _InvertRootMap: 0
     - _NormalStrength: 1
+    - _QueueControl: -1
+    - _QueueOffset: 0
     - _RimPower: 4
     - _RimTransmissionIntensity: 10
     - _RootColorStrength: 1

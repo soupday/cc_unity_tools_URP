@@ -77,7 +77,7 @@ Material:
     - _IsUpperTeeth: 0
     - _MicroNormalStrength: 0.3
     - _MicroNormalTiling: 10
-    - _NormalStrength: 1
+    - _NormalStrength: 0.5
     - _QueueControl: 0
     - _QueueOffset: 0
     - _RearAO: 0
