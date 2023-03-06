@@ -70,7 +70,7 @@ Material:
     - _AOStrength: 1
     - _AlphaClip2: 1
     - _AlphaPower: 1
-    - _AlphaRemap: 0.897
+    - _AlphaRemap: 1
     - _BaseColorStrength: 1
     - _BlendStrength: 1
     - _DiffuseStrength: 1

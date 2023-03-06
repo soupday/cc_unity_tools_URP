@@ -69,8 +69,8 @@ Material:
     - _AOOccludeAll: 0
     - _AOStrength: 1
     - _AlphaCutoff: 0.5
-    - _AlphaPower: 0.5
-    - _AlphaRemap: 1
+    - _AlphaPower: 1
+    - _AlphaRemap: 0.75
     - _BaseColorStrength: 1
     - _BlendStrength: 1
     - _DiffuseStrength: 1

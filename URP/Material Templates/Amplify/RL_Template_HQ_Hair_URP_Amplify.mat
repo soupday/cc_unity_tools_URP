@@ -71,7 +71,7 @@ Material:
     - _AlphaClip2: 1
     - _AlphaCutoff: 0.5
     - _AlphaPower: 1
-    - _AlphaRemap: 0.6
+    - _AlphaRemap: 0.75
     - _BaseColorStrength: 1
     - _BlendStrength: 1
     - _ClipQuality: 1
