@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78b2425a2284af743826c689403a4924, type: 3}
   m_Name: RL_Amplify_Function_Hair_RootBlend
   m_EditorClassIdentifier: 
-  m_functionInfo: "// Made with Amplify Shader Editor\n// Available at the Unity
-    Asset Store - http://u3d.as/y3X \n/*ASEBEGIN\nVersion=18935\n1920;0;1920;1029;1437.776;445.5131;1.135126;True;False\nNode;AmplifyShaderEditor.CommentaryNode;1;-1029.96,-690.4448;Inherit;False;1403.193;1255.981;;16;26;18;37;42;40;31;6;3;36;35;33;32;34;23;12;27;Root
+  m_functionInfo: "// Made with Amplify Shader Editor v1.9.1.8\n// Available at the
+    Unity Asset Store - http://u3d.as/y3X \n/*ASEBEGIN\nVersion=19108\nNode;AmplifyShaderEditor.CommentaryNode;1;-1029.96,-690.4448;Inherit;False;1403.193;1255.981;;16;26;18;37;42;40;31;6;3;36;35;33;32;34;23;12;27;Root
     / End Blending;1,1,1,1;0;0\nNode;AmplifyShaderEditor.FunctionInput;36;-571.8065,-77.84473;Inherit;False;End
     Color;5;5;False;1;0;COLOR;0.6039216,0.454902,0.2862745,0;False;1;COLOR;0\nNode;AmplifyShaderEditor.LerpOp;18;-282.8067,-385.8447;Inherit;False;3;0;COLOR;1,1,1,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0\nNode;AmplifyShaderEditor.SimpleMultiplyOpNode;42;-94.80717,318.1556;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.LerpOp;40;-283.8067,242.1553;Inherit;False;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.LerpOp;3;-283.8067,-96.84473;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0\nNode;AmplifyShaderEditor.FunctionInput;35;-578.8065,-166.8447;Inherit;False;Root
     Color;5;4;False;1;0;COLOR;0.3294118,0.1411765,0.05098039,0;False;1;COLOR;0\nNode;AmplifyShaderEditor.FunctionInput;37;-636.8066,-310.8447;Inherit;False;Base
@@ -23,7 +23,7 @@ MonoBehaviour:
     Color Strength;1;6;False;1;0;FLOAT;1;False;1;FLOAT;0\nNode;AmplifyShaderEditor.LerpOp;23;-571.8065,34.15515;Inherit;False;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionInput;31;-539.8065,386.1555;Inherit;False;Global
     Strength;1;3;False;1;0;FLOAT;1;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionInput;26;-579.8066,-390.8447;Inherit;False;Base
     Color;5;0;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0\nNode;AmplifyShaderEditor.LerpOp;6;146.1363,-121.8485;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0\nNode;AmplifyShaderEditor.OneMinusNode;12;-871.4551,57.02004;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionInput;27;-993.455,-76.97986;Inherit;False;Root
-    Map;1;2;False;1;0;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionOutput;0;499.0297,-118.4694;Inherit;False;True;-1;Color;0;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0\nWireConnection;18;1;26;0\nWireConnection;18;2;37;0\nWireConnection;42;0;40;0\nWireConnection;42;1;31;0\nWireConnection;40;0;32;0\nWireConnection;40;1;33;0\nWireConnection;40;2;23;0\nWireConnection;3;0;35;0\nWireConnection;3;1;36;0\nWireConnection;3;2;23;0\nWireConnection;23;0;27;0\nWireConnection;23;1;12;0\nWireConnection;23;2;34;0\nWireConnection;6;0;18;0\nWireConnection;6;1;3;0\nWireConnection;6;2;42;0\nWireConnection;12;0;27;0\nWireConnection;0;0;6;0\nASEEND*/\n//CHKSM=BEC847D72D6797D1FB01D33F025989169CAFB3A8"
+    Map;1;2;False;1;0;FLOAT;0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionOutput;0;499.0297,-118.4694;Inherit;False;True;-1;Color;0;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0\nWireConnection;18;1;26;0\nWireConnection;18;2;37;0\nWireConnection;42;0;40;0\nWireConnection;42;1;31;0\nWireConnection;40;0;32;0\nWireConnection;40;1;33;0\nWireConnection;40;2;23;0\nWireConnection;3;0;35;0\nWireConnection;3;1;36;0\nWireConnection;3;2;23;0\nWireConnection;23;0;27;0\nWireConnection;23;1;12;0\nWireConnection;23;2;34;0\nWireConnection;6;0;18;0\nWireConnection;6;1;3;0\nWireConnection;6;2;42;0\nWireConnection;12;0;27;0\nWireConnection;0;0;6;0\nASEEND*/\n//CHKSM=D76721CBE5B4ADF5242C5B01DD15F249BAF9C8DD"
   m_functionName: 
   m_description: 
   m_additionalIncludes:
@@ -45,6 +45,8 @@ MonoBehaviour:
     m_nativeDirectivesFoldout: 0
     m_directivesSaveItems: []
   m_nodeCategory: 3
+  m_headerStyle: 0
+  m_headerColor: {r: 1, g: 0.4, b: 0, a: 1}
   m_customNodeCategory: 
   m_previewPosition: 0
   m_hidden: 0
