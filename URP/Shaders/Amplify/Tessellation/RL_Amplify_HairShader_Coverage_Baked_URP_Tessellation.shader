@@ -335,7 +335,7 @@ Shader "Reallusion/Amplify/RL_HairShader_Coverge_Baked_URP_Tessellation"
 			SAMPLER(sampler_EmissionMap);
 
 
-			float3 TangentToWorld13_g857( float3 NormalTS, float3x3 TBN )
+			float3 TangentToWorld13_g855( float3 NormalTS, float3x3 TBN )
 			{
 				float3 NormalWS = TransformTangentToWorld(NormalTS, TBN);
 				NormalWS = NormalizeNormalPerPixel(NormalWS);
@@ -573,14 +573,14 @@ Shader "Reallusion/Amplify/RL_HairShader_Coverge_Baked_URP_Tessellation"
 				float4 break109_g854 = SAMPLE_TEXTURE2D( _FlowMap, sampler_BaseMap, uv_FlowMap );
 				float lerpResult123_g854 = lerp( break109_g854.g , ( 1.0 - break109_g854.g ) , _FlowMapFlipGreen);
 				float3 appendResult98_g854 = (float3(break109_g854.r , lerpResult123_g854 , break109_g854.b));
-				float3 NormalTS13_g857 = ( ( appendResult98_g854 * float3( 2,2,2 ) ) - float3( 1,1,1 ) );
+				float3 NormalTS13_g855 = ( ( appendResult98_g854 * float3( 2,2,2 ) ) - float3( 1,1,1 ) );
 				float3 ase_worldTangent = IN.ase_texcoord4.xyz;
 				float3 ase_worldNormal = IN.ase_texcoord5.xyz;
-				float3 Binormal5_g857 = ( ( IN.ase_tangent.w > 0.0 ? 1.0 : -1.0 ) * cross( ase_worldNormal , ase_worldTangent ) );
-				float3x3 TBN1_g857 = float3x3(ase_worldTangent, Binormal5_g857, ase_worldNormal);
-				float3x3 TBN13_g857 = TBN1_g857;
-				float3 localTangentToWorld13_g857 = TangentToWorld13_g857( NormalTS13_g857 , TBN13_g857 );
-				float3 flowTangent107_g854 = localTangentToWorld13_g857;
+				float3 Binormal5_g855 = ( ( IN.ase_tangent.w > 0.0 ? 1.0 : -1.0 ) * cross( ase_worldNormal , ase_worldTangent ) );
+				float3x3 TBN1_g855 = float3x3(ase_worldTangent, Binormal5_g855, ase_worldNormal);
+				float3x3 TBN13_g855 = TBN1_g855;
+				float3 localTangentToWorld13_g855 = TangentToWorld13_g855( NormalTS13_g855 , TBN13_g855 );
+				float3 flowTangent107_g854 = localTangentToWorld13_g855;
 				float2 uv_BumpMap = IN.ase_texcoord3.xy * _BumpMap_ST.xy + _BumpMap_ST.zw;
 				float3 unpack629 = UnpackNormalScale( SAMPLE_TEXTURE2D( _BumpMap, sampler_BumpMap, uv_BumpMap ), _BumpScale );
 				unpack629.z = lerp( 1, unpack629.z, saturate(_BumpScale) );
@@ -599,12 +599,12 @@ Shader "Reallusion/Amplify/RL_HairShader_Coverge_Baked_URP_Tessellation"
 				float3 shiftedTangent119_g854 = normalizeResult10_g858;
 				float3 ase_worldViewDir = ( _WorldSpaceCameraPos.xyz - WorldPosition );
 				ase_worldViewDir = SafeNormalize( ase_worldViewDir );
-				float3 viewDIr52_g855 = ase_worldViewDir;
+				float3 viewDIr52_g856 = ase_worldViewDir;
 				float3 worldLight248_g854 = SafeNormalize(_MainLightPosition.xyz);
-				float3 lightDir55_g855 = worldLight248_g854;
-				float3 normalizeResult14_g856 = normalize( ( viewDIr52_g855 + lightDir55_g855 ) );
-				float dotResult16_g856 = dot( shiftedTangent119_g854 , normalizeResult14_g856 );
-				float smoothstepResult22_g856 = smoothstep( -1.0 , 0.0 , dotResult16_g856);
+				float3 lightDir55_g856 = worldLight248_g854;
+				float3 normalizeResult14_g857 = normalize( ( viewDIr52_g856 + lightDir55_g856 ) );
+				float dotResult16_g857 = dot( shiftedTangent119_g854 , normalizeResult14_g857 );
+				float smoothstepResult22_g857 = smoothstep( -1.0 , 0.0 , dotResult16_g857);
 				float2 uv_MetallicGlossMap = IN.ase_texcoord3.xy * _MetallicGlossMap_ST.xy + _MetallicGlossMap_ST.zw;
 				float smoothness643 = ( SAMPLE_TEXTURE2D( _MetallicGlossMap, sampler_MetallicGlossMap, uv_MetallicGlossMap ).a * _Smoothness );
 				float temp_output_233_0_g854 = max( ( 1.0 - smoothness643 ) , 0.001 );
@@ -614,21 +614,21 @@ Shader "Reallusion/Amplify/RL_HairShader_Coverge_Baked_URP_Tessellation"
 				float specularMask648 = tex2DNode617.a;
 				float temp_output_132_0_g854 = ( specularMask648 * _SpecularMultiplier );
 				float4 temp_output_131_0_g854 = _SpecularTint;
-				float4 temp_output_13_0_g855 = ( ( smoothstepResult22_g856 * pow( saturate( ( 1.0 - ( dotResult16_g856 * dotResult16_g856 ) ) ) , specularPower237_g854 ) ) * temp_output_132_0_g854 * temp_output_131_0_g854 );
+				float4 temp_output_13_0_g856 = ( ( smoothstepResult22_g857 * pow( saturate( ( 1.0 - ( dotResult16_g857 * dotResult16_g857 ) ) ) , specularPower237_g854 ) ) * temp_output_132_0_g854 * temp_output_131_0_g854 );
 				float2 uv_BaseMap = IN.ase_texcoord3.xy * _BaseMap_ST.xy + _BaseMap_ST.zw;
 				float4 tex2DNode19 = SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv_BaseMap );
 				float4 lerpResult112 = lerp( tex2DNode19 , _VertexBaseColor , ( ( 1.0 - IN.ase_color.r ) * _VertexColorStrength ));
 				float4 baseColor331 = ( _BaseColor * lerpResult112 );
 				float4 temp_output_42_0_g854 = baseColor331;
-				float4 temp_output_32_0_g855 = temp_output_42_0_g854;
+				float4 temp_output_32_0_g856 = temp_output_42_0_g854;
 				float temp_output_172_0_g854 = _SpecularMix;
-				float4 lerpResult36_g855 = lerp( temp_output_13_0_g855 , ( temp_output_13_0_g855 * temp_output_32_0_g855 ) , temp_output_172_0_g854);
-				float3 temp_output_24_0_g855 = worldNormal86_g854;
-				float dotResult15_g855 = dot( lightDir55_g855 , temp_output_24_0_g855 );
+				float4 lerpResult36_g856 = lerp( temp_output_13_0_g856 , ( temp_output_13_0_g856 * temp_output_32_0_g856 ) , temp_output_172_0_g854);
+				float3 temp_output_24_0_g856 = worldNormal86_g854;
+				float dotResult15_g856 = dot( lightDir55_g856 , temp_output_24_0_g856 );
 				float temp_output_200_0_g854 = _Translucency;
-				float temp_output_40_0_g855 = temp_output_200_0_g854;
-				float dotResult54_g855 = dot( temp_output_24_0_g855 , viewDIr52_g855 );
-				float dotResult57_g855 = dot( viewDIr52_g855 , lightDir55_g855 );
+				float temp_output_40_0_g856 = temp_output_200_0_g854;
+				float dotResult54_g856 = dot( temp_output_24_0_g856 , viewDIr52_g856 );
+				float dotResult57_g856 = dot( viewDIr52_g856 , lightDir55_g856 );
 				float temp_output_208_0_g854 = _RimPower;
 				float temp_output_207_0_g854 = _RimTransmissionIntensity;
 				float3 Color126_g854 = temp_output_42_0_g854.rgb;
@@ -657,7 +657,7 @@ Shader "Reallusion/Amplify/RL_HairShader_Coverge_Baked_URP_Tessellation"
 				
 				float3 BakedAlbedo = 0;
 				float3 BakedEmission = 0;
-				float3 Color = ( ( ( ( ( ase_lightAtten * ( ( lerpResult36_g855 + ( ( saturate( ( ( dotResult15_g855 * ( 1.0 - temp_output_40_0_g855 ) ) + temp_output_40_0_g855 ) ) + ( pow( ( max( ( 1.0 - abs( dotResult54_g855 ) ) , 0.0 ) * max( ( 0.0 - dotResult57_g855 ) , 0.0 ) ) , temp_output_208_0_g854 ) * temp_output_207_0_g854 ) ) * temp_output_32_0_g855 ) ) * _MainLightColor ) ) + float4( localRL_Amplify_Expression_HairLighting_Additional126_g854 , 0.0 ) ) * lerpResult280_g854 ) + ( float4( bakedGI53_g854 , 0.0 ) * temp_output_42_0_g854 * temp_output_161_0_g854 ) ) + ( SAMPLE_TEXTURE2D( _EmissionMap, sampler_EmissionMap, uv_EmissionMap ) * _EmissiveColor ) ).rgb;
+				float3 Color = ( ( ( ( ( ase_lightAtten * ( ( lerpResult36_g856 + ( ( saturate( ( ( dotResult15_g856 * ( 1.0 - temp_output_40_0_g856 ) ) + temp_output_40_0_g856 ) ) + ( pow( ( max( ( 1.0 - abs( dotResult54_g856 ) ) , 0.0 ) * max( ( 0.0 - dotResult57_g856 ) , 0.0 ) ) , temp_output_208_0_g854 ) * temp_output_207_0_g854 ) ) * temp_output_32_0_g856 ) ) * _MainLightColor ) ) + float4( localRL_Amplify_Expression_HairLighting_Additional126_g854 , 0.0 ) ) * lerpResult280_g854 ) + ( float4( bakedGI53_g854 , 0.0 ) * temp_output_42_0_g854 * temp_output_161_0_g854 ) ) + ( SAMPLE_TEXTURE2D( _EmissionMap, sampler_EmissionMap, uv_EmissionMap ) * _EmissiveColor ) ).rgb;
 				float Alpha = alpha518;
 				float AlphaClipThreshold = 0.05;
 				float AlphaClipThresholdShadow = _ShadowClip;
@@ -2179,4 +2179,4 @@ WireConnection;297;3;645;0
 WireConnection;297;4;646;0
 WireConnection;297;7;647;0
 ASEEND*/
-//CHKSM=683EA06224D00E0EEA8BD56D80E90CF3EEE285C1
+//CHKSM=04B9DF15C87A81D645E5F143A4B5B70A703AC134
