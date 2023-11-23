@@ -1,4 +1,4 @@
-// Made with Amplify Shader Editor v1.9.1.8
+// Made with Amplify Shader Editor v1.9.2.2
 // Available at the Unity Asset Store - http://u3d.as/y3X 
 Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 {
@@ -6,7 +6,7 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 	{
 		[HideInInspector] _EmissionColor("Emission Color", Color) = (1,1,1,1)
 		[HideInInspector] _AlphaCutoff("Alpha Cutoff ", Range(0, 1)) = 0.5
-		[ASEBegin]_BaseMap("Base Map", 2D) = "white" {}
+		_BaseMap("Base Map", 2D) = "white" {}
 		_BaseColor("Base Color", Color) = (1,1,1,0)
 		_MetallicGlossMap("Metallic Gloss Map", 2D) = "white" {}
 		_Metallic("Metallic", Range( 0 , 1)) = 0
@@ -50,7 +50,7 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 		_WrinkleValueSet3R("Wrinkle Value Set 3 Right", Vector) = (0,0,0,0)
 		_WrinkleValueSet12CR("Wrinkle Value Set 12C Right", Vector) = (0,0,0,0)
 		_WrinkleValueSet3DB("Wrinkle Value Set 3D Both", Vector) = (0,0,0,0)
-		[ASEEnd]_WrinkleValueSetBCCB("Wrinkle Value Set BCC Both", Vector) = (0,0,0,0)
+		_WrinkleValueSetBCCB("Wrinkle Value Set BCC Both", Vector) = (0,0,0,0)
 		[HideInInspector] _texcoord( "", 2D ) = "white" {}
 
 
@@ -219,7 +219,8 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 
 			#define _NORMAL_DROPOFF_TS 1
 			#pragma multi_compile_instancing
-			#pragma multi_compile _ LOD_FADE_CROSSFADE
+			#pragma instancing_options renderinglayer
+			#pragma multi_compile_fragment _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
 			#define ASE_TRANSMISSION 1
@@ -247,7 +248,6 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			#pragma multi_compile_fragment _ _SCREEN_SPACE_OCCLUSION
 			#pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
 			#pragma multi_compile _ SHADOWS_SHADOWMASK
-
 			#pragma multi_compile _ DIRLIGHTMAP_COMBINED
 			#pragma multi_compile _ LIGHTMAP_ON
 
@@ -371,12 +371,10 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			#endif
 			CBUFFER_END
 
-			// Property used by ScenePickingPass
 			#ifdef SCENEPICKINGPASS
 				float4 _SelectionID;
 			#endif
 
-			// Properties used by SceneSelectionPass
 			#ifdef SCENESELECTIONPASS
 				int _ObjectId;
 				int _PassValue;
@@ -409,13 +407,6 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			TEXTURE2D(_ThicknessMap);
 			TEXTURE2D(_SubsurfaceMaskMap);
 
-
-			//#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/Varyings.hlsl"
-			//#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/PBRForwardPass.hlsl"
-
-			//#ifdef HAVE_VFX_MODIFICATION
-			//#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/VisualEffectVertex.hlsl"
-			//#endif
 
 			half4 MinMaxDeltaBlend4181_g35( half4 In, half4 In1, half4 In2, half4 In3 )
 			{
@@ -459,6 +450,7 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 					v.vertex.xyz += vertexValue;
 				#endif
 				v.ase_normal = v.ase_normal;
+				v.ase_tangent = v.ase_tangent;
 
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
 				float3 positionVS = TransformWorldToView( positionWS );
@@ -948,8 +940,7 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 
 			#define _NORMAL_DROPOFF_TS 1
 			#pragma multi_compile_instancing
-			#pragma multi_compile _ LOD_FADE_CROSSFADE
-			#pragma multi_compile_fog
+			#pragma multi_compile_fragment _ LOD_FADE_CROSSFADE
 			#define ASE_FOG 1
 			#define ASE_TRANSMISSION 1
 			#define ASE_TRANSLUCENCY 1
@@ -1068,12 +1059,10 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			#endif
 			CBUFFER_END
 
-			// Property used by ScenePickingPass
 			#ifdef SCENEPICKINGPASS
 				float4 _SelectionID;
 			#endif
 
-			// Properties used by SceneSelectionPass
 			#ifdef SCENESELECTIONPASS
 				int _ObjectId;
 				int _PassValue;
@@ -1312,8 +1301,7 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 
 			#define _NORMAL_DROPOFF_TS 1
 			#pragma multi_compile_instancing
-			#pragma multi_compile _ LOD_FADE_CROSSFADE
-			#pragma multi_compile_fog
+			#pragma multi_compile_fragment _ LOD_FADE_CROSSFADE
 			#define ASE_FOG 1
 			#define ASE_TRANSMISSION 1
 			#define ASE_TRANSLUCENCY 1
@@ -1432,12 +1420,10 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			#endif
 			CBUFFER_END
 
-			// Property used by ScenePickingPass
 			#ifdef SCENEPICKINGPASS
 				float4 _SelectionID;
 			#endif
 
-			// Properties used by SceneSelectionPass
 			#ifdef SCENESELECTIONPASS
 				int _ObjectId;
 				int _PassValue;
@@ -1475,6 +1461,7 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				#endif
 
 				v.ase_normal = v.ase_normal;
+
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
 				float4 positionCS = TransformWorldToHClip( positionWS );
 
@@ -1638,9 +1625,6 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			HLSLPROGRAM
 
 			#define _NORMAL_DROPOFF_TS 1
-			#pragma multi_compile_instancing
-			#pragma multi_compile _ LOD_FADE_CROSSFADE
-			#pragma multi_compile_fog
 			#define ASE_FOG 1
 			#define ASE_TRANSMISSION 1
 			#define ASE_TRANSLUCENCY 1
@@ -1754,12 +1738,10 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			#endif
 			CBUFFER_END
 
-			// Property used by ScenePickingPass
 			#ifdef SCENEPICKINGPASS
 				float4 _SelectionID;
 			#endif
 
-			// Properties used by SceneSelectionPass
 			#ifdef SCENESELECTIONPASS
 				int _ObjectId;
 				int _PassValue;
@@ -2052,9 +2034,6 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			HLSLPROGRAM
 
 			#define _NORMAL_DROPOFF_TS 1
-			#pragma multi_compile_instancing
-			#pragma multi_compile _ LOD_FADE_CROSSFADE
-			#pragma multi_compile_fog
 			#define ASE_FOG 1
 			#define ASE_TRANSMISSION 1
 			#define ASE_TRANSLUCENCY 1
@@ -2165,12 +2144,10 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			#endif
 			CBUFFER_END
 
-			// Property used by ScenePickingPass
 			#ifdef SCENEPICKINGPASS
 				float4 _SelectionID;
 			#endif
 
-			// Properties used by SceneSelectionPass
 			#ifdef SCENESELECTIONPASS
 				int _ObjectId;
 				int _PassValue;
@@ -2452,8 +2429,7 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 
 			#define _NORMAL_DROPOFF_TS 1
 			#pragma multi_compile_instancing
-			#pragma multi_compile _ LOD_FADE_CROSSFADE
-			#pragma multi_compile_fog
+			#pragma multi_compile_fragment _ LOD_FADE_CROSSFADE
 			#define ASE_FOG 1
 			#define ASE_TRANSMISSION 1
 			#define ASE_TRANSLUCENCY 1
@@ -2573,12 +2549,10 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			#endif
 			CBUFFER_END
 
-			// Property used by ScenePickingPass
 			#ifdef SCENEPICKINGPASS
 				float4 _SelectionID;
 			#endif
 
-			// Properties used by SceneSelectionPass
 			#ifdef SCENESELECTIONPASS
 				int _ObjectId;
 				int _PassValue;
@@ -2615,6 +2589,7 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				#endif
 
 				v.ase_normal = v.ase_normal;
+
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
 				float3 normalWS = TransformObjectToWorldNormal( v.ase_normal );
 				float4 positionCS = TransformWorldToHClip( positionWS );
@@ -2794,7 +2769,8 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 
 			#define _NORMAL_DROPOFF_TS 1
 			#pragma multi_compile_instancing
-			#pragma multi_compile _ LOD_FADE_CROSSFADE
+			#pragma instancing_options renderinglayer
+			#pragma multi_compile_fragment _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
 			#define ASE_TRANSMISSION 1
@@ -2944,12 +2920,10 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			#endif
 			CBUFFER_END
 
-			// Property used by ScenePickingPass
 			#ifdef SCENEPICKINGPASS
 				float4 _SelectionID;
 			#endif
 
-			// Properties used by SceneSelectionPass
 			#ifdef SCENESELECTIONPASS
 				int _ObjectId;
 				int _PassValue;
@@ -3027,6 +3001,7 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 				#endif
 
 				v.ase_normal = v.ase_normal;
+				v.ase_tangent = v.ase_tangent;
 
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
 				float3 positionVS = TransformWorldToView( positionWS );
@@ -3431,7 +3406,7 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 	
 }
 /*ASEBEGIN
-Version=19108
+Version=19202
 Node;AmplifyShaderEditor.CommentaryNode;179;-1957.352,1265.129;Inherit;False;1317.193;315.5388;Comment;6;172;171;169;170;151;270;;1,1,1,1;0;0
 Node;AmplifyShaderEditor.CommentaryNode;176;-2344.025,-646.5416;Inherit;False;1687.046;753.3652;Comment;13;267;266;146;153;260;247;246;206;148;156;154;147;155;;1,1,1,1;0;0
 Node;AmplifyShaderEditor.CommentaryNode;175;-2048.412,-1174.997;Inherit;False;1393.695;485.5302;Comment;10;243;242;244;245;187;205;145;173;200;174;;1,1,1,1;0;0
@@ -3468,8 +3443,8 @@ Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;3;0,0;Float;False;False;-1;
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;5;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Universal2D;0;5;Universal2D;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=Universal2D;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;7;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;GBuffer;0;7;GBuffer;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalGBuffer;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;4;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Meta;0;4;Meta;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Meta;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;0;-3.854388,393.1342;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;0;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;1;299.4972,596.494;Half;False;True;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;18;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;3;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalForward;False;False;0;Hidden/InternalErrorShader;0;0;Standard;38;Workflow;1;0;Surface;0;0;  Refraction Model;0;0;  Blend;0;0;Two Sided;1;0;Fragment Normal Space,InvertActionOnDeselection;0;0;Transmission;1;637781863003969542;  Transmission Shadow;0.5,False,;637782841107493989;Translucency;1;637781863019529545;  Translucency Strength;1,False,;0;  Normal Distortion;0.5,False,;0;  Scattering;2,False,;0;  Direct;0.9,False,;0;  Ambient;0.1,False,;0;  Shadow;0.5,False,;0;Cast Shadows;1;0;  Use Shadow Threshold;0;0;Receive Shadows;1;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;1;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;DOTS Instancing;0;0;Tessellation;0;0;  Phong;0;0;  Strength;0,False,;0;  Type;0;0;  Tess;1,False,;0;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Write Depth;0;0;  Early Z;0;0;Vertex Position,InvertActionOnDeselection;1;0;0;8;False;True;True;True;True;True;True;True;False;;True;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;0;-3.854388,596.494;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;0;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;1;299.4972,596.494;Half;False;True;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;19;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;3;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalForward;False;False;0;Hidden/InternalErrorShader;0;0;Standard;37;Workflow;1;0;Surface;0;0;  Refraction Model;0;0;  Blend;0;0;Two Sided;1;0;Fragment Normal Space,InvertActionOnDeselection;0;0;Transmission;1;637781863003969542;  Transmission Shadow;0.5,False,;637782841107493989;Translucency;1;637781863019529545;  Translucency Strength;1,False,;0;  Normal Distortion;0.5,False,;0;  Scattering;2,False,;0;  Direct;0.9,False,;0;  Ambient;0.1,False,;0;  Shadow;0.5,False,;0;Cast Shadows;1;0;  Use Shadow Threshold;0;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;1;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;DOTS Instancing;0;0;Tessellation;0;0;  Phong;0;0;  Strength;0,False,;0;  Type;0;0;  Tess;1,False,;0;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Write Depth;0;0;  Early Z;0;0;Vertex Position,InvertActionOnDeselection;1;0;0;8;False;True;True;True;True;True;True;True;False;;True;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;6;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthNormals;0;6;DepthNormals;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=DepthNormals;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;2;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=ShadowCaster;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;203;-990.6594,2406.68;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
@@ -3668,4 +3643,4 @@ WireConnection;147;7;266;0
 WireConnection;267;0;266;0
 WireConnection;263;0;209;0
 ASEEND*/
-//CHKSM=5BA5C2DD3EDB89C6051EF535ABBD651EABF98310
+//CHKSM=CCAB4192C4DC26707F8164A96FCFD4671E576514
