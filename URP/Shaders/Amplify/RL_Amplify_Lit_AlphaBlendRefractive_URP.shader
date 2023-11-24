@@ -210,7 +210,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP"
 			#define _EMISSION
 			#define _ALPHATEST_ON 1
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -816,7 +816,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP"
 			#define _EMISSION
 			#define _ALPHATEST_ON 1
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1149,7 +1149,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP"
 			#define _EMISSION
 			#define _ALPHATEST_ON 1
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1450,7 +1450,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP"
 			#define _EMISSION
 			#define _ALPHATEST_ON 1
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1772,7 +1772,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP"
 			#define _EMISSION
 			#define _ALPHATEST_ON 1
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -2055,7 +2055,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP"
 			#define _EMISSION
 			#define _ALPHATEST_ON 1
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -2414,7 +2414,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP"
 			#define _EMISSION
 			#define _ALPHATEST_ON 1
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -2917,7 +2917,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP"
 			#define _EMISSION
 			#define _ALPHATEST_ON 1
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -3187,7 +3187,7 @@ Shader "Reallusion/Amplify/Amplify Lit Alpha Blend Refractive URP"
 			#define _EMISSION
 			#define _ALPHATEST_ON 1
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -3538,4 +3538,4 @@ WireConnection;1;16;206;0
 WireConnection;1;12;202;0
 WireConnection;1;13;203;0
 ASEEND*/
-//CHKSM=FFD4A149A1F290F3F9C3216558E31AA46D4C5C3F
+//CHKSM=FF452FAD3F92598D71E4111AFFF5DBF34E967EA6

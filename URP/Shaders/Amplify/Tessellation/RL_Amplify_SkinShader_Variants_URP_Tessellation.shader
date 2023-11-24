@@ -280,7 +280,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1209,7 +1209,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1601,7 +1601,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1961,7 +1961,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -2460,7 +2460,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -2921,7 +2921,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -3519,7 +3519,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -4345,7 +4345,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -4674,7 +4674,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -5470,4 +5470,4 @@ WireConnection;403;7;341;0
 WireConnection;406;0;341;0
 WireConnection;411;0;410;0
 ASEEND*/
-//CHKSM=32434521C02B6EA60D8F93CA2D01969B8D89DC50
+//CHKSM=48D6C61DF4443EFDAC1D8DC5C5BB4C701A88784A

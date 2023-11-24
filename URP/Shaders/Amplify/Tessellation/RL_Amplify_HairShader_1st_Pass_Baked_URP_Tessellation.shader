@@ -206,7 +206,7 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Baked_URP_Tessellation"
 			#define ASE_PHONG_TESSELLATION
 			#define ASE_LENGTH_TESSELLATION
 			#define _ALPHATEST_ON 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -708,7 +708,7 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Baked_URP_Tessellation"
 			#define ASE_PHONG_TESSELLATION
 			#define ASE_LENGTH_TESSELLATION
 			#define _ALPHATEST_ON 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1004,7 +1004,7 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Baked_URP_Tessellation"
 			#define ASE_PHONG_TESSELLATION
 			#define ASE_LENGTH_TESSELLATION
 			#define _ALPHATEST_ON 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1268,7 +1268,7 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Baked_URP_Tessellation"
 			#define ASE_PHONG_TESSELLATION
 			#define ASE_LENGTH_TESSELLATION
 			#define _ALPHATEST_ON 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1520,7 +1520,7 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Baked_URP_Tessellation"
 			#define ASE_PHONG_TESSELLATION
 			#define ASE_LENGTH_TESSELLATION
 			#define _ALPHATEST_ON 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1775,7 +1775,7 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Baked_URP_Tessellation"
 			#define ASE_PHONG_TESSELLATION
 			#define ASE_LENGTH_TESSELLATION
 			#define _ALPHATEST_ON 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -2145,4 +2145,4 @@ WireConnection;652;200;539;0
 WireConnection;652;207;265;0
 WireConnection;652;208;263;0
 ASEEND*/
-//CHKSM=38DB551BEFFBAA3BA86D6CC4438282B3D92BE700
+//CHKSM=C1A0CAF51E6184CD41A10DBDF6E3D9739583CF8A

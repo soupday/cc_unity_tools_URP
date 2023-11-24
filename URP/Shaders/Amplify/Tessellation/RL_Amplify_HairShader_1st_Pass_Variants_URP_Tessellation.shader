@@ -233,7 +233,7 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Variants_URP_Tessellation"
 			#pragma domain DomainFunction
 			#define ASE_LENGTH_TESSELLATION
 			#define _ALPHATEST_ON 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -802,7 +802,7 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Variants_URP_Tessellation"
 			#pragma domain DomainFunction
 			#define ASE_LENGTH_TESSELLATION
 			#define _ALPHATEST_ON 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1125,7 +1125,7 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Variants_URP_Tessellation"
 			#pragma domain DomainFunction
 			#define ASE_LENGTH_TESSELLATION
 			#define _ALPHATEST_ON 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1416,7 +1416,7 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Variants_URP_Tessellation"
 			#pragma domain DomainFunction
 			#define ASE_LENGTH_TESSELLATION
 			#define _ALPHATEST_ON 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1695,7 +1695,7 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Variants_URP_Tessellation"
 			#pragma domain DomainFunction
 			#define ASE_LENGTH_TESSELLATION
 			#define _ALPHATEST_ON 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1977,7 +1977,7 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Variants_URP_Tessellation"
 			#pragma domain DomainFunction
 			#define ASE_LENGTH_TESSELLATION
 			#define _ALPHATEST_ON 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -2475,4 +2475,4 @@ WireConnection;297;3;536;0
 WireConnection;297;4;576;0
 WireConnection;297;7;534;0
 ASEEND*/
-//CHKSM=D1D74C7B8B3C0628EF491C16BE4EB89A7FF86335
+//CHKSM=4CAB6696BC77210EA156E094A18C08F34DF8C7FB

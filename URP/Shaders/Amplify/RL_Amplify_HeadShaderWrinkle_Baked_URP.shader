@@ -234,7 +234,7 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			#define ASE_TRANSLUCENCY 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1008,7 +1008,7 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			#define ASE_TRANSLUCENCY 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1364,7 +1364,7 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			#define ASE_TRANSLUCENCY 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1688,7 +1688,7 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			#define ASE_TRANSLUCENCY 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -2122,7 +2122,7 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			#define ASE_TRANSLUCENCY 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -2518,7 +2518,7 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			#define ASE_TRANSLUCENCY 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -2994,7 +2994,7 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			#define ASE_TRANSLUCENCY 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -3665,7 +3665,7 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			#define ASE_TRANSLUCENCY 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -3958,7 +3958,7 @@ Shader "Reallusion/Amplify/RL_HeadShaderWrinkle_Baked_URP"
 			#define ASE_TRANSLUCENCY 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -4480,4 +4480,4 @@ WireConnection;147;7;266;0
 WireConnection;267;0;266;0
 WireConnection;263;0;209;0
 ASEEND*/
-//CHKSM=16D2414BF2268BFD66739A1B7EF57A5F6EB81029
+//CHKSM=B352B94B04090B792EC75B82F154BD182697E68E

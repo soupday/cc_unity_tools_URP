@@ -201,7 +201,7 @@ Shader "Reallusion/Amplify/Amplify Lit Opaque DblSided URP"
 			#define ASE_FOG 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -798,7 +798,7 @@ Shader "Reallusion/Amplify/Amplify Lit Opaque DblSided URP"
 			#define ASE_FOG 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1122,7 +1122,7 @@ Shader "Reallusion/Amplify/Amplify Lit Opaque DblSided URP"
 			#define ASE_FOG 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1414,7 +1414,7 @@ Shader "Reallusion/Amplify/Amplify Lit Opaque DblSided URP"
 			#define ASE_FOG 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1727,7 +1727,7 @@ Shader "Reallusion/Amplify/Amplify Lit Opaque DblSided URP"
 			#define ASE_FOG 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -2001,7 +2001,7 @@ Shader "Reallusion/Amplify/Amplify Lit Opaque DblSided URP"
 			#define ASE_FOG 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -2351,7 +2351,7 @@ Shader "Reallusion/Amplify/Amplify Lit Opaque DblSided URP"
 			#define ASE_FOG 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -2845,7 +2845,7 @@ Shader "Reallusion/Amplify/Amplify Lit Opaque DblSided URP"
 			#define ASE_FOG 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -3106,7 +3106,7 @@ Shader "Reallusion/Amplify/Amplify Lit Opaque DblSided URP"
 			#define ASE_FOG 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -3442,4 +3442,4 @@ WireConnection;1;4;181;0
 WireConnection;1;5;180;0
 WireConnection;1;6;185;0
 ASEEND*/
-//CHKSM=F4068FB208054E9911AF8545E92E4A835B93F134
+//CHKSM=5D24061AEE0CD4F902160ADE933F77A9DBA2F4E9

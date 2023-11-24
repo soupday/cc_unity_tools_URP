@@ -211,7 +211,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP"
 			#define ASE_TRANSLUCENCY 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -839,7 +839,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP"
 			#define ASE_TRANSLUCENCY 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1172,7 +1172,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP"
 			#define ASE_TRANSLUCENCY 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1473,7 +1473,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP"
 			#define ASE_TRANSLUCENCY 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1817,7 +1817,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP"
 			#define ASE_TRANSLUCENCY 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -2122,7 +2122,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP"
 			#define ASE_TRANSLUCENCY 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -2479,7 +2479,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP"
 			#define ASE_TRANSLUCENCY 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -3004,7 +3004,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP"
 			#define ASE_TRANSLUCENCY 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -3274,7 +3274,7 @@ Shader "Reallusion/Amplify/RL_TongueShader_URP"
 			#define ASE_TRANSLUCENCY 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -3714,4 +3714,4 @@ WireConnection;1;6;90;0
 WireConnection;1;14;102;0
 WireConnection;1;15;83;0
 ASEEND*/
-//CHKSM=FD70712C22782992AE823C0FB8BD2980E4FC17DE
+//CHKSM=260A174E8CC161C1C5E9EE44DD00711F4C781DCE

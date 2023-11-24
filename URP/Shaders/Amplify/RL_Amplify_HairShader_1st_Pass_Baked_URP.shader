@@ -200,7 +200,7 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Baked_URP"
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
 			#define _ALPHATEST_ON 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -696,7 +696,7 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Baked_URP"
 			#define _ALPHATEST_SHADOW_ON 1
 			#define ASE_FOG 1
 			#define _ALPHATEST_ON 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -986,7 +986,7 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Baked_URP"
 			#define _ALPHATEST_SHADOW_ON 1
 			#define ASE_FOG 1
 			#define _ALPHATEST_ON 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1244,7 +1244,7 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Baked_URP"
 			#define _ALPHATEST_SHADOW_ON 1
 			#define ASE_FOG 1
 			#define _ALPHATEST_ON 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1490,7 +1490,7 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Baked_URP"
 			#define _ALPHATEST_SHADOW_ON 1
 			#define ASE_FOG 1
 			#define _ALPHATEST_ON 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1739,7 +1739,7 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Baked_URP"
 			#define _ALPHATEST_SHADOW_ON 1
 			#define ASE_FOG 1
 			#define _ALPHATEST_ON 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -2109,4 +2109,4 @@ WireConnection;297;3;521;0
 WireConnection;297;4;162;0
 WireConnection;297;7;532;0
 ASEEND*/
-//CHKSM=CB935B3F8E20DC55DEFE3102CBB577642579E1F7
+//CHKSM=F5D860069185DA6673C6A830BA23FD73BB9B0282

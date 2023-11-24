@@ -274,7 +274,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			#define ASE_TRANSMISSION 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1198,7 +1198,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			#define ASE_TRANSMISSION 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1584,7 +1584,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			#define ASE_TRANSMISSION 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1938,7 +1938,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			#define ASE_TRANSMISSION 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -2431,7 +2431,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			#define ASE_TRANSMISSION 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -2886,7 +2886,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			#define ASE_TRANSMISSION 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -3479,7 +3479,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			#define ASE_TRANSMISSION 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -4300,7 +4300,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			#define ASE_TRANSMISSION 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -4623,7 +4623,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 			#define ASE_TRANSMISSION 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -5419,4 +5419,4 @@ WireConnection;410;210;411;0
 WireConnection;415;0;414;0
 WireConnection;412;0;341;0
 ASEEND*/
-//CHKSM=09E8FB986390341A54202D24C6C5B32D9A9E7302
+//CHKSM=B0AC2F4488930DBD4B7DF6817D24C7766F151D9F

@@ -208,7 +208,7 @@ Shader "Reallusion/Amplify/LitSSS"
 			#define ASE_TRANSLUCENCY 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -821,7 +821,7 @@ Shader "Reallusion/Amplify/LitSSS"
 			#define ASE_TRANSLUCENCY 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1152,7 +1152,7 @@ Shader "Reallusion/Amplify/LitSSS"
 			#define ASE_TRANSLUCENCY 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1451,7 +1451,7 @@ Shader "Reallusion/Amplify/LitSSS"
 			#define ASE_TRANSLUCENCY 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1771,7 +1771,7 @@ Shader "Reallusion/Amplify/LitSSS"
 			#define ASE_TRANSLUCENCY 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -2052,7 +2052,7 @@ Shader "Reallusion/Amplify/LitSSS"
 			#define ASE_TRANSLUCENCY 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -2409,7 +2409,7 @@ Shader "Reallusion/Amplify/LitSSS"
 			#define ASE_TRANSLUCENCY 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -2919,7 +2919,7 @@ Shader "Reallusion/Amplify/LitSSS"
 			#define ASE_TRANSLUCENCY 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -3187,7 +3187,7 @@ Shader "Reallusion/Amplify/LitSSS"
 			#define ASE_TRANSLUCENCY 1
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -3554,4 +3554,4 @@ WireConnection;1;15;199;0
 WireConnection;203;0;202;0
 WireConnection;203;1;204;0
 ASEEND*/
-//CHKSM=7B8C7B415563F3B9AF0F0F3008BBDF1157B2F1FF
+//CHKSM=B10ACC6A5992F8228FACAA1EA119EB573252B30F

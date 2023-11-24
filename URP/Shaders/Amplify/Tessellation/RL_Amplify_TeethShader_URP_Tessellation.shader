@@ -223,7 +223,7 @@ Shader "Reallusion/Amplify/RL_TeethShader_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -874,7 +874,7 @@ Shader "Reallusion/Amplify/RL_TeethShader_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1219,7 +1219,7 @@ Shader "Reallusion/Amplify/RL_TeethShader_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1532,7 +1532,7 @@ Shader "Reallusion/Amplify/RL_TeethShader_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -1896,7 +1896,7 @@ Shader "Reallusion/Amplify/RL_TeethShader_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -2221,7 +2221,7 @@ Shader "Reallusion/Amplify/RL_TeethShader_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -2590,7 +2590,7 @@ Shader "Reallusion/Amplify/RL_TeethShader_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -3138,7 +3138,7 @@ Shader "Reallusion/Amplify/RL_TeethShader_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -3420,7 +3420,7 @@ Shader "Reallusion/Amplify/RL_TeethShader_URP_Tessellation"
 			#define ASE_LENGTH_TESSELLATION
 			#define _EMISSION
 			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 120112
+			#define ASE_SRP_VERSION 120113
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
@@ -3925,4 +3925,4 @@ WireConnection;1;6;90;0
 WireConnection;1;14;149;0
 WireConnection;1;15;83;0
 ASEEND*/
-//CHKSM=7FFD47EFE0C626C9E0E2367796E5E165721C475F
+//CHKSM=905116BC71817B1BFC02585E4FA278FB44A8096A
