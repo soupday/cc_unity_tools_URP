@@ -827,7 +827,7 @@ namespace Reallusion.Import
                 // first look for an animation that matches the prefab name
                 found = FindAnimation(f, name, false, true);
 
-                // then look for an animation that matches the base name of the character (before any _LodSomething)
+                // then look for an animation that matches the base name of the character (before any _LodN)
                 if (!found)
                 {
                     int index = name.IndexOf("_Lod", System.StringComparison.InvariantCultureIgnoreCase);

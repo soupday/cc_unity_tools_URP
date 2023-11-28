@@ -20,7 +20,7 @@ namespace Reallusion.Import
         private ImporterWindow importerWindow;
         private Styles windowStyles;
         private float DROPDOWN_WIDTH = 260f;
-        private float INITIAL_DROPDOWN_HEIGHT = 200f;
+        private float INITIAL_DROPDOWN_HEIGHT = 160f;
         private float LABEL_WIDTH = 200f;
         private float SECTION_INDENT = 8f;
         private float SUB_SECTION_INDENT = 18f;
@@ -132,23 +132,26 @@ namespace Reallusion.Import
             // due to pipleine version and available add-ons such as magica cloth or dynamic bone
             // much more flexible than EditorGUILayout.EnumFlagsField
 
+            DrawLabelLine(line++, "Material Shader Features:");
+
             //if (Pipeline.isHDRP12) -- HDRP12 tessellation
             //if (Pipeline.is3D || Pipeline.isURP) -- Amplify tessellation
-            DrawLabelLine(line++, "Tessellation...");
+            //DrawLabelLine(line++, "Tessellation...");
             if (DrawFlagSelectionLine(line++, CharacterInfo.ShaderFeatureFlags.Tessellation, "", SECTION_INDENT))
                 flagChanged = true;
 
-            DrawLabelLine(line++, "");
+            //DrawLabelLine(line++, "");
 
             // wrinkle maps            
-            DrawLabelLine(line++, "Wrinkle Maps...");
+            //DrawLabelLine(line++, "Wrinkle Maps...");
             if (DrawFlagSelectionLine(line++, CharacterInfo.ShaderFeatureFlags.WrinkleMaps, "", SECTION_INDENT))
                 flagChanged = true;
 
-            DrawLabelLine(line++, "");
+            //DrawLabelLine(line++, "");
+            DrawLabelLine(line++, "Character Physics:");
 
             // cloth physics
-            DrawLabelLine(line++, "Cloth Physics...");
+            //DrawLabelLine(line++, "Cloth Physics...");
             if (DrawFlagSelectionLine(line++, CharacterInfo.ShaderFeatureFlags.ClothPhysics, "Enable Cloth Physics", SECTION_INDENT))
                 flagChanged = true;
 
@@ -167,10 +170,10 @@ namespace Reallusion.Import
                 }
             }
 
-            DrawLabelLine(line++, "");
+            //DrawLabelLine(line++, "");
 
             // hair physics
-            DrawLabelLine(line++, "Hair Physics...");
+            //DrawLabelLine(line++, "Hair Physics...");
             if (DrawFlagSelectionLine(line++, CharacterInfo.ShaderFeatureFlags.HairPhysics, "Enable Hair Physics", SECTION_INDENT))
                 flagChanged = true;
 
@@ -194,7 +197,7 @@ namespace Reallusion.Import
                 }
             }
 
-            DrawLabelLine(line++, "");
+            //DrawLabelLine(line++, "");
 
             if (Event.current.type == EventType.Repaint)
             {

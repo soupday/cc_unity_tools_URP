@@ -322,6 +322,7 @@ namespace Reallusion.Import
 
                 GameObject o = (GameObject)AssetDatabase.LoadAssetAtPath(path, typeof(GameObject));
                 Object src = Util.FindRootPrefabAsset(o);
+                /*
                 LODGroup lg = o.GetComponentInChildren<LODGroup>();
                 if (lg)
                 {
@@ -330,9 +331,10 @@ namespace Reallusion.Import
                     // the Lodifier puts them on the same object.
                     Animator anm = lg.GetComponentInChildren<Animator>();
                     if (anm.gameObject == lg.gameObject) lg = null;
-                }
+                }*/
 
-                if (lg || Util.IsCC3Character(src))
+                //if (lg || Util.IsCC3Character(src))
+                if (Util.IsCC3Character(src))
                 {
                     //modelDict.Add(guid, assetName);
                     GridModel g = new GridModel();
