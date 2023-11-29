@@ -133,25 +133,16 @@ namespace Reallusion.Import
             // much more flexible than EditorGUILayout.EnumFlagsField
 
             DrawLabelLine(line++, "Material Shader Features:");
-
-            //if (Pipeline.isHDRP12) -- HDRP12 tessellation
-            //if (Pipeline.is3D || Pipeline.isURP) -- Amplify tessellation
-            //DrawLabelLine(line++, "Tessellation...");
+            
             if (DrawFlagSelectionLine(line++, CharacterInfo.ShaderFeatureFlags.Tessellation, "", SECTION_INDENT))
                 flagChanged = true;
 
-            //DrawLabelLine(line++, "");
-
-            // wrinkle maps            
-            //DrawLabelLine(line++, "Wrinkle Maps...");
             if (DrawFlagSelectionLine(line++, CharacterInfo.ShaderFeatureFlags.WrinkleMaps, "", SECTION_INDENT))
                 flagChanged = true;
-
-            //DrawLabelLine(line++, "");
+            
             DrawLabelLine(line++, "Character Physics:");
 
-            // cloth physics
-            //DrawLabelLine(line++, "Cloth Physics...");
+            // Cloth Physics
             if (DrawFlagSelectionLine(line++, CharacterInfo.ShaderFeatureFlags.ClothPhysics, "Enable Cloth Physics", SECTION_INDENT))
                 flagChanged = true;
 
@@ -170,10 +161,7 @@ namespace Reallusion.Import
                 }
             }
 
-            //DrawLabelLine(line++, "");
-
-            // hair physics
-            //DrawLabelLine(line++, "Hair Physics...");
+            // Hair Physics
             if (DrawFlagSelectionLine(line++, CharacterInfo.ShaderFeatureFlags.HairPhysics, "Enable Hair Physics", SECTION_INDENT))
                 flagChanged = true;
 
@@ -196,8 +184,6 @@ namespace Reallusion.Import
                     }
                 }
             }
-
-            //DrawLabelLine(line++, "");
 
             if (Event.current.type == EventType.Repaint)
             {
@@ -298,66 +284,6 @@ namespace Reallusion.Import
             {
                 SetFeatureFlag(groupFlag, groupFlag.Equals(flag));
             }
-        }
-        /*
-        private void EnsureDefaultsAreSet(CharacterInfo.ShaderFeatureFlags flag)
-        {
-            // if no alternatives are available or the flags are unset - then set unity physics as a default when activating cloth or hair physics
-            switch (flag)
-            {
-                case CharacterInfo.ShaderFeatureFlags.ClothPhysics:
-                    {
-                        if (!importerWindow.MagicaCloth2Available)
-                        {
-                            SetFeatureFlag(CharacterInfo.ShaderFeatureFlags.UnityClothPhysics, true);                            
-                        }
-
-                        if (!importerWindow.Character.GroupHasFlagSet(CharacterInfo.clothGroup))
-                        {
-                            SetFeatureFlag(CharacterInfo.ShaderFeatureFlags.UnityClothPhysics, true);
-                        }
-
-                        break;
-                    }
-                case CharacterInfo.ShaderFeatureFlags.HairPhysics:
-                    {
-                        if (!importerWindow.MagicaCloth2Available && !importerWindow.DynamicBoneAvailable)
-                        {
-                            SetFeatureFlag(CharacterInfo.ShaderFeatureFlags.UnityClothHairPhysics, true);
-                        }
-
-                        if (!importerWindow.Character.GroupHasFlagSet(CharacterInfo.hairGroup))
-                        {
-                            SetFeatureFlag(CharacterInfo.ShaderFeatureFlags.UnityClothHairPhysics, true);
-                        }
-
-                        break;
-                    }
-            }
-        }
-
-        private bool GroupHasFlagSet(CharacterInfo.ShaderFeatureFlags[] group)
-        {
-            foreach (CharacterInfo.ShaderFeatureFlags groupFlag in group)
-            {
-                if (importerWindow.Character.ShaderFlags.HasFlag(groupFlag)) return true;
-            }
-            return false;
-        }
-        
-        // 'radio groups' of mutually exclusive settings
-        public CharacterInfo.ShaderFeatureFlags[] clothGroup =
-        {
-            CharacterInfo.ShaderFeatureFlags.UnityClothPhysics, // UnityEngine.Cloth instance
-            CharacterInfo.ShaderFeatureFlags.MagicaCloth // MagicaCloth2 instance set to 'Mesh Cloth' mode
-        };
-
-        public CharacterInfo.ShaderFeatureFlags[] hairGroup =
-        {
-            CharacterInfo.ShaderFeatureFlags.UnityClothHairPhysics, // UnityEngine.Cloth instance for hair objects
-            CharacterInfo.ShaderFeatureFlags.SpringBoneHair, // DynamicBone springbones
-            CharacterInfo.ShaderFeatureFlags.MagicaBone // MagicaCloth2 instance set to 'Bone Cloth' mode for springbones
-        };
-        */
+        }        
     }
 }
