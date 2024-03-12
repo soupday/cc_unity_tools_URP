@@ -1,4 +1,4 @@
-// Made with Amplify Shader Editor v1.9.2.2
+// Made with Amplify Shader Editor v1.9.3.2
 // Available at the Unity Asset Store - http://u3d.as/y3X 
 Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Variants_URP_Tessellation"
 {
@@ -238,20 +238,34 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Variants_URP_Tessellation"
 
 
 			#pragma shader_feature_local _RECEIVE_SHADOWS_OFF
-
 			#pragma multi_compile_fragment _ _SCREEN_SPACE_OCCLUSION
 			#pragma multi_compile_fragment _ _DBUFFER_MRT1 _DBUFFER_MRT2 _DBUFFER_MRT3
+
+			
 
 			#pragma multi_compile _ DIRLIGHTMAP_COMBINED
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma multi_compile _ DYNAMICLIGHTMAP_ON
 			#pragma multi_compile_fragment _ DEBUG_DISPLAY
-			#pragma multi_compile_fragment _ _WRITE_RENDERING_LAYERS
+
+			
 
 			#pragma vertex vert
 			#pragma fragment frag
 
 			#define SHADERPASS SHADERPASS_UNLIT
+
+			
+            #if ASE_SRP_VERSION >=140007
+			#include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
+			#endif
+		
+
+			
+			#if ASE_SRP_VERSION >=140007
+			#include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/RenderingLayers.hlsl"
+			#endif
+		
 
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Texture.hlsl"
@@ -438,7 +452,7 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Variants_URP_Tessellation"
 					half3 specular = (dirAtten * SpecularMultiplier * wrappedLambert) * SpecularColor;
 					//half3 specular = (dirAtten * SpecularMultiplier) * SpecularColor;
 					specular = lerp(specular, specular * Color, SpecularTint);	
-					half3 AttLightColor = light.color * (light.distanceAttenuation * light.shadowAttenuation);	
+					half3 AttLightColor = saturate(light.color * (light.distanceAttenuation * light.shadowAttenuation));
 					addColor += (diffuse + specular) * AttLightColor;
 				}
 				#endif
@@ -662,16 +676,16 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Variants_URP_Tessellation"
 				float2 uv_IDMap = IN.ase_texcoord3.xy * _IDMap_ST.xy + _IDMap_ST.zw;
 				half idMap383 = SAMPLE_TEXTURE2D( _IDMap, sampler_DiffuseMap, uv_IDMap ).r;
 				half lerpResult81_g1087 = lerp( _SpecularShiftMin , _SpecularShiftMax , idMap383);
-				half3 normalizeResult10_g1091 = normalize( ( flowTangent107_g1087 + ( worldNormal86_g1087 * lerpResult81_g1087 ) ) );
-				half3 shiftedTangent119_g1087 = normalizeResult10_g1091;
+				half3 normalizeResult10_g1089 = normalize( ( flowTangent107_g1087 + ( worldNormal86_g1087 * lerpResult81_g1087 ) ) );
+				half3 shiftedTangent119_g1087 = normalizeResult10_g1089;
 				float3 ase_worldViewDir = ( _WorldSpaceCameraPos.xyz - WorldPosition );
 				ase_worldViewDir = SafeNormalize( ase_worldViewDir );
-				half3 viewDIr52_g1089 = ase_worldViewDir;
+				half3 viewDIr52_g1090 = ase_worldViewDir;
 				half3 worldLight248_g1087 = SafeNormalize(_MainLightPosition.xyz);
-				half3 lightDir55_g1089 = worldLight248_g1087;
-				half3 normalizeResult14_g1090 = normalize( ( viewDIr52_g1089 + lightDir55_g1089 ) );
-				half dotResult16_g1090 = dot( shiftedTangent119_g1087 , normalizeResult14_g1090 );
-				half smoothstepResult22_g1090 = smoothstep( -1.0 , 0.0 , dotResult16_g1090);
+				half3 lightDir55_g1090 = worldLight248_g1087;
+				half3 normalizeResult14_g1091 = normalize( ( viewDIr52_g1090 + lightDir55_g1090 ) );
+				half dotResult16_g1091 = dot( shiftedTangent119_g1087 , normalizeResult14_g1091 );
+				half smoothstepResult22_g1091 = smoothstep( -1.0 , 0.0 , dotResult16_g1091);
 				float2 uv_MaskMap = IN.ase_texcoord3.xy * _MaskMap_ST.xy + _MaskMap_ST.zw;
 				half4 tex2DNode115 = SAMPLE_TEXTURE2D( _MaskMap, sampler_DiffuseMap, uv_MaskMap );
 				half saferPower126 = abs( tex2DNode115.a );
@@ -682,7 +696,7 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Variants_URP_Tessellation"
 				float2 uv_SpecularMap = IN.ase_texcoord3.xy * _SpecularMap_ST.xy + _SpecularMap_ST.zw;
 				half temp_output_132_0_g1087 = ( SAMPLE_TEXTURE2D( _SpecularMap, sampler_DiffuseMap, uv_SpecularMap ).g * _SpecularMultiplier );
 				half4 temp_output_131_0_g1087 = _SpecularTint;
-				half4 temp_output_13_0_g1089 = ( ( smoothstepResult22_g1090 * pow( saturate( ( 1.0 - ( dotResult16_g1090 * dotResult16_g1090 ) ) ) , specularPower237_g1087 ) ) * temp_output_132_0_g1087 * temp_output_131_0_g1087 );
+				half4 temp_output_13_0_g1090 = ( ( smoothstepResult22_g1091 * pow( saturate( ( 1.0 - ( dotResult16_g1091 * dotResult16_g1091 ) ) ) , specularPower237_g1087 ) ) * temp_output_132_0_g1087 * temp_output_131_0_g1087 );
 				float2 uv_BlendMap = IN.ase_texcoord3.xy * _BlendMap_ST.xy + _BlendMap_ST.zw;
 				float2 uv_DiffuseMap = IN.ase_texcoord3.xy * _DiffuseMap_ST.xy + _DiffuseMap_ST.zw;
 				half4 tex2DNode19 = SAMPLE_TEXTURE2D( _DiffuseMap, sampler_DiffuseMap, uv_DiffuseMap );
@@ -720,15 +734,15 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Variants_URP_Tessellation"
 				half4 lerpResult112 = lerp( ( saturate( lerpBlendMode101 )) , _VertexBaseColor , ( ( 1.0 - IN.ase_color.r ) * _VertexColorStrength ));
 				half4 baseColor331 = ( _DiffuseColor * lerpResult112 );
 				half4 temp_output_42_0_g1087 = baseColor331;
-				half4 temp_output_32_0_g1089 = temp_output_42_0_g1087;
+				half4 temp_output_32_0_g1090 = temp_output_42_0_g1087;
 				half temp_output_172_0_g1087 = _SpecularMix;
-				half4 lerpResult36_g1089 = lerp( temp_output_13_0_g1089 , ( temp_output_13_0_g1089 * temp_output_32_0_g1089 ) , temp_output_172_0_g1087);
-				half3 temp_output_24_0_g1089 = worldNormal86_g1087;
-				half dotResult15_g1089 = dot( lightDir55_g1089 , temp_output_24_0_g1089 );
+				half4 lerpResult36_g1090 = lerp( temp_output_13_0_g1090 , ( temp_output_13_0_g1090 * temp_output_32_0_g1090 ) , temp_output_172_0_g1087);
+				half3 temp_output_24_0_g1090 = worldNormal86_g1087;
+				half dotResult15_g1090 = dot( lightDir55_g1090 , temp_output_24_0_g1090 );
 				half temp_output_200_0_g1087 = _Translucency;
-				half temp_output_40_0_g1089 = temp_output_200_0_g1087;
-				half dotResult54_g1089 = dot( temp_output_24_0_g1089 , viewDIr52_g1089 );
-				half dotResult57_g1089 = dot( viewDIr52_g1089 , lightDir55_g1089 );
+				half temp_output_40_0_g1090 = temp_output_200_0_g1087;
+				half dotResult54_g1090 = dot( temp_output_24_0_g1090 , viewDIr52_g1090 );
+				half dotResult57_g1090 = dot( viewDIr52_g1090 , lightDir55_g1090 );
 				half temp_output_208_0_g1087 = _RimPower;
 				half temp_output_207_0_g1087 = _RimTransmissionIntensity;
 				half ase_lightIntensity = max( max( _MainLightColor.r, _MainLightColor.g ), _MainLightColor.b );
@@ -760,7 +774,7 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Variants_URP_Tessellation"
 				
 				float3 BakedAlbedo = 0;
 				float3 BakedEmission = 0;
-				float3 Color = ( ( ( ( ( ase_lightAtten * ( ( lerpResult36_g1089 + ( ( saturate( ( ( dotResult15_g1089 * ( 1.0 - temp_output_40_0_g1089 ) ) + temp_output_40_0_g1089 ) ) + ( pow( ( max( ( 1.0 - abs( dotResult54_g1089 ) ) , 0.0 ) * max( ( 0.0 - dotResult57_g1089 ) , 0.0 ) ) , temp_output_208_0_g1087 ) * temp_output_207_0_g1087 ) ) * temp_output_32_0_g1089 ) ) * ase_lightColor ) ) + half4( localRL_Amplify_Expression_HairLighting_Additional126_g1087 , 0.0 ) ) * lerpResult280_g1087 ) + ( half4( bakedGI53_g1087 , 0.0 ) * temp_output_42_0_g1087 * temp_output_161_0_g1087 ) ) + ( SAMPLE_TEXTURE2D( _EmissionMap, sampler_EmissionMap, uv_EmissionMap ) * _EmissiveColor ) ).rgb;
+				float3 Color = ( ( ( ( ( ase_lightAtten * saturate( ( ( lerpResult36_g1090 + ( ( saturate( ( ( dotResult15_g1090 * ( 1.0 - temp_output_40_0_g1090 ) ) + temp_output_40_0_g1090 ) ) + ( pow( ( max( ( 1.0 - abs( dotResult54_g1090 ) ) , 0.0 ) * max( ( 0.0 - dotResult57_g1090 ) , 0.0 ) ) , temp_output_208_0_g1087 ) * temp_output_207_0_g1087 ) ) * temp_output_32_0_g1090 ) ) * ase_lightColor ) ) ) + half4( localRL_Amplify_Expression_HairLighting_Additional126_g1087 , 0.0 ) ) * lerpResult280_g1087 ) + ( half4( bakedGI53_g1087 , 0.0 ) * temp_output_42_0_g1087 * temp_output_161_0_g1087 ) ) + ( SAMPLE_TEXTURE2D( _EmissionMap, sampler_EmissionMap, uv_EmissionMap ) * _EmissiveColor ) ).rgb;
 				float Alpha = alpha518;
 				float AlphaClipThreshold = _AlphaClip2;
 				float AlphaClipThresholdShadow = _ShadowClip;
@@ -828,7 +842,15 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Variants_URP_Tessellation"
 
 			#pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
 
+			
+
 			#define SHADERPASS SHADERPASS_SHADOWCASTER
+
+			
+            #if ASE_SRP_VERSION >=140007
+			#include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
+			#endif
+		
 
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -1136,6 +1158,8 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Variants_URP_Tessellation"
 
 			HLSLPROGRAM
 
+			
+
 			#pragma multi_compile_instancing
 			#define _ALPHATEST_SHADOW_ON 1
 			#define ASE_FOG 1
@@ -1150,8 +1174,16 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Variants_URP_Tessellation"
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
+			
+
 			#pragma vertex vert
 			#pragma fragment frag
+
+			
+            #if ASE_SRP_VERSION >=140007
+			#include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
+			#endif
+		
 
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -1432,6 +1464,8 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Variants_URP_Tessellation"
 
 			HLSLPROGRAM
 
+			
+
 			#define _ALPHATEST_SHADOW_ON 1
 			#define ASE_FOG 1
 			#define ASE_PHONG_TESSELLATION
@@ -1445,12 +1479,20 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Variants_URP_Tessellation"
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
+			
+
 			#pragma vertex vert
 			#pragma fragment frag
 
 			#define ATTRIBUTES_NEED_NORMAL
 			#define ATTRIBUTES_NEED_TANGENT
 			#define SHADERPASS SHADERPASS_DEPTHONLY
+
+			
+            #if ASE_SRP_VERSION >=140007
+			#include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
+			#endif
+		
 
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Texture.hlsl"
@@ -1711,6 +1753,8 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Variants_URP_Tessellation"
 
 			HLSLPROGRAM
 
+			
+
 			#define _ALPHATEST_SHADOW_ON 1
 			#define ASE_FOG 1
 			#define ASE_PHONG_TESSELLATION
@@ -1724,6 +1768,8 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Variants_URP_Tessellation"
 			#define ASE_USING_SAMPLING_MACROS 1
 
 
+			
+
 			#pragma vertex vert
 			#pragma fragment frag
 
@@ -1731,6 +1777,12 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Variants_URP_Tessellation"
 			#define ATTRIBUTES_NEED_TANGENT
 
 			#define SHADERPASS SHADERPASS_DEPTHONLY
+
+			
+            #if ASE_SRP_VERSION >=140007
+			#include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
+			#endif
+		
 
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Texture.hlsl"
@@ -2013,14 +2065,21 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Variants_URP_Tessellation"
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#pragma multi_compile_fragment _ _WRITE_RENDERING_LAYERS
         	#pragma multi_compile_fragment _ _GBUFFER_NORMALS_OCT
+
+			
 
 			#define ATTRIBUTES_NEED_NORMAL
 			#define ATTRIBUTES_NEED_TANGENT
 			#define VARYINGS_NEED_NORMAL_WS
 
 			#define SHADERPASS SHADERPASS_DEPTHNORMALSONLY
+
+			
+			#if ASE_SRP_VERSION >=140007
+			#include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/RenderingLayers.hlsl"
+			#endif
+		
 
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Texture.hlsl"
@@ -2302,7 +2361,7 @@ Shader "Reallusion/Amplify/RL_HairShader_1st_Pass_Variants_URP_Tessellation"
 	Fallback "Hidden/InternalErrorShader"
 }
 /*ASEBEGIN
-Version=19202
+Version=19302
 Node;AmplifyShaderEditor.CommentaryNode;25;-5721.536,873.5989;Inherit;False;1176.518;561.6434;;8;518;517;23;22;24;21;20;19;Diffuse & Alpha;0.5235849,1,0.631946,1;0;0
 Node;AmplifyShaderEditor.SamplerNode;19;-5671.535,923.5991;Inherit;True;Property;_DiffuseMap;Diffuse Map;0;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.RangedFloatNode;20;-5663.463,1220.562;Inherit;False;Property;_AlphaRemap;Alpha Remap;6;0;Create;True;0;0;0;False;0;False;0.5;0.6;0.5;1;0;1;FLOAT;0
@@ -2421,7 +2480,7 @@ Node;AmplifyShaderEditor.SimpleMultiplyOpNode;618;-844.3359,291.0236;Inherit;Fal
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;296;601.0043,1008.494;Float;False;False;-1;2;UnityEditor.ShaderGraphUnlitGUI;0;3;New Amplify Shader;2992e84f91cbeb14eab234972e07ea9d;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Unlit;True;5;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;0;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;299;601.0043,1008.494;Float;False;False;-1;2;UnityEditor.ShaderGraphUnlitGUI;0;3;New Amplify Shader;2992e84f91cbeb14eab234972e07ea9d;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Unlit;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;True;1;LightMode=DepthOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;300;601.0043,1008.494;Float;False;False;-1;2;UnityEditor.ShaderGraphUnlitGUI;0;3;New Amplify Shader;2992e84f91cbeb14eab234972e07ea9d;True;Meta;0;4;Meta;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Unlit;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Meta;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;297;905.9279,1167.715;Half;False;True;-1;2;ASEMaterialInspector;0;13;Reallusion/Amplify/RL_HairShader_1st_Pass_Variants_URP_Tessellation;2992e84f91cbeb14eab234972e07ea9d;True;Forward;0;1;Forward;8;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;2;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Unlit;True;6;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalForwardOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;22;Surface;0;0;  Blend;0;0;Two Sided;0;637786971353641789;Forward Only;1;638364384660376654;Cast Shadows;1;0;  Use Shadow Threshold;1;637787018088018178;GPU Instancing;1;0;LOD CrossFade;0;0;Built-in Fog;1;637787992114575262;DOTS Instancing;0;0;Meta Pass;0;638047162068978155;Extra Pre Pass;0;0;Tessellation;1;638047089346763986;  Phong;1;637788078022368415;  Strength;0.5,False,;0;  Type;2;638047089386213177;  Tess;16,False,;0;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Vertex Position,InvertActionOnDeselection;1;0;0;10;False;True;True;True;False;False;True;True;True;False;False;;True;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;297;905.9279,1167.715;Half;False;True;-1;2;ASEMaterialInspector;0;13;Reallusion/Amplify/RL_HairShader_1st_Pass_Variants_URP_Tessellation;2992e84f91cbeb14eab234972e07ea9d;True;Forward;0;1;Forward;8;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;2;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Unlit;True;6;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalForwardOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;21;Surface;0;0;  Blend;0;0;Two Sided;0;637786971353641789;Forward Only;1;638364384660376654;Cast Shadows;1;0;  Use Shadow Threshold;1;637787018088018178;GPU Instancing;1;0;LOD CrossFade;0;0;Built-in Fog;1;637787992114575262;Meta Pass;0;638047162068978155;Extra Pre Pass;0;0;Tessellation;1;638047089346763986;  Phong;1;637788078022368415;  Strength;0.5,False,;0;  Type;2;638047089386213177;  Tess;16,False,;0;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Vertex Position,InvertActionOnDeselection;1;0;0;10;False;True;True;True;False;False;True;True;True;False;False;;True;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;298;601.0043,1008.494;Float;False;False;-1;2;UnityEditor.ShaderGraphUnlitGUI;0;3;New Amplify Shader;2992e84f91cbeb14eab234972e07ea9d;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;False;False;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Unlit;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=ShadowCaster;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;650;905.9279,1217.715;Float;False;False;-1;2;UnityEditor.ShaderGraphUnlitGUI;0;1;New Amplify Shader;2992e84f91cbeb14eab234972e07ea9d;True;Universal2D;0;5;Universal2D;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;False;False;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Unlit;True;5;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=Universal2D;False;False;0;;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;651;905.9279,1217.715;Float;False;False;-1;2;UnityEditor.ShaderGraphUnlitGUI;0;1;New Amplify Shader;2992e84f91cbeb14eab234972e07ea9d;True;SceneSelectionPass;0;6;SceneSelectionPass;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;False;False;False;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Unlit;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=SceneSelectionPass;False;False;0;;0;0;Standard;0;False;0
@@ -2528,4 +2587,4 @@ WireConnection;297;3;536;0
 WireConnection;297;4;576;0
 WireConnection;297;7;534;0
 ASEEND*/
-//CHKSM=35326F1DE2C017C6B53088B3E67F79882FF04BE8
+//CHKSM=F995B4CABD1FAE337FDC1E8E302E1A5977966D81
