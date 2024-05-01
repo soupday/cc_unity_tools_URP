@@ -1914,6 +1914,13 @@ namespace Reallusion.Import
 
                 int kernel = bakeShader.FindKernel("RLChannelPackLinear");
                 bakeTarget.Create(bakeShader, kernel);
+
+				#if UNITY_STANDALONE_OSX
+					bakeShader.EnableKeyword("_MAC_OS");
+				#else
+					bakeShader.DisableKeyword("_MAC_OS");
+				#endif
+
                 bakeShader.SetTexture(kernel, "RedChannel", redChannel);
                 bakeShader.SetTexture(kernel, "GreenChannel", greenChannel);
                 bakeShader.SetTexture(kernel, "BlueChannel", blueChannel);
@@ -1950,6 +1957,13 @@ namespace Reallusion.Import
 
                 int kernel = bakeShader.FindKernel("RLChannelPackSymmetryLinear");
                 bakeTarget.Create(bakeShader, kernel);
+
+				#if UNITY_STANDALONE_OSX
+					bakeShader.EnableKeyword("_MAC_OS");
+				#else
+					bakeShader.DisableKeyword("_MAC_OS");
+				#endif
+
                 bakeShader.SetTexture(kernel, "RedChannelL", redChannelL);
                 bakeShader.SetTexture(kernel, "GreenChannelL", greenChannelL);
                 bakeShader.SetTexture(kernel, "BlueChannelL", blueChannelL);
@@ -2192,6 +2206,13 @@ namespace Reallusion.Import
                 cavityAO = CheckMask(cavityAO);
 
                 int kernel = bakeShader.FindKernel("RLHeadDiffuse");
+
+				#if UNITY_STANDALONE_OSX
+					bakeShader.EnableKeyword("_MAC_OS");
+				#else
+					bakeShader.DisableKeyword("_MAC_OS");
+				#endif
+
                 bakeTarget.Create(bakeShader, kernel);
                 bakeShader.SetTexture(kernel, "Diffuse", diffuse);
                 bakeShader.SetTexture(kernel, "ColorBlend", blend);
@@ -2432,6 +2453,13 @@ namespace Reallusion.Import
 
                 int kernel = bakeShader.FindKernel(kernelName);
                 bakeTarget.Create(bakeShader, kernel);
+
+				#if UNITY_STANDALONE_OSX
+					bakeShader.EnableKeyword("_MAC_OS");
+				#else
+					bakeShader.DisableKeyword("_MAC_OS");
+				#endif
+
                 bakeShader.SetTexture(kernel, "Subsurface", subsurface);
                 bakeShader.SetTexture(kernel, "NMUILMask", NMUIL);
                 bakeShader.SetTexture(kernel, "CFULCMask", CFULC);
