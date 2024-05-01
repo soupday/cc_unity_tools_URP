@@ -2206,6 +2206,7 @@ namespace Reallusion.Import
                 cavityAO = CheckMask(cavityAO);
 
                 int kernel = bakeShader.FindKernel("RLHeadDiffuse");
+                bakeTarget.Create(bakeShader, kernel);
 
 				#if UNITY_STANDALONE_OSX
 					bakeShader.EnableKeyword("_MAC_OS");
@@ -2213,7 +2214,6 @@ namespace Reallusion.Import
 					bakeShader.DisableKeyword("_MAC_OS");
 				#endif
 
-                bakeTarget.Create(bakeShader, kernel);
                 bakeShader.SetTexture(kernel, "Diffuse", diffuse);
                 bakeShader.SetTexture(kernel, "ColorBlend", blend);
                 bakeShader.SetTexture(kernel, "CavityAO", cavityAO);
