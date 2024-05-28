@@ -34,6 +34,7 @@ namespace Reallusion.Import
         private readonly string texFolder;
         private readonly string materialsFolder;
         private readonly string characterName;
+		private readonly string pluginPath;
         private readonly int id;
         private readonly List<string> textureFolders;
         private readonly ModelImporter importer;
@@ -188,6 +189,17 @@ namespace Reallusion.Import
             importer = (ModelImporter)AssetImporter.GetAtPath(fbxPath);
             characterName = info.name;
             fbxFolder = info.folder;
+
+			// get the plugin path
+			string[] guids = AssetDatabase.FindAssets("CCUnityTools");
+			if (guids.Length > 0)
+			{
+				pluginPath = AssetDatabase.GUIDToAssetPath(guids[0]);
+			}
+			else
+			{
+				Debug.Log("Plugin not found");
+			}
 
             // construct the texture folder list for the character.
             fbmFolder = Path.Combine(fbxFolder, characterName + ".fbm");
@@ -2526,7 +2538,7 @@ namespace Reallusion.Import
 
         private void CopyWrinkleMasks(string folder)
         {
-            string[] packageFolders = new string[] { "Packages" };
+            string[] packageFolders = new string[] { "Packages", pluginPath };
             string[] characterFolders = new string[] { folder };
 
             string[] maskNames = new string[] { "RL_Wrinkle_Set 1-1", "RL_Wrinkle_Set 1-2", "RL_Wrinkle_Set 2", "RL_Wrinkle_Set 3" };
@@ -2550,7 +2562,7 @@ namespace Reallusion.Import
 
         private void ApplyWrinkleMasks(Material mat)
         {
-            string[] folders = new string[] { "Packages", fbmFolder, texFolder };
+            string[] folders = new string[] { "Packages", fbmFolder, texFolder, pluginPath };
 
             string[] maskNames = new string[] { "RL_WrinkleMask_Set1A", "RL_WrinkleMask_Set1B", "RL_WrinkleMask_Set2", "RL_WrinkleMask_Set3", "RL_WrinkleMask_Set123" };
             string[] refNames = new string[] { "_WrinkleMaskSet1A", "_WrinkleMaskSet1B", "_WrinkleMaskSet2", "_WrinkleMaskSet3", "_WrinkleMaskSet123" };
