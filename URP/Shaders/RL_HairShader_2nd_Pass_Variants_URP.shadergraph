@@ -495,6 +495,9 @@
         },
         {
             "m_Id": "c7eafe931d7e42e49421f60cd58d001b"
+        },
+        {
+            "m_Id": "e9fe011eeb8a41079cf6cea57ba7e82a"
         }
     ],
     "m_GroupDatas": [
@@ -2295,6 +2298,9 @@
             },
             {
                 "m_Id": "8277bdd1ba5e486788875b590047b626"
+            },
+            {
+                "m_Id": "e9fe011eeb8a41079cf6cea57ba7e82a"
             }
         ]
     },
@@ -6125,6 +6131,21 @@
         "z": 0.0,
         "w": 0.0
     }
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
+    "m_ObjectId": "53ac8d93ced84c31be6a7043571b6f06",
+    "m_Id": 0,
+    "m_DisplayName": "Alpha Clip Threshold",
+    "m_SlotType": 0,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "AlphaClipThreshold",
+    "m_StageCapability": 2,
+    "m_Value": 0.004000000189989805,
+    "m_DefaultValue": 0.5,
+    "m_Labels": []
 }
 
 {
@@ -10122,7 +10143,7 @@
     "m_SurfaceType": 1,
     "m_AlphaMode": 0,
     "m_TwoSided": true,
-    "m_AlphaClip": false,
+    "m_AlphaClip": true,
     "m_CustomEditorGUI": ""
 }
 
@@ -13559,6 +13580,39 @@
     "m_ShaderOutputName": "Sampler",
     "m_StageCapability": 3,
     "m_BareResource": false
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.BlockNode",
+    "m_ObjectId": "e9fe011eeb8a41079cf6cea57ba7e82a",
+    "m_Group": {
+        "m_Id": ""
+    },
+    "m_Name": "SurfaceDescription.AlphaClipThreshold",
+    "m_DrawState": {
+        "m_Expanded": true,
+        "m_Position": {
+            "serializedVersion": "2",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 0.0,
+            "height": 0.0
+        }
+    },
+    "m_Slots": [
+        {
+            "m_Id": "53ac8d93ced84c31be6a7043571b6f06"
+        }
+    ],
+    "synonyms": [],
+    "m_Precision": 0,
+    "m_PreviewExpanded": true,
+    "m_PreviewMode": 0,
+    "m_CustomColors": {
+        "m_SerializableColors": []
+    },
+    "m_SerializedDescriptor": "SurfaceDescription.AlphaClipThreshold"
 }
 
 {
