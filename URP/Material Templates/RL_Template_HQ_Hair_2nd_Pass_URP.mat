@@ -36,6 +36,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _FlowMap:
+        m_Texture: {fileID: 2800000, guid: 5a64e3ddb10bbe34193f8307639ee61b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _IDMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -65,6 +69,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - BOOLEAN_ANISOTROPIC: 1
     - BOOLEAN_ENABLECOLOR: 0
     - _AOOccludeAll: 0
     - _AOStrength: 1
@@ -76,6 +81,7 @@ Material:
     - _DiffuseStrength: 1
     - _ENUMCLIPQUALITY_ON: 2
     - _EndColorStrength: 1
+    - _FlowMapFlipGreen: 0
     - _GlobalStrength: 1
     - _HighlightAOverlapEnd: 1
     - _HighlightAOverlapInvert: 1
@@ -89,6 +95,10 @@ Material:
     - _SmoothnessMax: 1
     - _SmoothnessMin: 0
     - _SmoothnessPower: 1
+    - _SpecularMultiplier: 0.5
+    - _SpecularShiftMax: 0
+    - _SpecularShiftMin: 0
+    - _SpecularSmoothnessMult: 24
     - _VertexColorStrength: 0.5
     m_Colors:
     - _DiffuseColor: {r: 1, g: 1, b: 1, a: 0}
@@ -99,6 +109,7 @@ Material:
     - _HighlightBColor: {r: 1, g: 1, b: 1, a: 0}
     - _HighlightBDistribution: {r: 0.6, g: 0.7, b: 0.8, a: 0}
     - _RootColor: {r: 0.32941175, g: 0.14117646, b: 0.050980367, a: 0}
+    - _SpecularColor: {r: 1, g: 1, b: 1, a: 0}
     - _VertexBaseColor: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &2688478677752794627

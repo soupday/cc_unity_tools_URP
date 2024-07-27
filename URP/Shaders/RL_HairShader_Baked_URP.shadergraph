@@ -35,11 +35,35 @@
         },
         {
             "m_Id": "573aafa98926413385e50b643d8204a8"
+        },
+        {
+            "m_Id": "82e43a9d95dc486bb2afdec6d10109f5"
+        },
+        {
+            "m_Id": "f0fa3d16f3f44809a1dc1f33d35bb198"
+        },
+        {
+            "m_Id": "3e08ac5e4ab04c07bec34b84acc33bd5"
+        },
+        {
+            "m_Id": "3914c76368804603b89c2b7222862fe3"
+        },
+        {
+            "m_Id": "27d9a35525724c14b6244f542960c247"
+        },
+        {
+            "m_Id": "f24d351628864319a6f76a0e1d5dd972"
+        },
+        {
+            "m_Id": "e3655d08b9af4847ade60d0f1c2bf383"
         }
     ],
     "m_Keywords": [
         {
             "m_Id": "a9c42cd3aa674f4b8cd880751469f0f3"
+        },
+        {
+            "m_Id": "acaaaa82832344128f7520a6b3585c73"
         }
     ],
     "m_Nodes": [
@@ -1544,6 +1568,29 @@
 }
 
 {
+    "m_SGVersion": 1,
+    "m_Type": "UnityEditor.ShaderGraph.Internal.Vector1ShaderProperty",
+    "m_ObjectId": "27d9a35525724c14b6244f542960c247",
+    "m_Guid": {
+        "m_GuidSerialized": "6d2b64d5-180d-4650-86ea-ef679cd91584"
+    },
+    "m_Name": "Anisotropic Smoothness",
+    "m_DefaultReferenceName": "",
+    "m_OverrideReferenceName": "_SpecularSmoothnessMult",
+    "m_GeneratePropertyBlock": true,
+    "m_Precision": 0,
+    "overrideHLSLDeclaration": false,
+    "hlslDeclarationOverride": 0,
+    "m_Hidden": false,
+    "m_Value": 24.0,
+    "m_FloatType": 1,
+    "m_RangeValues": {
+        "x": 1.0,
+        "y": 64.0
+    }
+}
+
+{
     "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.Texture2DMaterialSlot",
     "m_ObjectId": "2c3d261d1f3443b4b06b82a9e110faef",
@@ -1822,6 +1869,30 @@
 }
 
 {
+    "m_SGVersion": 3,
+    "m_Type": "UnityEditor.ShaderGraph.Internal.ColorShaderProperty",
+    "m_ObjectId": "3914c76368804603b89c2b7222862fe3",
+    "m_Guid": {
+        "m_GuidSerialized": "c5b4fe09-bc92-418e-8950-154e78166e25"
+    },
+    "m_Name": "Anisotropic Color",
+    "m_DefaultReferenceName": "",
+    "m_OverrideReferenceName": "_SpecularColor",
+    "m_GeneratePropertyBlock": true,
+    "m_Precision": 0,
+    "overrideHLSLDeclaration": false,
+    "hlslDeclarationOverride": 0,
+    "m_Hidden": false,
+    "m_Value": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.0
+    },
+    "m_ColorMode": 0
+}
+
+{
     "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
     "m_ObjectId": "3a36e0af1d014dd79a48ede02af5c854",
@@ -1870,6 +1941,29 @@
         "y": 0.0,
         "z": 0.0,
         "w": 0.0
+    }
+}
+
+{
+    "m_SGVersion": 1,
+    "m_Type": "UnityEditor.ShaderGraph.Internal.Vector1ShaderProperty",
+    "m_ObjectId": "3e08ac5e4ab04c07bec34b84acc33bd5",
+    "m_Guid": {
+        "m_GuidSerialized": "52458ed9-4ab8-4126-be60-7ef8c7e9fa07"
+    },
+    "m_Name": "Anisotropic Strength",
+    "m_DefaultReferenceName": "",
+    "m_OverrideReferenceName": "_SpecularMultiplier",
+    "m_GeneratePropertyBlock": true,
+    "m_Precision": 0,
+    "overrideHLSLDeclaration": false,
+    "hlslDeclarationOverride": 0,
+    "m_Hidden": false,
+    "m_Value": 0.5,
+    "m_FloatType": 1,
+    "m_RangeValues": {
+        "x": 0.0,
+        "y": 1.0
     }
 }
 
@@ -3632,6 +3726,29 @@
 
 {
     "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Internal.Texture2DShaderProperty",
+    "m_ObjectId": "82e43a9d95dc486bb2afdec6d10109f5",
+    "m_Guid": {
+        "m_GuidSerialized": "f0cf8687-06ac-4fcf-bd2a-d77d5ecbaba4"
+    },
+    "m_Name": "Flow Map",
+    "m_DefaultReferenceName": "",
+    "m_OverrideReferenceName": "_FlowMap",
+    "m_GeneratePropertyBlock": true,
+    "m_Precision": 0,
+    "overrideHLSLDeclaration": false,
+    "hlslDeclarationOverride": 0,
+    "m_Hidden": false,
+    "m_Value": {
+        "m_SerializedTexture": "{\"texture\":{\"fileID\":2800000,\"guid\":\"5a64e3ddb10bbe34193f8307639ee61b\",\"type\":3}}",
+        "m_Guid": ""
+    },
+    "m_Modifiable": true,
+    "m_DefaultType": 3
+}
+
+{
+    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.ScreenPositionNode",
     "m_ObjectId": "860c97ed98f348e0942b9e5eb0916c14",
     "m_Group": {
@@ -4552,6 +4669,25 @@
     },
     "m_Modifiable": true,
     "m_DefaultType": 0
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.ShaderKeyword",
+    "m_ObjectId": "acaaaa82832344128f7520a6b3585c73",
+    "m_Guid": {
+        "m_GuidSerialized": "fd4b4fcb-dcbf-4919-8b55-9b70dbf66f48"
+    },
+    "m_Name": "Anisotropic Highlights",
+    "m_DefaultReferenceName": "",
+    "m_OverrideReferenceName": "BOOLEAN_ANISOTROPIC_ON",
+    "m_GeneratePropertyBlock": true,
+    "m_KeywordType": 0,
+    "m_KeywordDefinition": 0,
+    "m_KeywordScope": 0,
+    "m_Entries": [],
+    "m_Value": 1,
+    "m_IsEditable": true
 }
 
 {
@@ -5590,6 +5726,29 @@
 }
 
 {
+    "m_SGVersion": 1,
+    "m_Type": "UnityEditor.ShaderGraph.Internal.Vector1ShaderProperty",
+    "m_ObjectId": "e3655d08b9af4847ade60d0f1c2bf383",
+    "m_Guid": {
+        "m_GuidSerialized": "4e03f999-1d45-40ea-b3ea-ef7ad99e74a5"
+    },
+    "m_Name": "Specular Shift Max",
+    "m_DefaultReferenceName": "",
+    "m_OverrideReferenceName": "_SpecularShiftMax",
+    "m_GeneratePropertyBlock": true,
+    "m_Precision": 0,
+    "overrideHLSLDeclaration": false,
+    "hlslDeclarationOverride": 0,
+    "m_Hidden": false,
+    "m_Value": 0.0,
+    "m_FloatType": 1,
+    "m_RangeValues": {
+        "x": -1.0,
+        "y": 1.0
+    }
+}
+
+{
     "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.SamplerStateMaterialSlot",
     "m_ObjectId": "e97c3fa8ab4d480faefb7391b4a9c808",
@@ -5721,6 +5880,29 @@
 }
 
 {
+    "m_SGVersion": 1,
+    "m_Type": "UnityEditor.ShaderGraph.Internal.Vector1ShaderProperty",
+    "m_ObjectId": "f0fa3d16f3f44809a1dc1f33d35bb198",
+    "m_Guid": {
+        "m_GuidSerialized": "ee466e5a-e5a5-4218-af56-7ba089ca3c8b"
+    },
+    "m_Name": "Flow Map Invert G",
+    "m_DefaultReferenceName": "",
+    "m_OverrideReferenceName": "_FlowMapFlipGreen",
+    "m_GeneratePropertyBlock": true,
+    "m_Precision": 0,
+    "overrideHLSLDeclaration": false,
+    "hlslDeclarationOverride": 0,
+    "m_Hidden": false,
+    "m_Value": 0.0,
+    "m_FloatType": 1,
+    "m_RangeValues": {
+        "x": 0.0,
+        "y": 1.0
+    }
+}
+
+{
     "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.PropertyNode",
     "m_ObjectId": "f15873d7cae54a328809df9a8d76bbf7",
@@ -5752,6 +5934,29 @@
     },
     "m_Property": {
         "m_Id": "b304178995574d4b8dceaf0eade7e621"
+    }
+}
+
+{
+    "m_SGVersion": 1,
+    "m_Type": "UnityEditor.ShaderGraph.Internal.Vector1ShaderProperty",
+    "m_ObjectId": "f24d351628864319a6f76a0e1d5dd972",
+    "m_Guid": {
+        "m_GuidSerialized": "f364e8e9-4134-4894-b653-94088fc91bf6"
+    },
+    "m_Name": "Specular Shift Min",
+    "m_DefaultReferenceName": "",
+    "m_OverrideReferenceName": "_SpecularShiftMin",
+    "m_GeneratePropertyBlock": true,
+    "m_Precision": 0,
+    "overrideHLSLDeclaration": false,
+    "hlslDeclarationOverride": 0,
+    "m_Hidden": false,
+    "m_Value": 0.0,
+    "m_FloatType": 1,
+    "m_RangeValues": {
+        "x": -1.0,
+        "y": 1.0
     }
 }
 
