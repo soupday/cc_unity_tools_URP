@@ -2083,10 +2083,9 @@ namespace Reallusion.Import
                         matJson.GetFloatValue("Custom Shader/Variable/WhiteColor Reflection Offset Z"));
                 }
                 else if (RP == RenderPipeline.URP && !USE_AMPLIFY_SHADER)
-                {
-                    float secondarySpecStrength = matJson.GetFloatValue("Custom Shader/Variable/Secondary Specular Strength");
+                {                    
                     mat.SetFloatIf("_SmoothnessMin", 0f);
-                    mat.SetFloatIf("_SpecularMultiplier", Mathf.Lerp(0f, 0.5f, specMapStrength * specStrength));
+                    mat.SetFloatIf("_SpecularMultiplier", Mathf.Lerp(0.1f, 0.2f, specMapStrength * specStrength));
                     mat.SetFloatIf("_FlowMapFlipGreen", 1f - matJson.GetFloatValue("Custom Shader/Variable/TangentMapFlipGreen"));
                     mat.SetFloatIf("_SpecularShiftMin",
                         matJson.GetFloatValue("Custom Shader/Variable/BlackColor Reflection Offset Z"));

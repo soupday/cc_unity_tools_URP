@@ -88,6 +88,7 @@ Material:
     - _HighlightBlend: 1
     - _InvertRootMap: 0
     - _NormalStrength: 1
+    - _ReceiveShadows: 1
     - _RimPower: 4
     - _RimTransmissionIntensity: 15
     - _RootColorStrength: 1
