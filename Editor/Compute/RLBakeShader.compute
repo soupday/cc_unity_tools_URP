@@ -61,6 +61,8 @@
 #pragma kernel RLChannelPackLinear
 #pragma kernel RLChannelPackSymmetryLinear
 
+#pragma multi_compile _ _MAC_OS
+
 // Defines
 //
 #define SAMPLE(tex,coord) tex.SampleLevel (sampler##tex,coord, 0)
@@ -351,6 +353,8 @@ float4 LinearTosRGB(float4 In)
 {
 #ifdef UNITY_COLORSPACE_GAMMA    
     return In; 
+#elif _MAC_OS
+    return In;
 #else
     float3 sRGBLo = In.xyz * 12.92;
     float3 sRGBHi = (pow(max(abs(In.xyz), 1.192092896e-07), float3(1.0 / 2.4, 1.0 / 2.4, 1.0 / 2.4)) * 1.055) - 0.055;

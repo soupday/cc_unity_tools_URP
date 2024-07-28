@@ -4,6 +4,7 @@ Changelog
 ### 1.6.2
 - URP Amplify shader fix for when there is no main light.
 - Work around to intermittent CC4 specular export issue when exporting with 'Bake diffuse maps from skin color' option (which is enabled by default now).
+- Fix to physics assignment when shared materials count does not match submesh count.
 
 ### 1.6.1
 - Magica Cloth 2 support for hair physics.
