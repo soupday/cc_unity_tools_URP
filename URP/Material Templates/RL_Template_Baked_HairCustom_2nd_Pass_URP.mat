@@ -83,6 +83,7 @@ Material:
     - _BumpScale: 1
     - _ENUMCLIPQUALITY_ON: 0
     - _FlowMapFlipGreen: 0
+    - _ShadowClip: 0.5
     - _SpecularMix: 0.65
     - _SpecularMultiplier: 0.5
     - _SpecularPowerScale: 40
