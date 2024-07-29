@@ -1,6 +1,15 @@
 Changelog
 =========
 
+### 1.6.3
+- Wrinkle manager update Blend shape indices button.
+- Wrinkle system setup will look for wrinkle masks in Assets as well as packages. (If tools installed into assets and not with package manager)
+- Wrinkle system added to URP shader graph shaders.
+- Anisotropic highlights added to URP shader graph hair shaders.
+- Mesh extraction checks for duplicate blend shape names.
+- URP Amplify hair shaders support for Forward+ additional lights.
+- URP Amplify shaders recompiled for ASE-1.9.6 (Fixes URP17 issues).
+
 ### 1.6.2
 - URP Amplify shader fix for when there is no main light.
 - Work around to intermittent CC4 specular export issue when exporting with 'Bake diffuse maps from skin color' option (which is enabled by default now).

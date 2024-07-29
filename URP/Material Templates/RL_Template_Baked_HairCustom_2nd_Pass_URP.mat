@@ -78,12 +78,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - BOOLEAN_ANISOTROPIC: 1
+    - _AOOccludeAll: 0
     - _AlphaClip2: 0.5
     - _BumpScale: 1
     - _ENUMCLIPQUALITY_ON: 0
     - _FlowMapFlipGreen: 0
+    - _SpecularMix: 0.65
     - _SpecularMultiplier: 0.5
-    - _SpecularPowerScale: 24
+    - _SpecularPowerScale: 40
     - _SpecularShiftMax: 0
     - _SpecularShiftMin: 0
     - _VertexColorStrength: 0.5

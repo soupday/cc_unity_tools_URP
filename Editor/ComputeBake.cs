@@ -1562,10 +1562,11 @@ namespace Reallusion.Import
             firstPass = null;
             secondPass = null;
 
-            bool useAmplify = characterInfo.BakeCustomShaders && mat.shader.name.iContains("/Amplify/");
+            bool useAmplify = characterInfo.BakeCustomShaders && mat.shader.name.iContains("/Amplify/");            
             bool useTessellation = characterInfo.BuiltFeatureTessellation;
             bool useWrinkleMaps = characterInfo.BuiltFeatureWrinkleMaps;
             bool useDigitalHuman = characterInfo.BakeCustomShaders && mat.shader.name.iEndsWith("_DH");
+            float diffuseAO = (useAmplify || (IS_URP && CUSTOM_SHADERS)) ? 0f : aoOccludeAll;
 
             Texture2D bakedBaseMap = diffuse;
             Texture2D bakedMaskMap = mask;
@@ -1577,7 +1578,7 @@ namespace Reallusion.Import
             if (enableColor)
             {
                 bakedBaseMap = BakeHairDiffuseMap(diffuse, blend, id, root, mask,
-                    diffuseStrength, alphaPower, alphaRemap, aoStrength, (useAmplify ? 0f : aoOccludeAll),
+                    diffuseStrength, alphaPower, alphaRemap, aoStrength, diffuseAO,
                     rootColor, rootColorStrength, endColor, endColorStrength, globalStrength,
                     invertRootMap, baseColorStrength, highlightBlend,
                     highlightAColor, highlightADistribution, highlightAOverlapEnd,
@@ -1590,7 +1591,7 @@ namespace Reallusion.Import
             else
             {
                 bakedBaseMap = BakeHairDiffuseMap(diffuse, blend, mask,
-                    diffuseStrength, alphaPower, alphaRemap, aoStrength, (useAmplify ? 0f : aoOccludeAll),
+                    diffuseStrength, alphaPower, alphaRemap, aoStrength, diffuseAO,
                     blendStrength, vertexBaseColor, vertexColorStrength,
                     sourceName + "_BaseMap");
             }
@@ -1620,6 +1621,7 @@ namespace Reallusion.Import
                 Action<Material> SetCustom = (bakeMat) =>
                 {
                     bakeMat.SetFloatIf("_AOOccludeAll", aoOccludeAll);
+                    Debug.Log("AO Occlude All = " + aoOccludeAll);
                     bakeMat.SetTextureIf("_FlowMap", flow);
                     bakeMat.SetFloatIf("_FlowMapFlipGreen", flowMapFlipGreen);
                     bakeMat.SetFloatIf("_Translucency", translucency);

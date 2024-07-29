@@ -1,4 +1,4 @@
-// Made with Amplify Shader Editor v1.9.5.1
+// Made with Amplify Shader Editor v1.9.6
 // Available at the Unity Asset Store - http://u3d.as/y3X 
 Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 {
@@ -3940,7 +3940,7 @@ Shader "Reallusion/Amplify/RL_SkinShader_Variants_URP"
 	
 }
 /*ASEBEGIN
-Version=19501
+Version=19600
 Node;AmplifyShaderEditor.CommentaryNode;364;-5375.53,-3197.479;Inherit;False;2706.421;2113.521;;43;363;362;361;341;388;360;359;358;357;356;355;354;375;374;371;348;351;349;399;350;353;352;396;397;398;379;384;383;380;381;386;385;382;367;366;365;401;402;403;411;412;419;420;Wrinkle System;1,0.5137255,0.7779443,1;0;0
 Node;AmplifyShaderEditor.SamplerStateNode;341;-5307.774,-2518.632;Inherit;False;0;0;0;1;-1;None;1;0;SAMPLER2D;;False;1;SAMPLERSTATE;0
 Node;AmplifyShaderEditor.CommentaryNode;213;-2240.617,-782.9695;Inherit;False;2378.617;1318.153;;20;59;60;61;52;71;54;53;308;57;50;48;62;58;289;51;49;373;372;376;387;Normal Blending;0.4858491,0.5398334,1,1;0;0
@@ -4403,4 +4403,4 @@ WireConnection;20;5;273;0
 WireConnection;20;14;264;0
 WireConnection;20;15;265;0
 ASEEND*/
-//CHKSM=32CD8176CC0A79893D1A40AE8428CEC9D98F167C
+//CHKSM=5648CE3DA566EC7D78FB7A4B017E91750AC6F1CD

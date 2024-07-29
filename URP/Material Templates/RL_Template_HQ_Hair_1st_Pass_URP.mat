@@ -95,8 +95,9 @@ Material:
     - _SmoothnessMax: 0.897
     - _SmoothnessMin: 0
     - _SmoothnessPower: 1
+    - _SpecularMix: 0.65
     - _SpecularMultiplier: 0.5
-    - _SpecularPowerScale: 24
+    - _SpecularPowerScale: 40
     - _SpecularShiftMax: 0
     - _SpecularShiftMin: 0
     - _VertexColorStrength: 0.5

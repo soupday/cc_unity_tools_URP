@@ -2040,8 +2040,9 @@ namespace Reallusion.Import
                 mat.SetFloatIf("_BlendStrength", Mathf.Clamp01(matJson.GetFloatValue("Textures/Blend/Strength") / 100f));
                 mat.SetColorIf("_VertexBaseColor", Util.LinearTosRGB(matJson.GetColorValue("Custom Shader/Variable/VertexGrayToColor")));                
                 mat.SetFloatIf("_VertexColorStrength", 1f * matJson.GetFloatValue("Custom Shader/Variable/VertexColorStrength"));
-                mat.SetFloatIf("_BaseColorStrength", 1f * matJson.GetFloatValue("Custom Shader/Variable/BaseColorMapStrength"));
+                mat.SetFloatIf("_BaseColorStrength", 1f * matJson.GetFloatValue("Custom Shader/Variable/BaseColorMapStrength"));                
                 mat.SetFloatIf("_DiffuseStrength", 1f * matJson.GetFloatValue("Custom Shader/Variable/Diffuse Strength"));
+
                 diffuseColor = Util.LinearTosRGB(matJson.GetColorValue("Diffuse Color"));
                 mat.SetColorIf("_DiffuseColor", diffuseColor);
 
@@ -2083,9 +2084,10 @@ namespace Reallusion.Import
                         matJson.GetFloatValue("Custom Shader/Variable/WhiteColor Reflection Offset Z"));
                 }
                 else if (RP == RenderPipeline.URP && !USE_AMPLIFY_SHADER)
-                {                    
+                {
+                    mat.SetFloatIf("_DiffuseStrength", 1.15f * matJson.GetFloatValue("Custom Shader/Variable/Diffuse Strength"));
                     mat.SetFloatIf("_SmoothnessMin", 0f);
-                    mat.SetFloatIf("_SpecularMultiplier", Mathf.Lerp(0.1f, 0.2f, specMapStrength * specStrength));
+                    mat.SetFloatIf("_SpecularMultiplier", Mathf.Lerp(0.1f, 0.5f, specMapStrength * specStrength));
                     mat.SetFloatIf("_FlowMapFlipGreen", 1f - matJson.GetFloatValue("Custom Shader/Variable/TangentMapFlipGreen"));
                     mat.SetFloatIf("_SpecularShiftMin",
                         matJson.GetFloatValue("Custom Shader/Variable/BlackColor Reflection Offset Z"));
