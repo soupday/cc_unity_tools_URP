@@ -7,7 +7,7 @@
     "m_Dropdowns": [],
     "m_CategoryData": [
         {
-            "m_Id": "2ac2ce364489403487ec9c07e565e864"
+            "m_Id": "9312a97f83884bc78ea6589a34eb46bf"
         }
     ],
     "m_Nodes": [
@@ -68,6 +68,7 @@
     "m_OutputNode": {
         "m_Id": ""
     },
+    "m_SubDatas": [],
     "m_ActiveTargets": [
         {
             "m_Id": "7425b806980947309fa036ed3466d46b"
@@ -125,19 +126,12 @@
     "synonyms": [],
     "m_Precision": 0,
     "m_PreviewExpanded": true,
+    "m_DismissedVersion": 0,
     "m_PreviewMode": 0,
     "m_CustomColors": {
         "m_SerializableColors": []
     },
     "m_SerializedDescriptor": "VertexDescription.Tangent"
-}
-
-{
-    "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.CategoryData",
-    "m_ObjectId": "2ac2ce364489403487ec9c07e565e864",
-    "m_Name": "",
-    "m_ChildObjectList": []
 }
 
 {
@@ -166,6 +160,7 @@
     "synonyms": [],
     "m_Precision": 0,
     "m_PreviewExpanded": true,
+    "m_DismissedVersion": 0,
     "m_PreviewMode": 0,
     "m_CustomColors": {
         "m_SerializableColors": []
@@ -223,6 +218,7 @@
     "synonyms": [],
     "m_Precision": 0,
     "m_PreviewExpanded": true,
+    "m_DismissedVersion": 0,
     "m_PreviewMode": 0,
     "m_CustomColors": {
         "m_SerializableColors": []
@@ -288,6 +284,7 @@
     "m_SGVersion": 1,
     "m_Type": "UnityEditor.Rendering.Universal.ShaderGraph.UniversalTarget",
     "m_ObjectId": "7425b806980947309fa036ed3466d46b",
+    "m_Datas": [],
     "m_ActiveSubTarget": {
         "m_Id": "80cd65084e8740618fdf91a38ec716f9"
     },
@@ -300,6 +297,7 @@
     "m_AlphaClip": false,
     "m_CastShadows": true,
     "m_ReceiveShadows": true,
+    "m_SupportsLODCrossFade": false,
     "m_CustomEditorGUI": "",
     "m_SupportVFX": false
 }
@@ -330,6 +328,7 @@
     "synonyms": [],
     "m_Precision": 0,
     "m_PreviewExpanded": true,
+    "m_DismissedVersion": 0,
     "m_PreviewMode": 0,
     "m_CustomColors": {
         "m_SerializableColors": []
@@ -338,8 +337,16 @@
 }
 
 {
-    "m_SGVersion": 0,
+    "m_SGVersion": 2,
     "m_Type": "UnityEditor.Rendering.Universal.ShaderGraph.UniversalUnlitSubTarget",
     "m_ObjectId": "80cd65084e8740618fdf91a38ec716f9"
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.CategoryData",
+    "m_ObjectId": "9312a97f83884bc78ea6589a34eb46bf",
+    "m_Name": "",
+    "m_ChildObjectList": []
 }
 

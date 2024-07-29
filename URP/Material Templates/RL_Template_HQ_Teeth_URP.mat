@@ -80,7 +80,7 @@ Material:
     - _IsUpperTeeth: 0
     - _MicroNormalStrength: 0.3
     - _MicroNormalTiling: 10
-    - _NormalStrength: 0.5
+    - _NormalStrength: 1
     - _QueueControl: 0
     - _QueueOffset: 0
     - _RearAO: 0
@@ -93,6 +93,19 @@ Material:
     m_Colors:
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
+--- !u!114 &616177107464419466
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 7
 --- !u!114 &1002793509144919934
 MonoBehaviour:
   m_ObjectHideFlags: 11
@@ -108,19 +121,6 @@ MonoBehaviour:
   m_DiffusionProfileReferences:
   - {fileID: 11400000, guid: a24b9c9261a009f488d6b65cc856adbf, type: 2}
   m_MaterialReferences: []
---- !u!114 &2947054494670959021
-MonoBehaviour:
-  m_ObjectHideFlags: 11
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 7
 --- !u!114 &8610666323703270636
 MonoBehaviour:
   m_ObjectHideFlags: 11

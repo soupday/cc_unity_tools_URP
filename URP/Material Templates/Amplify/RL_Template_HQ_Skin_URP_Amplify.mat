@@ -24,6 +24,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: RL_Template_HQ_Skin_URP_Amplify
   m_Shader: {fileID: 4800000, guid: 526231ed22d70c042b4bec774e071cbb, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords:
   - _DISABLE_SSR_TRANSPARENT
@@ -39,6 +41,7 @@ Material:
   - TransparentBackface
   - RayTracingPrepass
   - MOTIONVECTORS
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -219,7 +222,6 @@ Material:
     - _SmoothnessMin: 0
     - _SmoothnessPower: 1.35
     - _SpecularHighlights: 1
-    - _SubsurfaceNormalSoften: 0.65
     - _SubsurfaceScale: 1
     - _ThicknessScale: 0.4
     - _TransAmbient: 0.1
@@ -249,6 +251,7 @@ Material:
     - _WrinkleValueSet3DB: {r: 0, g: 0, b: 0, a: 0}
     - _WrinkleValueSet3L: {r: 0, g: 0, b: 0, a: 0}
     - _WrinkleValueSet3R: {r: 0, g: 0, b: 0, a: 0}
+    - _WrinkleValueSetBCCB: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &168235113489978298
 MonoBehaviour:

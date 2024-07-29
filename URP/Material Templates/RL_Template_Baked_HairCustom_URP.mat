@@ -26,6 +26,7 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
+  - BOOLEAN_ANISOTROPIC_ON
   - _ENUMCLIPQUALITY_ON_DITHER
   m_InvalidKeywords:
   - _ALPHATOMASK_ON
@@ -59,6 +60,14 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _FlowMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _IDMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -81,18 +90,28 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - BOOLEAN_ANISOTROPIC: 1
+    - _AOOccludeAll: 0
     - _AlphaClip2: 1
     - _BumpScale: 1
     - _ENUMCLIPQUALITY_ON: 2
+    - _FlowMapFlipGreen: 0
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _ShadowClip: 0.5
+    - _SpecularMix: 0.65
+    - _SpecularMultiplier: 0.5
+    - _SpecularPowerScale: 40
+    - _SpecularShiftMax: 0
+    - _SpecularShiftMin: 0
     - _VertexColorStrength: 0.5
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 0}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 0}
+    - _SpecularTint: {r: 1, g: 1, b: 1, a: 0}
     - _VertexBaseColor: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
---- !u!114 &1207359322413197038
+--- !u!114 &2823006097571083450
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
