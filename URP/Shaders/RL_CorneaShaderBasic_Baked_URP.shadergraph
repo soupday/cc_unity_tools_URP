@@ -44,7 +44,7 @@
     "m_Dropdowns": [],
     "m_CategoryData": [
         {
-            "m_Id": "09212c6a867b40618a39764dd688f166"
+            "m_Id": "4d520775606b4d9dab979da9614e6076"
         }
     ],
     "m_Nodes": [
@@ -1004,51 +1004,6 @@
     "m_CustomColors": {
         "m_SerializableColors": []
     }
-}
-
-{
-    "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.CategoryData",
-    "m_ObjectId": "09212c6a867b40618a39764dd688f166",
-    "m_Name": "",
-    "m_ChildObjectList": [
-        {
-            "m_Id": "52f02aeee7404dfda840641c91caeddb"
-        },
-        {
-            "m_Id": "dfba2e664b854d7da03879c577fca0d8"
-        },
-        {
-            "m_Id": "e15e63e2c8f04e10805e4ea1607629c4"
-        },
-        {
-            "m_Id": "e492a72427ab4edab1e4965e6dd3cd12"
-        },
-        {
-            "m_Id": "9a2a016b5eed4d6ea4090d9fcd09c52c"
-        },
-        {
-            "m_Id": "4a91ec69cd1c456ca5b5af8d14b5ac09"
-        },
-        {
-            "m_Id": "2de0f2e083754fda9e78323aa8857ddb"
-        },
-        {
-            "m_Id": "28f1395654574b9d862697c62f2fac95"
-        },
-        {
-            "m_Id": "9660013cc2cb4ad690945ebc4442f24f"
-        },
-        {
-            "m_Id": "e40b96cc80f94fac964c0050c04b3b42"
-        },
-        {
-            "m_Id": "d6b17070fa464fee9d6fd0b3cc80b15f"
-        },
-        {
-            "m_Id": "8ece50505af046fab4f259d189770780"
-        }
-    ]
 }
 
 {
@@ -2238,6 +2193,51 @@
     "m_Value": 0.0,
     "m_DefaultValue": 0.0,
     "m_Labels": []
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.CategoryData",
+    "m_ObjectId": "4d520775606b4d9dab979da9614e6076",
+    "m_Name": "",
+    "m_ChildObjectList": [
+        {
+            "m_Id": "52f02aeee7404dfda840641c91caeddb"
+        },
+        {
+            "m_Id": "dfba2e664b854d7da03879c577fca0d8"
+        },
+        {
+            "m_Id": "e15e63e2c8f04e10805e4ea1607629c4"
+        },
+        {
+            "m_Id": "e492a72427ab4edab1e4965e6dd3cd12"
+        },
+        {
+            "m_Id": "9a2a016b5eed4d6ea4090d9fcd09c52c"
+        },
+        {
+            "m_Id": "4a91ec69cd1c456ca5b5af8d14b5ac09"
+        },
+        {
+            "m_Id": "2de0f2e083754fda9e78323aa8857ddb"
+        },
+        {
+            "m_Id": "28f1395654574b9d862697c62f2fac95"
+        },
+        {
+            "m_Id": "9660013cc2cb4ad690945ebc4442f24f"
+        },
+        {
+            "m_Id": "e40b96cc80f94fac964c0050c04b3b42"
+        },
+        {
+            "m_Id": "d6b17070fa464fee9d6fd0b3cc80b15f"
+        },
+        {
+            "m_Id": "8ece50505af046fab4f259d189770780"
+        }
+    ]
 }
 
 {

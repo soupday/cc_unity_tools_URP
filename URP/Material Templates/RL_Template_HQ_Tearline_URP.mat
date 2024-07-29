@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-1249281642779221073
+--- !u!114 &-1713162288249708556
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -34,8 +34,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: RL_Template_HQ_Tearline_URP
-  m_Shader: {fileID: -6465566751694194690, guid: 5acd4540882388b44adfb140c6c6290b,
-    type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 5acd4540882388b44adfb140c6c6290b, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords:
   - _DISABLE_SSR_TRANSPARENT

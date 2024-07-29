@@ -53,8 +53,8 @@ Material:
   - MOTIONVECTORS
   - RayTracingPrepass
   - TransparentDepthPostpass
-  - DepthOnly
   - SHADOWCASTER
+  - DepthOnly
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:

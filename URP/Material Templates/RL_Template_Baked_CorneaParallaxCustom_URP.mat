@@ -49,8 +49,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: RL_Template_Baked_CorneaParallaxCustom_URP
-  m_Shader: {fileID: -6465566751694194690, guid: 4ddc5098cc80e7f43a0b4c43b38b06b3,
-    type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 4ddc5098cc80e7f43a0b4c43b38b06b3, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords:
   - _DETAIL_MULX2

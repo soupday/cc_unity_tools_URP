@@ -29,7 +29,7 @@
     "m_Dropdowns": [],
     "m_CategoryData": [
         {
-            "m_Id": "208a33f6bbf244f1a1b2cc885ec2e5c3"
+            "m_Id": "50cbcb9dcdbd42218fd69755a8220c09"
         }
     ],
     "m_Nodes": [
@@ -1020,36 +1020,6 @@
 
 {
     "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.CategoryData",
-    "m_ObjectId": "208a33f6bbf244f1a1b2cc885ec2e5c3",
-    "m_Name": "",
-    "m_ChildObjectList": [
-        {
-            "m_Id": "2ae3099df5ff47ea8af68ec7a4edbeae"
-        },
-        {
-            "m_Id": "3c5c8cfa6e464d7489bcc7a552c5922c"
-        },
-        {
-            "m_Id": "6443d28cbc024921bc6d0f46ee9c2102"
-        },
-        {
-            "m_Id": "f9622be5f8634164ad02446464ba3c8b"
-        },
-        {
-            "m_Id": "9d63cbda932d45ff98889efda5a06c38"
-        },
-        {
-            "m_Id": "266fa5d358b4417ba68d60503300acd5"
-        },
-        {
-            "m_Id": "bbe11f012c3e40d588786cc440bb6612"
-        }
-    ]
-}
-
-{
-    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.DynamicValueMaterialSlot",
     "m_ObjectId": "212af8d89c6544d0a4dc52b249d92d48",
     "m_Id": 1,
@@ -1730,6 +1700,36 @@
         "e32": 0.0,
         "e33": 1.0
     }
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.CategoryData",
+    "m_ObjectId": "50cbcb9dcdbd42218fd69755a8220c09",
+    "m_Name": "",
+    "m_ChildObjectList": [
+        {
+            "m_Id": "2ae3099df5ff47ea8af68ec7a4edbeae"
+        },
+        {
+            "m_Id": "3c5c8cfa6e464d7489bcc7a552c5922c"
+        },
+        {
+            "m_Id": "6443d28cbc024921bc6d0f46ee9c2102"
+        },
+        {
+            "m_Id": "f9622be5f8634164ad02446464ba3c8b"
+        },
+        {
+            "m_Id": "9d63cbda932d45ff98889efda5a06c38"
+        },
+        {
+            "m_Id": "266fa5d358b4417ba68d60503300acd5"
+        },
+        {
+            "m_Id": "bbe11f012c3e40d588786cc440bb6612"
+        }
+    ]
 }
 
 {
@@ -2713,8 +2713,8 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -421.0,
-            "y": 272.0,
+            "x": -423.9999694824219,
+            "y": 231.0,
             "width": 184.0,
             "height": 253.0
         }
