@@ -50,6 +50,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: RL_Template_Baked_CorneaParallaxCustom_URP_Amplify
   m_Shader: {fileID: 4800000, guid: 18ddb0805d6262f4da19209d4ffbfdcc, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords:
   - _DETAIL_MULX2
@@ -67,7 +69,7 @@ Material:
   - TransparentDepthPostpass
   - TransparentBackface
   - RayTracingPrepass
-  - MOTIONVECTORS
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -148,3 +150,4 @@ Material:
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1
